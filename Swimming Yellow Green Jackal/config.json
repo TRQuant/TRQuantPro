@@ -1,0 +1,14 @@
+{
+    "channel-id": "LOCAL-9ae38c99f66ea3cdd3e74be11d9ed665",
+    "description": "",
+    "algorithm-language": "Python",
+    "parameters": {},
+    "cloud-id": 24613887,
+    "organization-id": "cab0822eaf6f92f121a71c2bbc571081",
+    "deployment-target": "Cloud Platform",
+    "python-venv": 1,
+    "local-id": 320461559,
+    "data-folder": "/Lean/Data",
+    "data-provider": "QuantConnect",
+    "log-level": "ERROR"
+}
