@@ -2,6 +2,8 @@
 
 本指南将帮助您将本地 QuantConnect Research 项目连接到 GitHub 进行版本控制和协作。
 
+**当前项目状态**: ✅ 已成功部署到 https://github.com/ZhuTechLLC/QuantConnect-Research
+
 ## 1. 在 GitHub 上创建仓库
 
 ### 步骤 1: 登录 GitHub
@@ -18,6 +20,8 @@
    - **不要**勾选 "Choose a license" (可选)
 
 3. 点击 "Create repository"
+
+**参考**: 本项目已创建为 https://github.com/ZhuTechLLC/QuantConnect-Research
 
 ### 步骤 3: 复制仓库URL
 创建完成后，复制仓库的 HTTPS URL，例如：

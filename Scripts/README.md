@@ -2,6 +2,8 @@
 
 这个文件夹包含了用于自动化 QuantConnect Research 环境的各种工具脚本。
 
+**项目仓库**: https://github.com/ZhuTechLLC/QuantConnect-Research
+
 ## 📁 脚本列表
 
 ### 1. `create_research_notebook.py` - 笔记本生成器
@@ -353,6 +355,12 @@ python Scripts/notebook_manager.py --help
 ---
 
 ## 📝 更新日志
+
+- **v1.1** (2025-08-17): GitHub集成版本
+  - 添加Git管理工具 (`git_manager.py`)
+  - 添加自动备份脚本 (`auto_backup.sh`)
+  - 完善版本控制和备份系统
+  - 部署到GitHub仓库
 
 - **v1.0** (2025-08-17): 初始版本
   - 笔记本生成器

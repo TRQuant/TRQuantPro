@@ -1,12 +1,14 @@
 # QuantConnect Research 本地环境设置指南
 
-**更新时间**: 2025-08-17 13:46:55 EDT  
-**版本**: 1.0  
-**状态**: ✅ 已验证
+**更新时间**: 2025-08-17 17:50:00 EDT  
+**版本**: 1.1  
+**状态**: ✅ 已验证并部署到 GitHub
 
 ## 概述
 
 本指南提供在本地环境中设置 QuantConnect Research 的完整流程，使用 Docker 容器和 VS Code/Cursor 进行量化研究。
+
+**项目仓库**: https://github.com/ZhuTechLLC/QuantConnect-Research
 
 ## A. 一次性准备
 
@@ -315,8 +317,10 @@ python3 Scripts/git_manager.py list-branches
    ```
 3. **推送初始代码**:
    ```bash
-   python3 Scripts/git_manager.py push
+   python3 Scripts/git_manager.py push --branch master
    ```
+
+**当前项目状态**: ✅ 已连接到 GitHub 仓库 `https://github.com/ZhuTechLLC/QuantConnect-Research.git`
 
 ### 恢复策略
 
@@ -351,15 +355,20 @@ tar -xzf backups/backup_name.tar.gz
 
 ## L. 环境验证清单
 
-- [ ] Lean CLI 已安装 (`lean --version`)
-- [ ] 已登录 QuantConnect (`lean login`)
-- [ ] 工作区已初始化 (`lean init`)
-- [ ] Research 容器正在运行 (`docker ps`)
-- [ ] Jupyter 服务器可访问 (`http://127.0.0.1:8888`)
-- [ ] VS Code 已连接容器内核
-- [ ] 数据文件夹存在且包含 SPY 数据
-- [ ] 笔记本首格配置正确
-- [ ] 最小验证测试通过
+- [x] Lean CLI 已安装 (`lean --version`)
+- [x] 已登录 QuantConnect (`lean login`)
+- [x] 工作区已初始化 (`lean init`)
+- [x] Research 容器正在运行 (`docker ps`)
+- [x] Jupyter 服务器可访问 (`http://127.0.0.1:8888`)
+- [x] VS Code 已连接容器内核
+- [x] 数据文件夹存在且包含 SPY 数据
+- [x] 笔记本首格配置正确
+- [x] 最小验证测试通过
+- [x] Git 仓库已初始化 (`git init`)
+- [x] GitHub 远程仓库已连接 (`git remote -v`)
+- [x] 初始代码已推送到 GitHub
+- [x] 自动化工具脚本已部署
+- [x] 备份系统已配置
 
 ## M. 技术规格
 
