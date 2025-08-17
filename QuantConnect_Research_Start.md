@@ -227,6 +227,128 @@ python3 Scripts/notebook_manager.py index
 
 详细使用说明请参考：`Scripts/README.md`
 
+## O. Git 版本控制与备份
+
+### 初始化Git仓库
+
+```bash
+# 初始化Git仓库（已完成）
+git init
+
+# 查看状态
+git status
+
+# 查看修改的文件
+python3 Scripts/git_manager.py status
+```
+
+### 日常Git工作流程
+
+```bash
+# 1. 检查修改的文件
+python3 Scripts/git_manager.py status
+
+# 2. 自动提交更改
+python3 Scripts/git_manager.py auto-commit
+
+# 3. 推送到远程仓库（首次需要设置）
+python3 Scripts/git_manager.py setup-remote --remote-url <your-github-repo-url>
+python3 Scripts/git_manager.py push
+
+# 4. 从远程仓库拉取更新
+python3 Scripts/git_manager.py pull
+```
+
+### 备份策略
+
+#### 自动备份
+```bash
+# 创建完整备份（包括Git分支）
+./Scripts/auto_backup.sh [backup_name]
+
+# 备份重要文件
+python3 Scripts/git_manager.py backup-files
+
+# 创建Git备份分支
+python3 Scripts/git_manager.py backup-branch --message "backup_name"
+```
+
+#### 手动备份
+```bash
+# 查看提交历史
+python3 Scripts/git_manager.py show-log --count 20
+
+# 列出所有分支
+python3 Scripts/git_manager.py list-branches
+```
+
+### 推荐的Git工作流程
+
+1. **每日开始工作前**:
+   ```bash
+   python3 Scripts/git_manager.py pull  # 拉取最新更改
+   ```
+
+2. **工作过程中**:
+   ```bash
+   python3 Scripts/git_manager.py status  # 检查状态
+   python3 Scripts/git_manager.py auto-commit  # 定期提交
+   ```
+
+3. **工作结束时**:
+   ```bash
+   python3 Scripts/git_manager.py auto-commit  # 提交更改
+   python3 Scripts/git_manager.py push  # 推送到远程
+   ```
+
+4. **定期备份**:
+   ```bash
+   ./Scripts/auto_backup.sh  # 每周或重要更改后
+   ```
+
+### 设置GitHub远程仓库
+
+1. **在GitHub上创建新仓库**
+2. **设置远程仓库**:
+   ```bash
+   python3 Scripts/git_manager.py setup-remote --remote-url https://github.com/yourusername/your-repo.git
+   ```
+3. **推送初始代码**:
+   ```bash
+   python3 Scripts/git_manager.py push
+   ```
+
+### 恢复策略
+
+#### 从Git恢复
+```bash
+# 查看提交历史
+git log --oneline
+
+# 恢复到特定提交
+git checkout <commit-hash>
+
+# 恢复到特定分支
+git checkout <branch-name>
+```
+
+#### 从备份恢复
+```bash
+# 解压备份文件
+tar -xzf backups/backup_name.tar.gz
+
+# 按照备份报告中的说明恢复文件
+```
+
+### 最佳实践
+
+1. **频繁提交**: 每完成一个功能就提交一次
+2. **清晰的提交消息**: 使用描述性的提交消息
+3. **定期推送**: 至少每天推送一次到远程仓库
+4. **定期备份**: 每周或重要更改后创建完整备份
+5. **分支管理**: 为重要功能创建独立分支
+6. **忽略大文件**: 确保 `.gitignore` 正确配置，避免提交数据文件
+
 ## L. 环境验证清单
 
 - [ ] Lean CLI 已安装 (`lean --version`)

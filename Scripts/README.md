@@ -115,28 +115,28 @@ python data_downloader.py --list
 **用法**:
 ```bash
 # 添加标准配置到所有笔记本
-python notebook_manager.py batch-add-config
+python3 Scripts/notebook_manager.py batch-add-config
 
 # 清理笔记本输出
-python notebook_manager.py batch-clean
+python3 Scripts/notebook_manager.py batch-clean
 
 # 转换笔记本格式
-python notebook_manager.py convert --format py
-python notebook_manager.py convert --format html
-python notebook_manager.py convert --format pdf
+python3 Scripts/notebook_manager.py convert --format py
+python3 Scripts/notebook_manager.py convert --format html
+python3 Scripts/notebook_manager.py convert --format pdf
 
 # 备份笔记本
-python notebook_manager.py backup
-python notebook_manager.py backup --backup-name my_backup
+python3 Scripts/notebook_manager.py backup
+python3 Scripts/notebook_manager.py backup --backup-name my_backup
 
 # 恢复笔记本
-python notebook_manager.py restore --backup-name my_backup
+python3 Scripts/notebook_manager.py restore --backup-name my_backup
 
 # 生成笔记本索引
-python notebook_manager.py index
+python3 Scripts/notebook_manager.py index
 
 # 列出备份
-python notebook_manager.py list-backups
+python3 Scripts/notebook_manager.py list-backups
 ```
 
 **功能特性**:
@@ -146,6 +146,76 @@ python notebook_manager.py list-backups
 - 💾 备份和恢复笔记本
 - 📋 生成笔记本索引
 - ⚡ 批量处理功能
+
+---
+
+### 5. `git_manager.py` - Git 管理工具
+
+**功能**: 自动化Git操作和版本控制
+
+**用法**:
+```bash
+# 查看修改的文件
+python3 Scripts/git_manager.py status
+
+# 自动提交更改
+python3 Scripts/git_manager.py auto-commit
+
+# 强制提交（不询问）
+python3 Scripts/git_manager.py auto-commit --force
+
+# 推送到远程仓库
+python3 Scripts/git_manager.py push
+
+# 从远程仓库拉取
+python3 Scripts/git_manager.py pull
+
+# 设置远程仓库
+python3 Scripts/git_manager.py setup-remote --remote-url <your-github-repo-url>
+
+# 创建备份分支
+python3 Scripts/git_manager.py backup-branch --message "backup_name"
+
+# 查看提交历史
+python3 Scripts/git_manager.py show-log --count 20
+
+# 列出所有分支
+python3 Scripts/git_manager.py list-branches
+
+# 备份重要文件
+python3 Scripts/git_manager.py backup-files
+```
+
+**功能特性**:
+- 🔍 智能文件分类（脚本、笔记本、配置、文档等）
+- 📝 自动生成提交消息
+- 🔄 自动化Git操作
+- 📦 创建备份分支
+- 💾 备份重要文件
+- 📜 查看提交历史
+
+---
+
+### 6. `auto_backup.sh` - 自动备份脚本
+
+**功能**: 创建完整的项目备份
+
+**用法**:
+```bash
+# 创建自动备份
+./Scripts/auto_backup.sh
+
+# 指定备份名称
+./Scripts/auto_backup.sh my_backup_name
+```
+
+**功能特性**:
+- 🔄 自动Git提交和分支创建
+- 📁 备份重要配置文件
+- 📝 备份脚本和笔记本
+- 📋 生成详细备份报告
+- 📦 压缩备份文件
+- 🧹 自动清理旧备份（保留最近5个）
 
 ---
 
@@ -186,20 +256,36 @@ python notebook_manager.py backup
 echo "🚀 设置 QuantConnect Research 工作区..."
 
 # 下载基础数据
-python Scripts/data_downloader.py --indices
-python Scripts/data_downloader.py --sectors
+python3 Scripts/data_downloader.py --indices
+python3 Scripts/data_downloader.py --sectors
 
 # 创建常用笔记本
-python Scripts/create_research_notebook.py market_analysis --template data_analysis
-python Scripts/create_research_notebook.py strategy_backtest --template strategy
+python3 Scripts/create_research_notebook.py market_analysis --template data_analysis
+python3 Scripts/create_research_notebook.py strategy_backtest --template strategy
 
 # 添加标准配置
-python Scripts/notebook_manager.py batch-add-config
+python3 Scripts/notebook_manager.py batch-add-config
 
 # 生成索引
-python Scripts/notebook_manager.py index
+python3 Scripts/notebook_manager.py index
 
 echo "✅ 工作区设置完成！"
+```
+
+### 4. Git工作流程示例
+
+```bash
+# 每日开始工作
+python3 Scripts/git_manager.py pull
+
+# 工作过程中定期提交
+python3 Scripts/git_manager.py auto-commit
+
+# 工作结束时推送
+python3 Scripts/git_manager.py push
+
+# 定期备份
+./Scripts/auto_backup.sh
 ```
 
 ---

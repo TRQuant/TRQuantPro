@@ -61,7 +61,7 @@ class GitManager:
         for line in status.split('\n'):
             if line.strip():
                 status_code = line[:2]
-                filename = line[3:]
+                filename = line[3:].strip()
                 files.append((status_code, filename))
         
         return files
