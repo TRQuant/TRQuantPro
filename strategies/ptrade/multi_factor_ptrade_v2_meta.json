@@ -1,0 +1,12 @@
+{
+  "id": "multi_factor_ptrade_v2",
+  "name": "Multi Factor Ptrade V2",
+  "version": "v1.0.0",
+  "status": "draft",
+  "broker": "PTrade",
+  "description": "",
+  "code_path": "/home/taotao/.local/share/jqquant/strategies/ptrade/multi_factor_ptrade_v2.py",
+  "parameters": {},
+  "created_at": "2025-11-27T04:18:01.206816",
+  "updated_at": "2025-11-27T04:18:01.206816"
+}

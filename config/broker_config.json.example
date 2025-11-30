@@ -1,0 +1,26 @@
+{
+  "gjzq": {
+    "account": "your_account",
+    "password": "your_password",
+    "ptrade": {
+      "enabled": true,
+      "host": "ptrade.gjzq.com",
+      "port": 7709,
+      "account_id": "your_account_id"
+    },
+    "qmt": {
+      "enabled": true,
+      "qmt_path": "",
+      "session_id": 123456,
+      "account_id": "your_account_id"
+    }
+  },
+  "default_broker": "ptrade",
+  "risk_control": {
+    "max_position_per_stock": 0.2,
+    "max_daily_loss": 0.05,
+    "max_drawdown": 0.15,
+    "min_cash_ratio": 0.1
+  }
+}
+

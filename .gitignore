@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+.cache/
+*.pkl
+*.pickle
+
+# Data
+data/
+*.csv
+*.xlsx
+
+# Results (可选保留)
+# results/
+
+# Sensitive
+*.env
+config/jqdata_config.json
+config/credentials.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup
+*.backup
+*.bak
+
+# 临时文件
+*.tmp
+*.temp
+
+# 敏感配置文件（保留本地，不上传）
+config/jqdata_config.json
+config/credentials.json
+*.env
+github_token.txt
+config/emquant_config.json
+config/broker_config.json
