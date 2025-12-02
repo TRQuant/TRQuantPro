@@ -82,22 +82,27 @@ class DataManagerPanel(QWidget):
             QTabBar::tab {{
                 background: {Colors.BG_TERTIARY};
                 color: {Colors.TEXT_SECONDARY};
-                padding: 10px 20px;
+                padding: 12px 24px;
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
                 margin-right: 2px;
+                font-size: 13px;
             }}
             QTabBar::tab:selected {{
                 background: {Colors.BG_SECONDARY};
                 color: {Colors.TEXT_PRIMARY};
+                font-weight: bold;
             }}
         """)
+        
+        # A股策略管理Tab（核心）
+        tabs.addTab(self._create_strategy_manager_tab(), "📋 A股策略管理")
         
         # 报告管理Tab
         tabs.addTab(self._create_reports_tab(), "📄 报告文件")
         
-        # 策略管理Tab
-        tabs.addTab(self._create_strategies_tab(), "🐍 策略文件")
+        # 策略代码Tab
+        tabs.addTab(self._create_strategies_tab(), "🐍 策略代码")
         
         # 数据库管理Tab
         tabs.addTab(self._create_database_tab(), "🗄️ 数据库")
@@ -142,6 +147,21 @@ class DataManagerPanel(QWidget):
         layout.addWidget(value_label)
         
         return card
+    
+    def _create_strategy_manager_tab(self) -> QWidget:
+        """A股策略管理Tab - 嵌入完整的策略管理器"""
+        from gui.widgets.strategy_manager_panel import StrategyManagerPanel
+        
+        # 创建策略管理器（去掉Banner，直接显示内容）
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # 策略管理器
+        self.strategy_manager = StrategyManagerPanel()
+        layout.addWidget(self.strategy_manager)
+        
+        return widget
     
     def _create_reports_tab(self) -> QWidget:
         """报告管理Tab"""
