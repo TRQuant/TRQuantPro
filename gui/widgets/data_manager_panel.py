@@ -3,10 +3,10 @@
 数据管理面板
 ============
 
-整合现有的文件管理系统（Web仪表盘），并提供：
+整合文件管理系统（Web Dashboard），并提供：
 - 快速入口：打开Web文件管理系统
-- 系统文件概览：智能分类显示所有数据
-- A股策略管理：策略库、回测历史、绩效跟踪
+- 系统状态预览
+- A股策略管理
 """
 
 from PyQt6.QtWidgets import (
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class DataManagerPanel(QWidget):
-    """数据管理面板 - 整合现有文件管理系统"""
+    """数据管理面板 - 整合文件管理系统"""
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -81,7 +81,7 @@ class DataManagerPanel(QWidget):
         """)
         entry_layout = QVBoxLayout(entry_frame)
         
-        entry_title = QLabel("🚀 快速入口 - 文件管理系统")
+        entry_title = QLabel("🚀 快速入口 - 量化投资文件管理系统")
         entry_title.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {Colors.TEXT_PRIMARY};")
         entry_layout.addWidget(entry_title)
         
@@ -122,7 +122,7 @@ class DataManagerPanel(QWidget):
         self.strategy_card = self._create_stat_card("🐍", "策略文件", "0", Colors.PRIMARY)
         self.report_card = self._create_stat_card("📊", "回测报告", "0", Colors.SUCCESS)
         self.doc_card = self._create_stat_card("📄", "研究文档", "0", Colors.INFO)
-        self.data_card = self._create_stat_card("🗄️", "数据文件", "0", Colors.WARNING)
+        self.data_card = self._create_stat_card("🗄️", "数据集合", "0", Colors.WARNING)
         
         stats_layout.addWidget(self.strategy_card)
         stats_layout.addWidget(self.report_card)
@@ -145,7 +145,6 @@ class DataManagerPanel(QWidget):
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
                 margin-right: 2px;
-                font-size: 13px;
             }}
             QTabBar::tab:selected {{
                 background: {Colors.BG_SECONDARY};
@@ -386,7 +385,6 @@ class DataManagerPanel(QWidget):
             ("📄 研究文档", "docs", [".md", ".pdf", ".html"], "doc_count"),
             ("🗄️ 数据文件", "data", [".csv", ".json", ".pkl"], "data_count"),
             ("⚙️ 配置文件", "config", [".json", ".yaml", ".ini"], None),
-            ("📁 缓存", ".cache", ["*"], None),
         ]
         
         total_counts = {"strategy_count": 0, "report_count": 0, "doc_count": 0, "data_count": 0}
@@ -402,22 +400,13 @@ class DataManagerPanel(QWidget):
             latest_mtime = None
             
             for ext in extensions:
-                if ext == "*":
-                    for f in dir_path.rglob("*"):
-                        if f.is_file():
-                            files.append(f)
-                            total_size += f.stat().st_size
-                            mtime = f.stat().st_mtime
-                            if latest_mtime is None or mtime > latest_mtime:
-                                latest_mtime = mtime
-                else:
-                    for f in dir_path.rglob(f"*{ext}"):
-                        if f.is_file():
-                            files.append(f)
-                            total_size += f.stat().st_size
-                            mtime = f.stat().st_mtime
-                            if latest_mtime is None or mtime > latest_mtime:
-                                latest_mtime = mtime
+                for f in dir_path.rglob(f"*{ext}"):
+                    if f.is_file() and not f.name.startswith("__"):
+                        files.append(f)
+                        total_size += f.stat().st_size
+                        mtime = f.stat().st_mtime
+                        if latest_mtime is None or mtime > latest_mtime:
+                            latest_mtime = mtime
             
             if count_key:
                 total_counts[count_key] = len(files)
@@ -430,25 +419,14 @@ class DataManagerPanel(QWidget):
             cat_item.setData(0, Qt.ItemDataRole.UserRole, str(dir_path))
             cat_item.setExpanded(True)
             
-            # 添加子目录
-            subdirs = {}
+            # 添加子文件（最新20个）
             for f in sorted(files, key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
-                rel_path = f.relative_to(dir_path)
-                if len(rel_path.parts) > 1:
-                    subdir = rel_path.parts[0]
-                    if subdir not in subdirs:
-                        subdirs[subdir] = QTreeWidgetItem([f"📁 {subdir}", "子目录", "", ""])
-                        subdirs[subdir].setData(0, Qt.ItemDataRole.UserRole, str(dir_path / subdir))
-                        cat_item.addChild(subdirs[subdir])
-                    parent = subdirs[subdir]
-                else:
-                    parent = cat_item
-                
                 fsize = f"{f.stat().st_size / 1024:.1f} KB"
                 fmtime = datetime.fromtimestamp(f.stat().st_mtime).strftime('%m-%d %H:%M')
-                file_item = QTreeWidgetItem([f.name, f.suffix.upper(), fsize, fmtime])
+                rel_path = f.relative_to(dir_path)
+                file_item = QTreeWidgetItem([str(rel_path), f.suffix.upper(), fsize, fmtime])
                 file_item.setData(0, Qt.ItemDataRole.UserRole, str(f))
-                parent.addChild(file_item)
+                cat_item.addChild(file_item)
             
             self.files_tree.addTopLevelItem(cat_item)
         
@@ -456,7 +434,6 @@ class DataManagerPanel(QWidget):
         self.strategy_card.findChild(QLabel, "value").setText(str(total_counts["strategy_count"]))
         self.report_card.findChild(QLabel, "value").setText(str(total_counts["report_count"]))
         self.doc_card.findChild(QLabel, "value").setText(str(total_counts["doc_count"]))
-        self.data_card.findChild(QLabel, "value").setText(str(total_counts["data_count"]))
     
     def _load_strategies(self):
         """加载策略列表"""
@@ -539,7 +516,10 @@ class DataManagerPanel(QWidget):
             collections = db.list_collection_names()
             self.db_table.setRowCount(len(collections))
             
-            for i, coll_name in enumerate(sorted(collections)):
+            # 更新统计
+            self.data_card.findChild(QLabel, "value").setText(str(len(collections)))
+            
+            for i, coll_name in enumerate(collections):
                 coll = db[coll_name]
                 doc_count = coll.count_documents({})
                 
@@ -627,7 +607,7 @@ class DataManagerPanel(QWidget):
     def _preview_strategy(self, item, col):
         """预览策略代码"""
         path = item.data(0, Qt.ItemDataRole.UserRole)
-        if path and Path(path).exists():
+        if path:
             try:
                 with open(path, 'r', encoding='utf-8') as f:
                     code = f.read()
@@ -646,20 +626,16 @@ class DataManagerPanel(QWidget):
             client = MongoClient('localhost', 27017)
             db = client['trquant']
             
-            dest_path = Path(dest_dir) / f"trquant_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            
             export_data = {}
             for coll_name in db.list_collection_names():
                 docs = list(db[coll_name].find())
                 for doc in docs:
                     doc['_id'] = str(doc['_id'])
-                    for k, v in doc.items():
-                        if hasattr(v, 'isoformat'):
-                            doc[k] = v.isoformat()
                 export_data[coll_name] = docs
             
+            dest_path = Path(dest_dir) / f"trquant_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             with open(dest_path, 'w', encoding='utf-8') as f:
-                json.dump(export_data, f, ensure_ascii=False, indent=2)
+                json.dump(export_data, f, ensure_ascii=False, indent=2, default=str)
             
             QMessageBox.information(self, "成功", f"数据已导出到:\n{dest_path}")
             
