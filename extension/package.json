@@ -1,0 +1,138 @@
+{
+  "name": "trquant-cursor-extension",
+  "displayName": "TRQuant 韬睿量化",
+  "description": "A股量化投资助手 - 市场分析、因子推荐、策略生成",
+  "version": "0.1.0",
+  "publisher": "trquant",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Data Science"
+  ],
+  "keywords": [
+    "quantitative",
+    "trading",
+    "A-shares",
+    "PTrade",
+    "factor",
+    "strategy"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "trquant.getMarketStatus",
+        "title": "TRQuant: 获取市场状态",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.getMainlines",
+        "title": "TRQuant: 获取投资主线",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.recommendFactors",
+        "title": "TRQuant: 推荐因子",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.generateStrategy",
+        "title": "TRQuant: 生成策略代码",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.analyzeBacktest",
+        "title": "TRQuant: 分析回测结果",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.enableMCP",
+        "title": "TRQuant: 启用MCP Server",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.showPanel",
+        "title": "TRQuant: 打开控制面板",
+        "category": "TRQuant"
+      }
+    ],
+    "configuration": {
+      "title": "TRQuant",
+      "properties": {
+        "trquant.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Python解释器路径"
+        },
+        "trquant.serverHost": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "TRQuant后端服务地址"
+        },
+        "trquant.serverPort": {
+          "type": "number",
+          "default": 5000,
+          "description": "TRQuant后端服务端口"
+        },
+        "trquant.mcpEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用MCP Server"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "trquant-sidebar",
+          "title": "TRQuant",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "trquant-sidebar": [
+        {
+          "id": "trquant-market",
+          "name": "市场状态"
+        },
+        {
+          "id": "trquant-mainlines",
+          "name": "投资主线"
+        },
+        {
+          "id": "trquant-strategies",
+          "name": "策略管理"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "ts-loader": "^9.x",
+    "typescript": "^5.x",
+    "webpack": "^5.x",
+    "webpack-cli": "^5.x"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
+

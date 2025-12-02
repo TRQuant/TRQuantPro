@@ -1,0 +1,96 @@
+---
+description: TRQuant代码风格规范
+globs: ["**/*.py"]
+---
+
+# TRQuant 代码风格规范
+
+## Python代码风格
+
+### 文件头
+```python
+# -*- coding: utf-8 -*-
+"""
+模块说明
+========
+简要描述模块功能
+"""
+```
+
+### 命名规范
+- 类名：PascalCase（如 `StrategyGenerator`）
+- 函数名：snake_case（如 `get_market_status`）
+- 常量：UPPER_SNAKE_CASE（如 `MAX_POSITION`）
+- 私有变量：_leading_underscore
+
+### 类型注解
+```python
+def calculate_factor(
+    stocks: List[str],
+    start_date: str,
+    end_date: str
+) -> pd.DataFrame:
+    """计算因子值"""
+    pass
+```
+
+### 文档字符串
+```python
+def function_name(param1: type, param2: type) -> return_type:
+    """
+    函数简要说明
+    
+    Args:
+        param1: 参数1说明
+        param2: 参数2说明
+    
+    Returns:
+        返回值说明
+    
+    Raises:
+        ExceptionType: 异常说明
+    """
+    pass
+```
+
+## PTrade策略风格
+
+### 变量命名
+- context属性用下划线前缀：`context._cache`
+- 参数用明确名称：`max_position`而非`mp`
+
+### 注释
+- 每个函数必须有docstring
+- 关键逻辑添加行内注释
+- 使用中文注释便于阅读
+
+### 日志
+```python
+log.info(f"当前持仓: {len(context.portfolio.positions)}")
+log.warning(f"股票{stock}停牌，跳过")
+```
+
+## 错误处理
+
+### 使用try-except
+```python
+try:
+    data = get_price(stock)
+except Exception as e:
+    log.error(f"获取数据失败: {e}")
+    return None
+```
+
+### 返回结果格式
+```python
+return {
+    'ok': True,
+    'data': result,
+    'error': None
+}
+```
+
+## 测试
+- 单元测试文件以 `test_` 开头
+- 使用pytest框架
+- 覆盖主要功能路径
