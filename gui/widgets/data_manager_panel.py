@@ -50,9 +50,10 @@ class DataManagerPanel(QWidget):
         
         # Banner
         banner = ModuleBanner(
-            title="📁 数据管理中心",
+            icon="📁",
+            title="数据管理中心",
             subtitle="策略代码、回测报告、研究文档统一管理",
-            gradient_colors=(Colors.INFO, Colors.PRIMARY)
+            theme="info"
         )
         layout.addWidget(banner)
         
@@ -101,7 +102,7 @@ class DataManagerPanel(QWidget):
                 font-size: 15px;
                 font-weight: bold;
             }}
-            QPushButton:hover {{ background: {Colors.PRIMARY_HOVER}; }}
+            QPushButton:hover {{ background: #7c8ef2; }}
         """)
         open_dashboard_btn.clicked.connect(self._open_dashboard)
         btn_layout.addWidget(open_dashboard_btn)
@@ -581,7 +582,7 @@ class DataManagerPanel(QWidget):
             # 等待服务启动后打开浏览器
             import time
             time.sleep(2)
-            webbrowser.open("http://localhost:8050")
+            webbrowser.open("http://127.0.0.1:5000")
             
         except Exception as e:
             QMessageBox.warning(self, "启动失败", f"无法启动文件管理系统: {e}")

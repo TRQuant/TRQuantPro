@@ -32,6 +32,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -927,6 +934,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -1823,6 +1837,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -2719,6 +2740,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -3615,6 +3643,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -4511,6 +4546,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -5407,6 +5449,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -6303,6 +6352,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -7199,6 +7255,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -8096,6 +8159,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -8991,6 +9061,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -9888,6 +9965,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -10783,6 +10867,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -11680,6 +11771,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -12575,6 +12673,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -13472,6 +13577,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -14367,6 +14479,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -15263,6 +15382,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -16159,6 +16285,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -17055,6 +17188,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -17951,6 +18091,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -18847,6 +18994,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -19743,6 +19897,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -20639,6 +20800,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -21536,6 +21704,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -22431,6 +22606,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -23328,6 +23510,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -24223,6 +24412,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -25120,6 +25316,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -26015,6 +26218,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -26912,6 +27122,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -27807,6 +28024,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -28703,6 +28927,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -29599,6 +29830,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -30495,6 +30733,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -31391,6 +31636,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -32287,6 +32539,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -33183,6 +33442,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -34079,6 +34345,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -34976,6 +35249,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -35871,6 +36151,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -36768,6 +37055,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -37663,6 +37957,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -38560,6 +38861,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -39455,6 +39763,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -40352,6 +40667,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -41247,6 +41569,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -42143,6 +42472,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -43039,6 +43375,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -43935,6 +44278,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -44831,6 +45181,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -45727,6 +46084,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -46623,6 +46987,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -47519,6 +47890,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -48416,6 +48794,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -49311,6 +49696,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -50208,6 +50600,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -51103,6 +51502,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -52000,6 +52406,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -52895,6 +53308,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -53792,6 +54212,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -54687,6 +55114,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -55583,6 +56017,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -56479,6 +56920,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -57375,6 +57823,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -58271,6 +58726,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -59167,6 +59629,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -60063,6 +60532,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -60959,6 +61435,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -61856,6 +62339,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -62751,6 +63241,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -63648,6 +64145,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -64543,6 +65047,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -65440,6 +65951,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -66335,6 +66853,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -67232,6 +67757,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -68127,6 +68659,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -69023,6 +69562,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -69919,6 +70465,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -70815,6 +71368,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -71711,6 +72271,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -72607,6 +73174,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -73503,6 +74077,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -74399,6 +74980,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -75296,6 +75884,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -76191,6 +76786,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -77088,6 +77690,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -77983,6 +78592,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -78880,6 +79496,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -79775,6 +80398,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -80672,6 +81302,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -81567,6 +82204,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -82463,6 +83107,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -83359,6 +84010,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -84255,6 +84913,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -85151,6 +85816,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -86047,6 +86719,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -86943,6 +87622,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -87839,6 +88525,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -88736,6 +89429,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -89631,6 +90331,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -90528,6 +91235,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -91423,6 +92137,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -92320,6 +93041,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -93215,6 +93943,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -94112,6 +94847,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -95007,6 +95749,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -95903,6 +96652,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -96799,6 +97555,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -97695,6 +98458,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -98591,6 +99361,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -99487,6 +100264,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -100383,6 +101167,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -101279,6 +102070,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -102176,6 +102974,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -103071,6 +103876,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -103968,6 +104780,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -104863,6 +105682,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -105760,6 +106586,13 @@ app = Flask(__name__,
             static_folder='static')
 CORS(app)
 
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
+
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -106655,6 +107488,13 @@ app = Flask(__name__,
             template_folder='templates',
             static_folder='static')
 CORS(app)
+
+# 注册A股策略管理API
+try:
+    from dashboard.astock_api import astock_bp
+    app.register_blueprint(astock_bp)
+except ImportError:
+    pass
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent
