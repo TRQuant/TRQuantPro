@@ -114,27 +114,35 @@ def recommend_factors(params: dict) -> dict:
 
 
 def generate_strategy(params: dict) -> dict:
-    """生成策略代码"""
-    if not TRQUANT_AVAILABLE:
-        return mock_strategy(params)
+    """生成策略代码 - 支持PTrade和QMT双平台"""
+    platform = params.get('platform', 'ptrade')  # 默认PTrade
+    style = params.get('style', 'multi_factor')
+    factors = params.get('factors', ['ROE_ttm', 'momentum_20d'])
+    risk_params = params.get('risk_params', {
+        'max_position': 0.1,
+        'stop_loss': 0.08,
+        'take_profit': 0.2
+    })
     
     try:
-        orchestrator = get_workflow_orchestrator()
-        result = orchestrator.generate_strategy()
+        # 使用新的策略生成器
+        from tools.strategy_generator import get_strategy_generator
+        generator = get_strategy_generator()
         
-        if result.success:
-            return {
-                'ok': True,
-                'data': {
-                    'code': result.details.get('strategy_code', ''),
-                    'name': result.details.get('strategy_name', 'unnamed_strategy'),
-                    'description': result.details.get('description', ''),
-                    'factors': params.get('factors', []),
-                    'risk_params': params.get('risk_params', {})
-                }
-            }
-        else:
-            return {'ok': False, 'error': result.summary}
+        result = generator.generate(
+            platform=platform,
+            style=style,
+            factors=factors,
+            risk_params=risk_params
+        )
+        
+        return {
+            'ok': True,
+            'data': result
+        }
+    except ImportError:
+        # 降级到mock实现
+        return mock_strategy(params)
     except Exception as e:
         return {'ok': False, 'error': str(e)}
 

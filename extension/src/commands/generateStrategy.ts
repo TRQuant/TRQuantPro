@@ -9,6 +9,16 @@ export async function generateStrategy(
     client: TRQuantClient,
     context: vscode.ExtensionContext
 ): Promise<void> {
+    // 让用户选择平台
+    const platform = await vscode.window.showQuickPick([
+        { label: '📊 PTrade (恒生)', value: 'ptrade', description: '恒生PTrade平台' },
+        { label: '📈 QMT (迅投)', value: 'qmt', description: '迅投QMT平台' },
+    ], {
+        placeHolder: '选择策略平台'
+    });
+
+    if (!platform) return;
+
     // 让用户选择策略风格
     const style = await vscode.window.showQuickPick([
         { label: '📈 多因子选股', value: 'multi_factor', description: '基于因子评分选股' },
@@ -35,10 +45,11 @@ export async function generateStrategy(
                 market_regime: marketStatus.data?.regime
             });
 
-            progress.report({ message: '生成策略代码...' });
+            progress.report({ message: `生成${platform.value.toUpperCase()}策略代码...` });
             const result = await client.generateStrategy({
                 factors: (factors.data || []).slice(0, 5).map((f: any) => f.name),
                 style: style.value,
+                platform: platform.value,
                 risk_params: {
                     max_position: 0.1,
                     stop_loss: 0.08,

@@ -98,13 +98,18 @@ export class TRQuantClient {
 
     /**
      * 生成策略代码
+     * @param platform 平台：'ptrade' 或 'qmt'
      */
     async generateStrategy(params: {
         factors: string[];
         style?: string;
+        platform?: string;
         risk_params?: Record<string, any>;
     }): Promise<TRQuantResponse<Strategy>> {
-        return this.callBridge('generate_strategy', params);
+        return this.callBridge('generate_strategy', {
+            ...params,
+            platform: params.platform || 'ptrade'
+        });
     }
 
     /**
