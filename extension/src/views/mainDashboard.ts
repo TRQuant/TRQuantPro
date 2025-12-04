@@ -154,15 +154,15 @@ export class MainDashboard {
                 await this.runFullWorkflow();
                 break;
             
-            // 打开工作流面板
+            // 打开桌面系统（完整工作流面板）
             case 'openWorkflowPanel':
-                console.log('[MainDashboard] 准备执行 openWorkflowPanel 命令');
+                console.log('[MainDashboard] 准备启动桌面系统');
                 try {
                     await vscode.commands.executeCommand('trquant.openWorkflowPanel');
-                    console.log('[MainDashboard] openWorkflowPanel 命令执行完成');
+                    console.log('[MainDashboard] 桌面系统启动命令已执行');
                 } catch (error) {
-                    console.error('[MainDashboard] openWorkflowPanel 命令执行失败:', error);
-                    vscode.window.showErrorMessage(`打开工作流面板失败: ${error}`);
+                    console.error('[MainDashboard] 启动桌面系统失败:', error);
+                    vscode.window.showErrorMessage(`启动桌面系统失败: ${error}`);
                 }
                 break;
             
@@ -1585,7 +1585,7 @@ export class MainDashboard {
                 ⚙️ 设置
             </button>
             <button class="header-btn primary" onclick="openWorkflowPanel()">
-                ▶️ 打开工作流面板
+                🖥️ 打开桌面系统
             </button>
         </div>
     </div>
@@ -1610,9 +1610,9 @@ export class MainDashboard {
                     </div>
                 </div>
                 <div class="quick-card" onclick="openWorkflowPanel()">
-                    <div class="quick-icon">🔄</div>
+                    <div class="quick-icon">🖥️</div>
                     <div class="quick-info">
-                        <h4>工作流面板</h4>
+                        <h4>桌面系统</h4>
                         <p>查看完整投资流程</p>
                     </div>
                 </div>
@@ -1955,12 +1955,12 @@ export class MainDashboard {
     <script>
         const vscode = acquireVsCodeApi();
         
-        // 打开工作流面板
+        // 打开桌面系统（完整工作流）
         function openWorkflowPanel() {
-            console.log('[MainDashboard HTML] 点击打开工作流面板按钮');
+            console.log('[MainDashboard HTML] 点击打开桌面系统按钮');
             try {
                 vscode.postMessage({command: 'openWorkflowPanel'});
-                console.log('[MainDashboard HTML] 消息已发送');
+                console.log('[MainDashboard HTML] 启动桌面系统消息已发送');
             } catch (error) {
                 console.error('[MainDashboard HTML] 发送消息失败:', error);
             }

@@ -48,8 +48,7 @@ import { registerMainlinePanel } from './views/mainlinePanel';
 import { registerCandidatePoolPanel } from './views/candidatePoolPanel';
 import { registerFactorPanel } from './views/factorPanel';
 
-// 工作流面板（独立GUI）
-import { registerWorkflowPanel } from './views/workflowPanel';
+// 工作流面板（独立GUI）- 现在在 registerCommands 中动态导入
 // 快捷操作（侧边栏）
 import { registerQuickActionsView } from './providers/quickActionsProvider';
 // 项目创建命令
@@ -296,18 +295,9 @@ def handle_data(context, data):
         statusBarItem = createStatusBar();
         context.subscriptions.push(statusBarItem);
 
-        // 注册命令
+        // 注册命令（包含工作流面板命令）
         registerCommands(context);
-        
-        // 立即注册工作流面板命令（确保在激活时就能使用）
-        console.log('[TRQuant] 立即注册工作流面板命令...');
-        try {
-            registerWorkflowPanel(context, client);
-            console.log('[TRQuant] ✅ 工作流面板命令注册完成');
-        } catch (error) {
-            console.error('[TRQuant] ❌ 工作流面板命令注册失败:', error);
-            logger.error(`工作流面板命令注册失败: ${error}`, MODULE);
-        }
+        console.log('[TRQuant] ✅ 所有命令注册完成');
 
         // 注册项目资源管理器
         registerProjectExplorer(context);
@@ -633,6 +623,33 @@ function registerCommands(context: vscode.ExtensionContext): void {
                 await updateStatusBar();
                 vscode.window.showInformationMessage('状态已刷新');
             }
+        },
+        {
+            id: 'trquant.openWorkflowPanel',
+            handler: async () => {
+                // 打开工作流面板 = 启动桌面系统（与桌面系统保持一致）
+                console.log('[TRQuant] 打开工作流面板 -> 启动桌面系统');
+                logger.info('打开工作流面板（启动桌面系统）', MODULE);
+                await launchDesktopSystem(context);
+            }
+        },
+        {
+            id: 'trquant.launchDesktopSystem',
+            handler: async () => {
+                console.log('[TRQuant] 启动桌面系统');
+                logger.info('启动桌面系统', MODULE);
+                await launchDesktopSystem(context);
+            }
+        },
+        {
+            id: 'trquant.openWorkflowPanelWebview',
+            handler: async () => {
+                // 在 VS Code 中打开简化版工作流面板（WebView）
+                console.log('[TRQuant] 打开WebView工作流面板');
+                logger.info('打开WebView工作流面板', MODULE);
+                const { WorkflowPanel } = await import('./views/workflowPanel');
+                WorkflowPanel.createOrShow(context.extensionUri, client);
+            }
         }
     ];
 
@@ -645,6 +662,44 @@ function registerCommands(context: vscode.ExtensionContext): void {
     }
 
     logger.info(`已注册 ${commands.length} 个命令`, MODULE);
+}
+
+/**
+ * 启动桌面系统（PyQt6 GUI）
+ * 与桌面系统保持完全一致的工作流体验
+ */
+async function launchDesktopSystem(context: vscode.ExtensionContext): Promise<void> {
+    const pythonPath = config.getPythonPath(context.extensionPath);
+    
+    // TRQuant 根目录
+    const trquantRoot = path.dirname(context.extensionPath);
+    const mainScript = path.join(trquantRoot, 'start_dashboard.py');
+    
+    // 检查启动脚本是否存在
+    if (!fs.existsSync(mainScript)) {
+        vscode.window.showErrorMessage(`桌面系统启动脚本不存在: ${mainScript}`);
+        return;
+    }
+    
+    logger.info(`启动桌面系统: ${mainScript}`, MODULE);
+    
+    try {
+        // 使用子进程启动桌面系统
+        const proc = cp.spawn(pythonPath, [mainScript], {
+            cwd: trquantRoot,
+            detached: true,
+            stdio: 'ignore'
+        });
+        
+        proc.unref();
+        
+        vscode.window.showInformationMessage('🖥️ 桌面系统已启动！');
+        logger.info('桌面系统启动成功', MODULE);
+    } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logger.error(`启动桌面系统失败: ${msg}`, MODULE);
+        vscode.window.showErrorMessage(`启动桌面系统失败: ${msg}`);
+    }
 }
 
 /**
