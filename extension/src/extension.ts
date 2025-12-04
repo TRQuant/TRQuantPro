@@ -298,6 +298,10 @@ def handle_data(context, data):
 
         // 注册命令
         registerCommands(context);
+        
+        // 立即注册工作流面板命令（确保在激活时就能使用）
+        console.log('[TRQuant] 立即注册工作流面板命令...');
+        registerWorkflowPanel(context, client);
 
         // 注册项目资源管理器
         registerProjectExplorer(context);
@@ -338,15 +342,7 @@ def handle_data(context, data):
         // 注册策略优化助手
         registerStrategyOptimizer(context, client);
 
-        // 注册工作流面板（独立GUI）- 必须在client初始化后调用
-        console.log('[TRQuant] 注册工作流面板...');
-        try {
-            registerWorkflowPanel(context, client);
-            console.log('[TRQuant] ✅ 工作流面板注册成功');
-        } catch (error) {
-            console.error('[TRQuant] ❌ 工作流面板注册失败:', error);
-            logger.error(`工作流面板注册失败: ${error}`, MODULE);
-        }
+        // 注意：工作流面板已在上面立即注册，这里不再重复注册
 
         // 注册步骤面板
         registerDataSourcePanel(context, client);      // 步骤1: 信息获取
