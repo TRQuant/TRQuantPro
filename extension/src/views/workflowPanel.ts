@@ -773,7 +773,7 @@ export function registerWorkflowPanel(
                 console.error('[WorkflowPanel] 可用命令列表（前20个）:', commands.slice(0, 20));
                 logger.error('工作流面板命令注册验证失败', MODULE);
             }
-        }).catch(err => {
+        }, (err: any) => {
             console.error('[WorkflowPanel] 验证命令时出错:', err);
         });
     }, 1000);
