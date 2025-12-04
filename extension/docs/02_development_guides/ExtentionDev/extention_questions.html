@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.2.7.2 (Linux)"/>
+	<meta name="created" content="2025-12-02T07:23:58.382554953"/>
+	<meta name="changed" content="2025-12-02T07:25:54.683864746"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		h2 { margin-top: 0.14in; margin-bottom: 0.08in; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Noto Sans Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.1in; margin-bottom: 0.08in; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Noto Sans Devanagari"; font-size: 14pt; font-weight: bold }
+		h4 { margin-top: 0.08in; margin-bottom: 0.08in; background: transparent; page-break-after: avoid }
+		h4.western { font-family: "Liberation Serif", serif; font-size: 12pt; font-weight: bold }
+		h4.cjk { font-family: "Noto Serif CJK SC"; font-size: 12pt; font-weight: bold }
+		h4.ctl { font-family: "Noto Sans Devanagari"; font-size: 12pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		td p { orphans: 0; widows: 0; background: transparent }
+		th p { font-weight: bold; text-align: center; orphans: 0; widows: 0; background: transparent }
+		strong { font-weight: bold }
+		a:link { color: #000080; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">先给个总体结论：</span></font></font><br/>
+<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>做一个“</span></font></font>TRQuant
+Cursor Extension + Python <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后端
+</span></font></font>+ MCP Server + .cursor/rules”<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的方案，在技术上是可行的，而且正好踩中
+</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方推荐的集成路径。</span></font></font></strong><br/>
+<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">真正不能做到的是：<strong>像内部
+</strong></strong></strong></span></font></font><strong>API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">一样直接操控
+</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自带聊天面板</span></font></font>/Cmd+K
+<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">流程</strong>——目前
+</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">没有公开这类
+</span></font></font>API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，只能通过
+</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">和规则文件“间接驱动”它的
+</span></font></font>AI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font>(<a href="https://forum.cursor.com/t/will-extensions-be-able-to-access-the-cursor-ai-features-via-an-api/1307?utm_source=chatgpt.com">Cursor
+- Community Forum</a>)</p>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">下面按你文档的结构来答：</span></font></font></p>
+<hr/>
+
+<h2 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">一、技术可行性分析</span></font></h2>
+<h3 class="western">1. Cursor Extension API <font face="Noto Serif CJK SC"><span lang="zh-CN">的能力边界</span></font></h3>
+<ol>
+	<li><p><strong>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展本质上就是
+	</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展</span></font></font></strong></p>
+	<ul>
+		<li><p>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方文档说明：它<strong>支持
+		</strong></strong></strong></span></font></font><strong>VS Code
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展</strong>，通过
+		</span></font></font>Open VSX <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册表安装，大部分
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展开箱即用。</span></font></font>(<a href="https://cursor.com/docs/configuration/extensions?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">社区文章也反复强调：</span></font></font>Cursor
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是基于
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的
+		</span></font></font>fork<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，扩展模型还是
+		</span></font></font>VS Code
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的那一套（</span></font></font><code class="western">package.json</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font><code class="western">activationEvents</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font><code class="western">vscode</code>
+		API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font>WebView
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等）。</span></font></font>(<a href="https://www.rapidevelopers.com/blog/is-cursor-compatible-with-existing-visual-studio-code-extensions?utm_source=chatgpt.com">RapidDev</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因此你给出的目录结构（</span></font></font><code class="western">package.json
+		+ src/extension.ts + commands/... + views/...</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）完全符合现有扩展框架。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>能力：你能做什么？</strong></span></font></font></p>
+	<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">你可以用标准
+	</span></font></font>VS Code API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">做这些事：</span></font></font>(<a href="https://code.visualstudio.com/api/extension-guides/custom-editors?utm_source=chatgpt.com">Visual
+	Studio Code</a>)</p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册命令（</span></font></font>Command
+		Palette<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font><code class="western">TRQuant:
+		*</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">创建
+		</span></font></font><strong>WebView Panel</strong> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">展示市场状态、回测报告、图表</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">更新
+		</span></font></font><strong>Status Bar</strong> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">图标</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文字（例如当前市场
+		</span></font></font>Regime<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">读写工作区文件（生成
+		</span></font></font>PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略文件、回测配置文件）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">使用
+		</span></font></font><code class="western">child_process.spawn</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或
+		</span></font></font>HTTP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用本地</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">远程服务（</span></font></font>Python<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font>TRQuant
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后端）</span></font></font>(<a href="https://github.com/microsoft/vscode-discussions/discussions/45?utm_source=chatgpt.com">GitHub</a>)</p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>边界和限制</strong></span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">一些微软官方闭源扩展在
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">会出兼容性问题（许可
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">技术原因），所以<strong>依赖部分
+		</strong></strong></strong></span></font></font><strong>VS Code
+		Marketplace <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展要谨慎</strong>。</span></font></font>(<a href="https://devclass.com/2025/04/08/vs-code-extension-marketplace-wars-cursor-users-hit-roadblocks/?utm_source=chatgpt.com">DEVCLASS</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">社区讨论指出：目前<strong>扩展无法直接控制
+		</strong></strong></strong></span></font></font><strong>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的
+		</span></font></font>AI UI</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（比如监听聊天结束事件、直接注入消息到
+		</span></font></font>chat <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">面板），对应需求还在
+		</span></font></font>feature request <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">阶段。</span></font></font>(<a href="https://forum.cursor.com/t/will-extensions-be-able-to-access-the-cursor-ai-features-via-an-api/1307?utm_source=chatgpt.com">Cursor
+		- Community Forum</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">特有
+		</span></font></font>UI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（<code class="cjk">⌘</code></span></font></font><code class="western">I/⌘K</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">小浮窗）也没有公开
+		</span></font></font>API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，扩展只能看到
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">级别的
+		</span></font></font>Monaco <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">编辑器能力。</span></font></font>(<a href="https://forum.cursor.com/t/access-the-internal-monaco-editor-from-cursor-to-an-extension/58134?utm_source=chatgpt.com">Cursor
+		- Community Forum</a>)</p></li>
+	</ul>
+	<p>👉 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>结论</strong>：</span></font></font></p>
+	<ul>
+		<li><p>✅ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">可以用
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展
+		</span></font></font>API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">实现你要的命令、</span></font></font>WebView<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、状态栏、文件管理等功能。</span></font></font></p></li>
+		<li><p>❌ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">暂时不能像“私有
+		</span></font></font>SDK”<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">一样直接操控
+		</span></font></font>Cursor AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">聊天</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成界面。深度集成的正确姿势是
+		</span></font></font><strong>MCP + <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">规则文件</strong>（下面详细说）。</span></font></font></p></li>
+	</ul>
+</ol>
+<hr/>
+
+<h3 class="western">2. <font face="Noto Serif CJK SC"><span lang="zh-CN">与
+</span></font>TRQuant Python <font face="Noto Serif CJK SC"><span lang="zh-CN">后端的集成方案</span></font></h3>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">核心选择：</span></font></font><strong>Extension
+&lt;-&gt; Python</strong> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的通信方式。</span></font></font></p>
+<h4 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">方案
+</span></font>A<font face="Noto Serif CJK SC"><span lang="zh-CN">：子进程
+</span></font>+ JSON over stdio<font face="Noto Serif CJK SC"><span lang="zh-CN">（推荐做“本地桥接”）</span></font></h4>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在
+	</span></font></font><code class="western">extension.ts</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">中使用
+	</span></font></font><code class="western">child_process.spawn('python',
+	['python/bridge.py'])</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，通过
+	</span></font></font>stdin/stdout <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">发送</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">接收
+	</span></font></font>JSON<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。已有
+	</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">示例证明这个模式可用。</span></font></font>(<a href="https://github.com/microsoft/vscode-discussions/discussions/45?utm_source=chatgpt.com">GitHub</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">特点：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">优点：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">本地开发简单，不需要额外
+			</span></font></font>HTTP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">服务</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">不暴露内部接口到网络，安全性和部署都容易控制</span></font></font></p></li>
+		</ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">缺点：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">要自己做进程管理、超时控制、错误处理</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">大量数据传输需要注意性能（但对量化指令级别
+			</span></font></font>JSON <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">足够）</span></font></font></p></li>
+		</ul>
+	</ul>
+</ul>
+<h4 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">方案
+</span></font>B<font face="Noto Serif CJK SC"><span lang="zh-CN">：</span></font>HTTP
+API<font face="Noto Serif CJK SC"><span lang="zh-CN">（</span></font>TRQuant
+<font face="Noto Serif CJK SC"><span lang="zh-CN">提供 </span></font>REST
+/ FastAPI / Flask<font face="Noto Serif CJK SC"><span lang="zh-CN">）</span></font></h4>
+<ul>
+	<li><p>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+	</span></font></font><code class="western">fetch</code> / <code class="western">axios</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用
+	</span></font></font><code class="western">http://localhost:xxxx/api/...</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，后端由你现有
+	</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">服务提供。</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">特点：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">优点：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">和现有系统（如
+			</span></font></font>Web <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">控制台）共享一套
+			</span></font></font>API</p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">容易横向扩展</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">部署到服务器</span></font></font></p></li>
+		</ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">缺点：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">需要额外的服务进程与端口管理</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">开发环境网络配置要统一</span></font></font></p></li>
+		</ul>
+	</ul>
+</ul>
+<h4 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">方案
+</span></font>C<font face="Noto Serif CJK SC"><span lang="zh-CN">：<strong>直接把
+</strong></strong></span></font><strong>TRQuant <font face="Noto Serif CJK SC"><span lang="zh-CN">封装为一个
+</span></font>MCP Server<font face="Noto Serif CJK SC"><span lang="zh-CN">（</span></font>Python<font face="Noto Serif CJK SC"><span lang="zh-CN">）</span></font></strong></h4>
+<ul>
+	<li><p>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是
+	</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方支持的<strong>模型上下文协议</strong>，通过工具方式把外部系统接入
+	</span></font></font>AI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">你可以写一个
+	</span></font></font>Python MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（类似已有金融
+	</span></font></font>MCP server <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">项目），对
+	</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">暴露工具：</span></font></font><code class="western">get_market_status</code>,
+	<code class="western">get_mainlines</code>, <code class="western">recommend_factors</code>,
+	<code class="western">generate_strategy</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font>(<a href="https://github.com/financial-datasets/mcp-server?utm_source=chatgpt.com">GitHub</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">然后用
+	</span></font></font>Cursor MCP Extension API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在扩展里
+	<strong>自动注册这个 </strong></strong></strong></span></font></font><strong>server</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font>(<a href="https://cursor.com/docs/context/mcp-extension-api?utm_source=chatgpt.com">Cursor</a>)</p>
+	<ul>
+		<li><p><code class="western">stdio</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">模式：启动本地
+		</span></font></font><code class="western">python -m
+		trquant_mcp_server</code></p></li>
+		<li><p><code class="western">sse</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">模式：指向你部署好的
+		</span></font></font>HTTP SSE <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">端点</span></font></font></p></li>
+	</ul>
+</ul>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>综合建议：</strong></span></font></font></p>
+<ul>
+	<li><p><strong>MVP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">阶段</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+		<strong>方案 </strong></strong></strong></span></font></font><strong>A<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（子进程）</strong>
+		实现 </span></font></font>Extension
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自己的命令（市场状态、主线、策略生成），先跑通“</span></font></font>TRQuant
+		↔ IDE”<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的闭环。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>深度
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">集成阶段</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">把方案
+		</span></font></font>C <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">做成
+		</span></font></font><strong>TRQuant MCP server</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">供
+			</span></font></font>Cursor Composer / Chat <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用（真正让
+			</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在对话中主动调用
+			</span></font></font>TRQuant<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）。</span></font></font></p></li>
+			<li><p>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通过
+			</span></font></font><code class="western">vscode.cursor.mcp.registerServer</code>
+			<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自动为项目配置</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">启用这个
+			</span></font></font>MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font>(<a href="https://cursor.com/docs/context/mcp-extension-api?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		</ul>
+	</ul>
+</ul>
+<hr/>
+
+<h3 class="western">3. <font face="Noto Serif CJK SC"><span lang="zh-CN">与
+</span></font>Cursor AI <font face="Noto Serif CJK SC"><span lang="zh-CN">的集成方式（</span></font>Prompt
+<font face="Noto Serif CJK SC"><span lang="zh-CN">注入 </span></font>&amp;
+<font face="Noto Serif CJK SC"><span lang="zh-CN">数据上下文）</span></font></h3>
+<h4 class="western">3.1 <font face="Noto Serif CJK SC"><span lang="zh-CN">直接“调用
+</span></font>Cursor AI”<font face="Noto Serif CJK SC"><span lang="zh-CN">的现实情况</span></font></h4>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">多个论坛帖子明确说：<strong>目前没有公开
+	</strong></strong></strong></span></font></font><strong>API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">能让扩展直接把
+	</span></font></font>prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">塞进
+	</span></font></font>Cursor chat <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或截获
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">响应</strong>，开发者只能用各种
+	</span></font></font>hack<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（监听文档变化等），官方也承认这是缺口。</span></font></font>(<a href="https://forum.cursor.com/t/will-extensions-be-able-to-access-the-cursor-ai-features-via-an-api/1307?utm_source=chatgpt.com">Cursor
+	- Community Forum</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">所以所谓“深度集成
+	</span></font></font>Cursor AI”<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，应理解为：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+		</span></font></font><strong>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">提供工具</strong>，让
+		</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在对话中调用你的服务</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+		<strong>规则</strong></strong></strong></span></font></font><strong>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">上下文文件</strong>
+		指导 </span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">怎么理解
+		</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的数据与输出</span></font></font></p></li>
+	</ul>
+</ul>
+<h4 class="western">3.2 <font face="Noto Serif CJK SC"><span lang="zh-CN">利用
+</span></font>MCP <font face="Noto Serif CJK SC"><span lang="zh-CN">把
+</span></font>TRQuant <font face="Noto Serif CJK SC"><span lang="zh-CN">暴露给
+</span></font>Cursor AI</h4>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文档说明：</span></font></font>Cursor
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的
+	</span></font></font>Composer Agent <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">会在需要时自动调用
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具，并在聊天中展示工具调用的参数与结果。</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对
+	</span></font></font>TRQuant<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，你可以设计
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具，例如：</span></font></font></p>
+	<ul>
+		<li><p><code class="western">trquant_get_market_status</code></p></li>
+		<li><p><code class="western">trquant_get_mainlines</code></p></li>
+		<li><p><code class="western">trquant_recommend_factors</code></p></li>
+		<li><p><code class="western">trquant_generate_strategy</code></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">进阶：</span></font></font><code class="western">trquant_analyze_backtest</code>,
+		<code class="western">trquant_risk_assessment</code>,
+		<code class="western">trquant_compare_strategies</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具的参数</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">返回值用
+	</span></font></font>JSON schema <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">定义清晰，</span></font></font>LLM
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">更容易调用和理解。</span></font></font></p></li>
+</ul>
+<h4 class="western">3.3 Prompt <font face="Noto Serif CJK SC"><span lang="zh-CN">注入机制：</span></font><code class="western">.cursor/rules</code>
+/ <code class="western">.cursorrules</code></h4>
+<ul>
+	<li><p>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方现在推荐在项目里使用
+	</span></font></font><code class="western">.cursor/rules/*.mdc</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">作为规则文件，它们会作为“系统提示”自动注入上下文，指导
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">如何工作。</span></font></font>(<a href="https://cursor.com/docs/context/rules?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	<li><p><code class="western">.cursorrules</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是旧格式，也仍然生效，只是
+	</span></font></font><code class="western">.mdc</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">更现代。</span></font></font>(<a href="https://cursorrules.cursorauto.me/guide/why-cursorrules.html?utm_source=chatgpt.com">CursorRules</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">你可以自动在项目里生成一组规则文件，例如：</span></font></font></p>
+	<ul>
+		<li><p><code class="western">trquant-architecture.mdc</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">描述
+			</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">系统模块（</span></font></font>TrendAnalyzer,
+			CandidatePoolBuilder, StrategyGenerator<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">说明
+			</span></font></font>PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略代码的约定与风控规范</span></font></font></p></li>
+		</ul>
+		<li><p><code class="western">trquant-prompts.mdc</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">告诉
+			</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在生成策略时，<strong>应该优先调用哪些
+			</strong></strong></strong></span></font></font><strong>MCP
+			<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具获取市场</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因子信息</span></font></font></strong></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">约束回复格式，例如返回结构化
+			</span></font></font>YAML/JSON <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">方便后续解析</span></font></font></p></li>
+		</ul>
+		<li><p><code class="western">trquant-style.mdc</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">定义编码风格、变量命名、风控要求等</span></font></font></p></li>
+		</ul>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">这样做的效果：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用户在
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">里问：“帮我写一个当前市场适用的多因子中性策略，并给出风控方案”，</span></font></font></p></li>
+		<li><p>**Composer Agent <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">会自动：</span></font></font>**<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">先调用
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具拉市场状态、主线和因子信息，按你规则生成更专业、更统一的策略代码。</span></font></font></p></li>
+	</ul>
+</ul>
+<h4 class="western">3.4 <font face="Noto Serif CJK SC"><span lang="zh-CN">在扩展层面的“半自动
+</span></font>Prompt <font face="Noto Serif CJK SC"><span lang="zh-CN">注入”</span></font></h4>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在没有直接
+</span></font></font>Chat API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的情况下，你还可以：</span></font></font></p>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在命令
+	</span></font></font><code class="western">TRQuant: Get Market
+	Status</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">里：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成一段
+		<strong>精心构造的 </strong></strong></strong></span></font></font><strong>Prompt</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（例如包括市场
+		</span></font></font>regime<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、主线、风格、因子池），</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">一并提供“复制到剪贴板”按钮</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">一键插入到当前文件（让用户粘到
+		</span></font></font>Cursor Chat <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或
+		</span></font></font>Cmd+K <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">选择的区域）。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对策略生成同理：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展先通过
+		</span></font></font>Python <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后端拉数据、构建
+		</span></font></font>Prompt<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，然后</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">要么自己直接生成
+		</span></font></font>PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">代码并插入文件（调用你自己的
+		</span></font></font>OpenAI/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">其他
+		</span></font></font>LLM API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">），</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">要么把
+		</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">填好，交给用户用
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的聊天</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成能力继续迭代。</span></font></font></p></li>
+	</ul>
+</ul>
+<hr/>
+
+<h3 class="western">4. <font face="Noto Serif CJK SC"><span lang="zh-CN">与
+</span></font>TRQuant <font face="Noto Serif CJK SC"><span lang="zh-CN">后端集成和
+</span></font>AI <font face="Noto Serif CJK SC"><span lang="zh-CN">交互的接口设计（简要）</span></font></h3>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建议定义一个统一
+</span></font></font>JSON <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">协议，例如：</span></font></font></p>
+<pre class="western"><code class="western">// </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">扩展 </code></span></font><code class="western">-&gt; Python bridge </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">请求</code></span></font>
+<code class="western">{</code>
+<code class="western">  </code><code class="western">&quot;action&quot;: &quot;get_market_status&quot;,</code>
+<code class="western">  </code><code class="western">&quot;universe&quot;: &quot;CN_EQ&quot;,</code>
+<code class="western">  </code><code class="western">&quot;as_of&quot;: &quot;2025-12-01&quot;,</code>
+<code class="western">  </code><code class="western">&quot;params&quot;: {</code>
+<code class="western">    </code><code class="western">&quot;lookback_days&quot;: 120,</code>
+<code class="western">    </code><code class="western">&quot;factors&quot;: [&quot;trend&quot;, &quot;volatility&quot;, &quot;liquidity&quot;]</code>
+<code class="western">  </code><code class="western">}</code>
+<code class="western">}</code>
+
+<code class="western">// Python -&gt; </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">扩展响应</code></span></font>
+<code class="western">{</code>
+<code class="western">  </code><code class="western">&quot;ok&quot;: true,</code>
+<code class="western">  </code><code class="western">&quot;data&quot;: {</code>
+<code class="western">    </code><code class="western">&quot;regime&quot;: &quot;risk_on&quot;,</code>
+<code class="western">    </code><code class="western">&quot;index_trend&quot;: {</code>
+<code class="western">      </code><code class="western">&quot;SH000300&quot;: { &quot;zscore&quot;: 1.2, &quot;trend&quot;: &quot;up&quot; },</code>
+<code class="western">      </code><code class="western">&quot;SZ399006&quot;: { &quot;zscore&quot;: -0.5, &quot;trend&quot;: &quot;flat&quot; }</code>
+<code class="western">    </code><code class="western">},</code>
+<code class="western">    </code><code class="western">&quot;style_rotation&quot;: [</code>
+<code class="western">      </code><code class="western">{ &quot;style&quot;: &quot;growth&quot;, &quot;score&quot;: 0.8 },</code>
+<code class="western">      </code><code class="western">{ &quot;style&quot;: &quot;value&quot;, &quot;score&quot;: -0.3 }</code>
+<code class="western">    </code><code class="western">],</code>
+<code class="western">    </code><code class="western">&quot;summary_prompt&quot;: &quot;</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">当前市场处于风险偏好回升阶段</code></span></font><code class="western">...&quot;</code>
+<code class="western">  </code><code class="western">}</code>
+<code class="western">}</code></pre>
+<ul>
+	<li><p>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具的
+	</span></font></font>schema <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">可以复用这套结构，只是用
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的
+	</span></font></font>schema <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">描述方式。</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	<li><p><code class="western">summary_prompt</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">字段是专门给
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用的“压缩描述”，避免
+	</span></font></font>LLM <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">被原始数据淹没。</span></font></font></p></li>
+</ul>
+<hr/>
+
+<h2 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">二、架构设计方案</span></font></h2>
+<h3 class="western">1. <font face="Noto Serif CJK SC"><span lang="zh-CN">总体架构（逻辑视图）</span></font></h3>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>开发时的数据流：</strong></span></font></font></p>
+<ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>用户操作</strong></span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在
+		</span></font></font>Command Palette <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">里执行
+		</span></font></font><code class="western">TRQuant: Get Market
+		Status</code> / <code class="western">Generate Strategy</code></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或在
+		</span></font></font>Cursor Composer Chat <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">中发起自然语言请求</span></font></font></p></li>
+	</ul>
+	<li><p><strong>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">层（</span></font></font>TypeScript<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册命令、处理
+		</span></font></font>UI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（</span></font></font>StatusBar
+		/ WebView<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用
+		</span></font></font><code class="western">trquantClient</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">与
+		</span></font></font>Python/MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">交互</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对于
+		</span></font></font>AI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通过
+			</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册
+			</span></font></font>TRQuant server</p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在项目中写入</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">更新
+			</span></font></font><code class="western">.cursor/rules</code>
+			<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">规则文件</span></font></font></p></li>
+		</ul>
+	</ul>
+	<li><p><strong>TRQuant Bridge / MCP Server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（</span></font></font>Python<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">封装原有
+		</span></font></font><code class="western">TrendAnalyzer</code>,
+		<code class="western">CandidatePoolBuilder</code>,
+		<code class="western">StrategyGenerator</code></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对
+		</span></font></font>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">暴露
+		</span></font></font>JSON <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">协议</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">暴露
+		</span></font></font>tools<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（同一套逻辑）</span></font></font></p></li>
+	</ul>
+	<li><p><strong>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">内部服务与数据源</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">行情数据库
+		</span></font></font>/ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">风控库
+		</span></font></font>/ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回测引擎等</span></font></font></p></li>
+	</ul>
+</ol>
+<h3 class="western">2. <font face="Noto Serif CJK SC"><span lang="zh-CN">目录结构建议（在你原始结构上稍作扩展）</span></font></h3>
+<pre class="western"><code class="western">trquant-cursor-extension/</code>
+<code class="western">├── </code><code class="western">package.json</code>
+<code class="western">├── </code><code class="western">src/</code>
+<code class="western">│   ├── </code><code class="western">extension.ts</code>
+<code class="western">│   ├── </code><code class="western">commands/</code>
+<code class="western">│   │   ├── </code><code class="western">getMarketStatus.ts</code>
+<code class="western">│   │   ├── </code><code class="western">getMainlines.ts</code>
+<code class="western">│   │   ├── </code><code class="western">recommendFactors.ts</code>
+<code class="western">│   │   ├── </code><code class="western">generateStrategy.ts</code>
+<code class="western">│   │   ├── </code><code class="western">analyzeBacktest.ts       # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">进阶</code></span></font>
+<code class="western">│   │   ├── </code><code class="western">riskAssessment.ts        # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">进阶</code></span></font>
+<code class="western">│   │   └── </code><code class="western">compareStrategies.ts     # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">进阶</code></span></font>
+<code class="western">│   ├── </code><code class="western">services/</code>
+<code class="western">│   │   ├── </code><code class="western">trquantClient.ts         # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">子进程</code></span></font><code class="western">/HTTP </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">封装</code></span></font>
+<code class="western">│   │   └── </code><code class="western">mcpRegistrar.ts          # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">调用 </code></span></font><code class="western">vscode.cursor.mcp.registerServer</code>
+<code class="western">│   ├── </code><code class="western">views/</code>
+<code class="western">│   │   ├── </code><code class="western">marketPanel.ts</code>
+<code class="western">│   │   ├── </code><code class="western">factorPanel.ts</code>
+<code class="western">│   │   └── </code><code class="western">backtestPanel.ts</code>
+<code class="western">│   └── </code><code class="western">utils/</code>
+<code class="western">│       ├── </code><code class="western">promptBuilder.ts</code>
+<code class="western">│       └── </code><code class="western">config.ts</code>
+<code class="western">├── </code><code class="western">python/</code>
+<code class="western">│   ├── </code><code class="western">bridge.py                    # Extension </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">本地桥</code></span></font>
+<code class="western">│   ├── </code><code class="western">trquant_mcp_server.py        # MCP server</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">（可独立运行）</code></span></font>
+<code class="western">│   └── </code><code class="western">trquant_core/                # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">适配现有 </code></span></font><code class="western">TRQuant </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">模块</code></span></font>
+<code class="western">└── </code><code class="western">.cursor/</code>
+<code class="western">    └── </code><code class="western">rules/</code>
+<code class="western">        ├── </code><code class="western">trquant-architecture.mdc</code>
+<code class="western">        ├── </code><code class="western">trquant-prompts.mdc</code>
+<code class="western">        └── </code><code class="western">trquant-style.mdc</code></pre><h3 class="western">
+3. <font face="Noto Serif CJK SC"><span lang="zh-CN">核心模块角色</span></font></h3>
+<ul>
+	<li><p><code class="western">extension.ts</code></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册所有命令，初始化状态栏，调用
+		</span></font></font><code class="western">mcpRegistrar</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在激活时注册
+		</span></font></font>MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">trquantClient.ts</code></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">提供统一方法：</span></font></font><code class="western">getMarketStatus()</code>,
+		<code class="western">getMainlines()</code>, <code class="western">recommendFactors()</code>,
+		<code class="western">generateStrategy()</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，内部决定到底走子进程还是
+		</span></font></font>HTTP<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">promptBuilder.ts</code></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">把后端返回的数据拼成<strong>高质量
+		</strong></strong></strong></span></font></font><strong>Prompt</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（中英文都可），用于：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">本地调用
+			</span></font></font>LLM<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（如果你自己在
+			</span></font></font>Python <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">里调
+			</span></font></font>OpenAI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等）</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或供用户复制到
+			</span></font></font>Cursor Chat<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font></p></li>
+		</ul>
+	</ul>
+	<li><p><code class="western">marketPanel.ts</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等</span></font></font></p>
+	<ul>
+		<li><p>WebView<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，用于展示可视化的表格、图表，带“复制
+		</span></font></font>Prompt”“<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成策略”等按钮。</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">trquant_mcp_server.py</code></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">定义
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具，内部调用
+		</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">核心逻辑。</span></font></font></p></li>
+	</ul>
+</ul>
+<h3 class="western">4. <font face="Noto Serif CJK SC"><span lang="zh-CN">数据流示例：</span></font><code class="western">TRQuant:
+Generate Strategy</code></h3>
+<ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用户在命令面板执行
+	</span></font></font><code class="western">TRQuant: Generate
+	Strategy</code></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展调用
+	</span></font></font><code class="western">trquantClient.getMarketStatus
+	+ getMainlines</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，获取
+	</span></font></font>JSON</p></li>
+	<li><p><code class="western">promptBuilder</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">依据这些数据构建一个结构化
+	</span></font></font>Prompt</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">选择一种路径：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>路径
+		</span></font></font>A<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（后端直连
+		</span></font></font>LLM<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</strong>：</span></font></font></p>
+		<ul>
+			<li><p><code class="western">bridge.py</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用你自己的
+			</span></font></font>OpenAI/DeepSeek/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">本地模型
+			</span></font></font>API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，生成
+			</span></font></font>PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">代码</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展将代码插入当前文件并打开
+			</span></font></font>diff</p></li>
+		</ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>路径
+		</span></font></font>B<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（让
+		</span></font></font>Cursor AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">来生成）</strong>：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展把
+			</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">显示在
+			</span></font></font>WebView<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，同时提供“复制到
+			</span></font></font>Chat”<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">按钮</span></font></font></p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用户粘贴到
+			</span></font></font>Cursor Chat<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，且
+			</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通过
+			</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具再重复查询</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">优化</span></font></font></p></li>
+		</ul>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">完成后，</span></font></font><code class="western">.cursor/rules</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">会提示
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后续编辑时遵守
+	</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略规范（比如风控框架、仓位限制等）。</span></font></font></p></li>
+</ol>
+<hr/>
+
+<h2 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">三、开发路线图（含
+</span></font>MVP <font face="Noto Serif CJK SC"><span lang="zh-CN">与进阶功能落地）</span></font></h2>
+<h3 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">阶段
+</span></font>0<font face="Noto Serif CJK SC"><span lang="zh-CN">：基础搭建（</span></font>~1
+<font face="Noto Serif CJK SC"><span lang="zh-CN">周）</span></font></h3>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+	</span></font></font><code class="western">yo code</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或官方模板创建
+	</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展骨架。</span></font></font>(<a href="https://codesphere.com/articles/build-your-own-vs-code-extension?utm_source=chatgpt.com">Codesphere</a>)</p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">验证在
+	</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">与
+	</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">均能安装、激活。</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建好你文档里列出的项目结构（</span></font></font>commands/services/views/utils/python<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）。</span></font></font></p></li>
+</ul>
+<h3 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">阶段
+</span></font>1<font face="Noto Serif CJK SC"><span lang="zh-CN">：</span></font>MVP
+– Extension + Python Bridge<font face="Noto Serif CJK SC"><span lang="zh-CN">（</span></font>~2–3
+<font face="Noto Serif CJK SC"><span lang="zh-CN">周）</span></font></h3>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>实现
+</span></font></font>MVP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">表里的
+</span></font></font>4 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">个功能：</span></font></font></strong></p>
+<table cellpadding="2" cellspacing="2">
+	<thead>
+		<tr>
+			<th style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">功能</span></font></font></p>
+			</th>
+			<th style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">命令</span></font></font></p>
+			</th>
+			<th style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">实现要点</span></font></font></p>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">获取市场状态</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">TRQuant:
+				Get Market Status</code></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调
+				</span></font></font><code class="western">bridge.py</code> -&gt;
+				<code class="western">TrendAnalyzer</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，返回
+				</span></font></font>JSON + <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自然语言摘要，用
+				</span></font></font>WebView <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">展示并生成
+				</span></font></font>Prompt</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">获取投资主线</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">TRQuant:
+				Get Mainlines</code></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">CandidatePoolBuilder</code>
+				<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">返回
+				</span></font></font>TOP20 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线，附每条主线相关行业</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主题及逻辑说明</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成因子推荐</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">TRQuant:
+				Recommend Factors</code></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在前两者基础上，按一个规则</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">模型给出候选因子列表及说明</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成策略代码</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">TRQuant:
+				Generate Strategy</code></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">根据市场</span></font></font>+<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线</span></font></font>+<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因子，生成
+				</span></font></font>PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略骨架（可先模板
+				</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">少量逻辑，再逐步增强）</span></font></font></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">技术重点：</span></font></font></p>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">定义统一
+	</span></font></font>JSON <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">协议</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">实现子进程调用、错误处理、超时机制</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">简单
+	</span></font></font>WebView + StatusBar <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">集成</span></font></font></p></li>
+</ul>
+<h3 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">阶段
+</span></font>2<font face="Noto Serif CJK SC"><span lang="zh-CN">：</span></font>AI
+<font face="Noto Serif CJK SC"><span lang="zh-CN">深度集成 –
+</span></font>MCP + <font face="Noto Serif CJK SC"><span lang="zh-CN">规则文件（</span></font>~2–4
+<font face="Noto Serif CJK SC"><span lang="zh-CN">周）</span></font></h3>
+<ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>实现
+	</span></font></font>TRQuant MCP Server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（</span></font></font>Python<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">参考已有金融
+		</span></font></font>MCP server <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">项目结构（</span></font></font><code class="western">financial-datasets-mcp-server</code>,
+		<code class="western">finance-mcp-server</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等）。</span></font></font>(<a href="https://github.com/financial-datasets/mcp-server?utm_source=chatgpt.com">GitHub</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具清单对齐你的
+		</span></font></font>MVP &amp; <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">进阶功能：</span></font></font></p>
+		<ul>
+			<li><p><code class="western">get_market_status</code></p></li>
+			<li><p><code class="western">get_mainlines</code></p></li>
+			<li><p><code class="western">recommend_factors</code></p></li>
+			<li><p><code class="western">generate_strategy_code</code></p></li>
+			<li><p><code class="western">analyze_backtest</code></p></li>
+			<li><p><code class="western">risk_assessment</code></p></li>
+			<li><p><code class="western">compare_strategies</code></p></li>
+		</ul>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>在扩展中自动注册
+	</span></font></font>MCP</strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">使用
+		</span></font></font><code class="western">vscode.cursor.mcp.registerServer</code>
+		API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，在
+		</span></font></font>extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">激活时注册
+		</span></font></font>stdio MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font>(<a href="https://cursor.com/docs/context/mcp-extension-api?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">对用户提供命令
+		</span></font></font><code class="western">TRQuant: Enable MCP</code>
+		/ <code class="western">Disable MCP</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，修改对应配置。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>编写
+	</strong></span></font></font><strong><code class="western">.cursor/rules/*.mdc</code></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自动写入规则文件，内容包括：</span></font></font></p>
+		<ul>
+			<li><p>“<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">当你需要市场状态时，优先调用
+			</span></font></font><code class="western">trquant_get_market_status</code>”</p></li>
+			<li><p>“<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成策略前必须先了解当前主线与风格轮动”</span></font></font></p></li>
+			<li><p>“PTrade <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略生成规范（入口、下单、风控、持仓管理）”</span></font></font></p></li>
+		</ul>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>验证在
+	</span></font></font>Composer <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">中的效果</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">在
+		</span></font></font>Cursor Composer <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">中对话，确认
+		</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">会主动调用
+		</span></font></font>TRQuant MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具（类似
+		</span></font></font>QuantConnect MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">教程里的使用方式）。</span></font></font>(<a href="https://www.quantconnect.com/docs/v2/ai-assistance/mcp-server/cursor?utm_source=chatgpt.com">QuantConnect</a>)</p></li>
+	</ul>
+</ol>
+<h3 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">阶段
+</span></font>3<font face="Noto Serif CJK SC"><span lang="zh-CN">：进阶功能实现（</span></font>~3–6
+<font face="Noto Serif CJK SC"><span lang="zh-CN">周）</span></font></h3>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">根据你列的进阶功能逐个落地：</span></font></font></p>
+<ul>
+	<li><p><code class="western">Analyze Backtest</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">接受回测结果（文件路径或
+		</span></font></font>JSON<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">），桥接到
+		</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回测分析模块</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">输出：收益曲线摘要、风险指标、因子暴露、问题诊断
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">优化建议</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">Calculate Factors</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">指定股票池和因子列表，走
+		</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的因子计算管线（本地或集群）</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">Risk Assessment</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">针对当前持仓（从文件或
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具读取）给出风险评估（单票</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">组合</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因子）</span></font></font></p></li>
+	</ul>
+	<li><p><code class="western">Compare Strategies</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">支持两组以上策略回测结果的对比（年化</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回撤</span></font></font>/Sharpe/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">风格暴露），并生成自然语言结论</span></font></font></p></li>
+	</ul>
+</ul>
+<h3 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">阶段
+</span></font>4<font face="Noto Serif CJK SC"><span lang="zh-CN">：发布与分发（</span></font>~1–2
+<font face="Noto Serif CJK SC"><span lang="zh-CN">周）</span></font></h3>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">发布方式选择：</span></font></font></p>
+	<ol>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">内部使用：打包
+		</span></font></font>VSIX<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，内部发放</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">公共发布：上传到
+		</span></font></font>Open VSX <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">仓库，让
+		</span></font></font>Cursor/VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">都能安装</span></font></font>(<a href="https://cursor.com/docs/configuration/extensions?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">撰写
+	</span></font></font>README<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：介绍
+	</span></font></font>TRQuant Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的功能、截图、与
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">集成方式。</span></font></font></p></li>
+</ul>
+<hr/>
+
+<h2 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">四、针对你列出的“需要研究的问题”的简答版结论</span></font></h2>
+<h3 class="western">1. Cursor Extension <font face="Noto Serif CJK SC"><span lang="zh-CN">开发基础</span></font></h3>
+<ul>
+	<li><p><strong>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是否用标准
+	</span></font></font>VS Code Extension API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">？</span></font></font></strong></p>
+	<ul>
+		<li><p>✅ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是。</span></font></font>Cursor
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是基于
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的
+		</span></font></font>fork<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，扩展机制与
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">基本一致，采用
+		</span></font></font>Open VSX <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展仓库。</span></font></font>(<a href="https://cursor.com/docs/configuration/extensions?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>如何创建
+	</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">专属扩展？</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">实践上就是创建
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展，然后在
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">里安装。</span></font></font></p></li>
+		<li><p>“Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">专属”的部分主要是：</span></font></font></p>
+		<ul>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+			</span></font></font><code class="western">vscode.cursor.mcp.*</code>
+			API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册
+			</span></font></font>MCP server</p></li>
+			<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">利用
+			</span></font></font><code class="western">.cursor/rules</code>
+			<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">规则文件为
+			</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">定制行为</span></font></font>(<a href="https://cursor.com/docs/context/mcp-extension-api?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		</ul>
+	</ul>
+	<li><p><strong>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">与
+	</span></font></font>Cursor AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的交互方式？</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">没有直接
+		</span></font></font>Chat API</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">推荐路径：</span></font></font>MCP
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">规则文件
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（可选）扩展侧生成
+		</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">帮用户复制。</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ul>
+</ul>
+<h3 class="western">2. <font face="Noto Serif CJK SC"><span lang="zh-CN">与
+</span></font>Python <font face="Noto Serif CJK SC"><span lang="zh-CN">后端通信</span></font></h3>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">可以通过：</span></font></font></p>
+	<ol>
+		<li><p><code class="western">child_process.spawn</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">启动
+		</span></font></font><code class="western">bridge.py</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用
+		</span></font></font>JSON over stdio <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通信</span></font></font>(<a href="https://github.com/microsoft/vscode-discussions/discussions/45?utm_source=chatgpt.com">GitHub</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用本地</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">远程
+		</span></font></font>HTTP API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（</span></font></font>FastAPI/Flask<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">把
+		</span></font></font>Python <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">封装为
+		</span></font></font>MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（</span></font></font>stdio/HTTP
+		SSE<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">），由
+		</span></font></font>Cursor AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">数据格式：统一使用
+	</span></font></font>JSON<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，封装
+	</span></font></font>action + payload + meta<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，避免升级时到处改协议。</span></font></font></p></li>
+</ul>
+<h3 class="western">3. <font face="Noto Serif CJK SC"><span lang="zh-CN">与
+</span></font>Cursor AI <font face="Noto Serif CJK SC"><span lang="zh-CN">集成（</span></font>Prompt
+&amp; <font face="Noto Serif CJK SC"><span lang="zh-CN">数据上下文）</span></font></h3>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>注入自定义
+	</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的方式：</span></font></font></strong></p>
+	<ul>
+		<li><p><code class="western">.cursor/rules/*.mdc</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或
+		</span></font></font><code class="western">.cursorrules</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文件作为系统提示自动注入</span></font></font>(<a href="https://cursor.com/docs/context/rules?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		<li><p>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具描述（工具说明文本）本身也会影响
+		</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用方式</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展可以生成
+		</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文本给用户复制进
+		</span></font></font>Chat</p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>传递市场数据作为上下文：</strong></span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通过
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具返回
+		</span></font></font>JSON/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文本，由
+		</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">自动加到
+		</span></font></font>LLM <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">上下文</span></font></font>(<a href="https://cursor.com/docs/context/mcp?utm_source=chatgpt.com">Cursor</a>)</p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或扩展生成包含“市场状态
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因子
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略约束”的长
+		</span></font></font>Prompt</p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>接收并处理
+	</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成代码：</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">如果由
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具
+		</span></font></font>+ Cursor AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成策略，则
+		</span></font></font>AI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">直接写入当前文件，扩展只需之后对文件做解析</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">检查</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">如果由
+		</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后端调用
+		</span></font></font>LLM <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成，则扩展从
+		</span></font></font>bridge <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">返回的代码插入文件（或新建
+		</span></font></font><code class="western">.ptrade</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">文件），并用
+		</span></font></font>WebView <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">展示诊断</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">提示。</span></font></font></p></li>
+	</ul>
+</ul>
+<h3 class="western">4. <font face="Noto Serif CJK SC"><span lang="zh-CN">最佳实践
+</span></font>&amp; <font face="Noto Serif CJK SC"><span lang="zh-CN">可参考项目</span></font></h3>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>量化</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">金融相关的
+	</span></font></font>Cursor / MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">项目可参考：</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">金融数据
+		</span></font></font>MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：提供行情、财报、新闻等工具，结构与你需要的
+		</span></font></font>TRQuant MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">非常接近。</span></font></font>(<a href="https://github.com/financial-datasets/mcp-server?utm_source=chatgpt.com">GitHub</a>)</p></li>
+		<li><p>QuantConnect MCP Server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：官方文档中有详细说明如何让
+		</span></font></font>Cursor Agent <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调用其
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">来完成策略开发</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回测，非常值得参考整体架构。</span></font></font>(<a href="https://www.quantconnect.com/docs/v2/ai-assistance/mcp-server/cursor?utm_source=chatgpt.com">QuantConnect</a>)</p></li>
+	</ul>
+	<li><p><strong>Extension <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">开发最佳实践：</span></font></font></strong></p>
+	<ul>
+		<li><p>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方
+		</span></font></font>Custom Editors / WebView <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">指南：教你如何把
+		</span></font></font>WebView <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">做得干净、性能好。</span></font></font>(<a href="https://code.visualstudio.com/api/extension-guides/custom-editors?utm_source=chatgpt.com">Visual
+		Studio Code</a>)</p></li>
+		<li><p>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">官方
+		</span></font></font>Extensions <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">和
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">指南：规范了如何安装</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">管理扩展和
+		</span></font></font>MCP server<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，避免用户配置复杂度太高。</span></font></font>(<a href="https://cursor.com/docs/configuration/extensions?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>发布与分发：</strong></span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">通过
+		</span></font></font>Open VSX <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">提供扩展，对
+		</span></font></font>Cursor/VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">都兼容。</span></font></font>(<a href="https://cursor.com/docs/configuration/extensions?utm_source=chatgpt.com">Cursor</a>)</p></li>
+	</ul>
+</ul>
+<hr/>
+
+<h2 class="western"><font face="Noto Serif CJK SC"><span lang="zh-CN">五、对照你的“研究完成标准”</span></font></h2>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>明确
+	</span></font></font>Cursor Extension API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">使用方法</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">结论：按
+		</span></font></font>VS Code <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展开发；</span></font></font>Cursor
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">另提供
+		</span></font></font><code class="western">vscode.cursor.mcp</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用于
+		</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">集成。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>确定与
+	</span></font></font>TRQuant <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">后端的通信方案</span></font></font></strong></p>
+	<ul>
+		<li><p>MVP<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font>Extension
+		↔ Python bridge<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（子进程
+		</span></font></font>+ JSON<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">深度集成：</span></font></font>Python
+		MCP server + MCP Extension API <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注册。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>设计
+	</span></font></font>AI Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">注入机制</span></font></font></strong></p>
+	<ul>
+		<li><p><code class="western">.cursor/rules/*.mdc</code> + MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具描述
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">扩展示例
+		</span></font></font>Prompt <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">输出。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>提供可执行的开发计划</strong></span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">四个阶段（基础搭建
+		→ </span></font></font>MVP → MCP &amp; <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">规则
+		→ 进阶功能 → 发布）。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>列出参考资源和示例代码</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">项目</span></font></font></strong></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">上面列出的
+		</span></font></font>Cursor Docs<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font>VS
+		Code Docs<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、金融
+		</span></font></font>MCP servers<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font>QuantConnect
+		MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">等。</span></font></font></p></li>
+	</ul>
+</ul>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">如果你愿意，下一步我可以直接帮你：</span></font></font></p>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">写出
+	</span></font></font><code class="western">extension.ts +
+	trquantClient.ts + bridge.py</code> <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">的第一版骨架代码，</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">外加一个简单的
+	</span></font></font><code class="western">trquant-architecture.mdc</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">模板，让这一套马上可以开干。</span></font></font></p></li>
+</ul>
+<p style="line-height: 100%; margin-bottom: 0in"><br/>
+
+</p>
+</body>
+</html>
