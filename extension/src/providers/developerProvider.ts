@@ -359,11 +359,21 @@ export async function refreshSystem(context: vscode.ExtensionContext): Promise<v
             // 步骤2: 编译 TypeScript
             progress.report({ increment: 20, message: '正在编译TypeScript...' });
             try {
+                // 验证 npm 是否可用
+                try {
+                    await executeShellCommand('npm --version', extensionDir);
+                } catch (npmError) {
+                    throw new Error(`npm 不可用，请确保已安装 Node.js 和 npm`);
+                }
+                
+                // 执行编译
+                logger.info(`开始编译，工作目录: ${extensionDir}`, MODULE);
                 await executeShellCommand('npm run compile', extensionDir);
                 progress.report({ increment: 40, message: '编译完成，正在打包扩展...' });
                 logger.info('TypeScript编译完成', MODULE);
             } catch (error) {
                 const errorMsg = error instanceof Error ? error.message : String(error);
+                logger.error(`编译失败: ${errorMsg}`, MODULE, { extensionDir });
                 throw new Error(`编译失败: ${errorMsg}`);
             }
             
@@ -457,15 +467,72 @@ function executeCommand(command: string, args: string[], cwd: string): Promise<s
 
 /**
  * 执行 shell 命令的辅助函数（用于需要 shell 特性的命令）
+ * 使用 spawn 而不是 exec，以便更好地处理输出
  */
 function executeShellCommand(command: string, cwd: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        cp.exec(command, { cwd }, (error, stdout, stderr) => {
-            if (error) {
-                reject(new Error(`命令执行失败: ${stderr || error.message}`));
-            } else {
-                resolve(stdout);
+        // 确保环境变量正确设置
+        const env = {
+            ...process.env,
+            PATH: process.env.PATH || '/usr/local/bin:/usr/bin:/bin',
+            HOME: process.env.HOME || process.env.USERPROFILE
+        };
+        
+        logger.info(`执行命令: ${command}`, MODULE, { cwd });
+        
+        // 解析命令和参数
+        const parts = command.split(/\s+/);
+        const cmd = parts[0];
+        const args = parts.slice(1);
+        
+        const proc = cp.spawn(cmd, args, {
+            cwd,
+            env,
+            shell: true, // 使用 shell 来支持 npm run 等命令
+            stdio: ['ignore', 'pipe', 'pipe']
+        });
+        
+        let stdout = '';
+        let stderr = '';
+        
+        proc.stdout?.on('data', (data) => {
+            const text = data.toString();
+            stdout += text;
+            // 实时输出日志（限制长度）
+            if (text.length < 200) {
+                logger.info(`命令输出: ${text.trim()}`, MODULE);
             }
+        });
+        
+        proc.stderr?.on('data', (data) => {
+            const text = data.toString();
+            stderr += text;
+            // npm 和 webpack 经常将信息输出到 stderr，但不一定是错误
+            // 只记录警告，不立即失败
+            if (text.length < 200) {
+                logger.warn(`命令警告: ${text.trim()}`, MODULE);
+            }
+        });
+        
+        proc.on('close', (code) => {
+            if (code === 0) {
+                logger.info(`命令执行成功`, MODULE, { command });
+                resolve(stdout);
+            } else {
+                const errorDetails = stderr || stdout || `退出码: ${code}`;
+                logger.error(`命令执行失败 (退出码: ${code})`, MODULE, { 
+                    command, 
+                    cwd,
+                    stderr: stderr.substring(0, 500),
+                    stdout: stdout.substring(0, 500)
+                });
+                reject(new Error(`命令执行失败 (退出码: ${code}): ${errorDetails.substring(0, 500)}`));
+            }
+        });
+        
+        proc.on('error', (error) => {
+            logger.error(`命令执行错误: ${error.message}`, MODULE, { command, cwd });
+            reject(new Error(`命令执行错误: ${error.message}`));
         });
     });
 }
