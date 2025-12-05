@@ -1,0 +1,1043 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="金融关键词数据库管理">
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>📚 金融关键词数据库管理</h1>
+      <p class="header-description">
+        自动识别、管理和展示投资手册中的金融术语，提供智能悬浮提示功能
+      </p>
+    </header>
+
+    <!-- 统计概览 -->
+    <section class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <div class="stat-number" id="totalKeywords">0</div>
+          <div class="stat-label">总关键词</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">📄</div>
+        <div class="stat-content">
+          <div class="stat-number" id="processedPages">0</div>
+          <div class="stat-label">已处理页面</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-content">
+          <div class="stat-number" id="totalCategories">0</div>
+          <div class="stat-label">术语分类</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-content">
+          <div class="stat-number" id="lastUpdated">--</div>
+          <div class="stat-label">最后更新</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 操作面板 -->
+    <section class="control-panel">
+      <div class="panel-group">
+        <h3>🛠️ 数据库操作</h3>
+        <div class="button-group">
+          <button id="refreshStats" class="btn btn-primary">
+            <span class="btn-icon">🔄</span>
+            刷新统计
+          </button>
+          <button id="processAllPages" class="btn btn-secondary">
+            <span class="btn-icon">⚡</span>
+            批量处理页面
+          </button>
+          <button id="exportDatabase" class="btn btn-success">
+            <span class="btn-icon">📤</span>
+            导出数据库
+          </button>
+          <button id="clearDatabase" class="btn btn-danger">
+            <span class="btn-icon">🗑️</span>
+            清空数据库
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-group">
+        <h3>🔍 搜索和筛选</h3>
+        <div class="search-controls">
+          <input type="text" id="searchInput" placeholder="搜索关键词..." class="search-input">
+          <select id="categoryFilter" class="category-select">
+            <option value="">所有分类</option>
+          </select>
+          <button id="searchKeywords" class="btn btn-primary">搜索</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 分类统计 -->
+    <section class="category-stats">
+      <h3>📊 分类统计</h3>
+      <div id="categoryChart" class="category-chart">
+        <div class="loading">加载中...</div>
+      </div>
+    </section>
+
+    <!-- 关键词列表 -->
+    <section class="keywords-section">
+      <div class="section-header">
+        <h3>📝 关键词列表</h3>
+        <div class="list-controls">
+          <select id="sortBy" class="sort-select">
+            <option value="keyword">按术语排序</option>
+            <option value="category">按分类排序</option>
+            <option value="priority">按优先级排序</option>
+            <option value="firstAppearance">按首次出现排序</option>
+          </select>
+          <button id="toggleView" class="btn btn-outline">
+            <span class="btn-icon">📋</span>
+            切换视图
+          </button>
+        </div>
+      </div>
+      
+      <div id="keywordsList" class="keywords-list">
+        <div class="loading">加载关键词列表...</div>
+      </div>
+    </section>
+
+    <!-- 页面处理状态 -->
+    <section class="processing-status">
+      <h3>📄 页面处理状态</h3>
+      <div id="pagesList" class="pages-list">
+        <div class="loading">加载页面列表...</div>
+      </div>
+    </section>
+
+    <!-- 导入/导出面板 -->
+    <section class="import-export-panel" style="display: none;">
+      <h3>📁 数据导入/导出</h3>
+      <div class="panel-content">
+        <div class="import-section">
+          <h4>导入数据</h4>
+          <input type="file" id="importFile" accept=".json" class="file-input">
+          <button id="importDatabase" class="btn btn-primary">导入数据库</button>
+        </div>
+        
+        <div class="export-section">
+          <h4>导出数据</h4>
+          <textarea id="exportData" readonly class="export-textarea" placeholder="导出的数据将显示在这里..."></textarea>
+          <button id="copyExportData" class="btn btn-secondary">复制数据</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .dashboard-header h1 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+  }
+
+  .header-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* 统计概览 */
+  .stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  /* 控制面板 */
+  .control-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .panel-group {
+    margin-bottom: 2rem;
+  }
+
+  .panel-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .panel-group h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* 按钮样式 */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .btn-secondary {
+    background: var(--text-secondary);
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: var(--text-primary);
+  }
+
+  .btn-success {
+    background: #10b981;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #059669;
+  }
+
+  .btn-danger {
+    background: #ef4444;
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background: #dc2626;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+  }
+
+  .btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .btn-icon {
+    font-size: 1rem;
+  }
+
+  /* 输入框样式 */
+  .search-input, .category-select, .sort-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    min-width: 300px;
+    flex: 1;
+  }
+
+  /* 分类统计 */
+  .category-stats {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .category-stats h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .category-chart {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 关键词列表 */
+  .keywords-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .section-header h3 {
+    color: var(--primary-color);
+    margin: 0;
+  }
+
+  .list-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .keywords-list {
+    min-height: 300px;
+  }
+
+  /* 页面列表 */
+  .processing-status {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .processing-status h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .pages-list {
+    min-height: 200px;
+  }
+
+  /* 导入导出面板 */
+  .import-export-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .import-export-panel h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .file-input {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 100%;
+  }
+
+  .export-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: monospace;
+    font-size: 0.85rem;
+    resize: vertical;
+    margin-bottom: 1rem;
+  }
+
+  /* 加载状态 */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 1rem;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+
+    .stats-overview {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+    }
+
+    .button-group {
+      flex-direction: column;
+    }
+
+    .search-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-input {
+      min-width: auto;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .list-controls {
+      justify-content: space-between;
+    }
+
+    .panel-content {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // 金融关键词数据库管理脚本
+  document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 Initializing Glossary Dashboard...');
+    
+    // 初始化页面
+    await initializeDashboard();
+    
+    // 绑定事件监听器
+    bindEventListeners();
+    
+    console.log('✅ Glossary Dashboard initialized');
+  });
+
+  // 初始化仪表板
+  async function initializeDashboard() {
+    try {
+      await refreshStats();
+      await loadCategoryChart();
+      await loadKeywordsList();
+      await loadPagesList();
+    } catch (error) {
+      console.error('❌ Failed to initialize dashboard:', error);
+      showError('初始化仪表板失败: ' + error.message);
+    }
+  }
+
+  // 刷新统计数据
+  async function refreshStats() {
+    try {
+      // 模拟数据（实际应用中应该从API获取）
+      const stats = {
+        totalKeywords: 156,
+        processedPages: 23,
+        totalCategories: 12,
+        lastUpdated: new Date().toLocaleString('zh-CN')
+      };
+
+      document.getElementById('totalKeywords').textContent = stats.totalKeywords;
+      document.getElementById('processedPages').textContent = stats.processedPages;
+      document.getElementById('totalCategories').textContent = stats.totalCategories;
+      document.getElementById('lastUpdated').textContent = stats.lastUpdated;
+
+      console.log('📊 Stats refreshed:', stats);
+    } catch (error) {
+      console.error('❌ Failed to refresh stats:', error);
+    }
+  }
+
+  // 加载分类图表
+  async function loadCategoryChart() {
+    const chartContainer = document.getElementById('categoryChart');
+    
+    try {
+      // 模拟分类数据
+      const categories = {
+        '投资概念': 25,
+        '财务指标': 32,
+        '技术分析': 18,
+        '风险管理': 15,
+        '投资产品': 22,
+        '经济指标': 16,
+        '新兴技术': 14,
+        '投资策略': 14
+      };
+
+      chartContainer.innerHTML = createCategoryChart(categories);
+    } catch (error) {
+      chartContainer.innerHTML = '<div class="error">加载分类统计失败</div>';
+      console.error('❌ Failed to load category chart:', error);
+    }
+  }
+
+  // 创建分类图表HTML
+  function createCategoryChart(categories) {
+    const total = Object.values(categories).reduce((sum, count) => sum + count, 0);
+    
+    let html = '<div class="category-bars">';
+    
+    Object.entries(categories).forEach(([category, count]) => {
+      const percentage = ((count / total) * 100).toFixed(1);
+      html += `
+        <div class="category-bar">
+          <div class="category-info">
+            <span class="category-name">${category}</span>
+            <span class="category-count">${count} (${percentage}%)</span>
+          </div>
+          <div class="bar-container">
+            <div class="bar-fill" style="width: ${percentage}%"></div>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    
+    // 添加样式
+    html += `
+      <style>
+        .category-bars {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .category-bar {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        
+        .category-info {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.9rem;
+        }
+        
+        .category-name {
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+        
+        .category-count {
+          color: var(--text-secondary);
+        }
+        
+        .bar-container {
+          height: 8px;
+          background: var(--bg-secondary);
+          border-radius: 4px;
+          overflow: hidden;
+        }
+        
+        .bar-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+          transition: width 0.3s ease;
+        }
+      </style>
+    `;
+    
+    return html;
+  }
+
+  // 加载关键词列表
+  async function loadKeywordsList() {
+    const listContainer = document.getElementById('keywordsList');
+    
+    try {
+      // 模拟关键词数据
+      const keywords = [
+        { keyword: '高倍股', category: '投资概念', priority: 10, pageUrl: '/book1/003_Chapter3/3.1', firstAppearance: '2025-01-08T10:30:00Z' },
+        { keyword: 'Ten-bagger', category: '投资概念', priority: 9, pageUrl: '/book1/003_Chapter3/3.1', firstAppearance: '2025-01-08T10:31:00Z' },
+        { keyword: 'PE', category: '财务指标', priority: 6, pageUrl: '/book1/003_Chapter3/3.1', firstAppearance: '2025-01-08T10:32:00Z' },
+        { keyword: '护城河', category: '投资分析', priority: 7, pageUrl: '/book1/003_Chapter3/3.1', firstAppearance: '2025-01-08T10:33:00Z' },
+        { keyword: '市值', category: '财务指标', priority: 5, pageUrl: '/book1/003_Chapter3/3.1', firstAppearance: '2025-01-08T10:34:00Z' }
+      ];
+
+      listContainer.innerHTML = createKeywordsList(keywords);
+    } catch (error) {
+      listContainer.innerHTML = '<div class="error">加载关键词列表失败</div>';
+      console.error('❌ Failed to load keywords list:', error);
+    }
+  }
+
+  // 创建关键词列表HTML
+  function createKeywordsList(keywords) {
+    let html = '<div class="keywords-grid">';
+    
+    keywords.forEach(keyword => {
+      html += `
+        <div class="keyword-card" data-category="${keyword.category}" data-priority="${keyword.priority}">
+          <div class="keyword-header">
+            <span class="keyword-term">${keyword.keyword}</span>
+            <span class="keyword-priority">优先级: ${keyword.priority}</span>
+          </div>
+          <div class="keyword-meta">
+            <span class="keyword-category">${keyword.category}</span>
+            <span class="keyword-page">${keyword.pageUrl}</span>
+          </div>
+          <div class="keyword-date">
+            首次出现: ${new Date(keyword.firstAppearance).toLocaleString('zh-CN')}
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    
+    // 添加样式
+    html += `
+      <style>
+        .keywords-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 1rem;
+        }
+        
+        .keyword-card {
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 1rem;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .keyword-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .keyword-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+        
+        .keyword-term {
+          font-weight: 700;
+          color: var(--primary-color);
+          font-size: 1.1rem;
+        }
+        
+        .keyword-priority {
+          background: var(--primary-color);
+          color: white;
+          padding: 0.2rem 0.5rem;
+          border-radius: 4px;
+          font-size: 0.8rem;
+        }
+        
+        .keyword-meta {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.5rem;
+        }
+        
+        .keyword-category {
+          background: var(--text-secondary);
+          color: white;
+          padding: 0.2rem 0.5rem;
+          border-radius: 4px;
+          font-size: 0.8rem;
+        }
+        
+        .keyword-page {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+          font-family: monospace;
+        }
+        
+        .keyword-date {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+          font-style: italic;
+        }
+      </style>
+    `;
+    
+    return html;
+  }
+
+  // 加载页面列表
+  async function loadPagesList() {
+    const listContainer = document.getElementById('pagesList');
+    
+    try {
+      // 模拟页面数据
+      const pages = [
+        { url: '/book1/003_Chapter3/3.1', title: '3.1 高倍股的定义与时间维度', keywordCount: 15, processed: true, lastProcessed: '2025-01-08T10:30:00Z' },
+        { url: '/book1/003_Chapter3/3.2', title: '3.2 行业分布和特征', keywordCount: 12, processed: true, lastProcessed: '2025-01-08T09:15:00Z' },
+        { url: '/book1/004_Chapter4/4.1', title: '4.1 赛道筛选方法', keywordCount: 8, processed: false, lastProcessed: null }
+      ];
+
+      listContainer.innerHTML = createPagesList(pages);
+    } catch (error) {
+      listContainer.innerHTML = '<div class="error">加载页面列表失败</div>';
+      console.error('❌ Failed to load pages list:', error);
+    }
+  }
+
+  // 创建页面列表HTML
+  function createPagesList(pages) {
+    let html = '<div class="pages-table">';
+    html += `
+      <div class="table-header">
+        <div class="table-cell">页面</div>
+        <div class="table-cell">关键词数</div>
+        <div class="table-cell">状态</div>
+        <div class="table-cell">最后处理</div>
+      </div>
+    `;
+    
+    pages.forEach(page => {
+      const status = page.processed ? '已处理' : '待处理';
+      const statusClass = page.processed ? 'status-processed' : 'status-pending';
+      const lastProcessed = page.lastProcessed ? 
+        new Date(page.lastProcessed).toLocaleString('zh-CN') : '未处理';
+      
+      html += `
+        <div class="table-row">
+          <div class="table-cell">
+            <div class="page-info">
+              <div class="page-title">${page.title}</div>
+              <div class="page-url">${page.url}</div>
+            </div>
+          </div>
+          <div class="table-cell">
+            <span class="keyword-count-badge">${page.keywordCount}</span>
+          </div>
+          <div class="table-cell">
+            <span class="status-badge ${statusClass}">${status}</span>
+          </div>
+          <div class="table-cell">
+            <span class="last-processed">${lastProcessed}</span>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += '</div>';
+    
+    // 添加样式
+    html += `
+      <style>
+        .pages-table {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .table-header, .table-row {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1.5fr;
+          gap: 1rem;
+          padding: 1rem;
+          border-bottom: 1px solid var(--border-color);
+        }
+        
+        .table-header {
+          background: var(--bg-secondary);
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+        
+        .table-row:hover {
+          background: var(--bg-secondary);
+        }
+        
+        .table-cell {
+          display: flex;
+          align-items: center;
+        }
+        
+        .page-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+        
+        .page-title {
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+        
+        .page-url {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+          font-family: monospace;
+        }
+        
+        .keyword-count-badge {
+          background: var(--primary-color);
+          color: white;
+          padding: 0.3rem 0.6rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 600;
+        }
+        
+        .status-badge {
+          padding: 0.3rem 0.6rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 600;
+        }
+        
+        .status-processed {
+          background: #10b981;
+          color: white;
+        }
+        
+        .status-pending {
+          background: #f59e0b;
+          color: white;
+        }
+        
+        .last-processed {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+        }
+      </style>
+    `;
+    
+    return html;
+  }
+
+  // 绑定事件监听器
+  function bindEventListeners() {
+    // 刷新统计
+    document.getElementById('refreshStats').addEventListener('click', refreshStats);
+    
+    // 批量处理页面
+    document.getElementById('processAllPages').addEventListener('click', processAllPages);
+    
+    // 导出数据库
+    document.getElementById('exportDatabase').addEventListener('click', exportDatabase);
+    
+    // 清空数据库
+    document.getElementById('clearDatabase').addEventListener('click', clearDatabase);
+    
+    // 搜索关键词
+    document.getElementById('searchKeywords').addEventListener('click', searchKeywords);
+    
+    // 切换视图
+    document.getElementById('toggleView').addEventListener('click', toggleView);
+  }
+
+  // 批量处理页面
+  async function processAllPages() {
+    const button = document.getElementById('processAllPages');
+    const originalText = button.innerHTML;
+    
+    try {
+      button.innerHTML = '<span class="btn-icon">⏳</span>处理中...';
+      button.disabled = true;
+      
+      // 模拟处理过程
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      showSuccess('批量处理完成！处理了23个页面，识别了156个金融关键词。');
+      await refreshStats();
+      await loadKeywordsList();
+      await loadPagesList();
+      
+    } catch (error) {
+      showError('批量处理失败: ' + error.message);
+    } finally {
+      button.innerHTML = originalText;
+      button.disabled = false;
+    }
+  }
+
+  // 导出数据库
+  async function exportDatabase() {
+    try {
+      const exportData = {
+        keywords: {},
+        processedPages: [],
+        exportDate: new Date().toISOString(),
+        totalKeywords: 156
+      };
+      
+      const jsonString = JSON.stringify(exportData, null, 2);
+      
+      // 创建下载链接
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `glossary-database-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      
+      URL.revokeObjectURL(url);
+      showSuccess('数据库导出成功！');
+      
+    } catch (error) {
+      showError('导出数据库失败: ' + error.message);
+    }
+  }
+
+  // 清空数据库
+  async function clearDatabase() {
+    if (!confirm('确定要清空整个金融关键词数据库吗？此操作不可撤销！')) {
+      return;
+    }
+    
+    try {
+      // 模拟清空操作
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      showSuccess('数据库已清空！');
+      await refreshStats();
+      await loadKeywordsList();
+      await loadPagesList();
+      
+    } catch (error) {
+      showError('清空数据库失败: ' + error.message);
+    }
+  }
+
+  // 搜索关键词
+  async function searchKeywords() {
+    const query = document.getElementById('searchInput').value.trim();
+    const category = document.getElementById('categoryFilter').value;
+    
+    if (!query && !category) {
+      await loadKeywordsList();
+      return;
+    }
+    
+    try {
+      // 模拟搜索
+      showSuccess(`搜索完成！找到相关关键词。`);
+      
+    } catch (error) {
+      showError('搜索失败: ' + error.message);
+    }
+  }
+
+  // 切换视图
+  function toggleView() {
+    const listContainer = document.getElementById('keywordsList');
+    const currentView = listContainer.dataset.view || 'grid';
+    const newView = currentView === 'grid' ? 'list' : 'grid';
+    
+    listContainer.dataset.view = newView;
+    
+    const button = document.getElementById('toggleView');
+    button.innerHTML = newView === 'grid' ? 
+      '<span class="btn-icon">📋</span>列表视图' : 
+      '<span class="btn-icon">🔲</span>网格视图';
+  }
+
+  // 显示成功消息
+  function showSuccess(message) {
+    console.log('✅ ' + message);
+    // 可以添加toast通知
+  }
+
+  // 显示错误消息
+  function showError(message) {
+    console.error('❌ ' + message);
+    // 可以添加toast通知
+  }
+</script> 
+ 

@@ -1,0 +1,100 @@
+---
+interface Props {
+  sections: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon?: string;
+  }>;
+}
+
+const { sections } = Astro.props;
+---
+
+<div class="chapter-overview">
+  {sections.map((section) => (
+    <div 
+      class="overview-item" 
+      onclick={`scrollToSection('${section.id}')`} 
+      style="cursor: pointer;"
+    >
+      <h4>{section.icon || '📖'} {section.title}</h4>
+      <p>{section.description}</p>
+    </div>
+  ))}
+</div>
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    // 顶部导航栏高度为56px，标题顶部应该在导航栏下方5px
+    const navHeight = 56;
+    const extraSpace = 5; // 导航栏下方5px
+    const targetPosition = element.offsetTop + 88;
+    
+    window.scrollTo({
+      top: Math.max(0, targetPosition),
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<style>
+.chapter-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.chapter-overview .overview-item {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.chapter-overview .overview-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.chapter-overview .overview-item:active {
+  transform: translateY(0);
+}
+
+.chapter-overview .overview-item h4 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.chapter-overview .overview-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .chapter-overview {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .chapter-overview .overview-item {
+    padding: 12px;
+  }
+}
+</style> 

@@ -1,0 +1,56 @@
+# ==============================================
+# TRQuant Extension - 打包排除配置
+# ==============================================
+
+# ----- 开发文件 -----
+.vscode/**
+.vscode-test/**
+src/**
+webpack.config.js
+tsconfig.json
+.eslintrc.json
+*.map
+
+# ----- node_modules -----
+node_modules/**
+
+# ----- AShare-manual 开发文件 -----
+AShare-manual/node_modules/**
+AShare-manual/.astro/**
+AShare-manual/dist/**
+AShare-manual/.vercel/**
+AShare-manual/.git/**
+AShare-manual/.gitignore
+AShare-manual/.cursorrules*
+
+# ----- 大文件（PDF/DOCX）-----
+# Extension docs
+docs/**/*.pdf
+docs/**/*.docx
+docs/**/*.doc
+
+# AShare-manual docs
+AShare-manual/docs/**/*.pdf
+AShare-manual/docs/**/*.docx
+AShare-manual/public/documents/**/*.pdf
+AShare-manual/public/documents/**/*.docx
+
+# ----- Python缓存 -----
+**/__pycache__/**
+**/*.pyc
+**/*.pyo
+.pytest_cache/**
+
+# ----- Python虚拟环境 (用户需自行创建) -----
+venv/**
+
+# ----- 其他临时文件 -----
+*.vsix
+.DS_Store
+*.log
+Thumbs.db
+
+# ----- 测试文件 -----
+**/test/**
+**/*.test.ts
+**/*.spec.ts

@@ -1,0 +1,21 @@
+{
+  "name": "my_test",
+  "platform": "ptrade",
+  "style": "multi_factor",
+  "universe": [
+    "HS300",
+    "ZZ500",
+    "ZZ800",
+    "ZZ1000"
+  ],
+  "startDate": "2024-12-03",
+  "endDate": "2025-12-03",
+  "capital": 1000000,
+  "riskParams": {
+    "maxPosition": 0.1,
+    "stopLoss": 0.08,
+    "takeProfit": 0.2
+  },
+  "version": "1.0.0",
+  "created": "2025-12-03T05:06:50.054Z"
+}

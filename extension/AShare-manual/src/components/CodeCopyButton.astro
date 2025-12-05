@@ -1,0 +1,168 @@
+---
+// CodeCopyButton.astro - 代码复制按钮组件
+---
+
+<script>
+  // 代码复制功能
+  function initCodeCopyButtons() {
+    // 为所有代码块添加复制按钮
+    const codeBlocks = document.querySelectorAll('pre');
+    
+    codeBlocks.forEach((block, index) => {
+      // 跳过已经处理过的代码块
+      if (block.parentElement?.classList.contains('code-container')) {
+        return;
+      }
+      
+      // 创建容器
+      const container = document.createElement('div');
+      container.className = 'code-container';
+      
+      // 将代码块包装在容器中
+      block.parentNode?.insertBefore(container, block);
+      container.appendChild(block);
+      
+      // 创建复制按钮
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="m5 15-4-4 4-4"></path>
+        </svg>
+        <span>复制</span>
+      `;
+      copyButton.setAttribute('aria-label', '复制代码');
+      copyButton.setAttribute('title', '复制代码到剪贴板');
+      
+      // 添加复制功能
+      copyButton.addEventListener('click', async () => {
+        try {
+          // 获取代码内容
+          const codeElement = block.querySelector('code') || block;
+          const codeText = codeElement.textContent || codeElement.innerText || '';
+          
+          // 复制到剪贴板
+          await navigator.clipboard.writeText(codeText);
+          
+          // 更新按钮状态
+          const originalHTML = copyButton.innerHTML;
+          copyButton.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+            <span>已复制</span>
+          `;
+          copyButton.classList.add('copied');
+          
+          // 2秒后恢复原状
+          setTimeout(() => {
+            copyButton.innerHTML = originalHTML;
+            copyButton.classList.remove('copied');
+          }, 2000);
+          
+        } catch (err) {
+          console.error('复制失败:', err);
+          
+          // 降级处理：选择文本
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const codeElement = block.querySelector('code') || block;
+          range.selectNodeContents(codeElement);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          
+          // 更新按钮提示
+          copyButton.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span>已选择</span>
+          `;
+          copyButton.classList.add('copied');
+          
+          setTimeout(() => {
+            copyButton.innerHTML = `
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="m5 15-4-4 4-4"></path>
+              </svg>
+              <span>复制</span>
+            `;
+            copyButton.classList.remove('copied');
+          }, 2000);
+        }
+      });
+      
+      // 添加到容器
+      container.appendChild(copyButton);
+    });
+  }
+  
+  // 主题切换时重新初始化
+  function handleThemeChange() {
+    // 重新应用代码高亮样式
+    const codeBlocks = document.querySelectorAll('pre, code');
+    codeBlocks.forEach(block => {
+      if (block instanceof HTMLElement) {
+        // 强制重新渲染
+        block.style.display = 'none';
+        block.offsetHeight; // 触发重排
+        block.style.display = '';
+      }
+    });
+  }
+  
+  // 页面加载完成后初始化
+  document.addEventListener('DOMContentLoaded', initCodeCopyButtons);
+  
+  // 动态内容加载后重新初始化
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as Element;
+          if (element.tagName === 'PRE' || element.querySelector?.('pre')) {
+            initCodeCopyButtons();
+          }
+        }
+      });
+    });
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  // 监听主题切换
+  document.addEventListener('themeChanged', handleThemeChange);
+  
+  // 键盘快捷键支持
+  document.addEventListener('keydown', (e) => {
+    // Ctrl+Shift+C 复制当前焦点代码块
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      const focusedElement = document.activeElement;
+      const codeBlock = focusedElement?.closest('.code-container');
+      if (codeBlock) {
+        const copyButton = codeBlock.querySelector('.copy-button') as HTMLButtonElement;
+        copyButton?.click();
+        e.preventDefault();
+      }
+    }
+  });
+  
+  // 添加无障碍支持
+  document.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLElement && e.target.classList.contains('copy-button')) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.target.click();
+        e.preventDefault();
+      }
+    }
+  });
+</script>
+
+<style>
+  /* 代码复制按钮样式已在 components.css 中定义 */
+</style> 

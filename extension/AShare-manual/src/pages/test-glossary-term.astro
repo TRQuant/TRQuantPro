@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GlossaryTerm from '../components/GlossaryTerm.astro';
+import { getGlossaryTerm, getAllGlossaryTerms } from '../utils/finance-glossary.js';
+
+const allTerms = getAllGlossaryTerms();
+const termKeys = Object.keys(allTerms);
+---
+
+<Layout title="GlossaryTerm组件测试">
+  <main class="container">
+    <h1>📚 GlossaryTerm组件测试页面</h1>
+    
+    <div class="test-section">
+      <h2>🎯 基本功能测试</h2>
+      <p>
+        这是一个<GlossaryTerm term="CAGR" />测试，用于验证组件是否正常工作。
+        在投资分析中，<GlossaryTerm term="ROE" />和<GlossaryTerm term="PEG" />都是重要的指标。
+      </p>
+      
+      <p>
+        <GlossaryTerm term="TAM" />是市场分析中的关键概念，而<GlossaryTerm term="护城河" />则是价值投资的核心。
+        对于<GlossaryTerm term="高倍股" />的识别，需要综合考虑多个因素。
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>📊 财务指标测试</h2>
+      <p>
+        常用估值指标包括：<GlossaryTerm term="PE" />、<GlossaryTerm term="PB" />、<GlossaryTerm term="PS" />。
+        盈利能力指标有：<GlossaryTerm term="ROA" />、<GlossaryTerm term="ROIC" />、<GlossaryTerm term="毛利率" />、<GlossaryTerm term="净利率" />。
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>⚖️ 风险指标测试</h2>
+      <p>
+        风险控制指标：<GlossaryTerm term="负债率" />、<GlossaryTerm term="流动比率" />、<GlossaryTerm term="速动比率" />。
+        投资组合指标：<GlossaryTerm term="Beta" />、<GlossaryTerm term="Alpha" />、<GlossaryTerm term="夏普比率" />。
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>📈 投资分析测试</h2>
+      <p>
+        估值方法：<GlossaryTerm term="DCF" />、<GlossaryTerm term="估值" />。
+        风险指标：<GlossaryTerm term="最大回撤" />、<GlossaryTerm term="波动率" />、<GlossaryTerm term="相关性" />。
+        投资策略：<GlossaryTerm term="分散化" />、<GlossaryTerm term="技术分析" />。
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>🔍 所有可用术语</h2>
+      <div class="terms-grid">
+        {termKeys.map(term => (
+          <div class="term-item">
+            <GlossaryTerm term={term} />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>⚠️ 错误处理测试</h2>
+      <p>
+        测试不存在的术语：<GlossaryTerm term="不存在的术语" />
+        测试空术语：<GlossaryTerm term="" />
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .test-section {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+  }
+
+  .test-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .test-section p {
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .term-item {
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  /* 暗色模式适配 */
+  [data-theme="dark"] .test-section {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+    
+    .terms-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+  }
+</style> 
+ 

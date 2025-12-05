@@ -1,0 +1,295 @@
+---
+// GlossaryProcessor.astro - 自动处理金融关键词的Astro组件
+export interface Props {
+  content?: string;
+  pageUrl?: string;
+  enableAutoDetection?: boolean;
+  maxKeywords?: number;
+  showStats?: boolean;
+}
+
+const { 
+  content = '', 
+  pageUrl = Astro.url.pathname,
+  enableAutoDetection = true,
+  maxKeywords = 50,
+  showStats = false
+} = Astro.props;
+
+// 在服务器端处理内容（如果启用自动检测）
+let processedContent = content;
+let keywordStats = null;
+
+if (enableAutoDetection && content) {
+  try {
+    // 动态导入处理器（避免服务器端问题）
+    const { processPageContent, getPageKeywordSummary } = await import('../utils/content-processor.js');
+    
+    const result = await processPageContent(content, pageUrl, { maxKeywords });
+    processedContent = result.content;
+    keywordStats = getPageKeywordSummary(pageUrl);
+    
+    console.log(`✅ Processed ${result.keywordCount} keywords for ${pageUrl}`);
+  } catch (error) {
+    console.warn(`⚠️ Failed to process content for ${pageUrl}:`, error);
+    processedContent = content; // 回退到原始内容
+  }
+}
+---
+
+<!-- 处理后的内容 -->
+<div class="glossary-processed-content" data-page-url={pageUrl}>
+  <Fragment set:html={processedContent} />
+</div>
+
+<!-- 关键词统计（如果启用） -->
+{showStats && keywordStats && (
+  <div class="keyword-stats-panel">
+    <h4>📊 页面金融术语统计</h4>
+    <div class="stats-summary">
+      <div class="stat-item">
+        <span class="stat-label">总关键词：</span>
+        <span class="stat-value">{keywordStats.keywordCount}</span>
+      </div>
+      <div class="stat-categories">
+        <span class="stat-label">分类分布：</span>
+        {Object.entries(keywordStats.categories).map(([category, count]) => (
+          <span class="category-tag" key={category}>
+            {category}: {count}
+          </span>
+        ))}
+      </div>
+    </div>
+    
+    <!-- 关键词列表 -->
+    <details class="keyword-details">
+      <summary>查看所有关键词</summary>
+      <div class="keyword-list">
+        {keywordStats.keywords.map(({ keyword, category, priority }) => (
+          <div class="keyword-item" key={keyword}>
+            <span class="keyword-name">{keyword}</span>
+            <span class="keyword-category">{category}</span>
+            {priority > 0 && <span class="keyword-priority">优先级: {priority}</span>}
+          </div>
+        ))}
+      </div>
+    </details>
+  </div>
+)}
+
+<style>
+  .glossary-processed-content {
+    /* 确保处理后的内容正常显示 */
+    line-height: 1.6;
+  }
+
+  /* 自动检测的关键词样式 */
+  :global(.glossary-term.auto-detected) {
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: help;
+    border-bottom: 1px dotted var(--primary-color);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  :global(.glossary-term.auto-detected:hover) {
+    background: var(--primary-color);
+    color: white;
+    border-bottom-color: transparent;
+  }
+
+  /* 高优先级关键词特殊样式 */
+  :global(.glossary-term.auto-detected[data-priority="10"]) {
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: 700;
+  }
+
+  :global(.glossary-term.auto-detected[data-priority="9"]),
+  :global(.glossary-term.auto-detected[data-priority="8"]) {
+    border-bottom: 1.5px solid var(--primary-color);
+    font-weight: 650;
+  }
+
+  /* 关键词统计面板 */
+  .keyword-stats-panel {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .keyword-stats-panel h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+  }
+
+  .stats-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .stat-label {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .stat-value {
+    color: var(--primary-color);
+    font-weight: 700;
+  }
+
+  .stat-categories {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .category-tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* 关键词详情 */
+  .keyword-details {
+    margin-top: 1rem;
+  }
+
+  .keyword-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: 0.5rem 0;
+  }
+
+  .keyword-details summary:hover {
+    text-decoration: underline;
+  }
+
+  .keyword-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+  }
+
+  .keyword-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+  }
+
+  .keyword-name {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .keyword-category {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .keyword-priority {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .keyword-stats-panel {
+      padding: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .stats-summary {
+      flex-direction: column;
+    }
+
+    .stat-categories {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .keyword-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* 打印样式 */
+  @media print {
+    .keyword-stats-panel {
+      display: none;
+    }
+    
+    :global(.glossary-term.auto-detected) {
+      border-bottom: 1px solid #000;
+      color: #000 !important;
+    }
+  }
+</style>
+
+<script>
+  // 客户端初始化金融术语悬浮提示
+  import { initGlossaryTooltip } from '../utils/glossary-tooltip.js';
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化悬浮提示系统
+    initGlossaryTooltip();
+    
+    // 为自动检测的关键词添加额外的交互
+    const autoDetectedTerms = document.querySelectorAll('.glossary-term.auto-detected');
+    
+    autoDetectedTerms.forEach(term => {
+      // 添加点击统计
+      term.addEventListener('click', function() {
+        const keyword = this.getAttribute('data-term');
+        const priority = this.getAttribute('data-priority');
+        
+        // 记录点击事件（可用于分析）
+        console.log(`📊 Keyword clicked: ${keyword} (priority: ${priority})`);
+        
+        // 可以在这里添加更多交互逻辑
+        // 例如：发送统计数据、显示更多信息等
+      });
+      
+      // 添加键盘访问支持
+      term.setAttribute('tabindex', '0');
+      term.setAttribute('role', 'button');
+      term.setAttribute('aria-label', `金融术语: ${term.textContent}`);
+      
+      term.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          this.click();
+        }
+      });
+    });
+    
+    console.log(`✅ Initialized ${autoDetectedTerms.length} auto-detected financial terms`);
+  });
+</script> 
+ 

@@ -1,0 +1,349 @@
+---
+// 金融术语API管理组件
+interface Props {
+  showDebug?: boolean;
+}
+
+const { showDebug = false } = Astro.props;
+---
+
+<div class="glossary-api-manager">
+  <h3>🔗 金融术语API管理</h3>
+  
+  <div class="api-status">
+    <div class="status-item">
+      <span class="status-label">Wikipedia API:</span>
+      <span class="status-value" id="wikipedia-status">检测中...</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Investopedia:</span>
+      <span class="status-value" id="investopedia-status">检测中...</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">缓存状态:</span>
+      <span class="status-value" id="cache-status">检测中...</span>
+    </div>
+  </div>
+  
+  <div class="api-test">
+    <h4>🧪 API测试</h4>
+    <div class="test-input">
+      <input type="text" id="test-term" placeholder="输入要测试的金融术语" />
+      <button id="test-wikipedia">测试Wikipedia</button>
+      <button id="test-investopedia">测试Investopedia</button>
+      <button id="test-all">测试所有API</button>
+    </div>
+    <div class="test-result" id="test-result"></div>
+  </div>
+  
+  {showDebug && (
+    <div class="debug-info">
+      <h4>🐛 调试信息</h4>
+      <div class="debug-content" id="debug-content"></div>
+      <button id="clear-cache">清理缓存</button>
+      <button id="refresh-stats">刷新统计</button>
+    </div>
+  )}
+</div>
+
+<style>
+  .glossary-api-manager {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .glossary-api-manager h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+  }
+
+  .api-status {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+  }
+
+  .status-label {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .status-value {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+
+  .status-value.online {
+    background: #10b981;
+    color: white;
+  }
+
+  .status-value.offline {
+    background: #ef4444;
+    color: white;
+  }
+
+  .status-value.loading {
+    background: #f59e0b;
+    color: white;
+  }
+
+  .api-test {
+    margin-bottom: 1.5rem;
+  }
+
+  .api-test h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+  }
+
+  .test-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .test-input input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .test-input button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .test-input button:hover {
+    background: var(--primary-dark);
+  }
+
+  .test-input button:disabled {
+    background: var(--border-color);
+    cursor: not-allowed;
+  }
+
+  .test-result {
+    min-height: 100px;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-family: monospace;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+  .debug-info {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+  }
+
+  .debug-info h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+  }
+
+  .debug-content {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+
+  .debug-info button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--border-color);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .debug-info button:hover {
+    background: var(--text-secondary);
+  }
+
+  /* 暗色模式适配 */
+  [data-theme="dark"] .glossary-api-manager {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  [data-theme="dark"] .status-item {
+    background: #374151;
+  }
+
+  [data-theme="dark"] .test-result,
+  [data-theme="dark"] .debug-content {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .test-input {
+      flex-direction: column;
+    }
+    
+    .test-input input {
+      min-width: auto;
+    }
+  }
+</style>
+
+<script>
+  import { 
+    getWikipediaTerm, 
+    getInvestopediaTerm, 
+    getCacheStats, 
+    clearExpiredCache 
+  } from '../utils/finance-glossary.js';
+
+  // API状态检测
+  async function checkAPIStatus() {
+    // 检测Wikipedia API
+    try {
+      const wikiResult = await getWikipediaTerm('CAGR');
+      document.getElementById('wikipedia-status').textContent = '在线';
+      document.getElementById('wikipedia-status').className = 'status-value online';
+    } catch (error) {
+      document.getElementById('wikipedia-status').textContent = '离线';
+      document.getElementById('wikipedia-status').className = 'status-value offline';
+    }
+
+    // 检测Investopedia
+    try {
+      const investopediaResult = await getInvestopediaTerm('CAGR');
+      document.getElementById('investopedia-status').textContent = '在线';
+      document.getElementById('investopedia-status').className = 'status-value online';
+    } catch (error) {
+      document.getElementById('investopedia-status').textContent = '离线';
+      document.getElementById('investopedia-status').className = 'status-value offline';
+    }
+
+    // 更新缓存状态
+    updateCacheStatus();
+  }
+
+  // 更新缓存状态
+  function updateCacheStatus() {
+    const stats = getCacheStats();
+    const statusText = `${stats.valid}有效/${stats.expired}过期 (总计:${stats.total})`;
+    document.getElementById('cache-status').textContent = statusText;
+    document.getElementById('cache-status').className = 'status-value online';
+  }
+
+  // 测试API
+  async function testAPI(apiType, term) {
+    const resultDiv = document.getElementById('test-result');
+    resultDiv.textContent = `正在测试 ${apiType} API...`;
+    
+    try {
+      let result;
+      if (apiType === 'Wikipedia') {
+        result = await getWikipediaTerm(term);
+      } else if (apiType === 'Investopedia') {
+        result = await getInvestopediaTerm(term);
+      } else if (apiType === 'All') {
+        const [wikiResult, investopediaResult] = await Promise.allSettled([
+          getWikipediaTerm(term),
+          getInvestopediaTerm(term)
+        ]);
+        result = {
+          Wikipedia: wikiResult.status === 'fulfilled' ? wikiResult.value : null,
+          Investopedia: investopediaResult.status === 'fulfilled' ? investopediaResult.value : null
+        };
+      }
+      
+      resultDiv.textContent = JSON.stringify(result, null, 2);
+    } catch (error) {
+      resultDiv.textContent = `错误: ${error.message}`;
+    }
+  }
+
+  // 更新调试信息
+  function updateDebugInfo() {
+    const debugDiv = document.getElementById('debug-content');
+    if (!debugDiv) return;
+    
+    const stats = getCacheStats();
+    const debugInfo = {
+      cacheStats: stats,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      cacheKeys: Array.from(stats.sources.keys())
+    };
+    
+    debugDiv.textContent = JSON.stringify(debugInfo, null, 2);
+  }
+
+  // 事件监听器
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化状态检测
+    checkAPIStatus();
+    
+    // 测试按钮事件
+    document.getElementById('test-wikipedia')?.addEventListener('click', function() {
+      const term = document.getElementById('test-term').value || 'CAGR';
+      testAPI('Wikipedia', term);
+    });
+    
+    document.getElementById('test-investopedia')?.addEventListener('click', function() {
+      const term = document.getElementById('test-term').value || 'CAGR';
+      testAPI('Investopedia', term);
+    });
+    
+    document.getElementById('test-all')?.addEventListener('click', function() {
+      const term = document.getElementById('test-term').value || 'CAGR';
+      testAPI('All', term);
+    });
+    
+    // 调试按钮事件
+    document.getElementById('clear-cache')?.addEventListener('click', function() {
+      const cleared = clearExpiredCache();
+      updateCacheStatus();
+      updateDebugInfo();
+      alert(`已清理 ${cleared} 个过期缓存项`);
+    });
+    
+    document.getElementById('refresh-stats')?.addEventListener('click', function() {
+      updateCacheStatus();
+      updateDebugInfo();
+    });
+    
+    // 初始化调试信息
+    updateDebugInfo();
+  });
+</script> 
+ 

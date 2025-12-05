@@ -6,7 +6,7 @@
   "publisher": "trquant",
   "repository": {
     "type": "git",
-    "url": "https://github.com/trquant/TRQuant"
+    "url": "https://github.com/TRQuant/TRQuantExt"
   },
   "engines": {
     "vscode": "^1.85.0"

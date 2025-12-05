@@ -1,0 +1,421 @@
+---
+export interface MiniCard {
+  title: string;
+  label?: string;
+  value?: string;
+  content: string;
+  items?: string[];
+}
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  theme?: 'green' | 'blue' | 'purple' | 'yellow' | 'red' | 'gray' | 'orange';
+  layout?: 'grid' | 'row' | '2col' | '3col' | '4col';
+  cards: MiniCard[];
+}
+
+const { 
+  title, 
+  subtitle = '',
+  theme = 'blue',
+  layout = 'grid',
+  cards = []
+} = Astro.props;
+
+const layoutClass = layout === 'grid' ? 'mini-cards-grid' : 
+                   layout === 'row' ? 'mini-cards-row' :
+                   layout === '2col' ? 'mini-cards-2col' :
+                   layout === '3col' ? 'mini-cards-3col' :
+                   layout === '4col' ? 'mini-cards-4col' : 'mini-cards-grid';
+---
+
+<div class={`status-card ${theme} multi-card`}>
+  <div class="status-header">
+    <h4>{title}</h4>
+    {subtitle && <div class="status-label">{subtitle}</div>}
+  </div>
+  
+  <div class={layoutClass}>
+    {cards.map(card => (
+      <div class="mini-card">
+        <div class="mini-card-header">
+          <h5>{card.title}</h5>
+          {card.label && <div class="mini-card-label">{card.label}</div>}
+        </div>
+        <div class="mini-card-content">
+          {card.value && <span class="mini-card-value">{card.value}</span>}
+          <p set:html={card.content}></p>
+          {card.items && (
+            <ul>
+              {card.items.map(item => <li>{item}</li>)}
+            </ul>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+/* 嵌套小卡片系统样式 */
+.status-card.multi-card {
+  padding: 2rem;
+  min-height: auto;
+}
+
+.status-card.multi-card .status-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 1rem;
+}
+
+.status-card.multi-card .status-header h4 {
+  font-size: 1.3rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+/* 小卡片网格容器 */
+.mini-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+/* 小卡片样式 */
+.mini-card {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mini-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.mini-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-color);
+  opacity: 0.7;
+}
+
+/* 小卡片标题 */
+.mini-card-header {
+  margin-bottom: 0.75rem;
+}
+
+.mini-card-header h5 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.mini-card-label {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+}
+
+/* 小卡片内容 */
+.mini-card-content {
+  line-height: 1.5;
+}
+
+.mini-card-content p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.mini-card-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.mini-card-content li {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.mini-card-content strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* 数值高亮 */
+.mini-card-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+  margin: 0.5rem 0;
+}
+
+/* 强制一行显示的小卡片 */
+.mini-cards-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.mini-cards-row .mini-card {
+  flex: 0 0 280px;
+  min-width: 280px;
+}
+
+/* 2列小卡片布局 */
+.mini-cards-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+/* 3列小卡片布局 */
+.mini-cards-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.mini-cards-3col .mini-card {
+  min-width: 0;
+}
+
+/* 4列小卡片布局 */
+.mini-cards-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+
+.mini-cards-4col .mini-card {
+  min-width: 0;
+  padding: 1rem;
+}
+
+.mini-cards-4col .mini-card-header h5 {
+  font-size: 0.95rem;
+}
+
+.mini-cards-4col .mini-card-content p {
+  font-size: 0.8rem;
+}
+
+/* 不同主题的小卡片样式 */
+.status-card.green .mini-card::before {
+  background: #16a34a;
+}
+
+.status-card.green .mini-card-label {
+  background: #16a34a;
+}
+
+.status-card.green .mini-card-value,
+.status-card.green .mini-card-content strong {
+  color: #15803d;
+}
+
+.status-card.blue .mini-card::before {
+  background: #2563eb;
+}
+
+.status-card.blue .mini-card-label {
+  background: #2563eb;
+}
+
+.status-card.blue .mini-card-value,
+.status-card.blue .mini-card-content strong {
+  color: #1d4ed8;
+}
+
+.status-card.purple .mini-card::before {
+  background: #9333ea;
+}
+
+.status-card.purple .mini-card-label {
+  background: #9333ea;
+}
+
+.status-card.purple .mini-card-value,
+.status-card.purple .mini-card-content strong {
+  color: #7c3aed;
+}
+
+.status-card.yellow .mini-card::before {
+  background: #d97706;
+}
+
+.status-card.yellow .mini-card-label {
+  background: #d97706;
+}
+
+.status-card.yellow .mini-card-value,
+.status-card.yellow .mini-card-content strong {
+  color: #b45309;
+}
+
+.status-card.red .mini-card::before {
+  background: #dc2626;
+}
+
+.status-card.red .mini-card-label {
+  background: #dc2626;
+}
+
+.status-card.red .mini-card-value,
+.status-card.red .mini-card-content strong {
+  color: #b91c1c;
+}
+
+.status-card.gray .mini-card::before {
+  background: #6b7280;
+}
+
+.status-card.gray .mini-card-label {
+  background: #6b7280;
+}
+
+.status-card.gray .mini-card-value,
+.status-card.gray .mini-card-content strong {
+  color: #374151;
+}
+
+.status-card.orange .mini-card::before {
+  background: #ea580c;
+}
+
+.status-card.orange .mini-card-label {
+  background: #ea580c;
+}
+
+.status-card.orange .mini-card-value,
+.status-card.orange .mini-card-content strong {
+  color: #c2410c;
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .mini-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .mini-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .mini-card-header h5 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .mini-card-content p,
+[data-theme="dark"] .mini-card-content li {
+  color: var(--text-secondary);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .mini-cards-4col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  
+  .mini-cards-4col .mini-card {
+    padding: 1.25rem;
+  }
+  
+  .mini-cards-3col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  
+  .mini-cards-row .mini-card {
+    flex: 0 0 260px;
+    min-width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .status-card.multi-card {
+    padding: 1.5rem;
+  }
+  
+  .mini-cards-grid,
+  .mini-cards-2col,
+  .mini-cards-3col,
+  .mini-cards-4col {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .mini-cards-row {
+    flex-direction: column;
+  }
+  
+  .mini-cards-row .mini-card {
+    flex: none;
+    min-width: auto;
+  }
+  
+  .mini-card {
+    padding: 1rem;
+  }
+  
+  .mini-card-header h5 {
+    font-size: 1rem;
+  }
+  
+  .mini-card-content p,
+  .mini-card-content li {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-card.multi-card {
+    padding: 1.25rem;
+  }
+  
+  .status-card.multi-card .status-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .mini-card {
+    padding: 0.875rem;
+  }
+  
+  .mini-card-header h5 {
+    font-size: 0.95rem;
+  }
+  
+  .mini-card-label {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+  }
+}
+</style> 

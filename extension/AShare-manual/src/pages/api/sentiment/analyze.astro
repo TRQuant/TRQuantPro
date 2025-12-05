@@ -1,0 +1,80 @@
+---
+// 新闻情绪分析API端点
+import { spawn } from 'child_process';
+import path from 'path';
+
+export async function POST({ request }) {
+  try {
+    const body = await request.json();
+    const { text, analyzer = 'hybrid' } = body;
+    
+    if (!text) {
+      return new Response(JSON.stringify({ error: '缺少新闻文本' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // 调用Python情绪分析模块
+    const pythonScript = path.join(process.cwd(), '../../sentiment_analyzers/cli.py');
+    const python = spawn('python3', [pythonScript, '--text', text, '--analyzer', analyzer]);
+    
+    let result = '';
+    let error = '';
+    
+    python.stdout.on('data', (data) => {
+      result += data.toString();
+    });
+    
+    python.stderr.on('data', (data) => {
+      error += data.toString();
+    });
+    
+    return new Promise((resolve) => {
+      python.on('close', (code) => {
+        if (code !== 0) {
+          resolve(new Response(JSON.stringify({ 
+            error: 'Python脚本执行失败', 
+            details: error 
+          }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        } else {
+          try {
+            const analysisResult = JSON.parse(result);
+            resolve(new Response(JSON.stringify(analysisResult), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          } catch (parseError) {
+            resolve(new Response(JSON.stringify({ 
+              error: '解析分析结果失败', 
+              details: result 
+            }), {
+              status: 500,
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          }
+        }
+      });
+    });
+    
+  } catch (error) {
+    return new Response(JSON.stringify({ 
+      error: '服务器内部错误', 
+      details: error.message 
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-07-19T16:51:32.845Z",
+  "duration": "21.56s",
+  "stats": {
+    "totalFiles": 172,
+    "processedFiles": 171,
+    "modifiedFiles": 130,
+    "totalTerms": 276,
+    "errors": [
+      "处理文件失败: src\\pages\\book1\\001_Chapter1_Know_Yourself_and_the_World_CN.md - UNKNOWN: unknown error, open 'C:\\2025Investing\\astro-notebook0629\\src\\pages\\book1\\001_Chapter1_Know_Yourself_and_the_World_CN.md'"
+    ]
+  },
+  "terms": [
+    "CAGR",
+    "TAM",
+    "ROE",
+    "PEG",
+    "EBITDA",
+    "护城河",
+    "高倍股",
+    "自由现金流",
+    "估值",
+    "技术分析",
+    "PE",
+    "PB",
+    "PS",
+    "DCF",
+    "Beta",
+    "Alpha",
+    "Sharpe",
+    "夏普比率",
+    "波动率",
+    "流动性"
+  ]
+}

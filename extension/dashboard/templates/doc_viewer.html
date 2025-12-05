@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - 韬睿量化文档</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e14;
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-gold: #f0b429;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --border-color: #30363d;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        .header {
+            background: var(--bg-secondary);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            color: var(--accent-gold);
+        }
+        
+        .header a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+        
+        .header a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        /* Markdown样式 */
+        .content h1 { font-size: 28px; color: var(--accent-gold); margin: 30px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); }
+        .content h2 { font-size: 24px; color: var(--accent-blue); margin: 25px 0 12px 0; }
+        .content h3 { font-size: 20px; color: var(--text-primary); margin: 20px 0 10px 0; }
+        .content h4 { font-size: 16px; color: var(--text-secondary); margin: 15px 0 8px 0; }
+        
+        .content p { margin: 12px 0; }
+        
+        .content a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+        
+        .content a:hover {
+            text-decoration: underline;
+        }
+        
+        .content ul, .content ol {
+            margin: 12px 0;
+            padding-left: 30px;
+        }
+        
+        .content li {
+            margin: 6px 0;
+        }
+        
+        .content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .content code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .content blockquote {
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 20px;
+            margin: 15px 0;
+            color: var(--text-secondary);
+        }
+        
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .content th, .content td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+        }
+        
+        .content th {
+            background: var(--bg-secondary);
+            color: var(--accent-gold);
+        }
+        
+        .content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .content hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 {{ title }}</h1>
+        <a href="/">← 返回文件管理</a>
+    </div>
+    
+    <div class="content">
+        {{ html_content | safe }}
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

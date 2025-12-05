@@ -1,0 +1,618 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const title = "美股投资实操手册 - 完整知识体系";
+---
+
+<Layout title={title} currentBook="home">
+  <div class="homepage">
+    <!-- 英雄区域 -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">🇺🇸 美股投资实操手册</h1>
+        <p class="hero-subtitle">从认知到行动，构建完整投资知识体系</p>
+        
+        <!-- 统计数据 -->
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-number">5</div>
+            <div class="stat-label">完整手册</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">核心章节</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">持续更新</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="handbooks-overview">
+      <h2>📚 五册内容概览</h2>
+      <div class="handbooks-grid">
+        <!-- 第一册：理论手册 -->
+        <div class="handbook-card handbook-1">
+          <div class="handbook-header">
+            <span class="handbook-icon">📖</span>
+            <h3>美股投资实操手册I</h3>
+            <span class="handbook-status">系统理论</span>
+          </div>
+          <p class="handbook-description">高倍股分析与策略实践 - 系统性理论知识体系</p>
+          <div class="handbook-features">
+            <span class="feature-tag">认知升级</span>
+            <span class="feature-tag">投资心理</span>
+            <span class="feature-tag">策略框架</span>
+            <span class="feature-tag">工具资源</span>
+          </div>
+          <a href="/handbook/theory" class="handbook-link">进入理论手册 →</a>
+        </div>
+
+        <!-- 第二册：宏观经济 -->
+        <div class="handbook-card handbook-2">
+          <div class="handbook-header">
+            <span class="handbook-icon">🌍</span>
+            <h3>美股投资实操手册II</h3>
+            <span class="handbook-status">工作手册</span>
+          </div>
+          <p class="handbook-description">宏观经济与股市走向追踪 - 市场环境分析</p>
+          <div class="handbook-features">
+            <span class="feature-tag">宏观分析</span>
+            <span class="feature-tag">市场趋势</span>
+            <span class="feature-tag">政策影响</span>
+            <span class="feature-tag">周期判断</span>
+          </div>
+          <a href="/handbook/macro" class="handbook-link">进入宏观手册 →</a>
+        </div>
+
+        <!-- 第三册：个股研究 -->
+        <div class="handbook-card handbook-3">
+          <div class="handbook-header">
+            <span class="handbook-icon">🔍</span>
+            <h3>美股投资实操手册III</h3>
+            <span class="handbook-status">工作手册</span>
+          </div>
+          <p class="handbook-description">个股研究与实战记录 - 深度分析案例</p>
+          <div class="handbook-features">
+            <span class="feature-tag">个股分析</span>
+            <span class="feature-tag">实战记录</span>
+            <span class="feature-tag">估值模型</span>
+            <span class="feature-tag">投资逻辑</span>
+          </div>
+          <a href="/handbook/stocks" class="handbook-link">进入个股手册 →</a>
+        </div>
+
+        <!-- 第四册：技术分析 -->
+        <div class="handbook-card handbook-4">
+          <div class="handbook-header">
+            <span class="handbook-icon">📊</span>
+            <h3>美股投资实操手册IV</h3>
+            <span class="handbook-status">工作手册</span>
+          </div>
+          <p class="handbook-description">技术分析与自动交易 - 量化工具应用</p>
+          <div class="handbook-features">
+            <span class="feature-tag">技术分析</span>
+            <span class="feature-tag">自动交易</span>
+            <span class="feature-tag">量化策略</span>
+            <span class="feature-tag">系统开发</span>
+          </div>
+          <a href="/handbook/technical" class="handbook-link">进入技术手册 →</a>
+        </div>
+
+        <!-- 第五册：量化专题 -->
+        <div class="handbook-card handbook-5">
+          <div class="handbook-header">
+            <span class="handbook-icon">⚡</span>
+            <h3>美股投资实操手册V</h3>
+            <span class="handbook-status">工作手册</span>
+          </div>
+          <p class="handbook-description">量化专题 - 高级策略与模型</p>
+          <div class="handbook-features">
+            <span class="feature-tag">量化模型</span>
+            <span class="feature-tag">因子分析</span>
+            <span class="feature-tag">风险管理</span>
+            <span class="feature-tag">回测系统</span>
+          </div>
+          <a href="/handbook/quantitative" class="handbook-link">进入量化手册 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="learning-path">
+      <h2>🎯 学习路径建议</h2>
+      <div class="path-container">
+        <div class="path-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>理论基础</h4>
+            <p>从第一册开始，建立完整的投资认知体系</p>
+          </div>
+        </div>
+        <div class="path-arrow">→</div>
+        <div class="path-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>环境分析</h4>
+            <p>学习第二册，掌握宏观经济分析方法</p>
+          </div>
+        </div>
+        <div class="path-arrow">→</div>
+        <div class="path-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>实战应用</h4>
+            <p>结合第三、四、五册，进行实战操作</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-access">
+      <h2>⚡ 快速访问</h2>
+      <div class="quick-grid">
+        <a href="/handbook/theory" class="quick-card">
+          <span class="quick-icon">📖</span>
+          <h4>理论手册</h4>
+          <p>系统性学习投资知识</p>
+        </a>
+        <a href="/book1/007_Chapter7_Investment_Decision_Tools_and_Resources_CN" class="quick-card">
+          <span class="quick-icon">🛠️</span>
+          <h4>投资工具</h4>
+          <p>实用工具和资源</p>
+        </a>
+        <a href="/book1/012_Strategy_Logic_CN" class="quick-card">
+          <span class="quick-icon">💻</span>
+          <h4>代码示例</h4>
+          <p>实战代码和案例</p>
+        </a>
+        <a href="/" class="quick-card">
+          <span class="quick-icon">🏠</span>
+          <h4>返回首页</h4>
+          <p>选择其他市场手册</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2>🚀 开始你的投资学习之旅</h2>
+      <p>选择适合你的学习路径，构建属于自己的美股投资体系</p>
+      <div class="cta-buttons">
+        <a href="/handbook/theory" class="cta-button primary">从理论手册开始</a>
+        <a href="/handbook/macro" class="cta-button secondary">查看宏观分析</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-content">
+        <p class="footer-tip">💡 提示：工作手册会持续更新，建议定期查看最新内容</p>
+        <p class="footer-quote">"投资是认知升级、长期坚守与系统执行的自然结果。"</p>
+        <div class="copyright">
+          <p>&copy; 2024 ZhuTech LLC. All rights reserved.</p>
+          <p class="copyright-sub">美股投资实操手册 - 完整知识体系</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* 英雄区域 */
+  .hero {
+    background: linear-gradient(135deg, #1a365d 0%, #2d4a6f 50%, #3d5a80 100%);
+    color: white;
+    padding: 3rem 0;
+    margin: -20px -20px 2rem -20px;
+    border-radius: 0 0 30px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.6;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-subtitle {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 1.5rem 1.2rem;
+    min-width: 100px;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* 手册概览区域 */
+  .handbooks-overview {
+    margin-bottom: 3rem;
+  }
+
+  .handbooks-overview h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--primary-dark);
+  }
+
+  .handbooks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .handbook-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .handbook-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border-color: #2d4a6f;
+  }
+
+  .handbook-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 0.8rem;
+  }
+
+  .handbook-icon {
+    font-size: 1.8rem;
+  }
+
+  .handbook-header h3 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--primary-dark);
+    flex: 1;
+  }
+
+  .handbook-status {
+    background: #2d4a6f;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .handbook-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .handbook-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-tag {
+    background: rgba(26, 54, 93, 0.1);
+    color: #1a365d;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(26, 54, 93, 0.2);
+  }
+
+  .handbook-link {
+    display: inline-block;
+    background: #2d4a6f;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .handbook-link:hover {
+    background: #1a365d;
+    transform: translateY(-2px);
+  }
+
+  /* 学习路径 */
+  .learning-path {
+    margin-bottom: 3rem;
+    background: var(--bg-secondary);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+  }
+
+  .learning-path h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--primary-dark);
+  }
+
+  .path-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .path-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card-bg);
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    min-width: 180px;
+  }
+
+  .step-number {
+    background: #2d4a6f;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  .step-content h4 {
+    margin: 0 0 0.3rem 0;
+    color: var(--primary-dark);
+    font-size: 1rem;
+  }
+
+  .step-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .path-arrow {
+    font-size: 1.5rem;
+    color: #2d4a6f;
+    font-weight: 700;
+  }
+
+  /* 快速访问 */
+  .quick-access {
+    margin-bottom: 3rem;
+  }
+
+  .quick-access h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--primary-dark);
+  }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .quick-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+  }
+
+  .quick-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border-color: #2d4a6f;
+  }
+
+  .quick-icon {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .quick-card h4 {
+    margin: 0 0 0.4rem 0;
+    color: var(--primary-dark);
+    font-size: 1rem;
+  }
+
+  .quick-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  /* CTA区域 */
+  .cta-section {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #1a365d;
+  }
+
+  .cta-section p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .cta-button.primary {
+    background: #2d4a6f;
+    color: white;
+  }
+
+  .cta-button.primary:hover {
+    background: #1a365d;
+    transform: translateY(-2px);
+  }
+
+  .cta-button.secondary {
+    background: transparent;
+    color: #2d4a6f;
+    border: 2px solid #2d4a6f;
+  }
+
+  .cta-button.secondary:hover {
+    background: #2d4a6f;
+    color: white;
+  }
+
+  /* 页脚 */
+  .footer {
+    background: var(--bg-secondary);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .footer-tip {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .footer-quote {
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+  }
+
+  .copyright {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+  }
+
+  .copyright p {
+    margin: 0.3rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .path-container {
+      flex-direction: column;
+    }
+
+    .path-arrow {
+      transform: rotate(90deg);
+    }
+  }
+
+  /* 暗色模式 */
+  [data-theme="dark"] .hero {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #2d3748 100%);
+  }
+
+  [data-theme="dark"] .feature-tag {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+  }
+
+  [data-theme="dark"] .cta-section {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  }
+
+  [data-theme="dark"] .cta-section h2 {
+    color: #93c5fd;
+  }
+</style>
+

@@ -1,0 +1,626 @@
+---
+/**
+ * 实时新闻中心 - 主页
+ * 功能：显示今日重要新闻、AI总结、投资观点、日期选择
+ */
+import Layout from '../../layouts/Layout.astro';
+import DateSelector from '../../components/DateSelector.astro';
+import { readdir, readFile } from 'fs/promises';
+import { join } from 'path';
+
+// 获取URL参数中的日期
+const url = new URL(Astro.request.url);
+const dateParam = url.searchParams.get('date');
+
+// 读取指定日期或最新新闻数据
+async function loadLatestNews(targetDate?: string) {
+  try {
+    const realtimeDir = join(process.cwd(), '../data-sources/storage/news/realtime');
+    const wsjDir = join(process.cwd(), '../data-sources/storage/news/wsj');
+    const today = targetDate || new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 8);
+    
+    let allArticles = [];
+    let summary = null;
+    
+    // 1. 优先读取Google News数据
+    try {
+      const realtimeFiles = await readdir(realtimeDir);
+      const googleNewsFiles = realtimeFiles
+        .filter(f => f.includes('google_news') && f.includes(today) && f.endsWith('.json'))
+        .sort()
+        .reverse();
+      
+      if (googleNewsFiles.length > 0) {
+        const filePath = join(realtimeDir, googleNewsFiles[0]);
+        const content = await readFile(filePath, 'utf-8');
+        allArticles = JSON.parse(content);
+        console.log(`✅ 加载Google News: ${allArticles.length} 条新闻`);
+        
+        // 读取总结
+        const summaryFiles = realtimeFiles
+          .filter(f => f.includes('summary') && f.includes(today) && f.endsWith('.json'))
+          .sort()
+          .reverse();
+        
+        if (summaryFiles.length > 0) {
+          const summaryPath = join(realtimeDir, summaryFiles[0]);
+          summary = JSON.parse(await readFile(summaryPath, 'utf-8'));
+        }
+      }
+    } catch (e) {
+      console.log('Google News数据不可用，尝试WSJ...');
+    }
+    
+    // 2. 如果Google News数据不足，补充WSJ数据
+    if (allArticles.length < 20) {
+      try {
+        const wsjFiles = await readdir(wsjDir);
+        const todayWsjFiles = wsjFiles
+          .filter(f => f.includes(today) && f.endsWith('.json'))
+          .sort()
+          .reverse();
+        
+        for (const file of todayWsjFiles.slice(0, 3)) { // 最多读取3个WSJ文件
+          const filePath = join(wsjDir, file);
+          const content = await readFile(filePath, 'utf-8');
+          const wsjArticles = JSON.parse(content);
+          
+          // 转换WSJ数据格式以匹配Google News格式
+          const convertedArticles = wsjArticles.map(article => ({
+            source: 'wsj',
+            title: article.title,
+            url: article.url,
+            timestamp: article.timestamp,
+            collected_at: article.collected_at || new Date().toISOString(),
+            category: article.category === 'markets' ? 'stocks' : 
+                     article.category === 'world' ? 'economy' : 
+                     article.category === 'opinion' ? 'business' : 'stocks',
+            type: 'news',
+            source_name: 'Wall Street Journal',
+            summary: article.content || ''
+          }));
+          
+          allArticles = allArticles.concat(convertedArticles);
+        }
+        console.log(`✅ 补充WSJ数据: 总计 ${allArticles.length} 条新闻`);
+      } catch (e) {
+        console.log('WSJ数据不可用');
+      }
+    }
+    
+    // 3. 按类别分组
+    const byCategory = {
+      stocks: allArticles.filter(a => a.category === 'stocks'),
+      tech: allArticles.filter(a => a.category === 'tech'),
+      business: allArticles.filter(a => a.category === 'business'),
+      economy: allArticles.filter(a => a.category === 'economy')
+    };
+    
+    // 4. 如果没有总结，生成一个简单的
+    if (!summary && allArticles.length > 0) {
+      const sources = [...new Set(allArticles.map(a => a.source_name))];
+      const categories = Object.keys(byCategory).filter(cat => byCategory[cat].length > 0);
+      
+      summary = {
+        date: today,
+        total_articles: allArticles.length,
+        categories: Object.fromEntries(
+          Object.entries(byCategory).map(([cat, articles]) => [cat, articles.length])
+        ),
+        top_sources: Object.fromEntries(
+          sources.slice(0, 5).map(source => [
+            source, 
+            allArticles.filter(a => a.source_name === source).length
+          ])
+        ),
+        hot_keywords: {
+          'market': allArticles.filter(a => a.title.toLowerCase().includes('market')).length,
+          'stock': allArticles.filter(a => a.title.toLowerCase().includes('stock')).length,
+          'earnings': allArticles.filter(a => a.title.toLowerCase().includes('earnings')).length,
+          'fed': allArticles.filter(a => a.title.toLowerCase().includes('fed')).length
+        }
+      };
+    }
+    
+    return { articles: byCategory, summary, total: allArticles.length };
+  } catch (error) {
+    console.error('Error loading news:', error);
+    return { articles: {}, summary: null, total: 0 };
+  }
+}
+
+const { articles, summary, total } = await loadLatestNews(dateParam || undefined);
+const now = new Date();
+const displayDate = dateParam 
+  ? new Date(dateParam.slice(0, 4) + '-' + dateParam.slice(4, 6) + '-' + dateParam.slice(6, 8))
+  : now;
+---
+
+<Layout title="实时新闻中心">
+  <style>
+    /* 主容器 */
+    .news-hub {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* 页面头部 */
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .page-header h1 {
+      font-size: 2.8em;
+      margin: 0 0 10px 0;
+      font-weight: 700;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 30px;
+      font-size: 0.95em;
+      opacity: 0.95;
+    }
+
+    .header-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 统计卡片 */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card h3 {
+      font-size: 0.9em;
+      color: #666;
+      margin: 0 0 10px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card .number {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: #667eea;
+      margin: 0;
+    }
+
+    /* AI总结区域 */
+    .ai-summary {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 20px;
+      padding: 35px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .ai-summary h2 {
+      font-size: 1.8em;
+      margin: 0 0 20px 0;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .summary-section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-section h4 {
+      font-size: 1.1em;
+      margin: 0 0 15px 0;
+      color: #4a5568;
+      font-weight: 600;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: #667eea;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+      background: #764ba2;
+      transform: scale(1.05);
+    }
+
+    /* 投资观点 */
+    .investment-insight {
+      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      border-left: 5px solid #f59e0b;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .investment-insight h3 {
+      font-size: 1.5em;
+      margin: 0 0 15px 0;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .insight-content {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: #4a5568;
+    }
+
+    .insight-highlight {
+      background: #fef3c7;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    /* 分类导航 */
+    .category-nav {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .category-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: white;
+      border-radius: 30px;
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .category-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .category-icon {
+      font-size: 1.5em;
+    }
+
+    /* 新闻卡片 */
+    .news-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 1.8em;
+      margin: 0 0 20px 0;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .news-card h3 {
+      font-size: 1.15em;
+      margin: 0 0 12px 0;
+      line-height: 1.5;
+      color: #2d3748;
+    }
+
+    .news-card h3 a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .news-card h3 a:hover {
+      color: #667eea;
+    }
+
+    .news-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 0.85em;
+      color: #718096;
+      margin-bottom: 12px;
+    }
+
+    .news-source {
+      background: #edf2f7;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      color: #4a5568;
+    }
+
+    .news-time {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #a0aec0;
+    }
+
+    .empty-state-icon {
+      font-size: 5em;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2em;
+      }
+      
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-nav {
+        justify-content: center;
+      }
+    }
+  </style>
+
+  <div class="news-hub">
+    <!-- 页面头部 -->
+    <header class="page-header">
+      <h1>📰 实时新闻中心</h1>
+      <p class="subtitle">多源聚合 · 智能分析 · 投资洞察</p>
+      <div class="header-meta">
+        <div class="header-meta-item">
+          <span>📅</span>
+          <span>{displayDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+        <div class="header-meta-item">
+          <span>🕐</span>
+          <span>{now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+        <div class="header-meta-item">
+          <span>📊</span>
+          <span>{total} 条新闻</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 日期选择器 -->
+    <DateSelector />
+
+    <!-- 统计卡片 -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3>📈 股票新闻</h3>
+        <p class="number">{articles.stocks?.length || 0}</p>
+      </div>
+      <div class="stat-card">
+        <h3>💻 科技新闻</h3>
+        <p class="number">{articles.tech?.length || 0}</p>
+      </div>
+      <div class="stat-card">
+        <h3>💼 商业新闻</h3>
+        <p class="number">{articles.business?.length || 0}</p>
+      </div>
+      <div class="stat-card">
+        <h3>💰 经济新闻</h3>
+        <p class="number">{articles.economy?.length || 0}</p>
+      </div>
+    </div>
+
+    <!-- AI总结 -->
+    {summary && (
+      <div class="ai-summary">
+        <h2>
+          <span>🤖</span>
+          <span>AI 新闻总结</span>
+        </h2>
+        <div class="summary-grid">
+          <div class="summary-section">
+            <h4>🔥 热门关键词</h4>
+            <div class="tag-cloud">
+              {Object.entries(summary.hot_keywords || {}).slice(0, 8).map(([keyword, count]) => (
+                <span class="tag">{keyword} ({count})</span>
+              ))}
+            </div>
+          </div>
+          <div class="summary-section">
+            <h4>📰 主要来源</h4>
+            <div class="tag-cloud">
+              {Object.entries(summary.top_sources || {}).slice(0, 5).map(([source, count]) => (
+                <span class="tag">{source} ({count})</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- 投资观点 -->
+    <div class="investment-insight">
+      <h3>
+        <span>💡</span>
+        <span>AI 投资观点</span>
+      </h3>
+      <div class="insight-content">
+        <p>基于今日 {total} 条新闻的综合分析：</p>
+        <div class="insight-highlight">
+          📊 <strong>市场情绪</strong>: {summary && Object.keys(summary.hot_keywords || {}).includes('earnings') ? '财报季持续，市场关注企业盈利表现' : '市场保持观望态度，关注宏观经济数据'}
+          <br><br>
+          🎯 <strong>关注板块</strong>: {summary && (Object.keys(summary.hot_keywords || {}).includes('stock') || Object.keys(summary.hot_keywords || {}).includes('stocks')) ? '股市活跃度高，建议关注科技、消费板块' : '多元化配置，关注防御性板块'}
+          <br><br>
+          ⚠️ <strong>风险提示</strong>: 市场波动加大，建议控制仓位，做好风险管理
+        </div>
+      </div>
+    </div>
+
+    <!-- 分类导航 -->
+    <div class="category-nav">
+      <a href="/news/stocks" class="category-link">
+        <span class="category-icon">📈</span>
+        <span>股票板块</span>
+      </a>
+      <a href="/news/tech" class="category-link">
+        <span class="category-icon">💻</span>
+        <span>科技板块</span>
+      </a>
+      <a href="/news/business" class="category-link">
+        <span class="category-icon">💼</span>
+        <span>商业板块</span>
+      </a>
+      <a href="/news/economy" class="category-link">
+        <span class="category-icon">💰</span>
+        <span>经济板块</span>
+      </a>
+    </div>
+
+    <!-- 股票新闻 -->
+    <section class="news-section">
+      <h2 class="section-title">
+        <span>📈</span>
+        <span>股票新闻</span>
+      </h2>
+      {articles.stocks && articles.stocks.length > 0 ? (
+        <div class="news-grid">
+          {articles.stocks.slice(0, 6).map((article) => (
+            <article class="news-card">
+              <h3><a href={article.url} target="_blank" rel="noopener noreferrer">{article.title}</a></h3>
+              <div class="news-meta">
+                <span class="news-source">{article.source_name}</span>
+                <span class="news-time">
+                  <span>🕐</span>
+                  <span>{new Date(article.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <div class="empty-state-icon">📰</div>
+          <h3>暂无股票新闻</h3>
+        </div>
+      )}
+    </section>
+
+    <!-- 科技新闻 -->
+    <section class="news-section">
+      <h2 class="section-title">
+        <span>💻</span>
+        <span>科技新闻</span>
+      </h2>
+      {articles.tech && articles.tech.length > 0 ? (
+        <div class="news-grid">
+          {articles.tech.slice(0, 6).map((article) => (
+            <article class="news-card">
+              <h3><a href={article.url} target="_blank" rel="noopener noreferrer">{article.title}</a></h3>
+              <div class="news-meta">
+                <span class="news-source">{article.source_name}</span>
+                <span class="news-time">
+                  <span>🕐</span>
+                  <span>{new Date(article.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <div class="empty-state-icon">💻</div>
+          <h3>暂无科技新闻</h3>
+        </div>
+      )}
+    </section>
+  </div>
+</Layout>
+

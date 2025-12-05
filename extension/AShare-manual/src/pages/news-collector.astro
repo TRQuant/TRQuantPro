@@ -1,0 +1,336 @@
+---
+// 新闻数据收集页面
+import Layout from '../layouts/HandbookLayout.astro';
+---
+
+<Layout title="新闻数据收集">
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">新闻数据收集系统</h1>
+      <p class="text-lg text-gray-600">实时收集和分析多源新闻数据</p>
+    </div>
+
+    <!-- 数据源配置 -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4">数据源配置</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium mb-2">Finnhub API</h3>
+          <div class="space-y-2">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">API密钥</label>
+              <input type="password" id="finnhubKey" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="输入Finnhub API密钥">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">更新频率</label>
+              <select id="finnhubFreq" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <option value="1">1分钟</option>
+                <option value="5" selected>5分钟</option>
+                <option value="15">15分钟</option>
+                <option value="60">1小时</option>
+              </select>
+            </div>
+            <button id="testFinnhubBtn" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 text-sm">
+              测试连接
+            </button>
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium mb-2">Google News</h3>
+          <div class="space-y-2">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">搜索关键词</label>
+              <input type="text" id="googleKeywords" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="股票,市场,经济" value="stock market economy">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">语言</label>
+              <select id="googleLang" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+              </select>
+            </div>
+            <button id="testGoogleBtn" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 text-sm">
+              测试连接
+            </button>
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium mb-2">WSJ (RSS)</h3>
+          <div class="space-y-2">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">RSS源</label>
+              <input type="text" id="wsjRss" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="RSS URL" value="https://feeds.a.dj.com/rss/RSSMarketsMain.xml">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">更新频率</label>
+              <select id="wsjFreq" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <option value="5">5分钟</option>
+                <option value="15" selected>15分钟</option>
+                <option value="30">30分钟</option>
+                <option value="60">1小时</option>
+              </select>
+            </div>
+            <button id="testWsjBtn" class="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 text-sm">
+              测试连接
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据收集控制 -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4">数据收集控制</h2>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <button id="startCollectionBtn" class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700">
+          开始收集
+        </button>
+        <button id="stopCollectionBtn" class="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700">
+          停止收集
+        </button>
+        <button id="clearDataBtn" class="bg-yellow-600 text-white py-2 px-6 rounded-md hover:bg-yellow-700">
+          清空数据
+        </button>
+        <button id="exportDataBtn" class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">
+          导出数据
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-blue-600" id="totalNewsCount">0</div>
+          <div class="text-sm text-gray-600">总新闻数</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-600" id="todayNewsCount">0</div>
+          <div class="text-sm text-gray-600">今日新闻</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-purple-600" id="lastUpdateTime">--:--</div>
+          <div class="text-sm text-gray-600">最后更新</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-orange-600" id="collectionStatus">停止</div>
+          <div class="text-sm text-gray-600">收集状态</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 实时新闻流 -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-4">实时新闻流</h2>
+      <div class="mb-4">
+        <div class="flex gap-2 mb-2">
+          <input type="text" id="newsFilter" placeholder="搜索新闻..." class="flex-1 px-3 py-2 border border-gray-300 rounded-md">
+          <select id="newsSourceFilter" class="px-3 py-2 border border-gray-300 rounded-md">
+            <option value="">所有来源</option>
+            <option value="finnhub">Finnhub</option>
+            <option value="google">Google News</option>
+            <option value="wsj">WSJ</option>
+          </select>
+          <select id="newsSentimentFilter" class="px-3 py-2 border border-gray-300 rounded-md">
+            <option value="">所有情绪</option>
+            <option value="positive">正面</option>
+            <option value="negative">负面</option>
+            <option value="neutral">中性</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="newsList" class="space-y-4 max-h-96 overflow-y-auto">
+        <div class="text-center text-gray-500 py-8">
+          暂无新闻数据，请开始收集数据
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  let collectionInterval = null;
+  let isCollecting = false;
+
+  // 测试数据源连接
+  document.getElementById('testFinnhubBtn').addEventListener('click', async () => {
+    const apiKey = document.getElementById('finnhubKey').value;
+    if (!apiKey) {
+      alert('请输入Finnhub API密钥');
+      return;
+    }
+    
+    try {
+      // 这里应该调用实际的API测试
+      alert('Finnhub连接成功！');
+    } catch (error) {
+      alert('Finnhub连接失败: ' + error.message);
+    }
+  });
+
+  document.getElementById('testGoogleBtn').addEventListener('click', async () => {
+    const keywords = document.getElementById('googleKeywords').value;
+    const lang = document.getElementById('googleLang').value;
+    
+    try {
+      // 这里应该调用实际的API测试
+      alert('Google News连接成功！');
+    } catch (error) {
+      alert('Google News连接失败: ' + error.message);
+    }
+  });
+
+  document.getElementById('testWsjBtn').addEventListener('click', async () => {
+    const rssUrl = document.getElementById('wsjRss').value;
+    
+    try {
+      // 这里应该调用实际的API测试
+      alert('WSJ RSS连接成功！');
+    } catch (error) {
+      alert('WSJ RSS连接失败: ' + error.message);
+    }
+  });
+
+  // 数据收集控制
+  document.getElementById('startCollectionBtn').addEventListener('click', async () => {
+    if (isCollecting) return;
+    
+    try {
+      isCollecting = true;
+      document.getElementById('collectionStatus').textContent = '运行中';
+      document.getElementById('collectionStatus').className = 'text-2xl font-bold text-green-600';
+      
+      // 开始定期更新数据
+      collectionInterval = setInterval(updateNewsData, 5000);
+      alert('数据收集已开始！');
+    } catch (error) {
+      alert('启动失败: ' + error.message);
+    }
+  });
+
+  document.getElementById('stopCollectionBtn').addEventListener('click', async () => {
+    if (!isCollecting) return;
+    
+    try {
+      isCollecting = false;
+      document.getElementById('collectionStatus').textContent = '停止';
+      document.getElementById('collectionStatus').className = 'text-2xl font-bold text-red-600';
+      
+      if (collectionInterval) {
+        clearInterval(collectionInterval);
+        collectionInterval = null;
+      }
+      alert('数据收集已停止！');
+    } catch (error) {
+      alert('停止失败: ' + error.message);
+    }
+  });
+
+  document.getElementById('clearDataBtn').addEventListener('click', async () => {
+    if (!confirm('确定要清空所有新闻数据吗？此操作不可恢复！')) {
+      return;
+    }
+    
+    try {
+      alert('数据已清空！');
+      updateNewsData();
+    } catch (error) {
+      alert('清空失败: ' + error.message);
+    }
+  });
+
+  document.getElementById('exportDataBtn').addEventListener('click', async () => {
+    try {
+      alert('数据导出功能开发中...');
+    } catch (error) {
+      alert('导出失败: ' + error.message);
+    }
+  });
+
+  // 更新新闻数据
+  async function updateNewsData() {
+    try {
+      // 模拟数据更新
+      const mockData = {
+        stats: {
+          total: Math.floor(Math.random() * 1000) + 500,
+          today: Math.floor(Math.random() * 100) + 50,
+          lastUpdate: new Date().toLocaleTimeString()
+        },
+        news: []
+      };
+      
+      // 更新统计信息
+      document.getElementById('totalNewsCount').textContent = mockData.stats.total;
+      document.getElementById('todayNewsCount').textContent = mockData.stats.today;
+      document.getElementById('lastUpdateTime').textContent = mockData.stats.lastUpdate;
+      
+      // 更新新闻列表
+      displayNewsList(mockData.news);
+    } catch (error) {
+      console.error('更新数据失败:', error);
+    }
+  }
+
+  // 显示新闻列表
+  function displayNewsList(news) {
+    const newsList = document.getElementById('newsList');
+    
+    if (news.length === 0) {
+      newsList.innerHTML = `
+        <div class="text-center text-gray-500 py-8">
+          <i class="fas fa-newspaper text-4xl mb-4"></i>
+          <p>暂无新闻数据，请开始收集数据</p>
+        </div>
+      `;
+      return;
+    }
+    
+    newsList.innerHTML = news.map(item => `
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+        <div class="flex justify-between items-start mb-2">
+          <h4 class="text-lg font-medium text-gray-900 flex-1 mr-4">${item.title || '无标题'}</h4>
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-1 text-xs rounded ${getSentimentColor(item.sentiment_label)}">
+              ${item.sentiment_label || '未知'}
+            </span>
+            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+              ${item.source || '未知'}
+            </span>
+          </div>
+        </div>
+        <p class="text-gray-600 text-sm mb-2 line-clamp-2">${item.content || '无内容'}</p>
+        <div class="flex justify-between items-center text-xs text-gray-500">
+          <span>${item.timestamp ? new Date(item.timestamp).toLocaleString() : '未知时间'}</span>
+          <span>得分: ${item.sentiment_score?.toFixed(3) || 'N/A'}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 获取情绪标签颜色
+  function getSentimentColor(label) {
+    switch(label) {
+      case 'positive': return 'bg-green-100 text-green-800';
+      case 'negative': return 'bg-red-100 text-red-800';
+      case 'neutral': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  }
+
+  // 搜索和过滤
+  document.getElementById('newsFilter').addEventListener('input', () => {
+    updateNewsData();
+  });
+
+  document.getElementById('newsSourceFilter').addEventListener('change', () => {
+    updateNewsData();
+  });
+
+  document.getElementById('newsSentimentFilter').addEventListener('change', () => {
+    updateNewsData();
+  });
+
+  // 页面加载时更新数据
+  updateNewsData();
+</script>

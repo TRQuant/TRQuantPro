@@ -1,0 +1,89 @@
+/* ========== 对齐格式修正 ========== */
+/* 确保所有component-card的标题居中，内容靠左对齐 */
+
+.component-card h4 {
+  text-align: center !important;
+  margin-bottom: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.component-card p {
+  text-align: left !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+.component-card ul {
+  text-align: left !important;
+  margin: 0.5rem 0 !important;
+  padding-left: 0 !important;
+  list-style: none !important;
+}
+
+.component-card li {
+  text-align: left !important;
+  margin: 0.75rem 0 !important;
+  padding-left: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.component-card strong {
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+  display: inline-block !important;
+  min-width: 80px !important;
+  margin-right: 8px !important;
+}
+
+/* 确保strategy-card也保持一致 */
+.strategy-card h5 {
+  text-align: center !important;
+  margin-bottom: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.strategy-card p {
+  text-align: left !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+.strategy-card ul {
+  text-align: left !important;
+  margin: 0.5rem 0 !important;
+  padding-left: 0 !important;
+  list-style: none !important;
+}
+
+.strategy-card li {
+  text-align: left !important;
+  margin: 0.75rem 0 !important;
+  padding-left: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.strategy-card strong {
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+  display: inline-block !important;
+  min-width: 80px !important;
+  margin-right: 8px !important;
+}
+
+/* 确保所有卡片内容严格左对齐 */
+.component-card > *,
+.strategy-card > * {
+  text-align: left !important;
+}
+
+/* 标题居中，其他内容左对齐 */
+.component-card > h4,
+.strategy-card > h5 {
+  text-align: center !important;
+}
+
+/* 移除所有不必要的缩进 */
+.component-card *,
+.strategy-card * {
+  text-indent: 0 !important;
+} 

@@ -1,0 +1,930 @@
+/* ========== 🇨🇳 A股手册专用组件样式 v1.0 ========== */
+/* 扩展统一设计系统，为A股手册提供特定组件 */
+
+/* === A股主题色定义 === */
+:root {
+  --ashare-red: #c41e3a;
+  --ashare-red-light: #dc143c;
+  --ashare-red-dark: #a01830;
+  --ashare-gold: #d4a574;
+  --ashare-gold-light: #e8c49a;
+}
+
+/* === 0. 章节内导航概览（可点击跳转） === */
+.section-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.section-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  border-color: var(--ashare-red);
+}
+
+.section-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.section-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 0.1 拓展阅读列表 === */
+.reading-list {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.reading-list h4 {
+  margin: 0 0 1rem 0;
+  color: var(--ashare-red);
+  font-size: 1.1rem;
+}
+
+.reading-category {
+  margin-bottom: 1.25rem;
+}
+
+.reading-category:last-child {
+  margin-bottom: 0;
+}
+
+.reading-category h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.reading-category ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.reading-category li {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* === 0.2 总结展望模块 === */
+.summary-outlook {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-secondary) 100%);
+  border: 2px solid var(--ashare-red);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.summary-outlook h3 {
+  margin: 0 0 1rem 0;
+  color: var(--ashare-red);
+  font-size: 1.2rem;
+}
+
+.summary-outlook p {
+  margin: 0.75rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.summary-outlook .next-section {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--ashare-red);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.summary-outlook .next-section:hover {
+  background: var(--ashare-red-light);
+  transform: translateX(3px);
+}
+
+/* === 0.3 实战技巧/案例卡片 === */
+.practice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.practice-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.practice-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.practice-card h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--ashare-red);
+  font-size: 1.05rem;
+}
+
+.practice-card p {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.practice-card ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.practice-card li {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* === 0.4 工具推荐框 === */
+.tool-recommendation {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--ashare-red);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.tool-recommendation strong {
+  color: var(--ashare-red);
+}
+
+/* === 1. 交易所卡片系统 === */
+.exchange-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.exchange-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.exchange-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.exchange-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.exchange-icon {
+  font-size: 1.5rem;
+}
+
+.exchange-header h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.exchange-year {
+  background: var(--bg-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.exchange-content p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.exchange-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.exchange-features .feature {
+  background: linear-gradient(135deg, var(--ashare-red) 0%, var(--ashare-red-light) 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* === 2. 时间线系统 === */
+.timeline {
+  position: relative;
+  margin: 2rem 0;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--ashare-red) 0%, var(--ashare-red-light) 100%);
+  border-radius: 3px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 0.5rem;
+  width: 12px;
+  height: 12px;
+  background: var(--ashare-red);
+  border-radius: 50%;
+  border: 3px solid var(--bg-primary);
+  box-shadow: 0 0 0 3px var(--ashare-red);
+}
+
+.timeline-year {
+  display: inline-block;
+  background: var(--bg-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: bold;
+  color: var(--ashare-red);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.timeline-content h4 {
+  margin: 0 0 0.25rem 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.timeline-content p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 3. 对比表格系统 === */
+.comparison-table {
+  overflow-x: auto;
+  margin: 2rem 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.comparison-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.comparison-table th {
+  background: linear-gradient(135deg, var(--ashare-red) 0%, var(--ashare-red-light) 100%);
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.comparison-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.comparison-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.comparison-table tr:last-child td:first-child {
+  border-radius: 0 0 0 12px;
+}
+
+.comparison-table tr:last-child td:last-child {
+  border-radius: 0 0 12px 0;
+}
+
+.comparison-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.comparison-table td strong {
+  color: var(--text-primary);
+}
+
+/* === 4. 板块详情卡片 === */
+.board-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.board-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.board-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border-color: var(--ashare-red);
+}
+
+.board-card h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--ashare-red);
+}
+
+.board-content p {
+  margin: 0.75rem 0 0.25rem 0;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.board-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.board-content li {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* === 5. 指数卡片系统 === */
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.index-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.index-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--ashare-red);
+}
+
+.index-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.index-header h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.index-code {
+  background: var(--bg-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-secondary);
+}
+
+.index-card > p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.index-note {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(196, 30, 58, 0.1);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--ashare-red);
+  border-left: 3px solid var(--ashare-red);
+}
+
+/* === 6. 门槛展示卡片 === */
+.threshold-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.threshold-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.threshold-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border-color: var(--ashare-red);
+}
+
+.threshold-card h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.threshold-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ashare-red);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.threshold-content ul {
+  text-align: left;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.threshold-content li {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* === 7. 适当性建议卡片 === */
+.suitability-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.suitability-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.suitability-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.suitability-item h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--ashare-red);
+  font-size: 1rem;
+}
+
+.suitability-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* === 8. 提示框系统 === */
+.tip-box {
+  background: var(--card-bg);
+  border: 2px solid var(--ashare-red);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.tip-box h4 {
+  margin: 0 0 1rem 0;
+  color: var(--ashare-red);
+  font-size: 1.1rem;
+}
+
+.tip-box ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.tip-box li {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.tip-box li strong {
+  color: var(--text-primary);
+}
+
+/* === 9. 警告/信息框 === */
+.warning-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-left: 4px solid #d97706;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.warning-box p {
+  margin: 0;
+  color: #92400e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.info-box {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-left: 4px solid #2563eb;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.success-box {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.success-box p {
+  margin: 0;
+  color: #166534;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 10. 因子卡片系统 === */
+.factor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.factor-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.factor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border-color: var(--ashare-red);
+}
+
+.factor-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.factor-icon {
+  font-size: 1.5rem;
+}
+
+.factor-header h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.factor-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.factor-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.factor-metric {
+  background: var(--bg-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* === 11. 案例研究卡片 === */
+.case-study {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.case-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--ashare-red);
+}
+
+.case-icon {
+  font-size: 2rem;
+}
+
+.case-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.case-header .case-tag {
+  background: var(--ashare-red);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.case-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.case-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--ashare-red);
+  font-size: 0.95rem;
+}
+
+.case-section p, .case-section ul {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.case-section ul {
+  padding-left: 1.25rem;
+}
+
+.case-section li {
+  margin: 0.25rem 0;
+}
+
+/* === 12. 数据表格增强 === */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.data-table th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--ashare-red);
+}
+
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.data-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.data-table .positive {
+  color: var(--ashare-red);
+  font-weight: 600;
+}
+
+.data-table .negative {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* === 13. 暗色主题适配 === */
+[data-theme="dark"] .exchange-features .feature {
+  background: linear-gradient(135deg, var(--ashare-red-dark) 0%, var(--ashare-red) 100%);
+}
+
+[data-theme="dark"] .timeline::before {
+  background: linear-gradient(180deg, var(--ashare-red-light) 0%, var(--ashare-red) 100%);
+}
+
+[data-theme="dark"] .timeline-item::before {
+  background: var(--ashare-red-light);
+  box-shadow: 0 0 0 3px var(--ashare-red-light);
+}
+
+[data-theme="dark"] .timeline-year {
+  color: var(--ashare-red-light);
+}
+
+[data-theme="dark"] .comparison-table th {
+  background: linear-gradient(135deg, var(--ashare-red-dark) 0%, var(--ashare-red) 100%);
+}
+
+[data-theme="dark"] .warning-box {
+  background: linear-gradient(135deg, #1f1611 0%, #2a1f0f 100%);
+}
+
+[data-theme="dark"] .warning-box p {
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .info-box {
+  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+}
+
+[data-theme="dark"] .info-box p {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .success-box {
+  background: linear-gradient(135deg, #0f1f14 0%, #1a2e1a 100%);
+}
+
+[data-theme="dark"] .success-box p {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .index-note {
+  background: rgba(196, 30, 58, 0.2);
+  color: var(--ashare-red-light);
+}
+
+[data-theme="dark"] .case-study {
+  background: linear-gradient(135deg, #2a2d2e 0%, #232526 100%);
+}
+
+/* === 14. 响应式设计 === */
+@media (max-width: 768px) {
+  .exchange-grid,
+  .board-details,
+  .index-grid,
+  .threshold-grid,
+  .suitability-section,
+  .factor-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timeline {
+    padding-left: 1.5rem;
+  }
+  
+  .timeline-item {
+    padding-left: 1rem;
+  }
+  
+  .timeline-item::before {
+    left: -1.5rem;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .case-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .case-header {
+    flex-wrap: wrap;
+  }
+  
+  .case-header .case-tag {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .exchange-card,
+  .board-card,
+  .index-card,
+  .threshold-card,
+  .factor-card,
+  .case-study {
+    padding: 1rem;
+  }
+  
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
