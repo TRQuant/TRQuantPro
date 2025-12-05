@@ -1,0 +1,2472 @@
+---
+import PDFExportButton from '../components/PDFExportButton.astro';
+
+export interface Props {
+  title: string;
+  lang?: string;
+  alt?: string;
+  currentBook?: string;
+  currentChapter?: string;
+}
+
+const { title, lang = 'zh-CN', alt = '', currentBook = 'theory', currentChapter = '' } = Astro.props;
+const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en/'));
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="A股高倍股实操手册 - 完整知识体系" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 顶部导航栏 -->
+      <header class="top-nav" id="topNav">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏">📚</button>
+        </div>
+        <div class="nav-right">
+          <button id="homeBtn" class="nav-control-btn home-btn" title="返回首页">🏠</button>
+          <button id="tocBtn" class="nav-control-btn toc-btn" title="返回目录">📚</button>
+          <button id="prevPageBtn" class="page-nav-btn" title="上一页">上一页</button>
+          <button id="nextPageBtn" class="page-nav-btn" title="下一页">下一页</button>
+          <PDFExportButton />
+          <button id="toggleReadingMode" class="reading-btn" title="专注阅读模式">📖</button>
+          <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button id="decreaseFont" class="font-btn" title="缩小字体">A-</button>
+          <button id="increaseFont" class="font-btn" title="放大字体">A+</button>
+          <button class="lang-btn" id="langSwitchEn" title="Translate to English">EN</button>
+          <button class="lang-btn" id="langSwitchCn" title="恢复中文原文">CN</button>
+        </div>
+      </header>
+
+      <!-- 阅读进度条（专注模式显示） -->
+      <div class="reading-progress" id="readingProgress" style="display: none;">
+        <div class="reading-progress-bar" id="readingProgressBar"></div>
+      </div>
+      
+      <!-- 侧边栏 -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2 id="sidebarTitle">🇨🇳 A股高倍股实操手册</h2>
+        </div>
+        
+        <nav class="sidebar-nav" id="sidebarNav">
+          <!-- 动态生成导航内容 -->
+        </nav>
+      </aside>
+
+      <!-- 主内容区 -->
+      <main class="main-content" id="mainContent">
+        <slot />
+      </main>
+
+
+
+      <!-- 章节导航（仅book1章节页面显示） -->
+      <div class="chapter-nav" id="chapterNav" style="display: none;">
+        <button class="chapter-btn prev-chapter" id="prevChapter" disabled>
+          <span class="chapter-icon">←</span>
+          <span class="chapter-text">上一章</span>
+        </button>
+        <button class="chapter-btn next-chapter" id="nextChapter">
+          <span class="chapter-text">下一章</span>
+          <span class="chapter-icon">→</span>
+        </button>
+      </div>
+
+      <!-- 回到顶部按钮 -->
+      <button id="backToTop" class="back-to-top" aria-label="回到顶部" style="display: none;">↑</button>
+    </div>
+
+    <style is:global>
+      @import '../styles/style.css';
+      @import '../styles/components.css';
+      @import '../styles/ashare-components.css';
+
+      /* 容器 */
+      .container {
+        position: relative;
+        min-height: 100vh;
+      }
+
+      /* 顶部导航栏 */
+      .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        height: 48px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        z-index: 1100;
+        transition: all 0.3s ease;
+      }
+
+      .nav-left, .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* 按钮基础样式 */
+      .sidebar-toggle,
+      .reading-btn,
+      .theme-toggle,
+      .font-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .sidebar-toggle:hover,
+      .reading-btn:hover,
+      .theme-toggle:hover,
+      .font-btn:hover {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      }
+
+      .sidebar-toggle:active,
+      .reading-btn:active,
+      .theme-toggle:active,
+      .font-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* 翻页按钮样式 */
+      .page-nav-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 50px;
+        height: 40px;
+      }
+
+      .page-nav-btn:hover {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      }
+
+      .page-nav-btn:active {
+        transform: translateY(0);
+      }
+
+      #prevPageBtn {
+        background: linear-gradient(135deg, #2196f3, #42a5f5);
+      }
+
+      #nextPageBtn {
+        background: linear-gradient(135deg, #ff9800, #ffb74d);
+      }
+
+      #prevPageBtn:hover {
+        background: linear-gradient(135deg, #1976d2, #2196f3);
+      }
+
+      #nextPageBtn:hover {
+        background: linear-gradient(135deg, #f57c00, #ff9800);
+      }
+
+      #prevPageBtn:disabled,
+      #nextPageBtn:disabled {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      #prevPageBtn:disabled:hover,
+      #nextPageBtn:disabled:hover {
+        transform: none;
+        background: var(--bg-secondary);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      /* 重新定义翻页按钮完整样式 */
+      .page-nav-btn {
+        padding: 8px 12px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        min-width: 60px;
+        height: 40px;
+      }
+
+      .page-nav-btn:hover {
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      }
+
+      .page-nav-btn:active {
+        transform: translateY(0);
+      }
+
+      /* 导航控制按钮样式 */
+      .nav-control-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        color: white;
+        font-weight: 600;
+      }
+
+      .nav-control-btn.home-btn {
+        background: linear-gradient(135deg, #4caf50, #66bb6a);
+      }
+
+      .nav-control-btn.toc-btn {
+        background: linear-gradient(135deg, #ff9800, #ffb74d);
+      }
+
+      .nav-control-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      }
+
+      .nav-control-btn:active {
+        transform: translateY(0) scale(0.95);
+      }
+
+      /* 语言切换按钮 */
+      .lang-btn {
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        font-size: 14px;
+        min-width: 45px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lang-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      /* EN按钮特殊样式 */
+      #langSwitchEn {
+        background: linear-gradient(135deg, #2196f3, #42a5f5);
+        color: white;
+        border: none;
+      }
+
+      #langSwitchEn:hover {
+        background: linear-gradient(135deg, #1976d2, #2196f3);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+      }
+
+      /* CN按钮特殊样式 */
+      #langSwitchCn {
+        background: linear-gradient(135deg, #ff9800, #ffb74d);
+        color: white;
+        border: none;
+      }
+
+      #langSwitchCn:hover {
+        background: linear-gradient(135deg, #f57c00, #ff9800);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+      }
+
+      /* 阅读进度条 */
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--bg-secondary);
+        z-index: 1200;
+      }
+
+      .reading-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      /* 侧边栏 */
+      .sidebar {
+        position: fixed;
+        top: 48px;
+        left: -380px;
+        width: 380px;
+        height: calc(100vh - 48px);
+        background: var(--card-bg);
+        border-right: 1px solid var(--border-color);
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 2px solid var(--border-color);
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        position: relative;
+      }
+
+      .sidebar-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(255,255,255,0.2);
+      }
+
+      .sidebar-header h2 {
+        margin: 0;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      .sidebar-nav {
+        padding: 16px 0;
+      }
+
+      .nav-group {
+        margin-bottom: 8px;
+      }
+
+      .nav-group-title {
+        padding: 12px 20px 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        margin: 2px 0;
+        position: relative;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-secondary);
+        border-left-color: var(--primary-color);
+        color: var(--primary-color);
+        transform: translateX(4px);
+      }
+
+      .nav-item.active {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: white;
+        border-left-color: var(--primary-dark);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      .nav-item.active::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+      }
+
+      .chapter-number {
+        margin-right: 14px;
+        font-size: 1.2rem;
+        min-width: 28px;
+        text-align: center;
+      }
+
+      .chapter-title {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+
+      /* 侧边栏滚动条美化 */
+      .sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      .sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark);
+      }
+
+      /* 主内容区 */
+      .main-content {
+        margin-top: 48px;
+        padding: 0 25px 20px 25px;
+        min-height: calc(100vh - 48px);
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        transition: all 0.3s ease;
+      }
+
+      /* 当侧边栏打开时，主内容区稍微调整 */
+      .sidebar.open ~ .main-content {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+
+
+      /* 章节导航 */
+      .chapter-nav {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 16px;
+        z-index: 900;
+      }
+
+      .chapter-btn {
+        display: flex;
+        align-items: center;
+          gap: 8px;
+        padding: 12px 20px;
+        border-radius: 25px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      .chapter-btn:hover:not(:disabled) {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      }
+
+      .chapter-btn:disabled {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .chapter-icon {
+        font-size: 1.1rem;
+      }
+
+      .chapter-text {
+        font-size: 0.9rem;
+      }
+
+      /* 回到顶部按钮 */
+      .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 900;
+      }
+
+      .back-to-top:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      }
+
+      /* 专注阅读模式 */
+      .focus-mode .top-nav {
+        background: var(--bg-overlay);
+        backdrop-filter: blur(10px);
+        border: none;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+      }
+
+      .focus-mode .top-nav .nav-left {
+        visibility: hidden;
+      }
+
+      .focus-mode .top-nav .nav-right {
+        display: flex;
+        gap: 12px;
+      }
+
+      .focus-mode .top-nav .page-nav-btn {
+        display: flex;
+      }
+
+      .focus-mode .top-nav .reading-btn {
+        display: flex;
+      }
+
+      .focus-mode .top-nav .theme-toggle {
+        display: flex;
+      }
+
+      .focus-mode .top-nav .font-btn {
+        display: flex;
+      }
+
+      .focus-mode .top-nav .lang-btn {
+        display: flex;
+      }
+
+      .focus-mode .sidebar {
+        display: none;
+      }
+
+      .focus-mode .main-content {
+        margin-left: 0;
+        max-width: 800px;
+        margin: 48px auto 0;
+        padding: 40px;
+        background: var(--card-bg);
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+      }
+
+      .focus-mode .left-nav,
+      .focus-mode .chapter-nav {
+        display: none;
+      }
+
+      .focus-mode .back-to-top {
+        display: flex;
+      }
+
+      .focus-mode .reading-progress {
+        display: block;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 1200px) {
+        .main-content {
+          max-width: 1000px;
+          padding: 0 20px 20px 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .top-nav {
+          padding: 0 12px;
+        }
+
+        .nav-left, .nav-right {
+          gap: 8px;
+        }
+
+        .sidebar-toggle,
+        .reading-btn,
+        .theme-toggle,
+        .font-btn {
+        width: 40px;
+        height: 40px;
+          font-size: 16px;
+        }
+
+        .page-nav-btn {
+          padding: 6px 10px;
+          font-size: 12px;
+          min-width: 50px;
+          height: 40px;
+        }
+
+        .lang-btn {
+          padding: 6px 12px;
+          font-size: 0.9rem;
+        }
+
+        .sidebar {
+          width: 380px;
+          left: -380px;
+        }
+
+        .main-content {
+          max-width: 100%;
+          padding: 0 20px 20px 20px;
+          margin-left: 0;
+          margin-right: 0;
+        }
+
+
+        .chapter-nav {
+          bottom: 10px;
+        }
+
+        .chapter-btn {
+          padding: 10px 16px;
+        }
+
+        .chapter-text {
+          display: none;
+        }
+
+        .back-to-top {
+          bottom: 10px;
+          right: 10px;
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem;
+        }
+
+        .focus-mode .main-content {
+          padding: 20px;
+          margin: 56px 10px 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .top-nav {
+          height: 48px;
+        }
+
+        .main-content {
+          margin-top: 48px;
+        }
+
+        .sidebar {
+          top: 48px;
+          height: calc(100vh - 48px);
+        }
+
+        .focus-mode .main-content {
+          margin-top: 48px;
+        }
+      }
+
+
+    </style>
+
+    <script>
+      // 全局状态管理
+      const state = {
+        theme: localStorage.getItem('theme') || 'light',
+        fontSize: parseInt(localStorage.getItem('fontSize') || '16', 10),
+        focusMode: localStorage.getItem('focusMode') === 'true',
+        currentBook: '${currentBook}',
+        currentChapter: '${currentChapter}'
+      };
+
+      // 初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        initializeTheme();
+        initializeFontSize();
+        initializeFocusMode();
+        initializeSidebar();
+        initializeNavigation();
+        initializeLanguageSwitch();
+        initializeBackToTop();
+        initializeReadingProgress();
+        setupKeyboardShortcuts();
+      });
+
+      // 主题管理
+      function initializeTheme() {
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = themeToggle?.querySelector('.theme-icon');
+      
+        document.documentElement.setAttribute('data-theme', state.theme);
+        if (themeIcon) {
+          themeIcon.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        themeToggle?.addEventListener('click', () => {
+          state.theme = state.theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', state.theme);
+          localStorage.setItem('theme', state.theme);
+          
+      if (themeIcon) {
+            themeIcon.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+          }
+        });
+      }
+
+      // 字体大小管理
+      function initializeFontSize() {
+        const decreaseFont = document.getElementById('decreaseFont');
+        const increaseFont = document.getElementById('increaseFont');
+        
+        document.body.style.fontSize = state.fontSize + 'px';
+        
+        decreaseFont?.addEventListener('click', () => {
+          if (state.fontSize > 12) {
+            state.fontSize -= 2;
+            document.body.style.fontSize = state.fontSize + 'px';
+            localStorage.setItem('fontSize', state.fontSize.toString());
+          }
+        });
+        
+        increaseFont?.addEventListener('click', () => {
+          if (state.fontSize < 24) {
+            state.fontSize += 2;
+            document.body.style.fontSize = state.fontSize + 'px';
+            localStorage.setItem('fontSize', state.fontSize.toString());
+          }
+        });
+      }
+      
+      // 专注阅读模式
+      function initializeFocusMode() {
+        const readingModeBtn = document.getElementById('toggleReadingMode');
+        
+        // 初始化时设置正确的图标和状态
+        if (state.focusMode) {
+          document.body.classList.add('focus-mode');
+          if (readingModeBtn) {
+            readingModeBtn.textContent = '📚';
+            readingModeBtn.title = '退出专注模式';
+          }
+          showReadingProgress();
+        } else {
+          document.body.classList.remove('focus-mode');
+          if (readingModeBtn) {
+            readingModeBtn.textContent = '📖';
+            readingModeBtn.title = '专注阅读模式';
+          }
+          hideReadingProgress();
+        }
+        
+        // 添加点击事件监听器
+        readingModeBtn?.addEventListener('click', () => {
+          document.body.classList.toggle('focus-mode');
+          state.focusMode = document.body.classList.contains('focus-mode');
+          
+          if (readingModeBtn) {
+            readingModeBtn.textContent = state.focusMode ? '📚' : '📖';
+            readingModeBtn.title = state.focusMode ? '退出专注模式' : '专注阅读模式';
+          }
+          
+          localStorage.setItem('focusMode', state.focusMode.toString());
+          
+          if (state.focusMode) {
+            showReadingProgress();
+          } else {
+            hideReadingProgress();
+          }
+        });
+      }
+
+      // 侧边栏管理
+      function initializeSidebar() {
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      sidebarToggle?.addEventListener('click', () => {
+        sidebar?.classList.toggle('open');
+      });
+      
+        // 点击外部关闭侧边栏
+        document.addEventListener('click', (e) => {
+        const target = e.target as Node;
+        if (sidebar && sidebarToggle && target &&
+            !sidebar.contains(target) && 
+            !sidebarToggle.contains(target)) {
+          sidebar.classList.remove('open');
+          }
+        });
+        
+        // 生成侧边栏内容
+        generateSidebarContent();
+      }
+
+      // 生成侧边栏内容
+      function generateSidebarContent() {
+        const sidebarTitle = document.getElementById('sidebarTitle');
+        const sidebarNav = document.getElementById('sidebarNav');
+        
+        if (!sidebarTitle || !sidebarNav) return;
+        
+        // 根据当前页面路径判断当前册子
+        const currentPath = window.location.pathname;
+        let currentBook = 'home'; // 默认首页
+        
+        if (currentPath === '/' || currentPath === '/index.html') {
+          currentBook = 'home';
+        } else if (currentPath === '/000_Series_Preface_CN') {
+          // 总序页面显示手册总目录
+          currentBook = 'home';
+        } else if (currentPath === '/handbook/theory' || currentPath.includes('/handbook/theory')) {
+          // 第一册章节导航页面显示第一册导航
+          currentBook = 'theory';
+        } else if (currentPath.startsWith('/book1/') && currentPath.endsWith('_CN')) {
+          // 第一册章节主页显示第一册导航
+          currentBook = 'theory';
+        } else if (currentPath.includes('/book1/') && currentPath.includes('/')) {
+          // 第一册子章节页面显示对应章节的子导航
+          if (currentPath.includes('001_Chapter1')) {
+            currentBook = 'theory-chapter1';
+          } else if (currentPath.includes('002_Chapter2')) {
+            currentBook = 'theory-chapter2';
+          } else if (currentPath.includes('003_Chapter3')) {
+            currentBook = 'theory-chapter3';
+          } else if (currentPath.includes('004_Chapter4')) {
+            currentBook = 'theory-chapter4';
+          } else if (currentPath.includes('005_Chapter5')) {
+            currentBook = 'theory-chapter5';
+          } else if (currentPath.includes('006_Chapter6')) {
+            currentBook = 'theory-chapter6';
+          } else if (currentPath.includes('007_Chapter7')) {
+            currentBook = 'theory-chapter7';
+          } else if (currentPath.includes('008_Chapter8')) {
+            currentBook = 'theory-chapter8';
+          } else if (currentPath.includes('009_Chapter9')) {
+            currentBook = 'theory-chapter9';
+          } else if (currentPath.includes('010_Chapter10')) {
+            currentBook = 'theory-chapter10';
+          } else if (currentPath.includes('011_Appendix')) {
+            currentBook = 'theory-appendix';
+          } else {
+            currentBook = 'theory';
+          }
+        } else if (currentPath.startsWith('/book2/') || currentPath.includes('/book2/') ||
+            currentPath.includes('201_Chapter1') || currentPath.includes('202_Chapter2') ||
+            currentPath.includes('203_Chapter3') || currentPath.includes('204_Chapter4') ||
+            currentPath.includes('205_Chapter5') || currentPath.includes('206_Chapter6') ||
+            currentPath.includes('207_Chapter7') || currentPath.includes('208_Chapter8') ||
+            currentPath.includes('209_Chapter9') || currentPath.includes('210_Chapter10') ||
+            currentPath.includes('211_Chapter11') || currentPath.includes('212_Appendix')) {
+          currentBook = 'macro';
+        } else if (currentPath === '/handbook/macro' || currentPath.includes('/handbook/macro')) {
+          currentBook = 'macro';
+        } else if (currentPath === '/handbook/stocks' || currentPath.includes('/handbook/stocks')) {
+          currentBook = 'stocks';
+        } else if (currentPath === '/handbook/technical' || currentPath.includes('/handbook/technical')) {
+          currentBook = 'technical';
+        } else if (currentPath.startsWith('/book4/') || currentPath.includes('/book4/')) {
+          // 第四册章节页面显示对应章节的子导航
+          if (currentPath.includes('401_Chapter1')) {
+            currentBook = 'technical-chapter1';
+          } else if (currentPath.includes('402_Chapter2')) {
+            currentBook = 'technical-chapter2';
+          } else if (currentPath.includes('403_Chapter3')) {
+            currentBook = 'technical-chapter3';
+          } else if (currentPath.includes('404_Chapter4')) {
+            currentBook = 'technical-chapter4';
+          } else if (currentPath.includes('405_Chapter5')) {
+            currentBook = 'technical-chapter5';
+          } else if (currentPath.includes('406_Chapter6')) {
+            currentBook = 'technical-chapter6';
+          } else if (currentPath.includes('407_Chapter7')) {
+            currentBook = 'technical-chapter7';
+          } else if (currentPath.includes('408_Chapter8')) {
+            currentBook = 'technical-chapter8';
+          } else if (currentPath.includes('409_Chapter9')) {
+            currentBook = 'technical-chapter9';
+          } else if (currentPath.includes('410_Chapter10')) {
+            currentBook = 'technical-chapter10';
+          } else if (currentPath.includes('411_Chapter11')) {
+            currentBook = 'technical-chapter11';
+          } else if (currentPath.includes('412_Chapter12')) {
+            currentBook = 'technical-chapter12';
+          } else {
+            currentBook = 'technical';
+          }
+        } else if (currentPath === '/handbook/quantitative' || currentPath.includes('/handbook/quantitative')) {
+          currentBook = 'quantitative';
+        }
+        // A股手册第一册 - 检测 /ashare-book1/ 路径
+        else if (currentPath.startsWith('/ashare-book1/001_Chapter1/')) {
+          // 第一章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter1';
+        }
+        else if (currentPath.startsWith('/ashare-book1/002_Chapter2/')) {
+          // 第二章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter2';
+        }
+        else if (currentPath.startsWith('/ashare-book1/003_Chapter3/')) {
+          // 第三章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter3';
+        }
+        else if (currentPath.startsWith('/ashare-book1/004_Chapter4/')) {
+          // 第四章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter4';
+        }
+        else if (currentPath.startsWith('/ashare-book1/005_Chapter5/')) {
+          // 第五章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter5';
+        }
+        else if (currentPath.startsWith('/ashare-book1/006_Chapter6/')) {
+          // 第六章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter6';
+        }
+        else if (currentPath.startsWith('/ashare-book1/007_Chapter7/')) {
+          // 第七章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter7';
+        }
+        else if (currentPath.startsWith('/ashare-book1/008_Chapter8/')) {
+          // 第八章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter8';
+        }
+        else if (currentPath.startsWith('/ashare-book1/009_Chapter9/')) {
+          // 第九章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter9';
+        }
+        else if (currentPath.startsWith('/ashare-book1/010_Chapter10/')) {
+          // 第十章小节页面使用专用侧边栏
+          currentBook = 'ashare-theory-chapter10';
+        }
+        else if (currentPath.startsWith('/ashare-book1/')) {
+          currentBook = 'ashare-theory';
+        }
+        // A股手册第二册 - 检测 /ashare-book2/ 路径
+        else if (currentPath.startsWith('/ashare-book2/')) {
+          currentBook = 'ashare-macro';
+        }
+        // A股手册第三册 - 检测 /ashare-book3/ 路径
+        else if (currentPath.startsWith('/ashare-book3/')) {
+          currentBook = 'ashare-stocks';
+        }
+        // A股手册第四册各章节小节
+        else if (currentPath.startsWith('/ashare-book4/001_Chapter1/')) {
+          currentBook = 'ashare-quantitative-chapter1';
+        }
+        else if (currentPath.startsWith('/ashare-book4/002_Chapter2/')) {
+          currentBook = 'ashare-quantitative-chapter2';
+        }
+        else if (currentPath.startsWith('/ashare-book4/003_Chapter3/')) {
+          currentBook = 'ashare-quantitative-chapter3';
+        }
+        else if (currentPath.startsWith('/ashare-book4/004_Chapter4/')) {
+          currentBook = 'ashare-quantitative-chapter4';
+        }
+        else if (currentPath.startsWith('/ashare-book4/005_Chapter5/')) {
+          currentBook = 'ashare-quantitative-chapter5';
+        }
+        else if (currentPath.startsWith('/ashare-book4/006_Chapter6/')) {
+          currentBook = 'ashare-quantitative-chapter6';
+        }
+        else if (currentPath.startsWith('/ashare-book4/007_Chapter7/')) {
+          currentBook = 'ashare-quantitative-chapter7';
+        }
+        else if (currentPath.startsWith('/ashare-book4/008_Chapter8/')) {
+          currentBook = 'ashare-quantitative-chapter8';
+        }
+        else if (currentPath.startsWith('/ashare-book4/009_Chapter9/')) {
+          currentBook = 'ashare-quantitative-chapter9';
+        }
+        else if (currentPath.startsWith('/ashare-book4/010_Chapter10/')) {
+          currentBook = 'ashare-quantitative-chapter10';
+        }
+        else if (currentPath.startsWith('/ashare-book4/011_Chapter11/')) {
+          currentBook = 'ashare-quantitative-chapter11';
+        }
+        else if (currentPath.startsWith('/ashare-book4/012_Chapter12/')) {
+          currentBook = 'ashare-quantitative-chapter12';
+        }
+        else if (currentPath.startsWith('/ashare-book4/013_Chapter13/')) {
+          currentBook = 'ashare-quantitative-chapter13';
+        }
+        // A股手册第四册 - 检测 /ashare-book4/ 路径
+        else if (currentPath.startsWith('/ashare-book4/')) {
+          currentBook = 'ashare-quantitative';
+        }
+        // A股手册第五册 - 检测 /ashare-book5/ 路径
+        else if (currentPath.startsWith('/ashare-book5/')) {
+          currentBook = 'ashare-trading';
+        }
+        // /handbook/theory 显示A股手册第一册导航
+        else if (currentPath === '/handbook/theory') {
+          currentBook = 'ashare-theory';
+        }
+        // /handbook/macro 显示A股手册第二册导航
+        else if (currentPath === '/handbook/macro') {
+          currentBook = 'ashare-macro';
+        }
+        // /handbook/stocks 显示A股手册第三册导航
+        else if (currentPath === '/handbook/stocks') {
+          currentBook = 'ashare-stocks';
+        }
+        // /handbook/quantitative 显示A股手册第四册导航
+        else if (currentPath === '/handbook/quantitative') {
+          currentBook = 'ashare-quantitative';
+        }
+        // /handbook/trading 显示A股手册第五册导航
+        else if (currentPath === '/handbook/trading') {
+          currentBook = 'ashare-trading';
+        }
+        
+        const bookConfigs = {
+          home: {
+            title: '🇨🇳 A股高倍股实操手册',
+            chapters: [
+              { number: '📖', title: 'A股实操手册I - 理论手册', url: '/handbook/theory' },
+              { number: '🌍', title: 'A股实操手册II - 宏观经济', url: '/handbook/macro' },
+              { number: '🔍', title: 'A股实操手册III - 个股研究', url: '/handbook/stocks' },
+              { number: '📊', title: 'A股实操手册IV - 量化因子', url: '/handbook/quantitative' },
+              { number: '⚡', title: 'A股实操手册V - 回测实盘', url: '/handbook/trading' }
+            ]
+          },
+          theory: {
+            title: '📖 美股投资实操手册I',
+            chapters: [
+              { number: '📖', title: '序言', url: '/book1/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：看清自己，看懂世界', url: '/book1/001_Chapter1_Know_Yourself_and_the_World_CN' },
+              { number: '2️⃣', title: '第二章：投资心理与风险管理', url: '/book1/002_Chapter2_Investment_Psychology_and_Risk_Management_CN' },
+              { number: '3️⃣', title: '第三章：历史规律与高倍股研究', url: '/book1/003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN' },
+              { number: '4️⃣', title: '第四章：赛道选择与行业趋势', url: '/book1/004_Chapter4_Track_Selection_and_Industry_Trends_CN' },
+              { number: '5️⃣', title: '第五章：股票筛选策略', url: '/book1/005_Chapter5_Stock_Screening_Strategies_CN' },
+              { number: '6️⃣', title: '第六章：交易策略与执行', url: '/book1/006_Chapter6_Trading_Strategies_and_Execution_CN' },
+              { number: '7️⃣', title: '第七章：投资决策工具与资源', url: '/book1/007_Chapter7_Investment_Decision_Tools_and_Resources_CN' },
+              { number: '8️⃣', title: '第八章：案例复盘与策略改进', url: '/book1/008_Chapter8_Case_Review_and_Strategy_Improvement_CN' },
+              { number: '9️⃣', title: '第九章：构建投资体系', url: '/book1/009_Chapter9_Building_an_Investment_System_CN' },
+              { number: '🔟', title: '第十章：交易执行与实战指南', url: '/book1/010_Chapter10_Trading_Execution_and_Practical_Guide_CN' },
+              { number: '📋', title: '附录', url: '/book1/011_Appendix_CN' }
+            ]
+          },
+          'theory-chapter1': {
+            title: '📖 第一章：看清自己，看懂世界',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/001_Chapter1_Know_Yourself_and_the_World_CN' },
+              { number: '1.1', title: '自我觉知与投资智慧', url: '/book1/001_Chapter1/1.1_Self_Awareness_and_Investment_Wisdom_CN' },
+              { number: '1.2', title: '理解世界的运行规律', url: '/book1/001_Chapter1/1.2_Understanding_the_World_CN' },
+              { number: '1.3', title: '从认知到行动', url: '/book1/001_Chapter1/1.3_From_Cognition_to_Action_CN' }
+            ]
+          },
+          'theory-chapter2': {
+            title: '📖 第二章：投资心理与风险管理',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/002_Chapter2_Investment_Psychology_and_Risk_Management_CN' },
+              { number: '2.1', title: '个性化风险容忍度模型', url: '/book1/002_Chapter2/2.1_Personalized_Risk_Tolerance_Model_CN' },
+              { number: '2.2', title: '止损与风险控制', url: '/book1/002_Chapter2/2.2_Stop_Loss_and_Risk_Control_CN' },
+              { number: '2.3', title: '投资情绪与决策陷阱', url: '/book1/002_Chapter2/2.3_Investment_Emotions_and_Decision_Traps_CN' },
+              { number: '2.4', title: '波动市场中的纪律性', url: '/book1/002_Chapter2/2.4_Maintaining_Discipline_in_Volatile_Markets_CN' }
+            ]
+          },
+          'theory-chapter3': {
+            title: '📖 第三章：历史规律与高倍股研究',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN' },
+              { number: '3.1', title: '高倍股的定义与时间维度', url: '/book1/003_Chapter3/3.1_Definition_and_Time_Dimensions_CN' },
+              { number: '3.2', title: '高倍股的行业分布与特性', url: '/book1/003_Chapter3/3.2_Industry_Distribution_and_Characteristics_CN' },
+              { number: '3.3', title: '从财务指标到市场热点：驱动因素', url: '/book1/003_Chapter3/3.3_Driving_Factors_CN' },
+              { number: '3.4', title: '经典案例研究', url: '/book1/003_Chapter3/3.4_Case_Studies_CN' }
+            ]
+          },
+          'theory-chapter4': {
+            title: '📖 第四章：赛道选择与行业趋势',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/004_Chapter4_Track_Selection_and_Industry_Trends_CN' },
+              { number: '4.1', title: '赛道筛选方法', url: '/book1/004_Chapter4/4.1_Track_Screening_Methods_CN' },
+              { number: '4.2', title: '人工智能与大数据革命', url: '/book1/004_Chapter4/4.2_AI_and_Big_Data_Revolution_CN' },
+              { number: '4.3', title: '新能源与电动汽车黄金十年', url: '/book1/004_Chapter4/4.3_New_Energy_and_EV_Golden_Decade_CN' },
+              { number: '4.4', title: '生物科技与精准医疗', url: '/book1/004_Chapter4/4.4_Biotech_and_Precision_Medicine_CN' },
+              { number: '4.5', title: '半导体与元宇宙', url: '/book1/004_Chapter4/4.5_Semiconductor_and_Metaverse_CN' },
+              { number: '4.6', title: '中概股投资机会', url: '/book1/004_Chapter4/4.6_Chinese_Stocks_Opportunities_CN' }
+            ]
+          },
+          'theory-chapter5': {
+            title: '📖 第五章：股票筛选策略',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/005_Chapter5_Stock_Screening_Strategies_CN' },
+              { number: '5.1', title: '股票筛选方法', url: '/book1/005_Chapter5/5.1_Stock_Screening_Methods_CN' },
+              { number: '5.2', title: '基本面筛选参数', url: '/book1/005_Chapter5/5.2_Fundamental_Screening_Parameters_CN' },
+              { number: '5.3', title: '技术分析与时机把握', url: '/book1/005_Chapter5/5.3_Technical_Analysis_CN' },
+              { number: '5.4', title: '估值方法论', url: '/book1/005_Chapter5/5.4_Valuation_Methodology_CN' },
+              { number: '5.5', title: '股票筛选实战示例', url: '/book1/005_Chapter5/5.5_Stock_Screening_Practice_CN' },
+              { number: '5.6', title: '利用衍生品提升收益', url: '/book1/005_Chapter5/5.6_Derivatives_Enhancement_CN' }
+            ]
+          },
+          'theory-chapter6': {
+            title: '📖 第六章：交易策略与执行',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/book1/006_Chapter6_Trading_Strategies_and_Execution_CN' },
+              { number: '6.1', title: '长期投资 vs. 短期波段', url: '/book1/006_Chapter6/6.1_Long_term_vs_Short_term_CN' },
+              { number: '6.2', title: '仓位管理与资金分配', url: '/book1/006_Chapter6/6.2_Position_Management_CN' },
+              { number: '6.3', title: '利用ETF优化组合收益', url: '/book1/006_Chapter6/6.3_ETF_Optimization_CN' },
+              { number: '6.4', title: '动态调整策略', url: '/book1/006_Chapter6/6.4_Dynamic_Adjustment_CN' },
+              { number: '6.5', title: '高成长型个股卖出策略', url: '/book1/006_Chapter6/6.5_Growth_Stock_Exit_CN' },
+              { number: '6.6', title: '策略执行与监控体系', url: '/book1/006_Chapter6/6.6_Strategy_Execution_CN' }
+            ]
+          },
+          macro: {
+            title: '🌍 美股投资实操手册II',
+            chapters: [
+              { number: '📖', title: '前言：宏观经济与股市走向追踪', url: '/book2/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：市场趋势判断的重要性', url: '/book2/201_Chapter1_Market_Trend_Analysis_CN' },
+              { number: '2️⃣', title: '第二章：经济周期与市场表现', url: '/book2/202_Chapter2_Economic_Cycles_and_Market_Performance_CN' },
+              { number: '3️⃣', title: '第三章：货币政策与市场传导', url: '/book2/203_Chapter3_Monetary_Policy_and_Market_Transmission_CN' },
+              { number: '4️⃣', title: '第四章：财政政策与市场影响', url: '/book2/204_Chapter4_Fiscal_Policy_and_Market_Impact_CN' },
+              { number: '5️⃣', title: '第五章：国际宏观环境分析', url: '/book2/205_Chapter5_International_Macro_Environment_CN' },
+              { number: '6️⃣', title: '第六章：宏观数据解读与应用', url: '/book2/206_Chapter6_Macro_Data_Interpretation_CN' },
+              { number: '7️⃣', title: '第七章：宏观经济风险评估与预警', url: '/book2/207_Chapter7_Macro_Forecasting_Models_CN' },
+              { number: '8️⃣', title: '第八章：市场风险监控系统', url: '/book2/208_Chapter8_Market_Risk_Monitoring_CN' },
+              { number: '9️⃣', title: '第九章：宏观驱动的资产配置', url: '/book2/209_Chapter9_Macro_Driven_Asset_Allocation_CN' },
+              { number: '🔟', title: '第十章：宏观择时策略', url: '/book2/210_Chapter10_Macro_Timing_Strategies_CN' },
+              { number: '1️⃣1️⃣', title: '第十一章：宏观分析工具箱', url: '/book2/211_Chapter11_Macro_Analysis_Toolkit_CN' },
+              { number: '📋', title: '附录：宏观分析专业资源', url: '/book2/212_Appendix_CN' }
+            ]
+          },
+          stocks: {
+            title: '🔍 美股投资实操手册III',
+            chapters: [
+              { number: '📖', title: '个股分析导航', url: '/handbook/stocks' },
+              { number: '🚧', title: '个股分析章节开发中...', url: '/handbook/stocks' }
+            ]
+          },
+          technical: {
+            title: '📊 美股投资实操手册IV',
+            chapters: [
+              { number: '📖', title: '序言：自动化交易的革命', url: '/book4/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：从手工交易到自动化执行', url: '/book4/401_Chapter1_From_Manual_to_Automated_Trading_CN' },
+              { number: '2️⃣', title: '第二章：平台搭建与工具链', url: '/book4/402_Chapter2_Platform_Setup_and_Toolchain_CN' },
+              { number: '3️⃣', title: '第三章：量化研究方法论', url: '/book4/403_Chapter3_Quantitative_Research_Methodology_CN' },
+              { number: '4️⃣', title: '第四章：QuantConnect策略开发', url: '/book4/404_Chapter4_QuantConnect_Strategy_Development_CN' },
+              { number: '5️⃣', title: '第五章：回测与模拟交易', url: '/book4/405_Chapter5_Backtesting_and_Simulation_CN' },
+              { number: '6️⃣', title: '第六章：IBKR API与订单执行', url: '/book4/406_Chapter6_IBKR_API_and_Order_Execution_CN' },
+              { number: '7️⃣', title: '第七章：实盘部署与监控', url: '/book4/407_Chapter7_Live_Trading_Deployment_CN' },
+              { number: '8️⃣', title: '第八章：风险管理框架', url: '/book4/408_Chapter8_Risk_Management_Framework_CN' },
+              { number: '9️⃣', title: '第九章：衍生品与对冲策略', url: '/book4/409_Chapter9_Derivatives_and_Hedging_CN' },
+              { number: '🔟', title: '第十章：绩效归因与评估', url: '/book4/410_Chapter10_Performance_Attribution_CN' },
+              { number: '1️⃣1️⃣', title: '第十一章：策略优化与迭代', url: '/book4/411_Chapter11_Strategy_Optimization_CN' },
+              { number: '1️⃣2️⃣', title: '第十二章：合规与职业道德', url: '/book4/412_Chapter12_Compliance_and_Ethics_CN' }
+            ]
+          },
+          'technical-chapter1': {
+            title: '📊 第一章：从手工交易到自动化执行',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/book4/401_Chapter1_From_Manual_to_Automated_Trading_CN' },
+              { number: '1.1', title: '自动化交易的定义与演变', url: '/book4/401_Chapter1/1.1_Definition_and_Evolution_of_Automated_Trading_CN' },
+              { number: '1.2', title: '手工交易的局限性分析', url: '/book4/401_Chapter1/1.2_Limitations_of_Manual_Trading_CN' },
+              { number: '1.3', title: '自动化交易的核心优势', url: '/book4/401_Chapter1/1.3_Core_Advantages_of_Automated_Trading_CN' },
+              { number: '1.4', title: '技术挑战与风险管理', url: '/book4/401_Chapter1/1.4_Technical_Challenges_and_Risk_Management_CN' },
+              { number: '1.5', title: '现代金融市场中的应用', url: '/book4/401_Chapter1/1.5_Applications_in_Modern_Financial_Markets_CN' },
+              { number: '1.6', title: '个人投资者的转型路径', url: '/book4/401_Chapter1/1.6_Transformation_Path_for_Individual_Investors_CN' }
+            ]
+          },
+          quantitative: {
+            title: '⚡ 美股投资实操手册V',
+            chapters: [
+              { number: '📖', title: '量化分析导航', url: '/handbook/quantitative' },
+              { number: '🚧', title: '量化分析章节开发中...', url: '/handbook/quantitative' }
+            ]
+          },
+          'ashare-theory': {
+            title: '🇨🇳 A股实操手册I',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book1/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：A股市场特征与投资环境', url: '/ashare-book1/001_Chapter1_A_Share_Market_CN' },
+              { number: '2️⃣', title: '第二章：投资认知与心理管理', url: '/ashare-book1/002_Chapter2_Psychology_CN' },
+              { number: '3️⃣', title: '第三章：A股高倍股历史研究', url: '/ashare-book1/003_Chapter3_Multibagger_CN' },
+              { number: '4️⃣', title: '第四章：赛道选择与行业研究', url: '/ashare-book1/004_Chapter4_Industry_CN' },
+              { number: '5️⃣', title: '第五章：基本面分析框架', url: '/ashare-book1/005_Chapter5_Fundamental_CN' },
+              { number: '6️⃣', title: '第六章：股票筛选策略', url: '/ashare-book1/006_Chapter6_Screening_CN' },
+              { number: '7️⃣', title: '第七章：交易策略与执行', url: '/ashare-book1/007_Chapter7_Trading_CN' },
+              { number: '8️⃣', title: '第八章：投资工具与资源', url: '/ashare-book1/008_Chapter8_Tools_CN' },
+              { number: '9️⃣', title: '第九章：案例复盘与策略改进', url: '/ashare-book1/009_Chapter9_Cases_CN' },
+              { number: '🔟', title: '第十章：构建个人投资系统', url: '/ashare-book1/010_Chapter10_System_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book1/011_Appendix_CN' }
+            ]
+          },
+          'ashare-theory-chapter1': {
+            title: '📖 第一章：A股市场特征',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/001_Chapter1_A_Share_Market_CN' },
+              { number: '1.1', title: 'A股市场基本架构', url: '/ashare-book1/001_Chapter1/1.1_Market_Structure_CN' },
+              { number: '1.2', title: 'A股交易制度详解', url: '/ashare-book1/001_Chapter1/1.2_Trading_Rules_CN' },
+              { number: '1.3', title: '市场参与者结构分析', url: '/ashare-book1/001_Chapter1/1.3_Market_Participants_CN' },
+              { number: '1.4', title: '政策与监管环境', url: '/ashare-book1/001_Chapter1/1.4_Policy_Environment_CN' },
+              { number: '1.5', title: 'A股市场周期特征', url: '/ashare-book1/001_Chapter1/1.5_Market_Cycles_CN' },
+              { number: '1.6', title: 'A股投资机会与风险', url: '/ashare-book1/001_Chapter1/1.6_Opportunities_Risks_CN' }
+            ]
+          },
+          'ashare-theory-chapter2': {
+            title: '🧠 第二章：投资认知与心理',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/002_Chapter2_Psychology_CN' },
+              { number: '2.1', title: '投资心理学基础', url: '/ashare-book1/002_Chapter2/2.1_Psychology_Basics_CN' },
+              { number: '2.2', title: '常见认知偏差识别', url: '/ashare-book1/002_Chapter2/2.2_Cognitive_Biases_CN' },
+              { number: '2.3', title: '情绪管理与纪律', url: '/ashare-book1/002_Chapter2/2.3_Emotion_Management_CN' },
+              { number: '2.4', title: '理性决策框架', url: '/ashare-book1/002_Chapter2/2.4_Decision_Framework_CN' },
+              { number: '2.5', title: 'A股散户心理特征', url: '/ashare-book1/002_Chapter2/2.5_Retail_Psychology_CN' },
+              { number: '2.6', title: '心理训练与自我提升', url: '/ashare-book1/002_Chapter2/2.6_Mental_Training_CN' }
+            ]
+          },
+          'ashare-theory-chapter3': {
+            title: '🏆 第三章：A股高倍股历史研究',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/003_Chapter3_Multibagger_CN' },
+              { number: '3.1', title: '高倍股的定义与筛选标准', url: '/ashare-book1/003_Chapter3/3.1_Definition_Criteria_CN' },
+              { number: '3.2', title: 'A股高倍股行业分布', url: '/ashare-book1/003_Chapter3/3.2_Industry_Distribution_CN' },
+              { number: '3.3', title: '经典高倍股案例深度剖析', url: '/ashare-book1/003_Chapter3/3.3_Classic_Cases_CN' },
+              { number: '3.4', title: '高倍股的共同特征', url: '/ashare-book1/003_Chapter3/3.4_Common_Features_CN' },
+              { number: '3.5', title: '高倍股的成长阶段', url: '/ashare-book1/003_Chapter3/3.5_Growth_Stages_CN' },
+              { number: '3.6', title: '失败案例与风险警示', url: '/ashare-book1/003_Chapter3/3.6_Failure_Cases_CN' }
+            ]
+          },
+          'ashare-theory-chapter4': {
+            title: '🏭 第四章：赛道选择与行业研究',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/004_Chapter4_Industry_CN' },
+              { number: '4.1', title: '行业分析框架', url: '/ashare-book1/004_Chapter4/4.1_Industry_Framework_CN' },
+              { number: '4.2', title: 'A股行业分类体系', url: '/ashare-book1/004_Chapter4/4.2_Industry_Classification_CN' },
+              { number: '4.3', title: '消费赛道深度分析', url: '/ashare-book1/004_Chapter4/4.3_Consumer_Sector_CN' },
+              { number: '4.4', title: '科技赛道深度分析', url: '/ashare-book1/004_Chapter4/4.4_Tech_Sector_CN' },
+              { number: '4.5', title: '医药赛道深度分析', url: '/ashare-book1/004_Chapter4/4.5_Pharma_Sector_CN' },
+              { number: '4.6', title: '周期行业投资策略', url: '/ashare-book1/004_Chapter4/4.6_Cyclical_Sector_CN' }
+            ]
+          },
+          'ashare-theory-chapter5': {
+            title: '📊 第五章：基本面分析框架',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/005_Chapter5_Fundamental_CN' },
+              { number: '5.1', title: '财务报表分析基础', url: '/ashare-book1/005_Chapter5/5.1_Financial_Statements_CN' },
+              { number: '5.2', title: '盈利能力分析', url: '/ashare-book1/005_Chapter5/5.2_Profitability_Analysis_CN' },
+              { number: '5.3', title: '成长性分析', url: '/ashare-book1/005_Chapter5/5.3_Growth_Analysis_CN' },
+              { number: '5.4', title: '财务风险识别', url: '/ashare-book1/005_Chapter5/5.4_Risk_Detection_CN' },
+              { number: '5.5', title: '估值方法论', url: '/ashare-book1/005_Chapter5/5.5_Valuation_Methods_CN' },
+              { number: '5.6', title: '企业质量综合评估', url: '/ashare-book1/005_Chapter5/5.6_Quality_Assessment_CN' }
+            ]
+          },
+          'ashare-theory-chapter6': {
+            title: '🔍 第六章：股票筛选策略',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/006_Chapter6_Screening_CN' },
+              { number: '6.1', title: '筛选策略总体框架', url: '/ashare-book1/006_Chapter6/6.1_Screening_Framework_CN' },
+              { number: '6.2', title: '量化筛选指标', url: '/ashare-book1/006_Chapter6/6.2_Quantitative_Screening_CN' },
+              { number: '6.3', title: '定性筛选要素', url: '/ashare-book1/006_Chapter6/6.3_Qualitative_Screening_CN' },
+              { number: '6.4', title: '不同风格的选股策略', url: '/ashare-book1/006_Chapter6/6.4_Investment_Styles_CN' },
+              { number: '6.5', title: '筛选工具与数据源', url: '/ashare-book1/006_Chapter6/6.5_Screening_Tools_CN' },
+              { number: '6.6', title: '筛选实战案例', url: '/ashare-book1/006_Chapter6/6.6_Screening_Cases_CN' }
+            ]
+          },
+          'ashare-theory-chapter7': {
+            title: '📈 第七章：交易策略与执行',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/007_Chapter7_Trading_CN' },
+              { number: '7.1', title: '买入时机选择', url: '/ashare-book1/007_Chapter7/7.1_Entry_Timing_CN' },
+              { number: '7.2', title: '仓位管理策略', url: '/ashare-book1/007_Chapter7/7.2_Position_Management_CN' },
+              { number: '7.3', title: '止盈止损策略', url: '/ashare-book1/007_Chapter7/7.3_Stop_Loss_Take_Profit_CN' },
+              { number: '7.4', title: '卖出时机判断', url: '/ashare-book1/007_Chapter7/7.4_Exit_Timing_CN' },
+              { number: '7.5', title: '交易纪律与执行', url: '/ashare-book1/007_Chapter7/7.5_Trading_Discipline_CN' },
+              { number: '7.6', title: 'A股交易实战技巧', url: '/ashare-book1/007_Chapter7/7.6_AShare_Trading_Tips_CN' }
+            ]
+          },
+          'ashare-theory-chapter8': {
+            title: '🔧 第八章：投资工具与资源',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/008_Chapter8_Tools_CN' },
+              { number: '8.1', title: '数据源与行情软件', url: '/ashare-book1/008_Chapter8/8.1_Data_Sources_CN' },
+              { number: '8.2', title: '分析工具与平台', url: '/ashare-book1/008_Chapter8/8.2_Analysis_Tools_CN' },
+              { number: '8.3', title: '研究资源获取', url: '/ashare-book1/008_Chapter8/8.3_Research_Resources_CN' },
+              { number: '8.4', title: '交易平台选择', url: '/ashare-book1/008_Chapter8/8.4_Trading_Platforms_CN' },
+              { number: '8.5', title: '学习资源推荐', url: '/ashare-book1/008_Chapter8/8.5_Learning_Resources_CN' },
+              { number: '8.6', title: '投资社区与人脉', url: '/ashare-book1/008_Chapter8/8.6_Community_Networks_CN' }
+            ]
+          },
+          'ashare-theory-chapter9': {
+            title: '📋 第九章：案例复盘与策略改进',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/009_Chapter9_Cases_CN' },
+              { number: '9.1', title: '案例复盘框架', url: '/ashare-book1/009_Chapter9/9.1_Case_Study_Framework_CN' },
+              { number: '9.2', title: '成功案例深度剖析', url: '/ashare-book1/009_Chapter9/9.2_Success_Cases_CN' },
+              { number: '9.3', title: '失败案例警示录', url: '/ashare-book1/009_Chapter9/9.3_Failure_Cases_CN' },
+              { number: '9.4', title: '策略复盘与优化', url: '/ashare-book1/009_Chapter9/9.4_Strategy_Review_CN' },
+              { number: '9.5', title: '持续改进方法论', url: '/ashare-book1/009_Chapter9/9.5_Continuous_Improvement_CN' },
+              { number: '9.6', title: '向投资大师学习', url: '/ashare-book1/009_Chapter9/9.6_Learning_From_Masters_CN' }
+            ]
+          },
+          'ashare-theory-chapter10': {
+            title: '🎯 第十章：构建个人投资系统',
+            chapters: [
+              { number: '↩️', title: '返回第一册目录', url: '/ashare-book1/010_Chapter10_System_CN' },
+              { number: '10.1', title: '投资理念与原则', url: '/ashare-book1/010_Chapter10/10.1_Investment_Philosophy_CN' },
+              { number: '10.2', title: '策略框架设计', url: '/ashare-book1/010_Chapter10/10.2_Strategy_Framework_CN' },
+              { number: '10.3', title: '风险管理体系', url: '/ashare-book1/010_Chapter10/10.3_Risk_Management_System_CN' },
+              { number: '10.4', title: '执行检查清单', url: '/ashare-book1/010_Chapter10/10.4_Execution_Checklist_CN' },
+              { number: '10.5', title: '业绩跟踪与评估', url: '/ashare-book1/010_Chapter10/10.5_Performance_Tracking_CN' },
+              { number: '10.6', title: '终身学习与成长', url: '/ashare-book1/010_Chapter10/10.6_Lifelong_Learning_CN' }
+            ]
+          },
+          'ashare-macro': {
+            title: '🌍 A股实操手册II',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book2/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：经济周期与A股市场', url: '/ashare-book2/001_Chapter1_Economic_Cycle_CN' },
+              { number: '2️⃣', title: '第二章：货币政策与市场影响', url: '/ashare-book2/002_Chapter2_Monetary_Policy_CN' },
+              { number: '3️⃣', title: '第三章：财政政策与产业机遇', url: '/ashare-book2/003_Chapter3_Fiscal_Policy_CN' },
+              { number: '4️⃣', title: '第四章：行业轮动与板块配置', url: '/ashare-book2/004_Chapter4_Sector_Rotation_CN' },
+              { number: '5️⃣', title: '第五章：市场情绪与资金流向', url: '/ashare-book2/005_Chapter5_Market_Sentiment_CN' },
+              { number: '6️⃣', title: '第六章：宏观数据解读与应用', url: '/ashare-book2/006_Chapter6_Macro_Data_CN' },
+              { number: '7️⃣', title: '第七章：国际环境与A股联动', url: '/ashare-book2/007_Chapter7_Global_Impact_CN' },
+              { number: '8️⃣', title: '第八章：风险监控与预警系统', url: '/ashare-book2/008_Chapter8_Risk_Monitor_CN' },
+              { number: '9️⃣', title: '第九章：宏观择时策略', url: '/ashare-book2/009_Chapter9_Macro_Timing_CN' },
+              { number: '🔟', title: '第十章：宏观分析工具箱', url: '/ashare-book2/010_Chapter10_Macro_Tools_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book2/011_Appendix_CN' }
+            ]
+          },
+          'ashare-stocks': {
+            title: '🔍 A股实操手册III',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book3/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：个股研究框架', url: '/ashare-book3/001_Chapter1_Research_Framework_CN' },
+              { number: '2️⃣', title: '第二章：财务分析方法', url: '/ashare-book3/002_Chapter2_Financial_Analysis_CN' },
+              { number: '3️⃣', title: '第三章：估值方法论', url: '/ashare-book3/003_Chapter3_Valuation_CN' },
+              { number: '4️⃣', title: '第四章：行业龙头研究', url: '/ashare-book3/004_Chapter4_Industry_Leaders_CN' },
+              { number: '5️⃣', title: '第五章：消费行业案例', url: '/ashare-book3/005_Chapter5_Consumer_Cases_CN' },
+              { number: '6️⃣', title: '第六章：科技行业案例', url: '/ashare-book3/006_Chapter6_Tech_Cases_CN' },
+              { number: '7️⃣', title: '第七章：周期行业案例', url: '/ashare-book3/007_Chapter7_Cyclical_Cases_CN' },
+              { number: '8️⃣', title: '第八章：金融行业案例', url: '/ashare-book3/008_Chapter8_Finance_Cases_CN' },
+              { number: '9️⃣', title: '第九章：医药行业案例', url: '/ashare-book3/009_Chapter9_Pharma_Cases_CN' },
+              { number: '🔟', title: '第十章：研究报告撰写', url: '/ashare-book3/010_Chapter10_Report_Writing_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book3/011_Appendix_CN' }
+            ]
+          },
+          'ashare-quantitative': {
+            title: '📊 A股实操手册IV',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book4/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：量化投资概述', url: '/ashare-book4/001_Chapter1_Quant_Overview_CN' },
+              { number: '2️⃣', title: '第二章：价值因子构建', url: '/ashare-book4/002_Chapter2_Value_Factors_CN' },
+              { number: '3️⃣', title: '第三章：成长因子构建', url: '/ashare-book4/003_Chapter3_Growth_Factors_CN' },
+              { number: '4️⃣', title: '第四章：质量因子构建', url: '/ashare-book4/004_Chapter4_Quality_Factors_CN' },
+              { number: '5️⃣', title: '第五章：动量因子构建', url: '/ashare-book4/005_Chapter5_Momentum_Factors_CN' },
+              { number: '6️⃣', title: '第六章：资金流因子构建', url: '/ashare-book4/006_Chapter6_Flow_Factors_CN' },
+              { number: '7️⃣', title: '第七章：多因子模型构建', url: '/ashare-book4/007_Chapter7_Multi_Factor_Model_CN' },
+              { number: '8️⃣', title: '第八章：PTrade策略开发', url: '/ashare-book4/008_Chapter8_PTrade_Strategy_CN' },
+              { number: '9️⃣', title: '第九章：QMT策略开发', url: '/ashare-book4/009_Chapter9_QMT_Strategy_CN' },
+              { number: '🔟', title: '第十章：策略评估与优化', url: '/ashare-book4/010_Chapter10_Strategy_Evaluation_CN' },
+              { number: '⭐', title: '第十一章：高倍股因子特征', url: '/ashare-book4/011_Chapter11_Multibagger_Factors_CN' },
+              { number: '📰', title: '第十二章：事件驱动与另类数据', url: '/ashare-book4/012_Chapter12_Event_Alternative_Data_CN' },
+              { number: '🖥️', title: '第十三章：韬睿量化系统集成', url: '/ashare-book4/013_Chapter13_Taorui_Integration_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book4/014_Appendix_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter1': {
+            title: '📊 第一章：量化投资概述',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/001_Chapter1_Quant_Overview_CN' },
+              { number: '1.1', title: '量化投资定义', url: '/ashare-book4/001_Chapter1/1.1_Quant_Definition_CN' },
+              { number: '1.2', title: '量化投资发展史', url: '/ashare-book4/001_Chapter1/1.2_Quant_History_CN' },
+              { number: '1.3', title: '主要策略类型', url: '/ashare-book4/001_Chapter1/1.3_Quant_Strategies_CN' },
+              { number: '1.4', title: '量化投资优势', url: '/ashare-book4/001_Chapter1/1.4_Quant_Advantages_CN' },
+              { number: '1.5', title: '量化投资挑战', url: '/ashare-book4/001_Chapter1/1.5_Quant_Challenges_CN' },
+              { number: '1.6', title: 'A股量化现状', url: '/ashare-book4/001_Chapter1/1.6_Quant_AShare_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter2': {
+            title: '💰 第二章：价值因子',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/002_Chapter2_Value_Factors_CN' },
+              { number: '2.1', title: '价值因子概述', url: '/ashare-book4/002_Chapter2/2.1_Value_Overview_CN' },
+              { number: '2.2', title: '市盈率因子（PE）', url: '/ashare-book4/002_Chapter2/2.2_PE_Factor_CN' },
+              { number: '2.3', title: '市净率因子（PB）', url: '/ashare-book4/002_Chapter2/2.3_PB_Factor_CN' },
+              { number: '2.4', title: '市销率因子（PS）', url: '/ashare-book4/002_Chapter2/2.4_PS_Factor_CN' },
+              { number: '2.5', title: '股息率因子', url: '/ashare-book4/002_Chapter2/2.5_Dividend_Factor_CN' },
+              { number: '2.6', title: '价值因子组合', url: '/ashare-book4/002_Chapter2/2.6_Value_Composite_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter3': {
+            title: '📈 第三章：成长因子',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/003_Chapter3_Growth_Factors_CN' },
+              { number: '3.1', title: '成长因子概述', url: '/ashare-book4/003_Chapter3/3.1_Growth_Overview_CN' },
+              { number: '3.2', title: '营收增长因子', url: '/ashare-book4/003_Chapter3/3.2_Revenue_Growth_CN' },
+              { number: '3.3', title: '利润增长因子', url: '/ashare-book4/003_Chapter3/3.3_Profit_Growth_CN' },
+              { number: '3.4', title: 'ROE变化因子', url: '/ashare-book4/003_Chapter3/3.4_ROE_Change_CN' },
+              { number: '3.5', title: '分析师预期因子', url: '/ashare-book4/003_Chapter3/3.5_Analyst_Revision_CN' },
+              { number: '3.6', title: '成长因子组合', url: '/ashare-book4/003_Chapter3/3.6_Growth_Composite_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter4': {
+            title: '⭐ 第四章：质量因子',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/004_Chapter4_Quality_Factors_CN' },
+              { number: '4.1', title: '质量因子概述', url: '/ashare-book4/004_Chapter4/4.1_Quality_Overview_CN' },
+              { number: '4.2', title: '毛利率因子', url: '/ashare-book4/004_Chapter4/4.2_Margin_Factor_CN' },
+              { number: '4.3', title: '资产周转率因子', url: '/ashare-book4/004_Chapter4/4.3_Turnover_Factor_CN' },
+              { number: '4.4', title: '财务杠杆因子', url: '/ashare-book4/004_Chapter4/4.4_Leverage_Factor_CN' },
+              { number: '4.5', title: '现金流因子', url: '/ashare-book4/004_Chapter4/4.5_Cashflow_Factor_CN' },
+              { number: '4.6', title: '质量因子组合', url: '/ashare-book4/004_Chapter4/4.6_Quality_Composite_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter5': {
+            title: '🚀 第五章：动量因子',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/005_Chapter5_Momentum_Factors_CN' },
+              { number: '5.1', title: '动量因子概述', url: '/ashare-book4/005_Chapter5/5.1_Momentum_Overview_CN' },
+              { number: '5.2', title: '价格动量因子', url: '/ashare-book4/005_Chapter5/5.2_Price_Momentum_CN' },
+              { number: '5.3', title: '行业动量因子', url: '/ashare-book4/005_Chapter5/5.3_Industry_Momentum_CN' },
+              { number: '5.4', title: '反转因子', url: '/ashare-book4/005_Chapter5/5.4_Reversal_Factor_CN' },
+              { number: '5.5', title: '动量因子综合', url: '/ashare-book4/005_Chapter5/5.5_Momentum_Composite_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter6': {
+            title: '💵 第六章：资金流因子',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/006_Chapter6_Flow_Factors_CN' },
+              { number: '6.1', title: '资金流因子概述', url: '/ashare-book4/006_Chapter6/6.1_Flow_Overview_CN' },
+              { number: '6.2', title: '北向资金因子', url: '/ashare-book4/006_Chapter6/6.2_Northbound_Factor_CN' },
+              { number: '6.3', title: '主力资金因子', url: '/ashare-book4/006_Chapter6/6.3_Mainforce_Factor_CN' },
+              { number: '6.4', title: '融资融券因子', url: '/ashare-book4/006_Chapter6/6.4_Margin_Factor_CN' },
+              { number: '6.5', title: '机构持仓因子', url: '/ashare-book4/006_Chapter6/6.5_Institution_Factor_CN' },
+              { number: '6.6', title: '资金流因子组合', url: '/ashare-book4/006_Chapter6/6.6_Flow_Composite_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter7': {
+            title: '🔗 第七章：多因子模型',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/007_Chapter7_Multi_Factor_Model_CN' },
+              { number: '7.1', title: '模型概述', url: '/ashare-book4/007_Chapter7/7.1_Model_Overview_CN' },
+              { number: '7.2', title: '因子预处理', url: '/ashare-book4/007_Chapter7/7.2_Factor_Preprocessing_CN' },
+              { number: '7.3', title: '因子合成', url: '/ashare-book4/007_Chapter7/7.3_Factor_Combination_CN' },
+              { number: '7.4', title: '组合构建', url: '/ashare-book4/007_Chapter7/7.4_Portfolio_Construction_CN' },
+              { number: '7.5', title: '风险控制', url: '/ashare-book4/007_Chapter7/7.5_Risk_Control_CN' },
+              { number: '7.6', title: '模型回测', url: '/ashare-book4/007_Chapter7/7.6_Model_Backtest_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter8': {
+            title: '🖥️ 第八章：PTrade策略开发',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/008_Chapter8_PTrade_Strategy_CN' },
+              { number: '8.1', title: 'PTrade平台概述', url: '/ashare-book4/008_Chapter8/8.1_PTrade_Overview_CN' },
+              { number: '8.2', title: '策略框架', url: '/ashare-book4/008_Chapter8/8.2_Strategy_Framework_CN' },
+              { number: '8.3', title: '数据获取', url: '/ashare-book4/008_Chapter8/8.3_Data_Access_CN' },
+              { number: '8.4', title: '交易执行', url: '/ashare-book4/008_Chapter8/8.4_Trade_Execution_CN' },
+              { number: '8.5', title: '多因子策略实现', url: '/ashare-book4/008_Chapter8/8.5_Multi_Factor_Strategy_CN' },
+              { number: '8.6', title: '实盘部署', url: '/ashare-book4/008_Chapter8/8.6_Live_Deployment_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter9': {
+            title: '📱 第九章：QMT策略开发',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/009_Chapter9_QMT_Strategy_CN' },
+              { number: '9.1', title: 'QMT平台概述', url: '/ashare-book4/009_Chapter9/9.1_QMT_Overview_CN' },
+              { number: '9.2', title: 'miniQMT模式', url: '/ashare-book4/009_Chapter9/9.2_MiniQMT_CN' },
+              { number: '9.3', title: 'xtquant库', url: '/ashare-book4/009_Chapter9/9.3_Xtquant_CN' },
+              { number: '9.4', title: '策略开发', url: '/ashare-book4/009_Chapter9/9.4_Strategy_Dev_CN' },
+              { number: '9.5', title: '多因子策略实现', url: '/ashare-book4/009_Chapter9/9.5_Multi_Factor_Strategy_CN' },
+              { number: '9.6', title: '实盘部署', url: '/ashare-book4/009_Chapter9/9.6_Live_Deployment_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter10': {
+            title: '📊 第十章：策略评估与优化',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/010_Chapter10_Strategy_Evaluation_CN' },
+              { number: '10.1', title: '评估指标', url: '/ashare-book4/010_Chapter10/10.1_Evaluation_Metrics_CN' },
+              { number: '10.2', title: '回测方法', url: '/ashare-book4/010_Chapter10/10.2_Backtest_Methods_CN' },
+              { number: '10.3', title: '风险分析', url: '/ashare-book4/010_Chapter10/10.3_Risk_Analysis_CN' },
+              { number: '10.4', title: '参数优化', url: '/ashare-book4/010_Chapter10/10.4_Parameter_Optimization_CN' },
+              { number: '10.5', title: '策略迭代', url: '/ashare-book4/010_Chapter10/10.5_Strategy_Iteration_CN' },
+              { number: '10.6', title: '实战案例', url: '/ashare-book4/010_Chapter10/10.6_Case_Study_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter11': {
+            title: '⭐ 第十一章：高倍股因子特征',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/011_Chapter11_Multibagger_Factors_CN' },
+              { number: '11.1', title: '高倍股定义与统计', url: '/ashare-book4/011_Chapter11/11.1_Multibagger_Definition_CN' },
+              { number: '11.2', title: '成长因子特征', url: '/ashare-book4/011_Chapter11/11.2_Growth_Features_CN' },
+              { number: '11.3', title: '估值因子特征', url: '/ashare-book4/011_Chapter11/11.3_Valuation_Features_CN' },
+              { number: '11.4', title: '质量因子特征', url: '/ashare-book4/011_Chapter11/11.4_Quality_Features_CN' },
+              { number: '11.5', title: '技术与资金特征', url: '/ashare-book4/011_Chapter11/11.5_Technical_Flow_Features_CN' },
+              { number: '11.6', title: '高倍股多因子模型', url: '/ashare-book4/011_Chapter11/11.6_Multibagger_Model_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter12': {
+            title: '📰 第十二章：事件驱动与另类数据',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/012_Chapter12_Event_Alternative_Data_CN' },
+              { number: '12.1', title: '事件驱动策略概述', url: '/ashare-book4/012_Chapter12/12.1_Event_Driven_Overview_CN' },
+              { number: '12.2', title: '财报事件策略', url: '/ashare-book4/012_Chapter12/12.2_Earnings_Event_CN' },
+              { number: '12.3', title: '新闻舆情数据', url: '/ashare-book4/012_Chapter12/12.3_News_Sentiment_CN' },
+              { number: '12.4', title: '分析师预期数据', url: '/ashare-book4/012_Chapter12/12.4_Analyst_Expectations_CN' },
+              { number: '12.5', title: '另类数据源', url: '/ashare-book4/012_Chapter12/12.5_Alternative_Data_CN' },
+              { number: '12.6', title: '韬睿平台数据接入', url: '/ashare-book4/012_Chapter12/12.6_Taorui_Integration_CN' }
+            ]
+          },
+          'ashare-quantitative-chapter13': {
+            title: '🖥️ 第十三章：韬睿量化系统集成',
+            chapters: [
+              { number: '↩️', title: '返回第四册目录', url: '/ashare-book4/013_Chapter13_Taorui_Integration_CN' },
+              { number: '13.1', title: '系统架构概述', url: '/ashare-book4/013_Chapter13/13.1_System_Architecture_CN' },
+              { number: '13.2', title: '数据管理模块', url: '/ashare-book4/013_Chapter13/13.2_Data_Management_CN' },
+              { number: '13.3', title: '因子研究模块', url: '/ashare-book4/013_Chapter13/13.3_Factor_Research_CN' },
+              { number: '13.4', title: '策略开发模块', url: '/ashare-book4/013_Chapter13/13.4_Strategy_Development_CN' },
+              { number: '13.5', title: '回测与实盘模块', url: '/ashare-book4/013_Chapter13/13.5_Backtest_Live_CN' },
+              { number: '13.6', title: 'Cursor AI集成', url: '/ashare-book4/013_Chapter13/13.6_Cursor_Integration_CN' }
+            ]
+          },
+          'ashare-trading': {
+            title: '⚡ A股实操手册V',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book5/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：策略回测基础', url: '/ashare-book5/001_Chapter1_Backtest_Basics_CN' },
+              { number: '2️⃣', title: '第二章：JQData数据接入', url: '/ashare-book5/002_Chapter2_JQData_Integration_CN' },
+              { number: '3️⃣', title: '第三章：韬睿回测引擎', url: '/ashare-book5/003_Chapter3_Taorui_Backtest_CN' },
+              { number: '4️⃣', title: '第四章：回测报告解读', url: '/ashare-book5/004_Chapter4_Report_Analysis_CN' },
+              { number: '5️⃣', title: '第五章：风险控制系统', url: '/ashare-book5/005_Chapter5_Risk_Control_CN' },
+              { number: '6️⃣', title: '第六章：PTrade实盘对接', url: '/ashare-book5/006_Chapter6_PTrade_Live_CN' },
+              { number: '7️⃣', title: '第七章：QMT实盘对接', url: '/ashare-book5/007_Chapter7_QMT_Live_CN' },
+              { number: '8️⃣', title: '第八章：策略迭代与优化', url: '/ashare-book5/008_Chapter8_Strategy_Iteration_CN' },
+              { number: '9️⃣', title: '第九章：文件管理系统', url: '/ashare-book5/009_Chapter9_File_Management_CN' },
+              { number: '🔟', title: '第十章：韬睿平台完整工作流', url: '/ashare-book5/010_Chapter10_Complete_Workflow_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book5/011_Appendix_CN' }
+            ]
+          }
+        };
+        
+        const selectedBook = bookConfigs[currentBook] || bookConfigs.home;
+        sidebarTitle.textContent = selectedBook.title;
+        
+        // 生成导航链接
+        const navHtml = selectedBook.chapters.map(chapter => `
+          <a href="${chapter.url}" class="nav-item ${chapter.url === window.location.pathname ? 'active' : ''}">
+            <span class="chapter-number">${chapter.number}</span>
+            <span class="chapter-title">${chapter.title}</span>
+          </a>
+        `).join('');
+        
+        sidebarNav.innerHTML = navHtml;
+      }
+
+      // 导航管理
+      function initializeNavigation() {
+        const homeBtn = document.getElementById('homeBtn');
+        const tocBtn = document.getElementById('tocBtn');
+        const prevChapter = document.getElementById('prevChapter');
+        const nextChapter = document.getElementById('nextChapter');
+        const prevPageBtn = document.getElementById('prevPageBtn') as HTMLButtonElement | null;
+        const nextPageBtn = document.getElementById('nextPageBtn') as HTMLButtonElement | null;
+        
+        // 返回首页按钮
+        homeBtn?.addEventListener('click', () => {
+          window.location.href = '/';
+        });
+        
+        // 智能返回目录按钮
+        tocBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tocUrl = getSmartTocUrl();
+          if (tocUrl) {
+            window.location.href = tocUrl;
+          }
+        });
+        
+        // 顶部导航栏翻页按钮
+        if (prevPageBtn && nextPageBtn) {
+          prevPageBtn.addEventListener('click', () => {
+            navigateToPrevPage();
+          });
+          
+          nextPageBtn.addEventListener('click', () => {
+            navigateToNextPage();
+          });
+          
+          // 初始化翻页按钮状态
+          updateNavigationButtons();
+        }
+        
+        // 章节导航
+        if (state.currentBook === 'theory' && state.currentChapter) {
+          const chapterNav = document.getElementById('chapterNav');
+          if (chapterNav) {
+            chapterNav.style.display = 'flex';
+            setupChapterNavigation();
+          }
+        }
+      }
+
+      // 智能获取目录URL - 根据当前页面层级返回上一级导航页
+      function getSmartTocUrl() {
+        const currentPath = window.location.pathname;
+        
+        // 如果在首页，返回首页
+        if (currentPath === '/') {
+          return '/';
+        }
+        
+        // 如果在子节页面，返回章节导航页
+        if (currentPath.includes('/001_Chapter1/')) {
+          return '/book1/001_Chapter1_Know_Yourself_and_the_World_CN';
+        }
+        if (currentPath.includes('/002_Chapter2/')) {
+          return '/book1/002_Chapter2_Investment_Psychology_and_Risk_Management_CN';
+        }
+        if (currentPath.includes('/003_Chapter3/')) {
+          return '/book1/003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN';
+        }
+        if (currentPath.includes('/004_Chapter4/')) {
+          return '/book1/004_Chapter4_Track_Selection_and_Industry_Trends_CN';
+        }
+        if (currentPath.includes('/005_Chapter5/')) {
+          return '/book1/005_Chapter5_Stock_Screening_Strategies_CN';
+        }
+        if (currentPath.includes('/006_Chapter6/')) {
+          return '/book1/006_Chapter6_Trading_Strategies_and_Execution_CN';
+        }
+        if (currentPath.includes('/007_Chapter7/')) {
+          return '/book1/007_Chapter7_Investment_Decision_Tools_and_Resources_CN';
+        }
+        if (currentPath.includes('/008_Chapter8/')) {
+          return '/book1/008_Chapter8_Case_Review_and_Strategy_Improvement_CN';
+        }
+        if (currentPath.includes('/009_Chapter9/')) {
+          return '/book1/009_Chapter9_Building_an_Investment_System_CN';
+        }
+        if (currentPath.includes('/010_Chapter10/')) {
+          return '/book1/010_Chapter10_Trading_Execution_and_Practical_Guide_CN';
+        }
+        if (currentPath.includes('/011_Appendix/')) {
+          return '/book1/011_Appendix_CN';
+        }
+        
+        // 第二册子节页面，返回对应章节导航页
+        if (currentPath.includes('/201_Chapter1/')) {
+          return '/book2/201_Chapter1_Market_Trend_Analysis_CN';
+        }
+        if (currentPath.includes('/202_Chapter2/')) {
+          return '/book2/202_Chapter2_Economic_Cycles_and_Market_Performance_CN';
+        }
+        if (currentPath.includes('/203_Chapter3/')) {
+          return '/book2/203_Chapter3_Monetary_Policy_and_Market_Transmission_CN';
+        }
+        
+        // 如果在章节导航页，返回手册导航页
+        if (currentPath.startsWith('/book1/001_Chapter') ||
+            currentPath.startsWith('/book1/002_Chapter') ||
+            currentPath.startsWith('/book1/003_Chapter') ||
+            currentPath.startsWith('/book1/004_Chapter') ||
+            currentPath.startsWith('/book1/005_Chapter') ||
+            currentPath.startsWith('/book1/006_Chapter') ||
+            currentPath.startsWith('/book1/007_Chapter') ||
+            currentPath.startsWith('/book1/008_Chapter') ||
+            currentPath.startsWith('/book1/009_Chapter') ||
+            currentPath.startsWith('/book1/010_Chapter') ||
+            currentPath.startsWith('/book1/011_Appendix') ||
+            currentPath.startsWith('/book1/000_Preface')) {
+          return '/handbook/theory';
+        }
+        
+        // 如果在第二册章节页，返回第二册导航页
+        if (currentPath.startsWith('/book2/201_Chapter') || 
+            currentPath.startsWith('/book2/202_Chapter') || 
+            currentPath.startsWith('/book2/203_Chapter') || 
+            currentPath.startsWith('/book2/204_Chapter') || 
+            currentPath.startsWith('/book2/205_Chapter') || 
+            currentPath.startsWith('/book2/206_Chapter') || 
+            currentPath.startsWith('/book2/207_Chapter') || 
+            currentPath.startsWith('/book2/208_Chapter') || 
+            currentPath.startsWith('/book2/209_Chapter') || 
+            currentPath.startsWith('/book2/210_Chapter') || 
+            currentPath.startsWith('/book2/211_Chapter') || 
+            currentPath.startsWith('/book2/212_Appendix')) {
+          return '/handbook/macro';
+        }
+        
+        // 第四册子节页面，返回对应章节导航页
+        if (currentPath.includes('/401_Chapter1/')) {
+          return '/book4/401_Chapter1_From_Manual_to_Automated_Trading_CN';
+        }
+        if (currentPath.includes('/402_Chapter2/')) {
+          return '/book4/402_Chapter2_Platform_Setup_and_Toolchain_CN';
+        }
+        if (currentPath.includes('/403_Chapter3/')) {
+          return '/book4/403_Chapter3_Quantitative_Research_Methodology_CN';
+        }
+        if (currentPath.includes('/404_Chapter4/')) {
+          return '/book4/404_Chapter4_QuantConnect_Strategy_Development_CN';
+        }
+        if (currentPath.includes('/405_Chapter5/')) {
+          return '/book4/405_Chapter5_Backtesting_and_Simulation_CN';
+        }
+        if (currentPath.includes('/406_Chapter6/')) {
+          return '/book4/406_Chapter6_IBKR_API_and_Order_Execution_CN';
+        }
+        if (currentPath.includes('/407_Chapter7/')) {
+          return '/book4/407_Chapter7_Live_Trading_Deployment_CN';
+        }
+        if (currentPath.includes('/408_Chapter8/')) {
+          return '/book4/408_Chapter8_Risk_Management_Framework_CN';
+        }
+        if (currentPath.includes('/409_Chapter9/')) {
+          return '/book4/409_Chapter9_Derivatives_and_Hedging_CN';
+        }
+        if (currentPath.includes('/410_Chapter10/')) {
+          return '/book4/410_Chapter10_Performance_Attribution_CN';
+        }
+        if (currentPath.includes('/411_Chapter11/')) {
+          return '/book4/411_Chapter11_Strategy_Optimization_CN';
+        }
+        if (currentPath.includes('/412_Chapter12/')) {
+          return '/book4/412_Chapter12_Compliance_and_Ethics_CN';
+        }
+        
+        // 如果在第四册章节页，返回第四册导航页
+        if (currentPath.startsWith('/book4/401_Chapter') ||
+            currentPath.startsWith('/book4/402_Chapter') ||
+            currentPath.startsWith('/book4/403_Chapter') ||
+            currentPath.startsWith('/book4/404_Chapter') ||
+            currentPath.startsWith('/book4/405_Chapter') ||
+            currentPath.startsWith('/book4/406_Chapter') ||
+            currentPath.startsWith('/book4/407_Chapter') ||
+            currentPath.startsWith('/book4/408_Chapter') ||
+            currentPath.startsWith('/book4/409_Chapter') ||
+            currentPath.startsWith('/book4/410_Chapter') ||
+            currentPath.startsWith('/book4/411_Chapter') ||
+            currentPath.startsWith('/book4/412_Chapter') ||
+            currentPath.startsWith('/book4/000_Preface')) {
+          return '/handbook/technical';
+        }
+        
+        // A股手册第一册第一章小节页，返回第一章导航页
+        if (currentPath.startsWith('/ashare-book1/001_Chapter1/')) {
+          return '/ashare-book1/001_Chapter1_A_Share_Market_CN';
+        }
+        // A股手册第一册第二章小节页，返回第二章导航页
+        if (currentPath.startsWith('/ashare-book1/002_Chapter2/')) {
+          return '/ashare-book1/002_Chapter2_Psychology_CN';
+        }
+        // A股手册第一册第三章小节页，返回第三章导航页
+        if (currentPath.startsWith('/ashare-book1/003_Chapter3/')) {
+          return '/ashare-book1/003_Chapter3_Multibagger_CN';
+        }
+        // A股手册第一册第四章小节页，返回第四章导航页
+        if (currentPath.startsWith('/ashare-book1/004_Chapter4/')) {
+          return '/ashare-book1/004_Chapter4_Industry_CN';
+        }
+        // A股手册第一册第五章小节页，返回第五章导航页
+        if (currentPath.startsWith('/ashare-book1/005_Chapter5/')) {
+          return '/ashare-book1/005_Chapter5_Fundamental_CN';
+        }
+        // A股手册第一册第六章小节页，返回第六章导航页
+        if (currentPath.startsWith('/ashare-book1/006_Chapter6/')) {
+          return '/ashare-book1/006_Chapter6_Screening_CN';
+        }
+        // A股手册第一册第七章小节页，返回第七章导航页
+        if (currentPath.startsWith('/ashare-book1/007_Chapter7/')) {
+          return '/ashare-book1/007_Chapter7_Trading_CN';
+        }
+        // A股手册第一册第八章小节页，返回第八章导航页
+        if (currentPath.startsWith('/ashare-book1/008_Chapter8/')) {
+          return '/ashare-book1/008_Chapter8_Tools_CN';
+        }
+        // A股手册第一册第九章小节页，返回第九章导航页
+        if (currentPath.startsWith('/ashare-book1/009_Chapter9/')) {
+          return '/ashare-book1/009_Chapter9_Cases_CN';
+        }
+        // A股手册第一册第十章小节页，返回第十章导航页
+        if (currentPath.startsWith('/ashare-book1/010_Chapter10/')) {
+          return '/ashare-book1/010_Chapter10_System_CN';
+        }
+        // A股手册第一册章节页，返回第一册导航页
+        if (currentPath.startsWith('/ashare-book1/')) {
+          return '/handbook/theory';
+        }
+        // A股手册第二册章节页，返回第二册导航页
+        if (currentPath.startsWith('/ashare-book2/')) {
+          return '/handbook/macro';
+        }
+        // A股手册第三册章节页，返回第三册导航页
+        if (currentPath.startsWith('/ashare-book3/')) {
+          return '/handbook/stocks';
+        }
+        
+        // A股手册第四册小节页，返回对应章节导航页
+        if (currentPath.startsWith('/ashare-book4/001_Chapter1/')) {
+          return '/ashare-book4/001_Chapter1_Quant_Overview_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/002_Chapter2/')) {
+          return '/ashare-book4/002_Chapter2_Value_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/003_Chapter3/')) {
+          return '/ashare-book4/003_Chapter3_Growth_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/004_Chapter4/')) {
+          return '/ashare-book4/004_Chapter4_Quality_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/005_Chapter5/')) {
+          return '/ashare-book4/005_Chapter5_Momentum_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/006_Chapter6/')) {
+          return '/ashare-book4/006_Chapter6_Flow_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/007_Chapter7/')) {
+          return '/ashare-book4/007_Chapter7_Multi_Factor_Model_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/008_Chapter8/')) {
+          return '/ashare-book4/008_Chapter8_PTrade_Strategy_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/009_Chapter9/')) {
+          return '/ashare-book4/009_Chapter9_QMT_Strategy_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/010_Chapter10/')) {
+          return '/ashare-book4/010_Chapter10_Strategy_Evaluation_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/011_Chapter11/')) {
+          return '/ashare-book4/011_Chapter11_Multibagger_Factors_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/012_Chapter12/')) {
+          return '/ashare-book4/012_Chapter12_Event_Alternative_Data_CN';
+        }
+        if (currentPath.startsWith('/ashare-book4/013_Chapter13/')) {
+          return '/ashare-book4/013_Chapter13_Taorui_Integration_CN';
+        }
+        // A股手册第四册章节页，返回第四册导航页
+        if (currentPath.startsWith('/ashare-book4/')) {
+          return '/handbook/quantitative';
+        }
+        // A股手册第五册章节页，返回第五册导航页
+        if (currentPath.startsWith('/ashare-book5/')) {
+          return '/handbook/trading';
+        }
+        
+        // 如果在手册导航页，返回首页
+        if (currentPath.includes('/handbook/')) {
+          return '/';
+        }
+        
+        // 默认返回首页
+        return '/';
+      }
+
+      // 设置章节导航
+      function setupChapterNavigation() {
+        const chapters = [
+          '/book1/000_Preface_CN',
+          '/book1/001_Chapter1_Know_Yourself_and_the_World_CN',
+          '/book1/002_Chapter2_Investment_Psychology_and_Risk_Management_CN',
+          '/book1/003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN',
+          '/book1/004_Chapter4_Track_Selection_and_Industry_Trends_CN',
+          '/book1/005_Chapter5_Stock_Screening_Strategies_CN',
+          '/book1/006_Chapter6_Trading_Strategies_and_Execution_CN',
+          '/book1/007_Chapter7_Investment_Decision_Tools_and_Resources_CN',
+          '/book1/008_Chapter8_Case_Review_and_Strategy_Improvement_CN',
+          '/book1/009_Chapter9_Building_an_Investment_System_CN',
+          '/book1/010_Chapter10_Trading_Execution_and_Practical_Guide_CN',
+          '/book1/011_Appendix_CN'
+        ];
+        
+        const currentIndex = chapters.indexOf(window.location.pathname);
+        const prevChapter = document.getElementById('prevChapter') as HTMLButtonElement;
+        const nextChapter = document.getElementById('nextChapter') as HTMLButtonElement;
+        
+        if (prevChapter) {
+          prevChapter.disabled = currentIndex <= 0;
+          if (currentIndex > 0) {
+            prevChapter.onclick = () => window.location.href = chapters[currentIndex - 1];
+          }
+        }
+        
+        if (nextChapter) {
+          nextChapter.disabled = currentIndex >= chapters.length - 1;
+          if (currentIndex < chapters.length - 1) {
+            nextChapter.onclick = () => window.location.href = chapters[currentIndex + 1];
+          }
+        }
+      }
+
+      // 完整的页面顺序 - 仅A股手册（包含各章节小节）
+      function getAllPages() {
+        return [
+          // ===== 首页 =====
+          '/',
+          
+          // ===== A股手册第一册：理论手册 =====
+          '/handbook/theory',
+          '/ashare-book1/000_Preface_CN',
+          
+          // 第一章：A股市场特征与投资环境
+          '/ashare-book1/001_Chapter1_A_Share_Market_CN',
+          '/ashare-book1/001_Chapter1/1.1_Market_Structure_CN',
+          '/ashare-book1/001_Chapter1/1.2_Trading_Rules_CN',
+          '/ashare-book1/001_Chapter1/1.3_Market_Participants_CN',
+          '/ashare-book1/001_Chapter1/1.4_Policy_Environment_CN',
+          '/ashare-book1/001_Chapter1/1.5_Market_Cycles_CN',
+          '/ashare-book1/001_Chapter1/1.6_Opportunities_Risks_CN',
+          
+          // 第二章：投资心理与认知管理
+          '/ashare-book1/002_Chapter2_Psychology_CN',
+          '/ashare-book1/002_Chapter2/2.1_Psychology_Basics_CN',
+          '/ashare-book1/002_Chapter2/2.2_Cognitive_Biases_CN',
+          '/ashare-book1/002_Chapter2/2.3_Emotion_Management_CN',
+          '/ashare-book1/002_Chapter2/2.4_Decision_Framework_CN',
+          '/ashare-book1/002_Chapter2/2.5_Retail_Psychology_CN',
+          '/ashare-book1/002_Chapter2/2.6_Mental_Training_CN',
+          
+          // 第三章：A股高倍股历史研究
+          '/ashare-book1/003_Chapter3_Multibagger_CN',
+          '/ashare-book1/003_Chapter3/3.1_Definition_Criteria_CN',
+          '/ashare-book1/003_Chapter3/3.2_Industry_Distribution_CN',
+          '/ashare-book1/003_Chapter3/3.3_Classic_Cases_CN',
+          '/ashare-book1/003_Chapter3/3.4_Common_Features_CN',
+          '/ashare-book1/003_Chapter3/3.5_Growth_Stages_CN',
+          '/ashare-book1/003_Chapter3/3.6_Failure_Cases_CN',
+          
+          // 第四章：行业研究与赛道选择
+          '/ashare-book1/004_Chapter4_Industry_CN',
+          '/ashare-book1/004_Chapter4/4.1_Industry_Framework_CN',
+          '/ashare-book1/004_Chapter4/4.2_Industry_Classification_CN',
+          '/ashare-book1/004_Chapter4/4.3_Consumer_Sector_CN',
+          '/ashare-book1/004_Chapter4/4.4_Tech_Sector_CN',
+          '/ashare-book1/004_Chapter4/4.5_Pharma_Sector_CN',
+          '/ashare-book1/004_Chapter4/4.6_Cyclical_Sector_CN',
+          
+          // 第五章：基本面分析框架
+          '/ashare-book1/005_Chapter5_Fundamental_CN',
+          '/ashare-book1/005_Chapter5/5.1_Financial_Statements_CN',
+          '/ashare-book1/005_Chapter5/5.2_Profitability_Analysis_CN',
+          '/ashare-book1/005_Chapter5/5.3_Growth_Analysis_CN',
+          '/ashare-book1/005_Chapter5/5.4_Risk_Detection_CN',
+          '/ashare-book1/005_Chapter5/5.5_Valuation_Methods_CN',
+          '/ashare-book1/005_Chapter5/5.6_Quality_Assessment_CN',
+          
+          // 第六章：股票筛选策略
+          '/ashare-book1/006_Chapter6_Screening_CN',
+          '/ashare-book1/006_Chapter6/6.1_Screening_Framework_CN',
+          '/ashare-book1/006_Chapter6/6.2_Quantitative_Screening_CN',
+          '/ashare-book1/006_Chapter6/6.3_Qualitative_Screening_CN',
+          '/ashare-book1/006_Chapter6/6.4_Investment_Styles_CN',
+          '/ashare-book1/006_Chapter6/6.5_Screening_Tools_CN',
+          '/ashare-book1/006_Chapter6/6.6_Screening_Cases_CN',
+          
+          // 第七章：交易策略与执行
+          '/ashare-book1/007_Chapter7_Trading_CN',
+          '/ashare-book1/007_Chapter7/7.1_Entry_Timing_CN',
+          '/ashare-book1/007_Chapter7/7.2_Position_Management_CN',
+          '/ashare-book1/007_Chapter7/7.3_Stop_Loss_Take_Profit_CN',
+          '/ashare-book1/007_Chapter7/7.4_Exit_Timing_CN',
+          '/ashare-book1/007_Chapter7/7.5_Trading_Discipline_CN',
+          '/ashare-book1/007_Chapter7/7.6_AShare_Trading_Tips_CN',
+          
+          // 第八章：投资工具与资源
+          '/ashare-book1/008_Chapter8_Tools_CN',
+          '/ashare-book1/008_Chapter8/8.1_Data_Sources_CN',
+          '/ashare-book1/008_Chapter8/8.2_Analysis_Tools_CN',
+          '/ashare-book1/008_Chapter8/8.3_Research_Resources_CN',
+          '/ashare-book1/008_Chapter8/8.4_Trading_Platforms_CN',
+          '/ashare-book1/008_Chapter8/8.5_Learning_Resources_CN',
+          '/ashare-book1/008_Chapter8/8.6_Community_Networks_CN',
+          
+          // 第九章：案例复盘与策略改进
+          '/ashare-book1/009_Chapter9_Cases_CN',
+          '/ashare-book1/009_Chapter9/9.1_Case_Study_Framework_CN',
+          '/ashare-book1/009_Chapter9/9.2_Success_Cases_CN',
+          '/ashare-book1/009_Chapter9/9.3_Failure_Cases_CN',
+          '/ashare-book1/009_Chapter9/9.4_Strategy_Review_CN',
+          '/ashare-book1/009_Chapter9/9.5_Continuous_Improvement_CN',
+          '/ashare-book1/009_Chapter9/9.6_Learning_From_Masters_CN',
+          
+          // 第十章：构建个人投资系统
+          '/ashare-book1/010_Chapter10_System_CN',
+          '/ashare-book1/010_Chapter10/10.1_Investment_Philosophy_CN',
+          '/ashare-book1/010_Chapter10/10.2_Strategy_Framework_CN',
+          '/ashare-book1/010_Chapter10/10.3_Risk_Management_System_CN',
+          '/ashare-book1/010_Chapter10/10.4_Execution_Checklist_CN',
+          '/ashare-book1/010_Chapter10/10.5_Performance_Tracking_CN',
+          '/ashare-book1/010_Chapter10/10.6_Lifelong_Learning_CN',
+          
+          // 附录
+          '/ashare-book1/011_Appendix_CN',
+          
+          // ===== A股手册第二册：宏观经济 =====
+          '/handbook/macro',
+          '/ashare-book2/000_Preface_CN',
+          '/ashare-book2/001_Chapter1_Economic_Cycle_CN',
+          '/ashare-book2/002_Chapter2_Monetary_Policy_CN',
+          '/ashare-book2/003_Chapter3_Fiscal_Policy_CN',
+          '/ashare-book2/004_Chapter4_Sector_Rotation_CN',
+          '/ashare-book2/005_Chapter5_Market_Sentiment_CN',
+          '/ashare-book2/006_Chapter6_Macro_Data_CN',
+          '/ashare-book2/007_Chapter7_Global_Impact_CN',
+          '/ashare-book2/008_Chapter8_Risk_Monitor_CN',
+          '/ashare-book2/009_Chapter9_Macro_Timing_CN',
+          '/ashare-book2/010_Chapter10_Macro_Tools_CN',
+          '/ashare-book2/011_Appendix_CN',
+          
+          // ===== A股手册第三册：个股研究 =====
+          '/handbook/stocks',
+          '/ashare-book3/000_Preface_CN',
+          '/ashare-book3/001_Chapter1_Research_Framework_CN',
+          '/ashare-book3/002_Chapter2_Financial_Analysis_CN',
+          '/ashare-book3/003_Chapter3_Valuation_CN',
+          '/ashare-book3/004_Chapter4_Industry_Leaders_CN',
+          '/ashare-book3/005_Chapter5_Consumer_Cases_CN',
+          '/ashare-book3/006_Chapter6_Tech_Cases_CN',
+          '/ashare-book3/007_Chapter7_Cyclical_Cases_CN',
+          '/ashare-book3/008_Chapter8_Finance_Cases_CN',
+          '/ashare-book3/009_Chapter9_Pharma_Cases_CN',
+          '/ashare-book3/010_Chapter10_Report_Writing_CN',
+          '/ashare-book3/011_Appendix_CN',
+          
+          // ===== A股手册第四册：量化因子 =====
+          '/handbook/quantitative',
+          '/ashare-book4/000_Preface_CN',
+          
+          // 第一章：量化投资概述
+          '/ashare-book4/001_Chapter1_Quant_Overview_CN',
+          '/ashare-book4/001_Chapter1/1.1_Quant_Definition_CN',
+          '/ashare-book4/001_Chapter1/1.2_Quant_History_CN',
+          '/ashare-book4/001_Chapter1/1.3_Quant_Strategies_CN',
+          '/ashare-book4/001_Chapter1/1.4_Quant_Advantages_CN',
+          '/ashare-book4/001_Chapter1/1.5_Quant_Challenges_CN',
+          '/ashare-book4/001_Chapter1/1.6_Quant_AShare_CN',
+          
+          // 第二章：价值因子
+          '/ashare-book4/002_Chapter2_Value_Factors_CN',
+          '/ashare-book4/002_Chapter2/2.1_Value_Overview_CN',
+          '/ashare-book4/002_Chapter2/2.2_PE_Factor_CN',
+          '/ashare-book4/002_Chapter2/2.3_PB_Factor_CN',
+          '/ashare-book4/002_Chapter2/2.4_PS_Factor_CN',
+          '/ashare-book4/002_Chapter2/2.5_Dividend_Factor_CN',
+          '/ashare-book4/002_Chapter2/2.6_Value_Composite_CN',
+          
+          // 第三章：成长因子
+          '/ashare-book4/003_Chapter3_Growth_Factors_CN',
+          '/ashare-book4/003_Chapter3/3.1_Growth_Overview_CN',
+          '/ashare-book4/003_Chapter3/3.2_Revenue_Growth_CN',
+          '/ashare-book4/003_Chapter3/3.3_Profit_Growth_CN',
+          '/ashare-book4/003_Chapter3/3.4_ROE_Change_CN',
+          '/ashare-book4/003_Chapter3/3.5_Analyst_Revision_CN',
+          '/ashare-book4/003_Chapter3/3.6_Growth_Composite_CN',
+          
+          // 第四章：质量因子
+          '/ashare-book4/004_Chapter4_Quality_Factors_CN',
+          '/ashare-book4/004_Chapter4/4.1_Quality_Overview_CN',
+          '/ashare-book4/004_Chapter4/4.2_Margin_Factor_CN',
+          '/ashare-book4/004_Chapter4/4.3_Turnover_Factor_CN',
+          '/ashare-book4/004_Chapter4/4.4_Leverage_Factor_CN',
+          '/ashare-book4/004_Chapter4/4.5_Cashflow_Factor_CN',
+          '/ashare-book4/004_Chapter4/4.6_Quality_Composite_CN',
+          
+          // 第五章：动量因子
+          '/ashare-book4/005_Chapter5_Momentum_Factors_CN',
+          '/ashare-book4/005_Chapter5/5.1_Momentum_Overview_CN',
+          '/ashare-book4/005_Chapter5/5.2_Price_Momentum_CN',
+          '/ashare-book4/005_Chapter5/5.3_Industry_Momentum_CN',
+          '/ashare-book4/005_Chapter5/5.4_Reversal_Factor_CN',
+          '/ashare-book4/005_Chapter5/5.5_Momentum_Composite_CN',
+          
+          // 第六章：资金流因子
+          '/ashare-book4/006_Chapter6_Flow_Factors_CN',
+          '/ashare-book4/006_Chapter6/6.1_Flow_Overview_CN',
+          '/ashare-book4/006_Chapter6/6.2_Northbound_Factor_CN',
+          '/ashare-book4/006_Chapter6/6.3_Mainforce_Factor_CN',
+          '/ashare-book4/006_Chapter6/6.4_Margin_Factor_CN',
+          '/ashare-book4/006_Chapter6/6.5_Institution_Factor_CN',
+          '/ashare-book4/006_Chapter6/6.6_Flow_Composite_CN',
+          
+          // 第七章：多因子模型
+          '/ashare-book4/007_Chapter7_Multi_Factor_Model_CN',
+          '/ashare-book4/007_Chapter7/7.1_Model_Overview_CN',
+          '/ashare-book4/007_Chapter7/7.2_Factor_Preprocessing_CN',
+          '/ashare-book4/007_Chapter7/7.3_Factor_Combination_CN',
+          '/ashare-book4/007_Chapter7/7.4_Portfolio_Construction_CN',
+          '/ashare-book4/007_Chapter7/7.5_Risk_Control_CN',
+          '/ashare-book4/007_Chapter7/7.6_Model_Backtest_CN',
+          
+          // 第八章：PTrade策略开发
+          '/ashare-book4/008_Chapter8_PTrade_Strategy_CN',
+          '/ashare-book4/008_Chapter8/8.1_PTrade_Overview_CN',
+          '/ashare-book4/008_Chapter8/8.2_Strategy_Framework_CN',
+          '/ashare-book4/008_Chapter8/8.3_Data_Access_CN',
+          '/ashare-book4/008_Chapter8/8.4_Trade_Execution_CN',
+          '/ashare-book4/008_Chapter8/8.5_Multi_Factor_Strategy_CN',
+          '/ashare-book4/008_Chapter8/8.6_Live_Deployment_CN',
+          
+          // 第九章：QMT策略开发
+          '/ashare-book4/009_Chapter9_QMT_Strategy_CN',
+          '/ashare-book4/009_Chapter9/9.1_QMT_Overview_CN',
+          '/ashare-book4/009_Chapter9/9.2_MiniQMT_CN',
+          '/ashare-book4/009_Chapter9/9.3_Xtquant_CN',
+          '/ashare-book4/009_Chapter9/9.4_Strategy_Dev_CN',
+          '/ashare-book4/009_Chapter9/9.5_Multi_Factor_Strategy_CN',
+          '/ashare-book4/009_Chapter9/9.6_Live_Deployment_CN',
+          
+          // 第十章：策略评估与优化
+          '/ashare-book4/010_Chapter10_Strategy_Evaluation_CN',
+          '/ashare-book4/010_Chapter10/10.1_Evaluation_Metrics_CN',
+          '/ashare-book4/010_Chapter10/10.2_Backtest_Methods_CN',
+          '/ashare-book4/010_Chapter10/10.3_Risk_Analysis_CN',
+          '/ashare-book4/010_Chapter10/10.4_Parameter_Optimization_CN',
+          '/ashare-book4/010_Chapter10/10.5_Strategy_Iteration_CN',
+          '/ashare-book4/010_Chapter10/10.6_Case_Study_CN',
+          
+          // 第十一章：高倍股因子特征
+          '/ashare-book4/011_Chapter11_Multibagger_Factors_CN',
+          '/ashare-book4/011_Chapter11/11.1_Multibagger_Definition_CN',
+          '/ashare-book4/011_Chapter11/11.2_Growth_Features_CN',
+          '/ashare-book4/011_Chapter11/11.3_Valuation_Features_CN',
+          '/ashare-book4/011_Chapter11/11.4_Quality_Features_CN',
+          '/ashare-book4/011_Chapter11/11.5_Technical_Flow_Features_CN',
+          '/ashare-book4/011_Chapter11/11.6_Multibagger_Model_CN',
+          
+          // 第十二章：事件驱动与另类数据
+          '/ashare-book4/012_Chapter12_Event_Alternative_Data_CN',
+          '/ashare-book4/012_Chapter12/12.1_Event_Driven_Overview_CN',
+          '/ashare-book4/012_Chapter12/12.2_Earnings_Event_CN',
+          '/ashare-book4/012_Chapter12/12.3_News_Sentiment_CN',
+          '/ashare-book4/012_Chapter12/12.4_Analyst_Expectations_CN',
+          '/ashare-book4/012_Chapter12/12.5_Alternative_Data_CN',
+          '/ashare-book4/012_Chapter12/12.6_Taorui_Integration_CN',
+          
+          // 第十三章：韬睿量化系统集成
+          '/ashare-book4/013_Chapter13_Taorui_Integration_CN',
+          '/ashare-book4/013_Chapter13/13.1_System_Architecture_CN',
+          '/ashare-book4/013_Chapter13/13.2_Data_Management_CN',
+          '/ashare-book4/013_Chapter13/13.3_Factor_Research_CN',
+          '/ashare-book4/013_Chapter13/13.4_Strategy_Development_CN',
+          '/ashare-book4/013_Chapter13/13.5_Backtest_Live_CN',
+          '/ashare-book4/013_Chapter13/13.6_Cursor_Integration_CN',
+          
+          '/ashare-book4/014_Appendix_CN',
+          
+          // ===== A股手册第五册：回测实盘 =====
+          '/handbook/trading',
+          '/ashare-book5/000_Preface_CN',
+          '/ashare-book5/001_Chapter1_Backtest_Basics_CN',
+          '/ashare-book5/002_Chapter2_JQData_Integration_CN',
+          '/ashare-book5/003_Chapter3_Taorui_Backtest_CN',
+          '/ashare-book5/004_Chapter4_Report_Analysis_CN',
+          '/ashare-book5/005_Chapter5_Risk_Control_CN',
+          '/ashare-book5/006_Chapter6_PTrade_Live_CN',
+          '/ashare-book5/007_Chapter7_QMT_Live_CN',
+          '/ashare-book5/008_Chapter8_Strategy_Iteration_CN',
+          '/ashare-book5/009_Chapter9_File_Management_CN',
+          '/ashare-book5/010_Chapter10_Complete_Workflow_CN',
+          '/ashare-book5/011_Appendix_CN'
+        ];
+      }
+
+      // 翻页功能
+      function navigateToPrevPage() {
+        const pages = getAllPages();
+        const currentPath = window.location.pathname;
+        const currentIndex = pages.indexOf(currentPath);
+        
+        if (currentIndex > 0) {
+          window.location.href = pages[currentIndex - 1];
+        }
+      }
+
+      function navigateToNextPage() {
+        const pages = getAllPages();
+        const currentPath = window.location.pathname;
+        const currentIndex = pages.indexOf(currentPath);
+        
+        if (currentIndex >= 0 && currentIndex < pages.length - 1) {
+          window.location.href = pages[currentIndex + 1];
+        }
+      }
+
+      // 更新翻页按钮状态
+      function updateNavigationButtons() {
+        const pages = getAllPages();
+        const currentPath = window.location.pathname;
+        const currentIndex = pages.indexOf(currentPath);
+        
+        const prevBtn = document.getElementById('prevPageBtn') as HTMLButtonElement | null;
+        const nextBtn = document.getElementById('nextPageBtn') as HTMLButtonElement | null;
+        
+        if (prevBtn && nextBtn) {
+          // 更新按钮状态
+          prevBtn.disabled = currentIndex <= 0;
+          nextBtn.disabled = currentIndex >= pages.length - 1;
+          
+          // 更新按钮文字显示页面信息
+          if (currentIndex > 0) {
+            prevBtn.title = `上一页`;
+          } else {
+            prevBtn.title = '已是第一页';
+          }
+          
+          if (currentIndex < pages.length - 1) {
+            nextBtn.title = `下一页`;
+          } else {
+            nextBtn.title = '已是最后一页';
+          }
+        }
+      }
+
+      // 回到顶部
+      function initializeBackToTop() {
+      const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+          if (backToTopBtn) {
+          if (window.scrollY > 300) {
+            backToTopBtn.style.display = 'flex';
+          } else {
+            backToTopBtn.style.display = 'none';
+            }
+          }
+        });
+        
+        backToTopBtn?.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // 阅读进度
+      function initializeReadingProgress() {
+        if (state.focusMode) {
+          showReadingProgress();
+        }
+      }
+
+      function showReadingProgress() {
+        const progress = document.getElementById('readingProgress');
+        if (progress) {
+          progress.style.display = 'block';
+          window.addEventListener('scroll', updateReadingProgress);
+        }
+      }
+
+      function hideReadingProgress() {
+        const progress = document.getElementById('readingProgress');
+        if (progress) {
+          progress.style.display = 'none';
+          window.removeEventListener('scroll', updateReadingProgress);
+        }
+      }
+      
+      function updateReadingProgress() {
+        const progressBar = document.getElementById('readingProgressBar');
+        if (!progressBar) return;
+        
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        
+        progressBar.style.width = scrollPercent + '%';
+      }
+
+      // 键盘快捷键
+      function setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+          // ESC: 退出专注模式
+          if (e.key === 'Escape' && state.focusMode) {
+            document.getElementById('toggleReadingMode')?.click();
+          }
+          
+          // Ctrl/Cmd + +/-: 调整字体
+          if ((e.ctrlKey || e.metaKey) && e.key === '=') {
+            e.preventDefault();
+            document.getElementById('increaseFont')?.click();
+          }
+          if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+            e.preventDefault();
+            document.getElementById('decreaseFont')?.click();
+          }
+          
+          // Ctrl/Cmd + D: 切换主题
+          if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+            e.preventDefault();
+            document.getElementById('themeToggle')?.click();
+          }
+        });
+      }
+
+      // 语言切换管理
+      function initializeLanguageSwitch() {
+        const enBtn = document.getElementById('langSwitchEn');
+        const cnBtn = document.getElementById('langSwitchCn');
+        
+        // EN按钮 - 准备页面翻译
+        enBtn?.addEventListener('click', () => {
+          prepareForTranslation();
+        });
+        
+        // CN按钮 - 恢复中文
+        cnBtn?.addEventListener('click', () => {
+          window.location.reload();
+        });
+      }
+
+      // 准备页面翻译
+      function prepareForTranslation() {
+        // 设置页面语言属性，帮助浏览器识别
+        document.documentElement.lang = 'zh-CN';
+        document.documentElement.setAttribute('translate', 'yes');
+        
+        // 添加翻译提示
+        showTranslationTip();
+        
+        // 尝试触发浏览器翻译提示（如果可能）
+        tryTriggerTranslation();
+      }
+
+      // 显示翻译提示
+      function showTranslationTip() {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 60px;
+          right: 20px;
+          background: #2196f3;
+          color: white;
+          padding: 16px;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 10000;
+          font-size: 14px;
+          max-width: 300px;
+          line-height: 1.4;
+          font-family: inherit;
+        `;
+        
+        const browserInfo = getBrowserTranslationInfo();
+        notification.innerHTML = `
+          <div style="font-weight: 600; margin-bottom: 8px;">🌐 ${browserInfo.title}</div>
+          <div style="margin-bottom: 8px;">${browserInfo.instruction}</div>
+          ${browserInfo.shortcut ? `<div style="font-size: 12px; opacity: 0.9;">快捷键: ${browserInfo.shortcut}</div>` : ''}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // 5秒后自动移除
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.remove();
+          }
+        }, 5000);
+      }
+
+      // 尝试触发翻译（有限制）
+      function tryTriggerTranslation() {
+        // 方法1: 尝试模拟右键菜单（有限制）
+        try {
+          const contextEvent = new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+            clientX: window.innerWidth / 2,
+            clientY: window.innerHeight / 2
+          });
+          document.body.dispatchEvent(contextEvent);
+        } catch (e) {
+          console.log('Context menu simulation not supported');
+        }
+
+        // 方法2: 尝试快捷键（有限制）
+        setTimeout(() => {
+          try {
+            const keyEvent = new KeyboardEvent('keydown', {
+              key: 't',
+              ctrlKey: true,
+              shiftKey: true,
+              bubbles: true
+            });
+            document.dispatchEvent(keyEvent);
+          } catch (e) {
+            console.log('Keyboard simulation not supported');
+          }
+        }, 100);
+      }
+
+      // 获取浏览器翻译信息
+      function getBrowserTranslationInfo() {
+        const userAgent = navigator.userAgent;
+        
+        if (userAgent.includes('Chrome')) {
+          return {
+            title: 'Chrome 翻译已准备',
+            instruction: '右键点击页面 → "翻译为英语"，或查看地址栏右侧的翻译图标',
+            shortcut: 'Ctrl+Shift+T (部分版本)'
+          };
+        } else if (userAgent.includes('Edge')) {
+          return {
+            title: 'Edge 翻译已准备',
+            instruction: '右键点击页面 → "翻译为英语"，或查看地址栏的翻译图标',
+            shortcut: null
+          };
+        } else if (userAgent.includes('Firefox')) {
+          return {
+            title: 'Firefox 翻译',
+            instruction: '需要安装翻译扩展，推荐使用 "To Google Translate" 扩展',
+            shortcut: null
+          };
+        } else if (userAgent.includes('Safari')) {
+          return {
+            title: 'Safari 翻译已准备',
+            instruction: '右键点击页面 → "翻译为英语"（需要 macOS Big Sur 或更高版本）',
+            shortcut: null
+          };
+        } else {
+          return {
+            title: '浏览器翻译已准备',
+            instruction: '右键点击页面选择翻译选项',
+            shortcut: null
+          };
+        }
+      }
+    </script>
+  </body>
+</html> 

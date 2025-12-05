@@ -1,0 +1,161 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f8f9fa;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        text-align: center;
+      }
+      
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+      
+      .nav {
+        background: white;
+        padding: 15px 0;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      
+      .nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+      }
+      
+      .nav a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+      
+      .nav a:hover {
+        background: #f8f9fa;
+        color: #667eea;
+      }
+      
+      .content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+      }
+      
+      .footer {
+        text-align: center;
+        color: #666;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        margin-top: 30px;
+      }
+      
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+        
+        .header h1 {
+          font-size: 2rem;
+        }
+        
+        .nav ul {
+          flex-direction: column;
+          gap: 10px;
+        }
+        
+        .content {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </header>
+      
+      <nav class="nav">
+        <ul>
+          <li><a href="/">🏠 首页</a></li>
+          <li><a href="/news">📰 新闻中心</a></li>
+          <li><a href="/guides">📚 指南</a></li>
+          <li><a href="/strategies">💻 策略</a></li>
+          <li><a href="/reports">📊 报告</a></li>
+        </ul>
+      </nav>
+      
+      <main class="content">
+        <slot />
+      </main>
+      
+      <footer class="footer">
+        <p>© 2025 QuantConnect 量化交易研究平台 | 数据来源: WSJ, MarketWatch, IBD, GuruFocus</p>
+      </footer>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+

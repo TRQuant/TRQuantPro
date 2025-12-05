@@ -1,0 +1,66 @@
+---
+description: TRQuant量化系统架构说明
+globs: ["**/*.py", "**/*.ts"]
+alwaysApply: true
+---
+
+# TRQuant 韬睿量化系统
+
+## 系统概述
+TRQuant是一个A股量化投资系统，提供从市场分析到策略生成的完整工作流。
+
+## 核心模块
+
+### 1. TrendAnalyzer - 市场趋势分析
+- 分析市场Regime（risk_on/risk_off/neutral）
+- 计算指数趋势和动量
+- 识别风格轮动（成长/价值/动量等）
+
+### 2. CandidatePoolBuilder - 候选池构建
+- 基于投资主线筛选股票
+- 支持多维度评分
+- 输出TOP20投资主线
+
+### 3. FactorManager - 因子管理
+- 管理60+量化因子
+- 因子计算和标准化
+- 因子有效性检验
+
+### 4. StrategyGenerator - 策略生成
+- 生成PTrade兼容策略代码
+- 支持多种策略风格
+- 内置风控框架
+
+## PTrade策略代码规范
+
+### 必需函数
+```python
+def initialize(context):
+    """策略初始化，设置参数和股票池"""
+    pass
+
+def handle_data(context, data):
+    """每个bar调用，处理交易逻辑"""
+    pass
+```
+
+### 风控要求
+- 必须设置止损线（建议8%）
+- 必须限制单票最大仓位（建议10%）
+- 必须处理停牌和ST股票
+
+### 订单函数
+- `order_value(stock, value)` - 按金额下单
+- `order_target_percent(stock, percent)` - 按目标比例下单
+- `order_target(stock, amount)` - 按目标数量下单
+
+## 数据源
+- JQData：A股行情、财务数据
+- AKShare：宏观数据、行业数据
+- MongoDB：本地存储
+
+## 时间维度
+所有分析需要考虑三个周期：
+- 短期：1-5天
+- 中期：1-4周
+- 长期：1月+

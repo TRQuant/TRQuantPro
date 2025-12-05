@@ -1,0 +1,398 @@
+/* ========== 增强版流程图样式 ========== */
+.enhanced-flowchart {
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(79, 70, 229, 0.05) 100%);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.enhanced-flowchart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981, #f59e0b, #ef4444, #8b5cf6);
+    border-radius: 20px 20px 0 0;
+}
+
+.flowchart-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.flowchart-header h3 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.flowchart-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+    font-style: italic;
+}
+
+.flowchart-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.flowchart-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.phase-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.phase-title::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--border-color);
+}
+
+.phase-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.enhanced-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    min-width: 280px;
+    max-width: 320px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.enhanced-step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.enhanced-step:hover::before {
+    transform: scaleX(1);
+}
+
+.enhanced-step:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+.enhanced-step.primary {
+    border-color: #4f46e5;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.1) 100%);
+}
+
+.enhanced-step.secondary {
+    border-color: #06b6d4;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(6, 182, 212, 0.1) 100%);
+}
+
+.enhanced-step.tertiary {
+    border-color: #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.1) 100%);
+}
+
+.enhanced-step.success {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(245, 158, 11, 0.1) 100%);
+}
+
+.step-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.enhanced-step:hover .step-icon {
+    transform: scale(1.1);
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+}
+
+.step-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.step-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+
+.step-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+}
+
+.step-details {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    opacity: 0.8;
+}
+
+.arrow-enhanced {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.flowchart-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--border-color);
+}
+
+.footer-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    justify-items: center;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .enhanced-flowchart {
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(79, 70, 229, 0.1) 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .enhanced-step {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .enhanced-step.primary {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0.15) 100%);
+}
+
+[data-theme="dark"] .enhanced-step.secondary {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(6, 182, 212, 0.15) 100%);
+}
+
+[data-theme="dark"] .enhanced-step.tertiary {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.15) 100%);
+}
+
+[data-theme="dark"] .enhanced-step.success {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.15) 100%);
+}
+
+[data-theme="dark"] .step-icon {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .enhanced-flowchart {
+        padding: 1.5rem;
+    }
+    
+    .phase-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .arrow-enhanced {
+        transform: rotate(90deg);
+        margin: 0.5rem 0;
+    }
+    
+    .enhanced-step {
+        min-width: 250px;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .enhanced-flowchart {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .flowchart-header h3 {
+        font-size: 1.5rem;
+    }
+    
+    .flowchart-header p {
+        font-size: 0.9rem;
+    }
+    
+    .phase-title {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .enhanced-step {
+        min-width: 220px;
+        max-width: 280px;
+        padding: 1rem;
+    }
+    
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .step-title {
+        font-size: 1rem;
+    }
+    
+    .step-description {
+        font-size: 0.85rem;
+    }
+    
+    .step-details {
+        font-size: 0.75rem;
+    }
+    
+    .footer-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .stat-item {
+        padding: 0.75rem;
+    }
+    
+    .stat-number {
+        font-size: 1.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .enhanced-flowchart {
+        padding: 0.75rem;
+    }
+    
+    .flowchart-header h3 {
+        font-size: 1.3rem;
+    }
+    
+    .enhanced-step {
+        min-width: 200px;
+        max-width: 250px;
+        padding: 0.75rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .step-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .footer-stats {
+        grid-template-columns: 1fr;
+    }
+} 

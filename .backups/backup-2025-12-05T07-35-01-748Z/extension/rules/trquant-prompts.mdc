@@ -1,0 +1,72 @@
+---
+description: TRQuant AI交互指南
+globs: ["**/*.py"]
+alwaysApply: true
+---
+
+# TRQuant MCP工具使用指南
+
+## 可用工具
+
+当用户请求量化策略相关任务时，你可以调用以下MCP工具：
+
+### 1. trquant_get_market_status
+获取当前A股市场状态
+- 返回：市场Regime、指数趋势、风格轮动
+- 适用：了解市场环境，决定策略方向
+
+### 2. trquant_get_mainlines
+获取投资主线TOP20
+- 返回：热门主线、相关行业、投资逻辑
+- 适用：确定投资方向，选择股票池
+
+### 3. trquant_recommend_factors
+推荐适合当前市场的因子
+- 返回：因子列表、权重、推荐理由
+- 适用：构建多因子模型
+
+### 4. trquant_generate_strategy
+生成PTrade策略代码
+- 输入：因子列表、策略风格、风控参数
+- 返回：完整可运行的策略代码
+
+### 5. trquant_analyze_backtest
+分析回测结果
+- 返回：绩效指标、问题诊断、优化建议
+
+### 6. trquant_risk_assessment
+评估投资组合风险
+- 返回：风险等级、VaR、Beta等指标
+
+## 推荐工作流
+
+当用户说"帮我生成一个策略"时：
+
+1. **首先**调用 `trquant_get_market_status` 了解当前市场
+2. **然后**调用 `trquant_get_mainlines` 获取投资主线
+3. **基于以上**调用 `trquant_recommend_factors` 获取因子建议
+4. **最后**调用 `trquant_generate_strategy` 生成策略代码
+
+## 策略生成约束
+
+生成PTrade策略时必须：
+- 包含 `initialize()` 和 `handle_data()` 函数
+- 设置明确的止损和止盈
+- 限制单票最大仓位
+- 过滤ST和停牌股票
+- 添加清晰的中文注释
+
+## 回复格式
+
+返回策略代码时：
+```python
+# 策略名称
+# 使用因子：xxx
+# 风控参数：止损x%，止盈x%，单票x%
+
+def initialize(context):
+    ...
+
+def handle_data(context, data):
+    ...
+```

@@ -1,0 +1,562 @@
+---
+import HandbookLayout from '../../layouts/HandbookLayout.astro';
+
+const title = "第四册：QuantConnect + IBKR 自动化交易";
+---
+
+<HandbookLayout title={title} book="automation">
+  <div class="automation-handbook">
+    <div class="hero">
+      <div class="hero-content">
+        <h1>⚡ 美股投资实操手册IV</h1>
+        <p class="subtitle">QuantConnect + IBKR 自动化交易</p>
+        <p class="description">从手工交易到自动化交易的完整转型指南，构建专业级量化交易体系</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">12</span>
+            <span class="stat-label">核心章节</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">代码示例</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">6</span>
+            <span class="stat-label">实战项目</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learning-path">
+      <h2>🎯 学习路径</h2>
+      <p class="path-description">按照以下顺序学习，构建完整的自动化交易体系</p>
+      
+      <div class="chapters-grid">
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">📖</span>
+            <h3>序言</h3>
+          </div>
+          <p>从手工交易向自动化交易的完整转型指南</p>
+          <a href="/book4/000_Preface_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">1️⃣</span>
+            <h3>第一章：从手工到自动化</h3>
+          </div>
+          <p>自动化交易的优势与风险分析，美股市场结构与IBKR角色定位</p>
+          <a href="/book4/401_Chapter1/401_Chapter1_From_Manual_to_Automated_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">2️⃣</span>
+            <h3>第二章：平台与工具链搭建</h3>
+          </div>
+          <p>IBKR API配置与账户设置，QuantConnect框架与数据接口</p>
+          <a href="/book4/402_Chapter2/402_Chapter2_Platform_Setup_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">3️⃣</span>
+            <h3>第三章：量化研究方法论</h3>
+          </div>
+          <p>基于CFA框架的量化研究方法论，因子模型与回归分析</p>
+          <a href="/book4/403_Chapter3/403_Chapter3_Quantitative_Methodology_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">4️⃣</span>
+            <h3>第四章：QuantConnect策略开发全流程</h3>
+          </div>
+          <p>从Universe Selection到Risk Management的完整策略开发流程</p>
+          <a href="/book4/404_Chapter4/404_Chapter4_Strategy_Development_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">5️⃣</span>
+            <h3>第五章：回测与模拟交易</h3>
+          </div>
+          <p>数据源配置、回测指标分析、常见陷阱识别和多市场验证方法</p>
+          <a href="/book4/405_Chapter5/405_Chapter5_Backtesting_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">6️⃣</span>
+            <h3>第六章：IBKR API与订单执行机制</h3>
+          </div>
+          <p>IB Gateway/TWS接入方法，订单类型与执行策略，交易成本与滑点管理</p>
+          <a href="/book4/406_Chapter6/406_Chapter6_IBKR_API_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">7️⃣</span>
+            <h3>第七章：QuantConnect + IBKR实盘部署</h3>
+          </div>
+          <p>Live Trading配置流程，实盘风控机制，日志监控与异常处理</p>
+          <a href="/book4/407_Chapter7/407_Chapter7_Live_Trading_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">8️⃣</span>
+            <h3>第八章：风险管理框架</h3>
+          </div>
+          <p>VaR模型、Kelly比例、止损规则和蒙特卡洛模拟在自动化交易中的应用</p>
+          <a href="/book4/408_Chapter8/408_Chapter8_Risk_Management_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">9️⃣</span>
+            <h3>第九章：衍生品与对冲策略</h3>
+          </div>
+          <p>期权策略、股指期货对冲、外汇风险管理在自动化交易中的实现</p>
+          <a href="/book4/409_Chapter9/409_Chapter9_Derivatives_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">🔟</span>
+            <h3>第十章：绩效归因与评估</h3>
+          </div>
+          <p>Brinson模型、因子归因分析、上行/下行捕获比率和投资技能评估方法</p>
+          <a href="/book4/410_Chapter10/410_Chapter10_Performance_Attribution_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">1️⃣1️⃣</span>
+            <h3>第十一章：策略优化与迭代</h3>
+          </div>
+          <p>策略生命周期管理、机器学习应用、失败案例复盘和持续改进机制</p>
+          <a href="/book4/411_Chapter11/411_Chapter11_Strategy_Optimization_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+
+        <div class="chapter-card">
+          <div class="chapter-header">
+            <span class="chapter-number">1️⃣2️⃣</span>
+            <h3>第十二章：合规与职业道德</h3>
+          </div>
+          <p>SEC/FINRA监管环境、自动化交易合规要求、市场操纵风险防范和职业操守建设</p>
+          <a href="/book4/412_Chapter12/412_Chapter12_Compliance_CN" class="chapter-link">开始阅读 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-examples">
+      <h2>💻 实战代码示例</h2>
+      <p class="section-description">通过实际代码学习自动化交易策略的实现</p>
+      
+      <div class="examples-grid">
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">📊</span>
+            <h3>多因子选股策略</h3>
+          </div>
+          <p>基于Fama-French三因子模型，结合价值、成长、质量因子构建选股策略</p>
+          <a href="/book4/examples/multi_factor_strategy" class="example-link">查看详情 →</a>
+        </div>
+
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">🧠</span>
+            <h3>机器学习预测模型</h3>
+          </div>
+          <p>使用随机森林和XGBoost预测股票未来收益，结合特征工程提升预测精度</p>
+          <a href="/book4/examples/ml_prediction_model" class="example-link">查看详情 →</a>
+        </div>
+
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">⚖️</span>
+            <h3>风险平价组合</h3>
+          </div>
+          <p>基于风险平价理论构建投资组合，实现风险分散和收益优化</p>
+          <a href="/book4/examples/risk_parity_portfolio" class="example-link">查看详情 →</a>
+        </div>
+
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">📈</span>
+            <h3>期权策略实现</h3>
+          </div>
+          <p>Protective Put、Collar、Straddle等策略的QuantConnect实现</p>
+          <a href="/book4/examples/options_strategies" class="example-link">查看详情 →</a>
+        </div>
+
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">🔄</span>
+            <h3>算法交易执行</h3>
+          </div>
+          <p>TWAP、VWAP、POV等执行算法的实现和优化</p>
+          <a href="/book4/examples/algorithmic_execution" class="example-link">查看详情 →</a>
+        </div>
+
+        <div class="example-card">
+          <div class="example-header">
+            <span class="example-icon">🛡️</span>
+            <h3>实时风险监控</h3>
+          </div>
+          <p>VaR模型、实时仓位控制、异常检测和自动止损机制</p>
+          <a href="/book4/examples/real_time_risk_monitoring" class="example-link">查看详情 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2>🚀 开始你的自动化交易之旅</h2>
+      <p>从序言开始，系统性地构建你的量化交易知识体系</p>
+      <div class="cta-buttons">
+        <a href="/book4/000_Preface_CN" class="cta-button primary">从序言开始</a>
+        <a href="/book4/401_Chapter1/401_Chapter1_From_Manual_to_Automated_CN" class="cta-button secondary">直接进入第一章</a>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <a href="/handbook/theory" class="nav-link">← 上一册：理论基础</a>
+      <a href="/handbook/quantitative" class="nav-link">下一册：量化专题 →</a>
+    </div>
+  </div>
+</HandbookLayout>
+
+<style>
+  /* 英雄区域 */
+  .hero {
+    background: linear-gradient(135deg, #1976d2 0%, #2196f3 50%, #42a5f5 100%);
+    color: white;
+    padding: 4rem 0;
+    margin: -2rem -2rem 3rem -2rem;
+    border-radius: 0 0 30px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* 学习路径 */
+  .learning-path {
+    margin-bottom: 4rem;
+  }
+
+  .learning-path h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+  }
+
+  .path-description {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .chapter-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .chapter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+  }
+
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-number {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .chapter-header h3 {
+    margin: 0;
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+  }
+
+  .chapter-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .chapter-link {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .chapter-link:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
+  /* 代码示例 */
+  .code-examples {
+    margin-bottom: 4rem;
+  }
+
+  .code-examples h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+  }
+
+  .section-description {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+  }
+
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .example-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .example-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+  }
+
+  .example-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .example-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .example-header h3 {
+    margin: 0;
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+  }
+
+  .example-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .example-link {
+    display: inline-block;
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid var(--primary-color);
+    transition: all 0.3s ease;
+  }
+
+  .example-link:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  /* CTA区域 */
+  .cta-section {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e3f2fd 100%);
+    padding: 4rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-dark);
+  }
+
+  .cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-button {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .cta-button.primary {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .cta-button.primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
+  .cta-button.secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+  }
+
+  .cta-button.secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* 导航 */
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .nav-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .chapters-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .examples-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .navigation {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,10 @@
+# Ignore Python scripts and analysis assets
+scripts/
+*.py
+*.ipynb
+requirements.txt
+environment.yml
+
+# Optional: ignore local dev artifacts
+*.log
+*.tmp

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韬睿量化 - 量化投资文件管理系统</title>
+    <style>
+        :root {
+            --bg-primary: #0d0d14;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252540;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --primary: #667eea;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --border: #2a2a4a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header-actions button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        
+        .header-actions button:hover { opacity: 0.9; }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .stat-card .icon { font-size: 24px; margin-bottom: 8px; }
+        .stat-card .label { color: var(--text-secondary); font-size: 13px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; margin-top: 4px; }
+        .stat-card .value.success { color: var(--success); }
+        .stat-card .value.warning { color: var(--warning); }
+        .stat-card .value.info { color: var(--info); }
+        
+        /* Content Sections */
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        tr:hover { background: var(--bg-tertiary); }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .card-title { font-weight: 600; margin-bottom: 8px; }
+        .card-desc { color: var(--text-secondary); font-size: 13px; }
+        
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        
+        /* Tab Content */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        /* Workflow Steps */
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            position: relative;
+        }
+        
+        .workflow-step::after {
+            content: '→';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .workflow-step:last-child::after { display: none; }
+        
+        .workflow-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 24px;
+        }
+        
+        .workflow-icon.done { background: var(--success); }
+        .workflow-icon.pending { background: var(--bg-tertiary); border: 2px dashed var(--border); }
+        
+        .workflow-label { font-size: 13px; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 量化投资文件管理系统</h1>
+            <div class="header-actions">
+                <button onclick="refreshData()">🔄 刷新数据</button>
+                <button onclick="openLatestReport()">📄 查看最新报告</button>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="overview">📋 概览</div>
+            <div class="tab" data-tab="astock">📈 A股策略管理</div>
+            <div class="tab" data-tab="strategies">🐍 策略代码</div>
+            <div class="tab" data-tab="reports">📊 回测报告</div>
+            <div class="tab" data-tab="docs">📄 研究文档</div>
+            <div class="tab" data-tab="factors">🧮 因子研究</div>
+        </div>
+        
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid" id="stats-grid">
+                <div class="loading">加载中...</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🔗 快速入口</span>
+                </div>
+                <div class="cards-grid">
+                    <div class="card" onclick="switchTab('strategies')">
+                        <div class="card-title">📁 策略代码库</div>
+                        <div class="card-desc">查看本地与PTrade策略并直接打开代码</div>
+                    </div>
+                    <div class="card" onclick="switchTab('reports')">
+                        <div class="card-title">📊 回测报告中心</div>
+                        <div class="card-desc">查看聚宽+PTrade回测结果、指标卡片与原始报告</div>
+                    </div>
+                    <div class="card" onclick="switchTab('factors')">
+                        <div class="card-title">🧮 量化因子库</div>
+                        <div class="card-desc">按动量/价值/质量/波动分类，总览最新因子配置</div>
+                    </div>
+                    <div class="card" onclick="switchTab('docs')">
+                        <div class="card-title">📄 研究文档集</div>
+                        <div class="card-desc">汇总平台介绍、策略手册等资料</div>
+                    </div>
+                    <div class="card" onclick="switchTab('astock')">
+                        <div class="card-title">📈 A股策略管理</div>
+                        <div class="card-desc">管理工作流生成的数据、报告和策略</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- A股策略管理 Tab -->
+        <div id="astock" class="tab-content">
+            <!-- 工作流状态 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🔄 工作流程状态</span>
+                    <button onclick="refreshAstockData()" style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;">刷新</button>
+                </div>
+                <div class="workflow-steps" id="workflow-steps">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 市场趋势 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">📈 市场趋势</span>
+                </div>
+                <div id="market-trend">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 投资主线 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🔥 投资主线 TOP20</span>
+                </div>
+                <div id="mainlines-table">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 候选池 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">📦 候选池股票</span>
+                </div>
+                <div id="candidate-pool">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 生成的报告 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">📄 生成的报告</span>
+                </div>
+                <div id="astock-reports">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 生成的策略 -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🐍 生成的策略</span>
+                </div>
+                <div id="astock-strategies">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Strategies Tab -->
+        <div id="strategies" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🐍 策略代码库</span>
+                </div>
+                <div id="strategies-table">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">📊 回测报告</span>
+                </div>
+                <div id="reports-table">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Docs Tab -->
+        <div id="docs" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">📄 研究文档</span>
+                </div>
+                <div id="docs-table">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Factors Tab -->
+        <div id="factors" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🧮 量化因子库</span>
+                </div>
+                <div id="factors-table">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                switchTab(tabId);
+            });
+        });
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // 加载数据
+            if (tabId === 'astock') loadAstockData();
+            else if (tabId === 'strategies') loadStrategies();
+            else if (tabId === 'reports') loadReports();
+            else if (tabId === 'docs') loadDocs();
+            else if (tabId === 'factors') loadFactors();
+        }
+        
+        // 加载概览数据
+        async function loadOverview() {
+            try {
+                const resp = await fetch('/api/overview');
+                const data = await resp.json();
+                
+                document.getElementById('stats-grid').innerHTML = `
+                    <div class="stat-card">
+                        <div class="icon">🐍</div>
+                        <div class="label">策略数量</div>
+                        <div class="value info">${data.strategy_count || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">📊</div>
+                        <div class="label">PTrade策略</div>
+                        <div class="value success">${data.ptrade_strategies || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">📄</div>
+                        <div class="label">累计报告</div>
+                        <div class="value warning">${data.report_count || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">🔄</div>
+                        <div class="label">PTrade回测</div>
+                        <div class="value info">${data.backtest_count || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">📈</div>
+                        <div class="label">平均胜率</div>
+                        <div class="value success">${(data.avg_win_rate || 0).toFixed(0)}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">💰</div>
+                        <div class="label">平均盈亏比</div>
+                        <div class="value">${(data.avg_profit_loss_ratio || 0).toFixed(2)}</div>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('加载概览失败:', e);
+            }
+        }
+        
+        // 加载A股策略管理数据
+        async function loadAstockData() {
+            try {
+                const resp = await fetch('/api/astock/workflow');
+                const result = await resp.json();
+                
+                if (!result.success) {
+                    console.error('加载失败:', result.error);
+                    return;
+                }
+                
+                const data = result.data;
+                
+                // 工作流状态
+                const hasData = (arr) => arr && arr.length > 0;
+                document.getElementById('workflow-steps').innerHTML = `
+                    <div class="workflow-step">
+                        <div class="workflow-icon ${data.market_trend.phase !== '未知' ? 'done' : 'pending'}">📈</div>
+                        <div class="workflow-label">市场趋势</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon ${hasData(data.mainlines) ? 'done' : 'pending'}">🔥</div>
+                        <div class="workflow-label">投资主线</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon ${data.candidate_pool.total > 0 ? 'done' : 'pending'}">📦</div>
+                        <div class="workflow-label">候选池</div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="workflow-icon ${hasData(data.factor_recommendation.factors) ? 'done' : 'pending'}">🧮</div>
+                        <div class="workflow-label">因子推荐</div>
+                    </div>
+                `;
+                
+                // 市场趋势
+                const trend = data.market_trend;
+                const scoreColor = trend.score > 50 ? 'var(--success)' : trend.score > 30 ? 'var(--warning)' : 'var(--danger)';
+                document.getElementById('market-trend').innerHTML = `
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                        <div style="background:var(--bg-tertiary);padding:20px;border-radius:10px;flex:1;min-width:200px;">
+                            <div style="color:var(--text-secondary);font-size:13px;">市场阶段</div>
+                            <div style="font-size:24px;font-weight:bold;color:var(--warning);margin-top:8px;">${trend.phase}</div>
+                        </div>
+                        <div style="background:var(--bg-tertiary);padding:20px;border-radius:10px;flex:1;min-width:200px;">
+                            <div style="color:var(--text-secondary);font-size:13px;">综合评分</div>
+                            <div style="font-size:24px;font-weight:bold;color:${scoreColor};margin-top:8px;">${trend.score.toFixed(0)}</div>
+                        </div>
+                        <div style="background:var(--bg-tertiary);padding:20px;border-radius:10px;flex:1;min-width:200px;">
+                            <div style="color:var(--text-secondary);font-size:13px;">短期趋势</div>
+                            <div style="font-size:18px;margin-top:8px;">${trend.short_term || '-'}</div>
+                        </div>
+                        <div style="background:var(--bg-tertiary);padding:20px;border-radius:10px;flex:1;min-width:200px;">
+                            <div style="color:var(--text-secondary);font-size:13px;">中期趋势</div>
+                            <div style="font-size:18px;margin-top:8px;">${trend.mid_term || '-'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // 投资主线
+                if (data.mainlines && data.mainlines.length > 0) {
+                    let html = '<table><thead><tr><th>排名</th><th>主线名称</th><th>综合评分</th></tr></thead><tbody>';
+                    data.mainlines.slice(0, 20).forEach((m, i) => {
+                        html += `<tr><td>#${i+1}</td><td>${m.name}</td><td style="color:var(--success);">${(m.composite_score || 0).toFixed(1)}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    document.getElementById('mainlines-table').innerHTML = html;
+                } else {
+                    document.getElementById('mainlines-table').innerHTML = '<p style="color:var(--text-secondary);">暂无数据，请先运行工作流程</p>';
+                }
+                
+                // 候选池
+                if (data.candidate_pool.stocks && data.candidate_pool.stocks.length > 0) {
+                    let html = `<p style="margin-bottom:12px;">共 <strong>${data.candidate_pool.total}</strong> 只股票</p>`;
+                    html += '<table><thead><tr><th>代码</th><th>名称</th><th>来源</th><th>评分</th></tr></thead><tbody>';
+                    data.candidate_pool.stocks.slice(0, 20).forEach(s => {
+                        html += `<tr><td>${s.code}</td><td>${s.name}</td><td>${s.source || '-'}</td><td style="color:var(--success);">${(s.score || s.composite_score || 0).toFixed(1)}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    document.getElementById('candidate-pool').innerHTML = html;
+                } else {
+                    document.getElementById('candidate-pool').innerHTML = '<p style="color:var(--text-secondary);">暂无数据</p>';
+                }
+                
+                // 加载报告和策略
+                loadAstockReports();
+                loadAstockStrategies();
+                
+            } catch (e) {
+                console.error('加载A股数据失败:', e);
+            }
+        }
+        
+        async function loadAstockReports() {
+            try {
+                const resp = await fetch('/api/astock/reports');
+                const result = await resp.json();
+                
+                if (result.success && result.data.length > 0) {
+                    let html = '<table><thead><tr><th>报告名称</th><th>类型</th><th>更新时间</th><th>操作</th></tr></thead><tbody>';
+                    result.data.slice(0, 10).forEach(r => {
+                        html += `<tr><td>${r.name}</td><td><span class="badge badge-info">${r.type}</span></td><td>${r.modified}</td><td><a href="${r.url}" target="_blank" style="color:var(--primary);">查看</a></td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    document.getElementById('astock-reports').innerHTML = html;
+                } else {
+                    document.getElementById('astock-reports').innerHTML = '<p style="color:var(--text-secondary);">暂无报告</p>';
+                }
+            } catch (e) {
+                console.error('加载报告失败:', e);
+            }
+        }
+        
+        async function loadAstockStrategies() {
+            try {
+                const resp = await fetch('/api/astock/generated_strategies');
+                const result = await resp.json();
+                
+                if (result.success && result.data.length > 0) {
+                    let html = '<table><thead><tr><th>策略名称</th><th>更新时间</th><th>大小</th></tr></thead><tbody>';
+                    result.data.slice(0, 10).forEach(s => {
+                        html += `<tr><td>${s.name}</td><td>${s.modified}</td><td>${s.size}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    document.getElementById('astock-strategies').innerHTML = html;
+                } else {
+                    document.getElementById('astock-strategies').innerHTML = '<p style="color:var(--text-secondary);">暂无生成的策略</p>';
+                }
+            } catch (e) {
+                console.error('加载策略失败:', e);
+            }
+        }
+        
+        async function loadStrategies() {
+            try {
+                const resp = await fetch('/api/strategies');
+                const data = await resp.json();
+                
+                let html = '<table><thead><tr><th>策略名称</th><th>来源</th><th>更新时间</th></tr></thead><tbody>';
+                data.forEach(s => {
+                    html += `<tr><td>${s.name}</td><td><span class="badge badge-info">${s.source}</span></td><td>${s.modified}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('strategies-table').innerHTML = html;
+            } catch (e) {
+                console.error('加载策略失败:', e);
+            }
+        }
+        
+        async function loadReports() {
+            try {
+                const resp = await fetch('/api/reports');
+                const data = await resp.json();
+                
+                let html = '<table><thead><tr><th>报告名称</th><th>平台</th><th>更新时间</th><th>操作</th></tr></thead><tbody>';
+                data.forEach(r => {
+                    html += `<tr><td>${r.name}</td><td><span class="badge badge-success">${r.platform}</span></td><td>${r.modified}</td><td><a href="${r.url}" target="_blank" style="color:var(--primary);">查看</a></td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('reports-table').innerHTML = html;
+            } catch (e) {
+                console.error('加载报告失败:', e);
+            }
+        }
+        
+        async function loadDocs() {
+            try {
+                const resp = await fetch('/api/docs');
+                const data = await resp.json();
+                
+                let html = '<table><thead><tr><th>文档名称</th><th>类型</th><th>分类</th><th>操作</th></tr></thead><tbody>';
+                data.forEach(d => {
+                    html += `<tr><td>${d.name}</td><td>${d.type}</td><td>${d.category}</td><td><a href="${d.url}" target="_blank" style="color:var(--primary);">查看</a></td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('docs-table').innerHTML = html;
+            } catch (e) {
+                console.error('加载文档失败:', e);
+            }
+        }
+        
+        async function loadFactors() {
+            try {
+                const resp = await fetch('/api/factors');
+                const data = await resp.json();
+                
+                let html = '';
+                data.forEach(category => {
+                    html += `<div style="margin-bottom:20px;"><h3 style="margin-bottom:12px;">${category.name}</h3><div class="cards-grid">`;
+                    category.factors.forEach(f => {
+                        html += `<div class="card"><div class="card-title">${f.name}</div><div class="card-desc">${f.description}</div></div>`;
+                    });
+                    html += '</div></div>';
+                });
+                document.getElementById('factors-table').innerHTML = html;
+            } catch (e) {
+                console.error('加载因子失败:', e);
+            }
+        }
+        
+        function refreshData() {
+            loadOverview();
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            if (activeTab === 'astock') loadAstockData();
+        }
+        
+        function refreshAstockData() {
+            loadAstockData();
+        }
+        
+        function openLatestReport() {
+            fetch('/api/astock/reports')
+                .then(resp => resp.json())
+                .then(result => {
+                    if (result.success && result.data.length > 0) {
+                        window.open(result.data[0].url, '_blank');
+                    } else {
+                        alert('暂无报告');
+                    }
+                });
+        }
+        
+        // 初始加载
+        loadOverview();
+    </script>
+</body>
+</html>

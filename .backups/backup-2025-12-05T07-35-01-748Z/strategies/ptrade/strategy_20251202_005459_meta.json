@@ -1,0 +1,12 @@
+{
+  "id": "strategy_20251202_005459",
+  "name": "Strategy 20251202 005459",
+  "version": "v1.0.0",
+  "status": "draft",
+  "broker": "PTrade",
+  "description": "",
+  "code_path": "/home/taotao/dev/QuantTest/TRQuant/strategies/ptrade/strategy_20251202_005459.py",
+  "parameters": {},
+  "created_at": "2025-12-02T05:34:21.405167",
+  "updated_at": "2025-12-02T05:34:21.405167"
+}

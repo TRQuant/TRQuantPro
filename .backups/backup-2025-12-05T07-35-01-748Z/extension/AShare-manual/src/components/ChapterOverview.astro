@@ -1,0 +1,76 @@
+---
+interface Props {
+  cards: Array<{
+    icon: string;
+    title: string;
+    description: string;
+  }>;
+}
+
+const { cards } = Astro.props;
+---
+
+<div class="chapter-overview">
+    <div class="overview-grid">
+        {cards.map(card => (
+            <div class="overview-card">
+                <div class="card-icon">{card.icon}</div>
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
+            </div>
+        ))}
+    </div>
+</div>
+
+<style>
+.chapter-overview {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.overview-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.overview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.overview-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.overview-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style> 

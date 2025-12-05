@@ -1,0 +1,448 @@
+{
+  "baseURL": "http://localhost:4321",
+  "outputDir": "./dist/pdf",
+  "concurrency": 3,
+  "books": {
+    "book1": {
+      "title": "美股投资实操手册I - 高倍股分析与策略实践",
+      "chapters": [
+        {
+          "path": "book1/001_Chapter1",
+          "title": "认识自己和认识世界",
+          "sections": [
+            "1.1_Self_Awareness_and_Investment_Wisdom_CN",
+            "1.2_Understanding_the_World_CN",
+            "1.3_From_Cognition_to_Action_CN",
+            "1.4_Philosophy_and_Investment_CN",
+            "1.5_Continuous_Learning_and_Growth_CN"
+          ]
+        },
+        {
+          "path": "book1/002_Chapter2",
+          "title": "投资心理与风险管理",
+          "sections": [
+            "2.1_Personalized_Risk_Tolerance_Model_CN",
+            "2.2_Stop_Loss_and_Risk_Control_CN",
+            "2.3_Investment_Emotions_and_Decision_Traps_CN",
+            "2.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/003_Chapter3",
+          "title": "历史规律与高倍股研究",
+          "sections": [
+            "3.1_Definition_and_Time_Dimensions_CN",
+            "3.2_Industry_Distribution_and_Characteristics_CN",
+            "3.3_Driving_Factors_CN",
+            "3.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/004_Chapter4",
+          "title": "赛道选择与行业趋势",
+          "sections": [
+            "4.1_Track_Screening_Methods_CN",
+            "4.2_AI_and_Big_Data_Revolution_CN",
+            "4.3_New_Energy_and_EV_Golden_Decade_CN",
+            "4.4_Biotech_and_Healthcare_Innovation_CN",
+            "4.5_Fintech_and_Digital_Transformation_CN",
+            "4.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/005_Chapter5",
+          "title": "股票筛选策略",
+          "sections": [
+            "5.1_Stock_Screening_Methods_CN",
+            "5.2_Fundamental_Screening_Parameters_CN",
+            "5.3_Technical_Analysis_CN",
+            "5.4_Quantitative_Screening_Models_CN",
+            "5.5_Comprehensive_Screening_Framework_CN",
+            "5.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/006_Chapter6",
+          "title": "交易策略与执行",
+          "sections": [
+            "6.1_Long_term_vs_Short_term_CN",
+            "6.2_Position_Management_CN",
+            "6.3_ETF_Optimization_CN",
+            "6.4_Market_Timing_and_Entry_Points_CN",
+            "6.5_Options_and_Derivatives_CN",
+            "6.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/007_Chapter7",
+          "title": "数据驱动的投资决策",
+          "sections": [
+            "7.1_GuruFocus_Morningstar_CN",
+            "7.2_Technical_Analysis_Tools_CN",
+            "7.3_Data_Driven_Decision_CN",
+            "7.4_Alternative_Data_Sources_CN",
+            "7.5_AI_and_Machine_Learning_CN",
+            "7.6_Risk_Assessment_Tools_CN",
+            "7.7_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/008_Chapter8",
+          "title": "高倍股案例分析",
+          "sections": [
+            "8.1_Broadcom_Case_Study_CN",
+            "8.2_NVIDIA_Case_Study_CN",
+            "8.3_Case_Review_Methodology_CN"
+          ]
+        },
+        {
+          "path": "book1/009_Chapter9",
+          "title": "投资系统构建与维护",
+          "sections": [
+            "9.1_Efficient_Investment_Lifestyle_CN",
+            "9.2_Strategy_Review_Optimization_CN",
+            "9.3_Personal_Investment_System_CN"
+          ]
+        },
+        {
+          "path": "book1/010_Chapter10",
+          "title": "实战演练与总结",
+          "sections": [
+            "10.1_Preparation_CN",
+            "10.2_Gurufocus_Screening_CN",
+            "10.3_Trading_Execution_CN"
+          ]
+        }
+      ]
+    },
+    "book2": {
+      "title": "美股投资实操手册II - 宏观经济与股市走向追踪",
+      "chapters": [
+        {
+          "path": "book2/201_Chapter1",
+          "title": "市场趋势分析基础",
+          "sections": [
+            "1.1_Decisive_Role_of_Macro_Trends_CN",
+            "1.2_Market_Environment_and_Returns_CN",
+            "1.3_Trend_Analysis_Methods_CN",
+            "1.4_Economic_Indicators_Impact_CN",
+            "1.5_Market_Sentiment_Analysis_CN",
+            "1.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/202_Chapter2",
+          "title": "经济周期与市场表现",
+          "sections": [
+            "2.1_Economic_Cycle_Identification_CN",
+            "2.2_Market_Characteristics_by_Cycle_CN",
+            "2.3_Cyclical_Investment_Strategies_CN",
+            "2.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/203_Chapter3",
+          "title": "货币政策与股市影响",
+          "sections": [
+            "3.1_Monetary_Policy_Theory_Foundation_CN",
+            "3.2_Major_Central_Bank_Policy_Frameworks_CN",
+            "3.3_Policy_Transmission_Pathways_CN",
+            "3.4_Interest_Rate_Impact_Analysis_CN",
+            "3.5_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/204_Chapter4",
+          "title": "财政政策与市场反应",
+          "sections": [
+            "4.1_Fiscal_Policy_Theory_Foundation_CN",
+            "4.2_Government_Spending_Market_Response_CN",
+            "4.3_Tax_Policy_Market_Impact_CN",
+            "4.4_Deficit_and_Debt_Analysis_CN",
+            "4.5_Policy_Effectiveness_Evaluation_CN",
+            "4.6_Interactive_Notes_Fiscal_Policy_CN"
+          ]
+        },
+        {
+          "path": "book2/205_Chapter5",
+          "title": "全球经济一体化投资",
+          "sections": [
+            "5.1_Major_Economies_Macro_Analysis_CN",
+            "5.2_Exchange_Rate_Investment_Impact_CN",
+            "5.3_International_Capital_Flow_Allocation_CN",
+            "5.4_Global_Supply_Chain_Analysis_CN",
+            "5.5_Regional_Economic_Integration_CN",
+            "5.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/206_Chapter6",
+          "title": "宏观数据解读与预测",
+          "sections": [
+            "6.1_Core_Economic_Indicators_Analysis_CN",
+            "6.2_Leading_Indicators_Forecasting_Models_CN",
+            "6.3_Data_Release_Market_Response_CN",
+            "6.4_High_Frequency_Data_Analysis_CN",
+            "6.5_Alternative_Data_Sources_CN",
+            "6.6_Macro_Data_Driven_Investment_Strategy_CN",
+            "6.7_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/207_Chapter7",
+          "title": "系统性风险识别与管理",
+          "sections": [
+            "7.1_Systemic_Risk_Identification_CN",
+            "7.2_Macro_Risk_Indicator_System_CN",
+            "7.3_Economic_Crisis_Warning_Model_CN",
+            "7.4_Stress_Testing_Scenario_Analysis_CN",
+            "7.5_Risk_Management_Strategies_Hedging_CN",
+            "7.6_Interactive_Notes_Risk_Monitoring_System_CN"
+          ]
+        }
+      ]
+    }
+  },
+  "pdfOptions": {
+    "format": "A4",
+    "printBackground": true,
+    "margin": {
+      "top": "2cm",
+      "right": "1.5cm",
+      "bottom": "2cm",
+      "left": "1.5cm"
+    },
+    "displayHeaderFooter": true,
+    "headerTemplate": "<div style=\"font-size: 10px; width: 100%; text-align: center; color: #666;\"><span class=\"title\"></span></div>",
+    "footerTemplate": "<div style=\"font-size: 10px; width: 100%; text-align: center; color: #666;\"><span class=\"pageNumber\"></span> / <span class=\"totalPages\"></span></div>"
+  }
+} 
+  "baseURL": "http://localhost:4321",
+  "outputDir": "./dist/pdf",
+  "concurrency": 3,
+  "books": {
+    "book1": {
+      "title": "美股投资实操手册I - 高倍股分析与策略实践",
+      "chapters": [
+        {
+          "path": "book1/001_Chapter1",
+          "title": "认识自己和认识世界",
+          "sections": [
+            "1.1_Self_Awareness_and_Investment_Wisdom_CN",
+            "1.2_Understanding_the_World_CN",
+            "1.3_From_Cognition_to_Action_CN",
+            "1.4_Philosophy_and_Investment_CN",
+            "1.5_Continuous_Learning_and_Growth_CN"
+          ]
+        },
+        {
+          "path": "book1/002_Chapter2",
+          "title": "投资心理与风险管理",
+          "sections": [
+            "2.1_Personalized_Risk_Tolerance_Model_CN",
+            "2.2_Stop_Loss_and_Risk_Control_CN",
+            "2.3_Investment_Emotions_and_Decision_Traps_CN",
+            "2.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/003_Chapter3",
+          "title": "历史规律与高倍股研究",
+          "sections": [
+            "3.1_Definition_and_Time_Dimensions_CN",
+            "3.2_Industry_Distribution_and_Characteristics_CN",
+            "3.3_Driving_Factors_CN",
+            "3.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/004_Chapter4",
+          "title": "赛道选择与行业趋势",
+          "sections": [
+            "4.1_Track_Screening_Methods_CN",
+            "4.2_AI_and_Big_Data_Revolution_CN",
+            "4.3_New_Energy_and_EV_Golden_Decade_CN",
+            "4.4_Biotech_and_Healthcare_Innovation_CN",
+            "4.5_Fintech_and_Digital_Transformation_CN",
+            "4.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/005_Chapter5",
+          "title": "股票筛选策略",
+          "sections": [
+            "5.1_Stock_Screening_Methods_CN",
+            "5.2_Fundamental_Screening_Parameters_CN",
+            "5.3_Technical_Analysis_CN",
+            "5.4_Quantitative_Screening_Models_CN",
+            "5.5_Comprehensive_Screening_Framework_CN",
+            "5.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/006_Chapter6",
+          "title": "交易策略与执行",
+          "sections": [
+            "6.1_Long_term_vs_Short_term_CN",
+            "6.2_Position_Management_CN",
+            "6.3_ETF_Optimization_CN",
+            "6.4_Market_Timing_and_Entry_Points_CN",
+            "6.5_Options_and_Derivatives_CN",
+            "6.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/007_Chapter7",
+          "title": "数据驱动的投资决策",
+          "sections": [
+            "7.1_GuruFocus_Morningstar_CN",
+            "7.2_Technical_Analysis_Tools_CN",
+            "7.3_Data_Driven_Decision_CN",
+            "7.4_Alternative_Data_Sources_CN",
+            "7.5_AI_and_Machine_Learning_CN",
+            "7.6_Risk_Assessment_Tools_CN",
+            "7.7_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book1/008_Chapter8",
+          "title": "高倍股案例分析",
+          "sections": [
+            "8.1_Broadcom_Case_Study_CN",
+            "8.2_NVIDIA_Case_Study_CN",
+            "8.3_Case_Review_Methodology_CN"
+          ]
+        },
+        {
+          "path": "book1/009_Chapter9",
+          "title": "投资系统构建与维护",
+          "sections": [
+            "9.1_Efficient_Investment_Lifestyle_CN",
+            "9.2_Strategy_Review_Optimization_CN",
+            "9.3_Personal_Investment_System_CN"
+          ]
+        },
+        {
+          "path": "book1/010_Chapter10",
+          "title": "实战演练与总结",
+          "sections": [
+            "10.1_Preparation_CN",
+            "10.2_Gurufocus_Screening_CN",
+            "10.3_Trading_Execution_CN"
+          ]
+        }
+      ]
+    },
+    "book2": {
+      "title": "美股投资实操手册II - 宏观经济与股市走向追踪",
+      "chapters": [
+        {
+          "path": "book2/201_Chapter1",
+          "title": "市场趋势分析基础",
+          "sections": [
+            "1.1_Decisive_Role_of_Macro_Trends_CN",
+            "1.2_Market_Environment_and_Returns_CN",
+            "1.3_Trend_Analysis_Methods_CN",
+            "1.4_Economic_Indicators_Impact_CN",
+            "1.5_Market_Sentiment_Analysis_CN",
+            "1.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/202_Chapter2",
+          "title": "经济周期与市场表现",
+          "sections": [
+            "2.1_Economic_Cycle_Identification_CN",
+            "2.2_Market_Characteristics_by_Cycle_CN",
+            "2.3_Cyclical_Investment_Strategies_CN",
+            "2.4_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/203_Chapter3",
+          "title": "货币政策与股市影响",
+          "sections": [
+            "3.1_Monetary_Policy_Theory_Foundation_CN",
+            "3.2_Major_Central_Bank_Policy_Frameworks_CN",
+            "3.3_Policy_Transmission_Pathways_CN",
+            "3.4_Interest_Rate_Impact_Analysis_CN",
+            "3.5_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/204_Chapter4",
+          "title": "财政政策与市场反应",
+          "sections": [
+            "4.1_Fiscal_Policy_Theory_Foundation_CN",
+            "4.2_Government_Spending_Market_Response_CN",
+            "4.3_Tax_Policy_Market_Impact_CN",
+            "4.4_Deficit_and_Debt_Analysis_CN",
+            "4.5_Policy_Effectiveness_Evaluation_CN",
+            "4.6_Interactive_Notes_Fiscal_Policy_CN"
+          ]
+        },
+        {
+          "path": "book2/205_Chapter5",
+          "title": "全球经济一体化投资",
+          "sections": [
+            "5.1_Major_Economies_Macro_Analysis_CN",
+            "5.2_Exchange_Rate_Investment_Impact_CN",
+            "5.3_International_Capital_Flow_Allocation_CN",
+            "5.4_Global_Supply_Chain_Analysis_CN",
+            "5.5_Regional_Economic_Integration_CN",
+            "5.6_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/206_Chapter6",
+          "title": "宏观数据解读与预测",
+          "sections": [
+            "6.1_Core_Economic_Indicators_Analysis_CN",
+            "6.2_Leading_Indicators_Forecasting_Models_CN",
+            "6.3_Data_Release_Market_Response_CN",
+            "6.4_High_Frequency_Data_Analysis_CN",
+            "6.5_Alternative_Data_Sources_CN",
+            "6.6_Macro_Data_Driven_Investment_Strategy_CN",
+            "6.7_Interactive_Notes_CN"
+          ]
+        },
+        {
+          "path": "book2/207_Chapter7",
+          "title": "系统性风险识别与管理",
+          "sections": [
+            "7.1_Systemic_Risk_Identification_CN",
+            "7.2_Macro_Risk_Indicator_System_CN",
+            "7.3_Economic_Crisis_Warning_Model_CN",
+            "7.4_Stress_Testing_Scenario_Analysis_CN",
+            "7.5_Risk_Management_Strategies_Hedging_CN",
+            "7.6_Interactive_Notes_Risk_Monitoring_System_CN"
+          ]
+        }
+      ]
+    }
+  },
+  "pdfOptions": {
+    "format": "A4",
+    "printBackground": true,
+    "margin": {
+      "top": "2cm",
+      "right": "1.5cm",
+      "bottom": "2cm",
+      "left": "1.5cm"
+    },
+    "displayHeaderFooter": true,
+    "headerTemplate": "<div style=\"font-size: 10px; width: 100%; text-align: center; color: #666;\"><span class=\"title\"></span></div>",
+    "footerTemplate": "<div style=\"font-size: 10px; width: 100%; text-align: center; color: #666;\"><span class=\"pageNumber\"></span> / <span class=\"totalPages\"></span></div>"
+  }
+} 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

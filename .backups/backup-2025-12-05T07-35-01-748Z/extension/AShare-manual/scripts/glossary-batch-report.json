@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-07-19T16:38:39.143Z",
+  "duration": "21.99s",
+  "stats": {
+    "totalFiles": 172,
+    "processedFiles": 171,
+    "modifiedFiles": 130,
+    "totalTerms": 468,
+    "errors": []
+  },
+  "terms": [
+    "CAGR",
+    "TAM",
+    "ROE",
+    "PEG",
+    "EBITDA",
+    "护城河",
+    "高倍股",
+    "自由现金流",
+    "估值",
+    "技术分析",
+    "PE",
+    "PB",
+    "PS",
+    "DCF",
+    "Beta",
+    "Alpha",
+    "Sharpe",
+    "夏普比率",
+    "波动率",
+    "流动性"
+  ]
+}

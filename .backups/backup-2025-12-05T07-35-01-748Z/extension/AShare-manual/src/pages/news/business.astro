@@ -1,0 +1,194 @@
+---
+/**
+ * 商业板块专题页面
+ */
+import Layout from '../../layouts/Layout.astro';
+import { readdir, readFile } from 'fs/promises';
+import { join } from 'path';
+
+async function loadBusinessNews() {
+  try {
+    const realtimeDir = join(process.cwd(), '../data-sources/storage/news/realtime');
+    const files = await readdir(realtimeDir);
+    const today = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 8);
+    
+    const googleNewsFiles = files
+      .filter(f => f.includes('google_news') && f.includes(today) && f.endsWith('.json'))
+      .sort()
+      .reverse();
+    
+    if (googleNewsFiles.length > 0) {
+      const filePath = join(realtimeDir, googleNewsFiles[0]);
+      const content = await readFile(filePath, 'utf-8');
+      const allArticles = JSON.parse(content);
+      
+      return allArticles.filter(a => a.category === 'business');
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Error loading business news:', error);
+    return [];
+  }
+}
+
+const businessNews = await loadBusinessNews();
+---
+
+<Layout title="商业板块 - 实时新闻中心">
+  <style>
+    .sector-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .sector-header {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+
+    .sector-header h1 {
+      font-size: 2.5em;
+      margin: 0 0 10px 0;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      font-size: 0.9em;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .news-list {
+      display: grid;
+      gap: 20px;
+    }
+
+    .news-item {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-left: 5px solid #8b5cf6;
+      transition: all 0.3s ease;
+    }
+
+    .news-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .news-item h2 {
+      font-size: 1.5em;
+      margin: 0 0 15px 0;
+      line-height: 1.4;
+    }
+
+    .news-item h2 a {
+      color: #2d3748;
+      text-decoration: none;
+    }
+
+    .news-item h2 a:hover {
+      color: #8b5cf6;
+    }
+
+    .news-item-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9em;
+      color: #718096;
+      margin-bottom: 15px;
+    }
+
+    .source-badge {
+      background: #faf5ff;
+      color: #6b21a8;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #8b5cf6;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .read-more:hover {
+      gap: 12px;
+    }
+  </style>
+
+  <div class="sector-page">
+    <header class="sector-header">
+      <div class="breadcrumb">
+        <a href="/news">实时新闻中心</a>
+        <span>/</span>
+        <span>商业板块</span>
+      </div>
+      <h1>💼 商业板块</h1>
+      <p>关注企业经营、行业动态、商业模式创新</p>
+    </header>
+
+    <div class="news-list">
+      {businessNews.length > 0 ? (
+        businessNews.map((article) => (
+          <article class="news-item">
+            <h2>
+              <a href={article.url} target="_blank" rel="noopener noreferrer">
+                {article.title}
+              </a>
+            </h2>
+            <div class="news-item-meta">
+              <span class="source-badge">{article.source_name}</span>
+              <span>🕐 {new Date(article.timestamp).toLocaleString('zh-CN')}</span>
+            </div>
+            <p style="color: #4a5568; line-height: 1.6;">
+              {article.summary || article.title}
+            </p>
+            <a href={article.url} target="_blank" rel="noopener noreferrer" class="read-more">
+              <span>阅读全文</span>
+              <span>→</span>
+            </a>
+          </article>
+        ))
+      ) : (
+        <div style="text-align: center; padding: 60px; color: #a0aec0;">
+          <div style="font-size: 5em; margin-bottom: 20px; opacity: 0.3;">💼</div>
+          <h3>暂无商业新闻</h3>
+          <p>请稍后再试</p>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+
+
+
+
+
+
+
+
+
+

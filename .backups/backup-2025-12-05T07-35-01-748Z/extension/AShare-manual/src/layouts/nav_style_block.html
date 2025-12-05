@@ -1,0 +1,63 @@
+<style is:global>
+  .nav-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-pages, .nav-controls, .nav-extensions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    background: var(--bg-secondary, #f2f2f2);
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #333);
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background: var(--primary-color, #409eff);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .page-nav-btn {
+    padding: 6px 12px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+    border: 1px solid var(--primary-color, #009688);
+    color: var(--primary-color, #009688);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+
+  .page-nav-btn:hover {
+    background: var(--primary-color, #009688);
+    color: white;
+  }
+
+  /* 响应式折叠按钮 */
+  @media (max-width: 768px) {
+    .nav-extensions {
+      display: none;
+    }
+    .nav-right {
+      gap: 6px;
+    }
+    .nav-btn, .page-nav-btn {
+      font-size: 13px;
+      padding: 4px 8px;
+    }
+  }
+</style>

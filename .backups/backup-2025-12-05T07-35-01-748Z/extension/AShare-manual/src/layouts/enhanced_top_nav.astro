@@ -1,0 +1,57 @@
+<header class="top-nav" id="topNav">
+  <div class="nav-left">
+    <!-- 切换侧边栏按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏">📚</button>
+  </div>
+
+  <div class="nav-right">
+    <!-- 页码导航按钮 -->
+    <div class="nav-pages">
+      {prevLink && <a href={prevLink} class="page-nav-btn prev-btn" title={prevText}>← {prevText}</a>}
+      {nextLink && <a href={nextLink} class="page-nav-btn next-btn" title={nextText}>{nextText} →</a>}
+    </div>
+
+    <!-- 阅读控制功能按钮 -->
+    <div class="nav-controls">
+      <!-- 专注阅读模式 -->
+      <button id="toggleReadingMode" class="reading-btn" title="专注阅读模式">📖</button>
+
+      <!-- 主题切换（明暗） -->
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <span class="theme-icon">🌙</span>
+      </button>
+
+      <!-- 字体大小调节 -->
+      <button id="decreaseFont" class="font-btn" title="缩小字体">A-</button>
+      <button id="increaseFont" class="font-btn" title="放大字体">A+</button>
+
+      <!-- 中英文切换 -->
+      <a class="lang-btn" id="langSwitchEn" href={alt} title="English">EN</a>
+      <a class="lang-btn" id="langSwitchCn" href={alt} title="中文">CN</a>
+    </div>
+
+    <!-- 推荐拓展按钮 -->
+    <div class="nav-extensions">
+      <!-- 搜索功能 -->
+      <button id="searchBtn" class="nav-btn" title="搜索">🔍</button>
+
+      <!-- 打印 / 导出 -->
+      <button id="printBtn" class="nav-btn" title="打印/导出">🖨️</button>
+
+      <!-- 添加笔记 -->
+      <button id="noteBtn" class="nav-btn" title="添加笔记">✏️</button>
+
+      <!-- 历史记录 -->
+      <button id="historyBtn" class="nav-btn" title="历史记录">🕘</button>
+
+      <!-- 返回总目录 -->
+      <a href="/handbook" class="nav-btn" title="返回总目录">🧭</a>
+
+      <!-- 通知提醒中心 -->
+      <button id="notifyBtn" class="nav-btn" title="通知提醒">🔔</button>
+
+      <!-- 用户设置（或登录入口） -->
+      <button id="userBtn" class="nav-btn" title="用户中心">👤</button>
+    </div>
+  </div>
+</header>
