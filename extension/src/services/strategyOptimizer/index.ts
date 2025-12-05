@@ -5,6 +5,7 @@
  * 主入口文件，整合分析、适配、报告生成、学习功能
  */
 
+import * as vscode from 'vscode';
 import { codeAnalyzer } from './analyzer/codeAnalyzer';
 import { platformAdapter } from './adapters/platformAdapter';
 import { reportGenerator } from './generator/reportGenerator';
@@ -400,3 +401,39 @@ export {
     OptimizationAdvice,
     OptimizationReport 
 } from './analyzer/optimizationAdvisor';
+
+// ============================================================
+// VS Code Extension 集成函数
+// ============================================================
+
+/**
+ * 注册策略优化器命令和服务
+ * 在 extension.ts 的 activate 函数中调用
+ */
+export function registerStrategyOptimizer(
+    context: vscode.ExtensionContext,
+    client?: any
+): void {
+    const logger = require('../../utils/logger').logger;
+    const path = require('path');
+    const MODULE = 'StrategyOptimizer';
+    
+    // 初始化学习引擎存储路径
+    const storagePath = context.globalStorageUri.fsPath;
+    const manualPath = context.extensionPath 
+        ? path.join(context.extensionPath, 'AShare-manual')
+        : undefined;
+    
+    // 初始化策略优化器
+    try {
+        strategyOptimizer.initLearner(storagePath, manualPath);
+        logger.info('策略优化器学习引擎已初始化', MODULE);
+    } catch (error: any) {
+        logger.warn(`初始化学习引擎失败: ${error}`, MODULE);
+    }
+    
+    // 注册命令（如果需要额外的命令，可以在这里添加）
+    // 主要的命令已在 strategyOptimizerPanel 中注册
+    
+    logger.info('策略优化器服务已注册', MODULE);
+}

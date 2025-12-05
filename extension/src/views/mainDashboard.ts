@@ -18,7 +18,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
-import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel';
+// import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel'; // 文件不存在
+// 临时类型定义
+type BacktestResultData = any;
+const showQuantConnectStyleReport = (data: BacktestResultData) => {
+    vscode.window.showInformationMessage('回测报告功能暂时不可用（quantconnectStylePanel 不存在）');
+};
 import { MarketStatus, Mainline, Factor } from '../types';
 
 const MODULE = 'MainDashboard';

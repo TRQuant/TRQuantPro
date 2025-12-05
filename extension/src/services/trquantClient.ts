@@ -163,12 +163,12 @@ export class TRQuantClient {
         }
     }
 
-    // ==================== 私有方法 ====================
+    // ==================== Bridge调用方法 ====================
 
     /**
-     * 调用Python Bridge
+     * 调用Python Bridge（公共方法，供其他模块使用）
      */
-    private async callBridge<T>(
+    public async callBridge<T = any>(
         action: string,
         params: Record<string, any>
     ): Promise<ApiResponse<T>> {
@@ -177,7 +177,7 @@ export class TRQuantClient {
         logger.debug(`调用Bridge: ${action}`, this.MODULE, { params });
 
         try {
-            const response = await this.executeSubprocess(action, params);
+            const response = await this.executeSubprocess<T>(action, params);
             const duration = Date.now() - startTime;
             
             logger.info(
@@ -186,7 +186,7 @@ export class TRQuantClient {
                 { duration: `${duration}ms`, ok: response.ok }
             );
 
-            return response;
+            return response as ApiResponse<T>;
         } catch (error) {
             const duration = Date.now() - startTime;
             logger.error(

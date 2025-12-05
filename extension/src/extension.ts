@@ -23,8 +23,9 @@ import * as cp from 'child_process';
 // 核心服务
 import { TRQuantClient } from './services/trquantClient';
 import { MCPRegistrar } from './services/mcpRegistrar';
-import { registerConfigCommands } from './services/projectConfig';
-import { registerBacktestManager } from './services/backtestManager';
+// 以下文件不存在，暂时注释
+// import { registerConfigCommands } from './services/projectConfig';
+// import { registerBacktestManager } from './services/backtestManager';
 
 // 命令
 import { getMarketStatus } from './commands/getMarketStatus';
@@ -32,40 +33,38 @@ import { getMainlines } from './commands/getMainlines';
 import { recommendFactors } from './commands/recommendFactors';
 import { generateStrategy } from './commands/generateStrategy';
 import { analyzeBacktest } from './commands/analyzeBacktest';
-import { runBacktest } from './commands/runBacktest';
+// import { runBacktest } from './commands/runBacktest'; // 文件不存在
 
 // 视图
 import { MarketPanel } from './views/marketPanel';
-import { DashboardPanel } from './views/dashboardPanel';
-import { WelcomePanel } from './views/welcomePanel';
-import { registerProjectExplorer } from './views/projectExplorer';
-import { registerBacktestReportCommands } from './views/backtestReportPanel';
+// 以下文件不存在，暂时注释
+// import { DashboardPanel } from './views/dashboardPanel';
+// import { WelcomePanel } from './views/welcomePanel';
+// import { registerProjectExplorer } from './views/projectExplorer';
+// import { registerBacktestReportCommands } from './views/backtestReportPanel';
 import { MainDashboard, registerMainDashboard } from './views/mainDashboard';
-import { showBacktestConfigPanel } from './views/backtestConfigPanel';
-import { registerDataSourcePanel } from './views/dataSourcePanel';
-import { registerMarketTrendPanel } from './views/marketTrendPanel';
-import { registerMainlinePanel } from './views/mainlinePanel';
-import { registerCandidatePoolPanel } from './views/candidatePoolPanel';
-import { registerFactorPanel } from './views/factorPanel';
+// import { showBacktestConfigPanel } from './views/backtestConfigPanel';
+// import { registerDataSourcePanel } from './views/dataSourcePanel';
+// import { registerMarketTrendPanel } from './views/marketTrendPanel';
+// import { registerMainlinePanel } from './views/mainlinePanel';
+// import { registerCandidatePoolPanel } from './views/candidatePoolPanel';
+// import { registerFactorPanel } from './views/factorPanel';
 import { registerStrategyOptimizerPanel } from './views/strategyOptimizerPanel';
 
 // 工作流面板（独立GUI）- 现在在 registerCommands 中动态导入
-// 快捷操作（侧边栏）
-import { registerQuickActionsView } from './providers/quickActionsProvider';
-// 项目创建命令
-import { registerCreateProjectCommand } from './commands/createProject';
-// 策略优化助手
+// 以下文件不存在，暂时注释
+// import { registerQuickActionsView } from './providers/quickActionsProvider';
+// import { registerCreateProjectCommand } from './commands/createProject';
 import { registerStrategyOptimizer } from './services/strategyOptimizer';
-import { registerStrategyDevPanel } from './views/strategyDevPanel';
-import { registerTradingPanel } from './views/tradingPanel';
-import { registerFileManagerPanel } from './views/fileManagerPanel';
-import { registerKnowledgeBasePanel } from './views/knowledgeBasePanel';
-import { registerSystemSettingsPanel } from './views/systemSettingsPanel';
-// A股手册直接启动Astro服务器
+// import { registerStrategyDevPanel } from './views/strategyDevPanel';
+// import { registerTradingPanel } from './views/tradingPanel';
+// import { registerFileManagerPanel } from './views/fileManagerPanel';
+// import { registerKnowledgeBasePanel } from './views/knowledgeBasePanel';
+// import { registerSystemSettingsPanel } from './views/systemSettingsPanel';
 
-// 提供者
-import { registerStrategyCompletionProvider } from './providers/strategyCompletionProvider';
-import { registerStrategyDiagnosticProvider } from './providers/strategyDiagnosticProvider';
+// 提供者（文件不存在，暂时注释）
+// import { registerStrategyCompletionProvider } from './providers/strategyCompletionProvider';
+// import { registerStrategyDiagnosticProvider } from './providers/strategyDiagnosticProvider';
 
 // 工具
 import { logger, LogLevel } from './utils/logger';
@@ -96,9 +95,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             vscode.window.setStatusBarMessage('🐉 正在创建项目...', 2000);
             
             try {
-                // 获取项目名生成器
-                const { generateProjectName } = await import('./utils/projectNameGenerator');
-                const defaultName = generateProjectName();
+                // 获取项目名生成器（文件不存在，使用简单生成器）
+                // const { generateProjectName } = await import('./utils/projectNameGenerator');
+                // const defaultName = generateProjectName();
+                const defaultName = `策略_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}_${Math.random().toString(36).substr(2, 6)}`;
                 console.log(`[TRQuant] 生成项目名: ${defaultName}`);
                 
                 // 确定项目目录
@@ -300,29 +300,29 @@ def handle_data(context, data):
         registerCommands(context);
         console.log('[TRQuant] ✅ 所有命令注册完成');
 
-        // 注册项目资源管理器
-        registerProjectExplorer(context);
+        // 注册项目资源管理器（文件不存在，暂时注释）
+        // registerProjectExplorer(context);
 
-        // 注册配置管理命令
-        registerConfigCommands(context);
+        // 注册配置管理命令（文件不存在，暂时注释）
+        // registerConfigCommands(context);
 
-        // 注册回测管理器
-        registerBacktestManager(context, client);
+        // 注册回测管理器（文件不存在，暂时注释）
+        // registerBacktestManager(context, client);
 
-        // 注册回测报告命令
-        registerBacktestReportCommands(context);
+        // 注册回测报告命令（文件不存在，暂时注释）
+        // registerBacktestReportCommands(context);
 
-        // 注册策略代码补全提供者
-        registerStrategyCompletionProvider(context);
+        // 注册策略代码补全提供者（文件不存在，暂时注释）
+        // registerStrategyCompletionProvider(context);
 
-        // 注册策略代码诊断提供者
-        registerStrategyDiagnosticProvider(context);
+        // 注册策略代码诊断提供者（文件不存在，暂时注释）
+        // registerStrategyDiagnosticProvider(context);
 
         // 注册主控制台
         registerMainDashboard(context, client);
 
-        // 注册侧边栏快捷操作（显示viewsWelcome内容）
-        registerQuickActionsView(context);
+        // 注册侧边栏快捷操作（文件不存在，暂时注释）
+        // registerQuickActionsView(context);
 
         // registerCreateProjectCommand 已在上面直接注册，跳过
         // registerCreateProjectCommand(context);
@@ -341,19 +341,19 @@ def handle_data(context, data):
 
         // 注意：工作流面板已在上面立即注册，这里不再重复注册
 
-        // 注册步骤面板
-        registerDataSourcePanel(context, client);      // 步骤1: 信息获取
-        registerMarketTrendPanel(context, client);     // 步骤2: 市场趋势
-        registerMainlinePanel(context, client);        // 步骤3: 投资主线
-        registerCandidatePoolPanel(context, client);   // 步骤4: 候选池
-        registerFactorPanel(context, client);          // 步骤5: 因子构建
-        registerStrategyDevPanel(context, client);     // 步骤6: 策略开发
-        registerTradingPanel(context, client);         // 步骤8: 实盘交易
+        // 注册步骤面板（文件不存在，暂时注释）
+        // registerDataSourcePanel(context, client);      // 步骤1: 信息获取
+        // registerMarketTrendPanel(context, client);     // 步骤2: 市场趋势
+        // registerMainlinePanel(context, client);        // 步骤3: 投资主线
+        // registerCandidatePoolPanel(context, client);   // 步骤4: 候选池
+        // registerFactorPanel(context, client);          // 步骤5: 因子构建
+        // registerStrategyDevPanel(context, client);     // 步骤6: 策略开发
+        // registerTradingPanel(context, client);         // 步骤8: 实盘交易
         
-        // 注册系统管理面板
-        registerFileManagerPanel(context, client);     // 文件管理
-        registerKnowledgeBasePanel(context, client);   // 知识库
-        registerSystemSettingsPanel(context, client);  // 系统设置
+        // 注册系统管理面板（文件不存在，暂时注释）
+        // registerFileManagerPanel(context, client);     // 文件管理
+        // registerKnowledgeBasePanel(context, client);   // 知识库
+        // registerSystemSettingsPanel(context, client);  // 系统设置
         
         // 注册策略优化器面板
         registerStrategyOptimizerPanel(context);
@@ -570,8 +570,9 @@ function registerCommands(context: vscode.ExtensionContext): void {
             handler: async () => {
                 try {
                     console.log('[TRQuant] 运行回测命令触发');
-                    showBacktestConfigPanel(context.extensionUri, client, context);
-                    console.log('[TRQuant] 回测配置面板已打开');
+                    // showBacktestConfigPanel(context.extensionUri, client, context); // 文件不存在
+                    vscode.window.showInformationMessage('回测功能暂时不可用（backtestConfigPanel 不存在）');
+                    console.log('[TRQuant] 回测配置面板暂时不可用');
                 } catch (err) {
                     console.error('[TRQuant] 运行回测错误:', err);
                     vscode.window.showErrorMessage(`运行回测失败: ${err}`);
@@ -581,7 +582,8 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.openBacktestConfig',
             handler: async () => {
-                showBacktestConfigPanel(context.extensionUri, client, context);
+                // showBacktestConfigPanel(context.extensionUri, client, context); // 文件不存在
+                vscode.window.showInformationMessage('回测配置功能暂时不可用（backtestConfigPanel 不存在）');
             }
         },
         {
@@ -600,7 +602,8 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.showDashboard',
             handler: async () => {
-                DashboardPanel.createOrShow(context.extensionUri, client);
+                // DashboardPanel.createOrShow(context.extensionUri, client); // 文件不存在
+                MainDashboard.createOrShow(context.extensionUri, client); // 使用 MainDashboard 代替
             }
         },
         {
@@ -612,7 +615,8 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.showWelcome',
             handler: async () => {
-                WelcomePanel.createOrShow(context.extensionUri, client);
+                // WelcomePanel.createOrShow(context.extensionUri, client); // 文件不存在
+                MainDashboard.createOrShow(context.extensionUri, client); // 使用 MainDashboard 代替
             }
         },
         {
