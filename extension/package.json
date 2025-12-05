@@ -242,6 +242,18 @@
         "category": "TRQuant"
       },
       {
+        "command": "trquant.backupProject",
+        "title": "💾 备份项目",
+        "category": "TRQuant",
+        "icon": "$(save)"
+      },
+      {
+        "command": "trquant.refreshSystem",
+        "title": "🔄 刷新系统",
+        "category": "TRQuant",
+        "icon": "$(sync)"
+      },
+      {
         "command": "trquant.openWorkflowPanelWebview",
         "title": "TRQuant: 🖥️ 打开桌面系统（WebView版）",
         "category": "TRQuant"
@@ -326,6 +338,10 @@
         {
           "id": "trquant-project",
           "name": "📁 项目资源"
+        },
+        {
+          "id": "trquant-developer",
+          "name": "🛠️ 开发者功能"
         }
       ]
     },
@@ -351,12 +367,39 @@
           "command": "trquant.deleteFile",
           "when": "view == trquant-project && viewItem != root && viewItem != folder",
           "group": "3_delete"
+        },
+        {
+          "command": "trquant.backupProject",
+          "when": "view == trquant-developer && viewItem == backup",
+          "group": "inline"
+        },
+        {
+          "command": "trquant.refreshSystem",
+          "when": "view == trquant-developer && viewItem == refresh",
+          "group": "inline"
         }
       ],
       "view/title": [
         {
           "command": "trquant.refreshProject",
           "when": "view == trquant-project",
+          "group": "navigation"
+        },
+        {
+          "command": "trquant.backupProject",
+          "when": "view == trquant-developer",
+          "group": "navigation"
+        },
+        {
+          "command": "trquant.refreshSystem",
+          "when": "view == trquant-developer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "trquant.runStrategyBacktest",
+          "when": "view == trquant-project && viewItem == strategy",
           "group": "navigation"
         },
         {

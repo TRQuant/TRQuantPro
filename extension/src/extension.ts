@@ -65,6 +65,7 @@ import { registerStrategyOptimizer } from './services/strategyOptimizer';
 // 提供者（文件不存在，暂时注释）
 // import { registerStrategyCompletionProvider } from './providers/strategyCompletionProvider';
 // import { registerStrategyDiagnosticProvider } from './providers/strategyDiagnosticProvider';
+import { registerDeveloperProvider, backupProject, refreshSystem } from './providers/developerProvider';
 
 // 工具
 import { logger, LogLevel } from './utils/logger';
@@ -320,6 +321,9 @@ def handle_data(context, data):
 
         // 注册主控制台
         registerMainDashboard(context, client);
+
+        // 注册开发者功能区
+        registerDeveloperProvider(context);
 
         // 注册侧边栏快捷操作（文件不存在，暂时注释）
         // registerQuickActionsView(context);
@@ -654,6 +658,22 @@ function registerCommands(context: vscode.ExtensionContext): void {
                 logger.info('打开WebView工作流面板', MODULE);
                 const { WorkflowPanel } = await import('./views/workflowPanel');
                 WorkflowPanel.createOrShow(context.extensionUri, client);
+            }
+        },
+        {
+            id: 'trquant.backupProject',
+            handler: async () => {
+                console.log('[TRQuant] 备份项目');
+                logger.info('备份项目', MODULE);
+                await backupProject(context);
+            }
+        },
+        {
+            id: 'trquant.refreshSystem',
+            handler: async () => {
+                console.log('[TRQuant] 刷新系统');
+                logger.info('刷新系统', MODULE);
+                await refreshSystem(context);
             }
         }
     ];
