@@ -43,7 +43,7 @@ import { MarketPanel } from './views/marketPanel';
 // import { registerProjectExplorer } from './views/projectExplorer';
 // import { registerBacktestReportCommands } from './views/backtestReportPanel';
 import { MainDashboard, registerMainDashboard } from './views/mainDashboard';
-// import { showBacktestConfigPanel } from './views/backtestConfigPanel';
+import { showBacktestConfigPanel } from './views/backtestConfigPanel';
 // import { registerDataSourcePanel } from './views/dataSourcePanel';
 // import { registerMarketTrendPanel } from './views/marketTrendPanel';
 // import { registerMainlinePanel } from './views/mainlinePanel';
@@ -570,9 +570,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
             handler: async () => {
                 try {
                     console.log('[TRQuant] 运行回测命令触发');
-                    // showBacktestConfigPanel(context.extensionUri, client, context); // 文件不存在
-                    vscode.window.showInformationMessage('回测功能暂时不可用（backtestConfigPanel 不存在）');
-                    console.log('[TRQuant] 回测配置面板暂时不可用');
+                    showBacktestConfigPanel(context.extensionUri, client, context);
                 } catch (err) {
                     console.error('[TRQuant] 运行回测错误:', err);
                     vscode.window.showErrorMessage(`运行回测失败: ${err}`);
@@ -582,8 +580,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.openBacktestConfig',
             handler: async () => {
-                // showBacktestConfigPanel(context.extensionUri, client, context); // 文件不存在
-                vscode.window.showInformationMessage('回测配置功能暂时不可用（backtestConfigPanel 不存在）');
+                showBacktestConfigPanel(context.extensionUri, client, context);
             }
         },
         {
@@ -635,7 +632,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.openWorkflowPanel',
             handler: async () => {
-                // 打开工作流面板 = 启动桌面系统（与桌面系统保持一致）
+                // 打开工作流面板 = 启动桌面系统
                 console.log('[TRQuant] 打开工作流面板 -> 启动桌面系统');
                 logger.info('打开工作流面板（启动桌面系统）', MODULE);
                 await launchDesktopSystem(context);
@@ -674,34 +671,43 @@ function registerCommands(context: vscode.ExtensionContext): void {
 
 /**
  * 启动桌面系统（PyQt6 GUI）
- * 与桌面系统保持完全一致的工作流体验
+ * 启动 TRQuant.py - 真正的桌面量化系统
  */
 async function launchDesktopSystem(context: vscode.ExtensionContext): Promise<void> {
-    const pythonPath = config.getPythonPath(context.extensionPath);
-    
-    // TRQuant 根目录
-    const trquantRoot = path.dirname(context.extensionPath);
-    const mainScript = path.join(trquantRoot, 'start_dashboard.py');
+    // TRQuant 项目根目录（固定路径，因为桌面系统依赖完整项目结构）
+    const trquantRoot = '/home/taotao/dev/QuantTest/TRQuant';
+    const mainScript = path.join(trquantRoot, 'TRQuant.py');
+    const pythonPath = path.join(trquantRoot, 'venv', 'bin', 'python');
     
     // 检查启动脚本是否存在
     if (!fs.existsSync(mainScript)) {
-        vscode.window.showErrorMessage(`桌面系统启动脚本不存在: ${mainScript}`);
+        vscode.window.showErrorMessage(`桌面系统不存在: ${mainScript}\n请确保 TRQuant 项目已正确安装。`);
+        return;
+    }
+    
+    // 检查 Python 环境
+    if (!fs.existsSync(pythonPath)) {
+        vscode.window.showErrorMessage(`Python 环境不存在: ${pythonPath}\n请先运行: cd ${trquantRoot} && python -m venv venv`);
         return;
     }
     
     logger.info(`启动桌面系统: ${mainScript}`, MODULE);
     
     try {
-        // 使用子进程启动桌面系统
-        const proc = cp.spawn(pythonPath, [mainScript], {
+        // 使用子进程启动桌面系统（PyQt6 GUI）
+        const proc = cp.spawn(pythonPath, [mainScript, '--fast'], {
             cwd: trquantRoot,
             detached: true,
-            stdio: 'ignore'
+            stdio: 'ignore',
+            env: {
+                ...process.env,
+                QT_AUTO_SCREEN_SCALE_FACTOR: '1'
+            }
         });
         
         proc.unref();
         
-        vscode.window.showInformationMessage('🖥️ 桌面系统已启动！');
+        vscode.window.showInformationMessage('🖥️ 韬睿量化桌面系统已启动！');
         logger.info('桌面系统启动成功', MODULE);
     } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);

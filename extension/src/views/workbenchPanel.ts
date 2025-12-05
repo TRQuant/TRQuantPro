@@ -101,7 +101,16 @@ export class WorkbenchPanel {
                 vscode.commands.executeCommand('trquant.optimizeStrategy');
                 break;
             case 'openWorkflowPanel':
-                vscode.commands.executeCommand('trquant.launchDesktopSystem');
+                console.log('[WorkbenchPanel] 准备启动桌面系统');
+                try {
+                    await vscode.commands.executeCommand('trquant.launchDesktopSystem');
+                    console.log('[WorkbenchPanel] 桌面系统启动命令已执行');
+                    vscode.window.showInformationMessage('🖥️ 桌面系统正在启动...');
+                } catch (error) {
+                    console.error('[WorkbenchPanel] 启动桌面系统失败:', error);
+                    const errorMsg = error instanceof Error ? error.message : String(error);
+                    vscode.window.showErrorMessage(`启动桌面系统失败: ${errorMsg}`);
+                }
                 break;
             default:
                 logger.warn(`未知命令: ${message.command}`, MODULE);
@@ -551,7 +560,7 @@ export class WorkbenchPanel {
                 <p style="margin-bottom: 16px; color: var(--text-secondary);">
                     打开桌面系统查看完整的8步骤投资工作流，包括信息获取、市场趋势、投资主线、候选池、因子构建、策略开发、回测验证和实盘交易。
                 </p>
-                <button class="header-btn" style="width: 100%;" onclick="vscode.postMessage({command: 'openWorkflowPanel'})">
+                <button class="header-btn" style="width: 100%; margin-top: 12px; padding: 12px; font-size: 14px; font-weight: 600; background: linear-gradient(135deg, #f0b429 0%, #e85d04 100%); border: none; color: #fff; cursor: pointer;" onclick="vscode.postMessage({command: 'openWorkflowPanel'})">
                     🖥️ 打开桌面系统
                 </button>
             </div>

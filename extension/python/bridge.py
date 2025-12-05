@@ -340,6 +340,36 @@ def health_check(params: dict) -> dict:
     }
 
 
+def run_backtest(params: dict) -> dict:
+    """运行回测"""
+    try:
+        from tools.backtest_engine import run_backtest as run_backtest_engine
+        
+        strategy_code = params.get('strategy_code', '')
+        config = params.get('config', {})
+        data_source = params.get('data_source', 'akshare')
+        
+        if not strategy_code:
+            return {'ok': False, 'error': '策略代码不能为空'}
+        
+        if not config:
+            return {'ok': False, 'error': '回测配置不能为空'}
+        
+        result = run_backtest_engine(strategy_code, config, data_source)
+        
+        if result.get('success'):
+            return {'ok': True, 'data': result.get('result', result)}
+        else:
+            return {'ok': False, 'error': result.get('error', '回测执行失败')}
+    except Exception as e:
+        import traceback
+        return {
+            'ok': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }
+
+
 # 动作分发
 ACTIONS = {
     'get_market_status': get_market_status,
@@ -347,6 +377,7 @@ ACTIONS = {
     'recommend_factors': recommend_factors,
     'generate_strategy': generate_strategy,
     'analyze_backtest': analyze_backtest,
+    'run_backtest': run_backtest,
     'risk_assessment': risk_assessment,
     'health_check': health_check
 }

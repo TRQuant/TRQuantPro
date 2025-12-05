@@ -159,15 +159,17 @@ export class MainDashboard {
                 await this.runFullWorkflow();
                 break;
             
-            // 打开桌面系统（完整工作流面板）
+            // 打开桌面系统
             case 'openWorkflowPanel':
                 console.log('[MainDashboard] 准备启动桌面系统');
                 try {
-                    await vscode.commands.executeCommand('trquant.openWorkflowPanel');
+                    await vscode.commands.executeCommand('trquant.launchDesktopSystem');
                     console.log('[MainDashboard] 桌面系统启动命令已执行');
+                    vscode.window.showInformationMessage('🖥️ 桌面系统正在启动...');
                 } catch (error) {
                     console.error('[MainDashboard] 启动桌面系统失败:', error);
-                    vscode.window.showErrorMessage(`启动桌面系统失败: ${error}`);
+                    const errorMsg = error instanceof Error ? error.message : String(error);
+                    vscode.window.showErrorMessage(`启动桌面系统失败: ${errorMsg}`);
                 }
                 break;
             
@@ -2306,12 +2308,9 @@ export function registerMainDashboard(
     context: vscode.ExtensionContext,
     client: TRQuantClient
 ): void {
-    context.subscriptions.push(
-        vscode.commands.registerCommand('trquant.openDashboard', () => {
-            MainDashboard.createOrShow(context.extensionUri, client);
-        })
-    );
-
+    // 注意：trquant.openDashboard 命令已在 extension.ts 的 registerCommands 中注册
+    // 这里不再重复注册，避免 "command already exists" 错误
+    
     logger.info('投资工作流仪表盘已注册', MODULE);
 }
 

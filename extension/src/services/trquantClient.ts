@@ -41,7 +41,8 @@ import {
     RecommendFactorsParams,
     GenerateStrategyParams,
     AnalyzeBacktestParams,
-    RiskAssessmentParams
+    RiskAssessmentParams,
+    RunBacktestParams
 } from '../types';
 
 /**
@@ -139,6 +140,20 @@ export class TRQuantClient {
         params: AnalyzeBacktestParams
     ): Promise<ApiResponse<BacktestResult>> {
         return this.callBridge<BacktestResult>('analyze_backtest', params);
+    }
+
+    /**
+     * 运行回测
+     */
+    async runBacktest(
+        params: RunBacktestParams
+    ): Promise<ApiResponse<any>> {
+        ErrorHandler.validateRequired(params, ['strategy_code', 'config']);
+        return this.callBridge('run_backtest', {
+            strategy_code: params.strategy_code,
+            config: params.config,
+            data_source: params.data_source || 'akshare'
+        });
     }
 
     /**

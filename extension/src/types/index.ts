@@ -202,3 +202,24 @@ export interface RiskAssessmentParams {
     portfolio: Record<string, number>;
 }
 
+export interface RunBacktestParams {
+    strategy_code: string;
+    config: BacktestConfig;
+    data_source?: 'akshare' | 'jqdata';
+}
+
+export interface BacktestConfig {
+    start_date: string;
+    end_date: string;
+    initial_capital: number;
+    benchmark?: string;
+    commission?: number;
+    slippage?: number;
+    max_position?: number;
+    single_stock_max?: number;
+    stop_loss?: number;
+    take_profit?: number;
+    symbols?: string[];
+    data_source?: 'akshare' | 'jqdata';
+}
+
