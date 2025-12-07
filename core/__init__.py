@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 韬睿量化 - 核心框架层
 ====================
@@ -11,9 +10,9 @@ from .base_mainline import BaseMainlineEngine
 from .workflow_orchestrator import WorkflowOrchestrator, get_workflow_orchestrator
 
 __all__ = [
-    'BaseMarket',
-    'MarketType',
-    'BaseMainlineEngine',
-    'WorkflowOrchestrator',
-    'get_workflow_orchestrator',
+    "BaseMarket",
+    "MarketType",
+    "BaseMainlineEngine",
+    "WorkflowOrchestrator",
+    "get_workflow_orchestrator",
 ]

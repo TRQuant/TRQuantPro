@@ -144,7 +144,7 @@ def initialize(context):
             close_tax=0.001,       # 印花税 0.1%
             open_commission=0.0003,
             close_commission=0.0003,
-            min_commission=5
+            min_commission=7
         ),
         type='stock'
     )

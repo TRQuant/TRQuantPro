@@ -194,36 +194,6 @@ export class WorkbenchPanel {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRQuant 量化工作台</title>
-    <!-- 立即禁用 Service Worker（必须在任何脚本执行前） -->
-    <script>
-        (function() {
-            // 检测是否为 VS Code webview 环境
-            const isWebview = 
-                location.protocol === 'vscode-webview:' ||
-                typeof acquireVsCodeApi === 'function';
-            
-            // 关键：没有 serviceWorker 就不要继续（避免在不支持的环境里调用 SW API）
-            if (!('serviceWorker' in navigator) || !navigator.serviceWorker) return;
-            
-            // 在 webview 里，直接阻断 register（不要 getRegistrations / unregister）
-            if (isWebview) {
-                try {
-                    navigator.serviceWorker.register = function() {
-                        console.warn('[TRQuant WorkbenchPanel] SW register blocked in webview');
-                        try { 
-                            // 打印调用栈以定位注册来源
-                            console.warn(new Error('[TRQuant WorkbenchPanel] SW register stack').stack); 
-                        } catch(e) {
-                            console.warn('[TRQuant WorkbenchPanel] Stack trace error:', e);
-                        }
-                        return Promise.reject(new Error('Service Worker disabled in VS Code webview'));
-                    };
-                } catch(e) {
-                    console.warn('[TRQuant WorkbenchPanel] Failed to block Service Worker:', e);
-                }
-            }
-        })();
-    </script>
     <style>
         :root {
             --bg-dark: #0a0e14;

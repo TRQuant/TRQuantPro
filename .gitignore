@@ -45,10 +45,21 @@ Thumbs.db
 # Backup
 *.backup
 *.bak
+.backups/
 
 # 临时文件
 *.tmp
 *.temp
+
+# Generated artifacts (non-functional outputs)
+reports/*.html
+visualization_*.json
+strategies/ptrade/strategy_*.py
+strategies/ptrade/strategy_*_meta.json
+extension/AShare-manual/.astro/
+extension/trquant-cursor-extension-*.vsix
+extension/trquant-cursor-extension-*.tgz
+extension/trquant-restored.vsix
 
 # 敏感配置文件（保留本地，不上传）
 config/jqdata_config.json

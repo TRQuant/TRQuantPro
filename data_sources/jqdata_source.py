@@ -29,13 +29,30 @@ class JQDataSource(BaseDataSource):
         try:
             import jqdatasdk as jq
             
-            # 尝试从配置文件读取账号
+            # 使用配置管理器读取账号（优先）
+            try:
+                from config.config_manager import get_config_manager
+                config_manager = get_config_manager()
+                config = config_manager.get_jqdata_config()
+                username = config.get('username')
+                password = config.get('password')
+                
+                if username and password:
+                    jq.auth(username, password)
+                    self._jq = jq
+                    self._connected = True
+                    self._log_info(f"连接成功 (用户: {username})")
+                    return True
+            except Exception as e:
+                self._log_error(f"从配置管理器读取失败: {e}")
+            
+            # 备用方案：从用户目录读取
             from pathlib import Path
             import json
             
             config_path = Path.home() / ".local/share/trquant/config/jqdata_config.json"
             if config_path.exists():
-                with open(config_path, 'r') as f:
+                with open(config_path, 'r', encoding='utf-8') as f:
                     config = json.load(f)
                     username = config.get('username')
                     password = config.get('password')
@@ -44,7 +61,7 @@ class JQDataSource(BaseDataSource):
                         jq.auth(username, password)
                         self._jq = jq
                         self._connected = True
-                        self._log_info("连接成功")
+                        self._log_info(f"连接成功 (用户: {username})")
                         return True
             
             self._log_error("未找到JQData配置或配置无效")

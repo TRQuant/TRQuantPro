@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 因子管理器
 ==========
@@ -20,20 +19,31 @@ import logging
 import json
 
 from .base_factor import BaseFactor, FactorResult
-from .value_factors import (
-    EPFactor, BPFactor, SPFactor, DividendYieldFactor, CompositeValueFactor
-)
+from .value_factors import EPFactor, BPFactor, SPFactor, DividendYieldFactor, CompositeValueFactor
 from .growth_factors import (
-    RevenueGrowthFactor, ProfitGrowthFactor, ROEChangeFactor, CompositeGrowthFactor
+    RevenueGrowthFactor,
+    ProfitGrowthFactor,
+    ROEChangeFactor,
+    CompositeGrowthFactor,
 )
 from .quality_factors import (
-    ROEFactor, GrossMarginFactor, AssetTurnoverFactor, LeverageFactor, CompositeQualityFactor
+    ROEFactor,
+    GrossMarginFactor,
+    AssetTurnoverFactor,
+    LeverageFactor,
+    CompositeQualityFactor,
 )
 from .momentum_factors import (
-    PriceMomentumFactor, ReversalFactor, RelativeStrengthFactor, CompositeMomentumFactor
+    PriceMomentumFactor,
+    ReversalFactor,
+    RelativeStrengthFactor,
+    CompositeMomentumFactor,
 )
 from .flow_factors import (
-    NorthboundFlowFactor, MainForceFlowFactor, MarginBalanceFactor, CompositeFlowFactor
+    NorthboundFlowFactor,
+    MainForceFlowFactor,
+    MarginBalanceFactor,
+    CompositeFlowFactor,
 )
 
 logger = logging.getLogger(__name__)
@@ -42,63 +52,54 @@ logger = logging.getLogger(__name__)
 class FactorManager:
     """
     因子管理器
-    
+
     提供因子的统一管理、计算和组合功能。
     """
-    
+
     # 预定义因子类映射
     FACTOR_CLASSES: Dict[str, Type[BaseFactor]] = {
         # 价值因子
-        'EP': EPFactor,
-        'BP': BPFactor,
-        'SP': SPFactor,
-        'DividendYield': DividendYieldFactor,
-        'CompositeValue': CompositeValueFactor,
-        
+        "EP": EPFactor,
+        "BP": BPFactor,
+        "SP": SPFactor,
+        "DividendYield": DividendYieldFactor,
+        "CompositeValue": CompositeValueFactor,
         # 成长因子
-        'RevenueGrowth': RevenueGrowthFactor,
-        'ProfitGrowth': ProfitGrowthFactor,
-        'ROEChange': ROEChangeFactor,
-        'CompositeGrowth': CompositeGrowthFactor,
-        
+        "RevenueGrowth": RevenueGrowthFactor,
+        "ProfitGrowth": ProfitGrowthFactor,
+        "ROEChange": ROEChangeFactor,
+        "CompositeGrowth": CompositeGrowthFactor,
         # 质量因子
-        'ROE': ROEFactor,
-        'GrossMargin': GrossMarginFactor,
-        'AssetTurnover': AssetTurnoverFactor,
-        'Leverage': LeverageFactor,
-        'CompositeQuality': CompositeQualityFactor,
-        
+        "ROE": ROEFactor,
+        "GrossMargin": GrossMarginFactor,
+        "AssetTurnover": AssetTurnoverFactor,
+        "Leverage": LeverageFactor,
+        "CompositeQuality": CompositeQualityFactor,
         # 动量因子
-        'PriceMomentum': PriceMomentumFactor,
-        'Reversal': ReversalFactor,
-        'RelativeStrength': RelativeStrengthFactor,
-        'CompositeMomentum': CompositeMomentumFactor,
-        
+        "PriceMomentum": PriceMomentumFactor,
+        "Reversal": ReversalFactor,
+        "RelativeStrength": RelativeStrengthFactor,
+        "CompositeMomentum": CompositeMomentumFactor,
         # 资金流因子
-        'NorthboundFlow': NorthboundFlowFactor,
-        'MainForceFlow': MainForceFlowFactor,
-        'MarginBalance': MarginBalanceFactor,
-        'CompositeFlow': CompositeFlowFactor,
+        "NorthboundFlow": NorthboundFlowFactor,
+        "MainForceFlow": MainForceFlowFactor,
+        "MarginBalance": MarginBalanceFactor,
+        "CompositeFlow": CompositeFlowFactor,
     }
-    
+
     # 因子分类
     FACTOR_CATEGORIES = {
-        'value': ['EP', 'BP', 'SP', 'DividendYield', 'CompositeValue'],
-        'growth': ['RevenueGrowth', 'ProfitGrowth', 'ROEChange', 'CompositeGrowth'],
-        'quality': ['ROE', 'GrossMargin', 'AssetTurnover', 'Leverage', 'CompositeQuality'],
-        'momentum': ['PriceMomentum', 'Reversal', 'RelativeStrength', 'CompositeMomentum'],
-        'flow': ['NorthboundFlow', 'MainForceFlow', 'MarginBalance', 'CompositeFlow'],
+        "value": ["EP", "BP", "SP", "DividendYield", "CompositeValue"],
+        "growth": ["RevenueGrowth", "ProfitGrowth", "ROEChange", "CompositeGrowth"],
+        "quality": ["ROE", "GrossMargin", "AssetTurnover", "Leverage", "CompositeQuality"],
+        "momentum": ["PriceMomentum", "Reversal", "RelativeStrength", "CompositeMomentum"],
+        "flow": ["NorthboundFlow", "MainForceFlow", "MarginBalance", "CompositeFlow"],
     }
-    
-    def __init__(
-        self,
-        jq_client=None,
-        cache_dir: Optional[Path] = None,
-        use_cache: bool = True
-    ):
+
+    def __init__(self, jq_client=None, cache_dir: Optional[Path] = None, use_cache: bool = True):
         """
         初始化因子管理器
-        
+
         Args:
             jq_client: JQData客户端
             cache_dir: 缓存目录
@@ -108,72 +109,66 @@ class FactorManager:
         self.cache_dir = cache_dir or Path(__file__).parent.parent.parent / "data" / "factors"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.use_cache = use_cache
-        
+
         # 初始化因子实例
         self._factors: Dict[str, BaseFactor] = {}
         self._init_factors()
-    
+
     def _init_factors(self):
         """初始化所有因子实例"""
         for name, factor_class in self.FACTOR_CLASSES.items():
             self._factors[name] = factor_class(
-                jq_client=self.jq_client,
-                cache_dir=self.cache_dir,
-                use_cache=self.use_cache
+                jq_client=self.jq_client, cache_dir=self.cache_dir, use_cache=self.use_cache
             )
-    
+
     def set_jq_client(self, jq_client):
         """设置JQData客户端"""
         self.jq_client = jq_client
         for factor in self._factors.values():
             factor.jq_client = jq_client
-    
+
     def get_factor(self, name: str) -> Optional[BaseFactor]:
         """获取因子实例"""
         return self._factors.get(name)
-    
+
     def list_factors(self, category: Optional[str] = None) -> List[str]:
         """
         列出所有因子
-        
+
         Args:
             category: 因子类别（value, growth, quality, momentum）
-        
+
         Returns:
             因子名称列表
         """
         if category:
             return self.FACTOR_CATEGORIES.get(category, [])
         return list(self._factors.keys())
-    
+
     def get_factor_info(self, name: str) -> Optional[Dict[str, Any]]:
         """获取因子信息"""
         factor = self._factors.get(name)
         if factor:
             return {
-                'name': factor.name,
-                'category': factor.category,
-                'description': factor.description,
-                'direction': factor.direction
+                "name": factor.name,
+                "category": factor.category,
+                "description": factor.description,
+                "direction": factor.direction,
             }
         return None
-    
+
     def calculate_factor(
-        self,
-        factor_name: str,
-        stocks: List[str],
-        date: Union[str, datetime],
-        **kwargs
+        self, factor_name: str, stocks: List[str], date: Union[str, datetime], **kwargs
     ) -> Optional[FactorResult]:
         """
         计算单个因子
-        
+
         Args:
             factor_name: 因子名称
             stocks: 股票列表
             date: 计算日期
             **kwargs: 额外参数
-        
+
         Returns:
             FactorResult: 因子计算结果
         """
@@ -181,25 +176,21 @@ class FactorManager:
         if factor is None:
             logger.error(f"因子不存在: {factor_name}")
             return None
-        
+
         return factor.calculate(stocks, date, **kwargs)
-    
+
     def calculate_factors(
-        self,
-        factor_names: List[str],
-        stocks: List[str],
-        date: Union[str, datetime],
-        **kwargs
+        self, factor_names: List[str], stocks: List[str], date: Union[str, datetime], **kwargs
     ) -> Dict[str, FactorResult]:
         """
         批量计算多个因子
-        
+
         Args:
             factor_names: 因子名称列表
             stocks: 股票列表
             date: 计算日期
             **kwargs: 额外参数
-        
+
         Returns:
             Dict[str, FactorResult]: 因子计算结果字典
         """
@@ -209,23 +200,23 @@ class FactorManager:
             if result:
                 results[name] = result
         return results
-    
+
     def calculate_all_factors(
         self,
         stocks: List[str],
         date: Union[str, datetime],
         categories: Optional[List[str]] = None,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, FactorResult]:
         """
         计算所有因子
-        
+
         Args:
             stocks: 股票列表
             date: 计算日期
             categories: 因子类别列表，None表示所有类别
             **kwargs: 额外参数
-        
+
         Returns:
             Dict[str, FactorResult]: 因子计算结果字典
         """
@@ -235,42 +226,40 @@ class FactorManager:
                 factor_names.extend(self.FACTOR_CATEGORIES.get(cat, []))
         else:
             factor_names = list(self._factors.keys())
-        
+
         return self.calculate_factors(factor_names, stocks, date, **kwargs)
-    
+
     def combine_factors(
         self,
         factor_results: Dict[str, FactorResult],
         weights: Optional[Dict[str, float]] = None,
-        method: str = 'equal'
+        method: str = "equal",
     ) -> pd.Series:
         """
         组合多个因子
-        
+
         Args:
             factor_results: 因子计算结果字典
             weights: 因子权重
             method: 组合方法 ('equal', 'ic_weighted', 'custom')
-        
+
         Returns:
             pd.Series: 组合因子值
         """
         if not factor_results:
             return pd.Series(dtype=float)
-        
+
         # 收集所有因子值
-        factor_df = pd.DataFrame({
-            name: result.values for name, result in factor_results.items()
-        })
-        
-        if method == 'equal' or weights is None:
+        factor_df = pd.DataFrame({name: result.values for name, result in factor_results.items()})
+
+        if method == "equal" or weights is None:
             # 等权组合
             weights = {name: 1.0 / len(factor_results) for name in factor_results}
-        
+
         # 加权组合
         combined = pd.Series(0, index=factor_df.index)
         total_weight = 0
-        
+
         for name, weight in weights.items():
             if name in factor_df.columns:
                 # 标准化
@@ -281,61 +270,58 @@ class FactorManager:
                     factor_values = (factor_values - mean) / std
                 else:
                     factor_values = factor_values - mean
-                
+
                 combined += factor_values.fillna(0) * weight
                 total_weight += weight
-        
+
         if total_weight > 0:
             combined /= total_weight
-        
+
         return combined
-    
+
     def select_stocks(
-        self,
-        combined_factor: pd.Series,
-        top_n: int = 30,
-        min_score: Optional[float] = None
+        self, combined_factor: pd.Series, top_n: int = 30, min_score: Optional[float] = None
     ) -> List[str]:
         """
         根据组合因子选股
-        
+
         Args:
             combined_factor: 组合因子值
             top_n: 选择前N只股票
             min_score: 最低分数阈值
-        
+
         Returns:
             List[str]: 选中的股票列表
         """
         # 过滤无效值
         valid_factor = combined_factor.dropna()
-        
+
         if min_score is not None:
             valid_factor = valid_factor[valid_factor >= min_score]
-        
+
         # 选择前N只
         selected = valid_factor.nlargest(top_n).index.tolist()
-        
+
         return selected
-    
+
     def generate_ptrade_strategy(
         self,
         factor_names: List[str],
         weights: Optional[Dict[str, float]] = None,
-        stock_pool: str = '000300.XSHG',
+        stock_pool: str = "000300.XSHG",
         hold_num: int = 30,
-        rebalance_freq: str = 'monthly'
+        rebalance_freq: str = "monthly",
     ) -> str:
         """
         生成PTrade策略代码
-        
+
         Args:
             factor_names: 使用的因子名称列表
             weights: 因子权重
             stock_pool: 股票池（指数代码）
             hold_num: 持仓数量
             rebalance_freq: 调仓频率
-        
+
         Returns:
             str: PTrade策略代码
         """
@@ -345,20 +331,20 @@ class FactorManager:
             factor = self._factors.get(name)
             if factor:
                 factor_codes.append(factor.get_ptrade_code())
-        
+
         # 生成权重字符串
         if weights is None:
             weights = {name: 1.0 / len(factor_names) for name in factor_names}
         weights_str = str(weights)
-        
+
         # 生成调仓代码
-        if rebalance_freq == 'monthly':
+        if rebalance_freq == "monthly":
             rebalance_code = "run_monthly(rebalance, 1, time='open')"
-        elif rebalance_freq == 'weekly':
+        elif rebalance_freq == "weekly":
             rebalance_code = "run_weekly(rebalance, 1, time='open')"
         else:
             rebalance_code = "run_daily(rebalance, time='open')"
-        
+
         strategy_code = f'''# -*- coding: utf-8 -*-
 """
 韬睿量化 - 多因子策略
@@ -491,58 +477,58 @@ def rebalance(context):
     
     log.info(f"调仓完成: 持仓 {{len(target_stocks)}} 只股票")
 '''
-        
+
         return strategy_code
-    
+
     def save_strategy(
         self,
         strategy_code: str,
         filename: str,
         output_dir: Optional[Path] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Path:
         """
         保存策略代码到文件，并创建元数据
-        
+
         Args:
             strategy_code: 策略代码
             filename: 文件名
             output_dir: 输出目录
             metadata: 额外的元数据
-        
+
         Returns:
             Path: 保存的文件路径
         """
         if output_dir is None:
             output_dir = Path(__file__).parent.parent.parent / "strategies" / "ptrade"
-        
+
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         filepath = output_dir / filename
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(strategy_code)
-        
+
         # 创建元数据文件（用于Dashboard显示）
         meta_filename = filepath.stem + "_meta.json"
         meta_filepath = output_dir / meta_filename
-        
+
         # 从策略代码中提取信息
         factors = []
         weights = {}
         stock_pool = "000300.XSHG"
         hold_num = 30
-        
-        for line in strategy_code.split('\n'):
-            if '因子:' in line:
-                factors = [f.strip() for f in line.split(':')[1].split(',')]
-            if '股票池:' in line:
-                stock_pool = line.split(':')[1].strip()
-            if '持仓数量:' in line:
+
+        for line in strategy_code.split("\n"):
+            if "因子:" in line:
+                factors = [f.strip() for f in line.split(":")[1].split(",")]
+            if "股票池:" in line:
+                stock_pool = line.split(":")[1].strip()
+            if "持仓数量:" in line:
                 try:
-                    hold_num = int(line.split(':')[1].strip())
+                    hold_num = int(line.split(":")[1].strip())
                 except:
                     pass
-        
+
         meta_data = {
             "name": filepath.stem,
             "type": "multi_factor",
@@ -554,36 +540,38 @@ def rebalance(context):
             "hold_num": hold_num,
             "created_at": datetime.now().isoformat(),
             "description": f"韬睿量化因子库自动生成的多因子策略，使用{len(factors)}个因子",
-            "version": "1.0"
+            "version": "1.0",
         }
-        
+
         if metadata:
             meta_data.update(metadata)
-        
-        with open(meta_filepath, 'w', encoding='utf-8') as f:
+
+        with open(meta_filepath, "w", encoding="utf-8") as f:
             json.dump(meta_data, f, ensure_ascii=False, indent=2)
-        
+
         logger.info(f"策略已保存: {filepath}")
         logger.info(f"元数据已保存: {meta_filepath}")
         return filepath
-    
+
     def clear_cache(self):
         """清空所有因子缓存"""
         for factor in self._factors.values():
             factor.clear_cache()
         logger.info("所有因子缓存已清空")
-    
+
     def get_factor_summary(self) -> pd.DataFrame:
         """获取因子摘要信息"""
         data = []
         for name, factor in self._factors.items():
-            data.append({
-                'name': factor.name,
-                'category': factor.category,
-                'description': factor.description,
-                'direction': '正向' if factor.direction == 1 else '负向'
-            })
-        
+            data.append(
+                {
+                    "name": factor.name,
+                    "category": factor.category,
+                    "description": factor.description,
+                    "direction": "正向" if factor.direction == 1 else "负向",
+                }
+            )
+
         return pd.DataFrame(data)
 
 
@@ -591,4 +579,3 @@ def rebalance(context):
 def create_factor_manager(jq_client=None) -> FactorManager:
     """创建因子管理器的便捷函数"""
     return FactorManager(jq_client=jq_client)
-

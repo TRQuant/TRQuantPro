@@ -1,12 +1,12 @@
 /**
  * 推荐因子命令
  * ==============
- * 
+ *
  * 功能：
  * - 基于市场状态推荐量化因子
  * - 展示因子分类和权重
  * - 生成因子组合建议
- * 
+ *
  * 遵循：
  * - 单一职责原则
  * - 命令模式
@@ -24,114 +24,116 @@ const MODULE = 'RecommendFactors';
  * 执行推荐因子命令
  */
 export async function recommendFactors(
-    client: TRQuantClient,
-    context: vscode.ExtensionContext
+  client: TRQuantClient,
+  context: vscode.ExtensionContext
 ): Promise<void> {
-    logger.info('执行推荐因子命令', MODULE);
+  logger.info('执行推荐因子命令', MODULE);
 
-    await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "TRQuant",
-        cancellable: true
-    }, async (progress, token) => {
-        try {
-            progress.report({ message: '获取市场状态...', increment: 0 });
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'TRQuant',
+      cancellable: true,
+    },
+    async (progress, token) => {
+      try {
+        progress.report({ message: '获取市场状态...', increment: 0 });
 
-            // 先获取市场状态
-            const marketResult = await client.getMarketStatus();
-            const regime = marketResult.data?.regime || 'neutral';
+        // 先获取市场状态
+        const marketResult = await client.getMarketStatus();
+        const regime = marketResult.data?.regime || 'neutral';
 
-            if (token.isCancellationRequested) {
-                return;
-            }
-
-            progress.report({ message: '推荐因子...', increment: 30 });
-
-            // 获取因子推荐
-            const result = await client.recommendFactors({
-                market_regime: regime as MarketRegime,
-                top_n: 15
-            });
-
-            progress.report({ increment: 40 });
-
-            if (!result.ok || !result.data) {
-                vscode.window.showErrorMessage(`获取因子推荐失败: ${result.error || '未知错误'}`);
-                return;
-            }
-
-            const factors = result.data;
-            logger.info(`推荐 ${factors.length} 个因子`, MODULE);
-
-            progress.report({ message: '渲染结果...', increment: 20 });
-
-            // 创建WebView显示结果
-            createFactorsPanel(context, factors, regime);
-
-            progress.report({ increment: 10 });
-
-            // 提供后续操作
-            showFollowUpActions(factors);
-
-        } catch (error) {
-            ErrorHandler.handle(error, MODULE);
+        if (token.isCancellationRequested) {
+          return;
         }
-    });
+
+        progress.report({ message: '推荐因子...', increment: 30 });
+
+        // 获取因子推荐
+        const result = await client.recommendFactors({
+          market_regime: regime as MarketRegime,
+          top_n: 15,
+        });
+
+        progress.report({ increment: 40 });
+
+        if (!result.ok || !result.data) {
+          vscode.window.showErrorMessage(`获取因子推荐失败: ${result.error || '未知错误'}`);
+          return;
+        }
+
+        const factors = result.data;
+        logger.info(`推荐 ${factors.length} 个因子`, MODULE);
+
+        progress.report({ message: '渲染结果...', increment: 20 });
+
+        // 创建WebView显示结果
+        createFactorsPanel(context, factors, regime);
+
+        progress.report({ increment: 10 });
+
+        // 提供后续操作
+        showFollowUpActions(factors);
+      } catch (error) {
+        ErrorHandler.handle(error, MODULE);
+      }
+    }
+  );
 }
 
 /**
  * 创建因子推荐WebView面板
  */
 function createFactorsPanel(
-    context: vscode.ExtensionContext,
-    factors: Factor[],
-    regime: string
+  context: vscode.ExtensionContext,
+  factors: Factor[],
+  regime: string
 ): vscode.WebviewPanel {
-    const panel = vscode.window.createWebviewPanel(
-        'trquantFactors',
-        '📈 因子推荐',
-        vscode.ViewColumn.Beside,
-        {
-            enableScripts: true,
-            retainContextWhenHidden: true
-        }
-    );
+  const panel = vscode.window.createWebviewPanel(
+    'trquantFactors',
+    '📈 因子推荐',
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    }
+  );
 
-    panel.webview.html = generateWebviewHtml(factors, regime);
+  panel.webview.html = generateWebviewHtml(factors, regime);
 
-    // 处理WebView消息
-    panel.webview.onDidReceiveMessage(
-        async (message) => {
-            switch (message.command) {
-                case 'generateStrategy':
-                    const selectedFactors = message.factors || factors.slice(0, 5).map(f => f.name);
-                    generateStrategyWithFactors(selectedFactors);
-                    break;
-                case 'copyPrompt':
-                    const prompt = generatePrompt(factors, regime);
-                    await vscode.env.clipboard.writeText(prompt);
-                    vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-                    break;
-            }
-        },
-        undefined,
-        context.subscriptions
-    );
+  // 处理WebView消息
+  panel.webview.onDidReceiveMessage(
+    async (message) => {
+      switch (message.command) {
+        case 'generateStrategy':
+          const selectedFactors = message.factors || factors.slice(0, 5).map((f) => f.name);
+          generateStrategyWithFactors(selectedFactors);
+          break;
+        case 'copyPrompt':
+          const prompt = generatePrompt(factors, regime);
+          await vscode.env.clipboard.writeText(prompt);
+          vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+          break;
+      }
+    },
+    undefined,
+    context.subscriptions
+  );
 
-    return panel;
+  return panel;
 }
 
 /**
  * 生成WebView HTML
  */
 function generateWebviewHtml(factors: Factor[], regime: string): string {
-    const regimeInfo = getRegimeInfo(regime);
-    const groupedFactors = groupFactorsByCategory(factors);
-    const categoriesHtml = Object.entries(groupedFactors)
-        .map(([category, items]) => generateCategorySection(category, items))
-        .join('');
+  const regimeInfo = getRegimeInfo(regime);
+  const groupedFactors = groupFactorsByCategory(factors);
+  const categoriesHtml = Object.entries(groupedFactors)
+    .map(([category, items]) => generateCategorySection(category, items))
+    .join('');
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -406,7 +408,7 @@ function generateWebviewHtml(factors: Factor[], regime: string): string {
         const selectedFactors = new Set();
         
         // 默认选中前5个因子
-        const defaultFactors = ${JSON.stringify(factors.slice(0, 5).map(f => f.name))};
+        const defaultFactors = ${JSON.stringify(factors.slice(0, 5).map((f) => f.name))};
         defaultFactors.forEach(f => selectedFactors.add(f));
         updateSelectedDisplay();
         
@@ -465,9 +467,9 @@ function generateWebviewHtml(factors: Factor[], regime: string): string {
  * 生成分类区块HTML
  */
 function generateCategorySection(category: string, factors: Factor[]): string {
-    const factorCards = factors.map(f => generateFactorCard(f)).join('');
-    
-    return `
+  const factorCards = factors.map((f) => generateFactorCard(f)).join('');
+
+  return `
         <div class="category-section">
             <div class="category-title">${getCategoryIcon(category)} ${category}</div>
             <div class="factors-grid">
@@ -481,10 +483,10 @@ function generateCategorySection(category: string, factors: Factor[]): string {
  * 生成单个因子卡片HTML
  */
 function generateFactorCard(factor: Factor): string {
-    const weightClass = factor.weight > 0.7 ? 'weight-high' : 
-                       factor.weight > 0.4 ? 'weight-medium' : 'weight-low';
-    
-    return `
+  const weightClass =
+    factor.weight > 0.7 ? 'weight-high' : factor.weight > 0.4 ? 'weight-medium' : 'weight-low';
+
+  return `
         <div class="factor-card" data-factor="${factor.name}" onclick="toggleFactor('${factor.name}', this)">
             <div class="factor-header">
                 <span class="factor-name">${factor.name}</span>
@@ -499,64 +501,67 @@ function generateFactorCard(factor: Factor): string {
  * 按类别分组因子
  */
 function groupFactorsByCategory(factors: Factor[]): Record<string, Factor[]> {
-    const groups: Record<string, Factor[]> = {};
-    
-    for (const factor of factors) {
-        const category = factor.category || '其他';
-        if (!groups[category]) {
-            groups[category] = [];
-        }
-        groups[category].push(factor);
+  const groups: Record<string, Factor[]> = {};
+
+  for (const factor of factors) {
+    const category = factor.category || '其他';
+    if (!groups[category]) {
+      groups[category] = [];
     }
-    
-    return groups;
+    groups[category].push(factor);
+  }
+
+  return groups;
 }
 
 /**
  * 获取分类图标
  */
 function getCategoryIcon(category: string): string {
-    const icons: Record<string, string> = {
-        '盈利能力': '💰',
-        '成长性': '🚀',
-        '估值': '📊',
-        '动量': '⚡',
-        '流动性': '💧',
-        '波动率': '📈',
-        '质量': '✨',
-        '其他': '📋'
-    };
-    return icons[category] || '📋';
+  const icons: Record<string, string> = {
+    盈利能力: '💰',
+    成长性: '🚀',
+    估值: '📊',
+    动量: '⚡',
+    流动性: '💧',
+    波动率: '📈',
+    质量: '✨',
+    其他: '📋',
+  };
+  return icons[category] || '📋';
 }
 
 /**
  * 获取市场状态信息
  */
 function getRegimeInfo(regime: string): { color: string; factorAdvice: string } {
-    const info: Record<string, { color: string; factorAdvice: string }> = {
-        'risk_on': {
-            color: '#10b981',
-            factorAdvice: '当前市场风险偏好上升，建议侧重成长性和动量因子。高Beta、高成长的股票可能表现更好。'
-        },
-        'risk_off': {
-            color: '#ef4444',
-            factorAdvice: '当前市场风险偏好下降，建议侧重价值和质量因子。低波动、高分红的股票可能更稳健。'
-        },
-        'neutral': {
-            color: '#f59e0b',
-            factorAdvice: '当前市场处于震荡格局，建议均衡配置各类因子。可以考虑市场中性策略降低方向性风险。'
-        }
-    };
-    return info[regime] || info['neutral'];
+  const info: Record<string, { color: string; factorAdvice: string }> = {
+    risk_on: {
+      color: '#10b981',
+      factorAdvice:
+        '当前市场风险偏好上升，建议侧重成长性和动量因子。高Beta、高成长的股票可能表现更好。',
+    },
+    risk_off: {
+      color: '#ef4444',
+      factorAdvice:
+        '当前市场风险偏好下降，建议侧重价值和质量因子。低波动、高分红的股票可能更稳健。',
+    },
+    neutral: {
+      color: '#f59e0b',
+      factorAdvice:
+        '当前市场处于震荡格局，建议均衡配置各类因子。可以考虑市场中性策略降低方向性风险。',
+    },
+  };
+  return info[regime] || info['neutral'];
 }
 
 /**
  * 生成AI Prompt
  */
 function generatePrompt(factors: Factor[], regime: string): string {
-    const groupedFactors = groupFactorsByCategory(factors);
-    
-    return `# 量化因子推荐
+  const groupedFactors = groupFactorsByCategory(factors);
+
+  return `# 量化因子推荐
 
 ## 市场状态: ${regime.toUpperCase()}
 
@@ -564,10 +569,14 @@ ${getRegimeInfo(regime).factorAdvice}
 
 ## 推荐因子列表
 
-${Object.entries(groupedFactors).map(([category, items]) => `
+${Object.entries(groupedFactors)
+  .map(
+    ([category, items]) => `
 ### ${category}
-${items.map(f => `- **${f.name}** (权重: ${(f.weight * 100).toFixed(0)}%): ${f.reason || ''}`).join('\n')}
-`).join('\n')}
+${items.map((f) => `- **${f.name}** (权重: ${(f.weight * 100).toFixed(0)}%): ${f.reason || ''}`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ---
 
@@ -587,32 +596,32 @@ ${items.map(f => `- **${f.name}** (权重: ${(f.weight * 100).toFixed(0)}%): ${f
  * 使用选中因子生成策略
  */
 function generateStrategyWithFactors(factors: string[]): void {
-    logger.info(`使用因子生成策略: ${factors.join(', ')}`, MODULE);
-    vscode.commands.executeCommand('trquant.generateStrategy');
+  logger.info(`使用因子生成策略: ${factors.join(', ')}`, MODULE);
+  vscode.commands.executeCommand('trquant.generateStrategy');
 }
 
 /**
  * 显示后续操作选项
  */
 async function showFollowUpActions(factors: Factor[]): Promise<void> {
-    if (factors.length === 0) {
-        return;
-    }
+  if (factors.length === 0) {
+    return;
+  }
 
-    const action = await vscode.window.showInformationMessage(
-        `推荐 ${factors.length} 个因子`,
-        '生成策略',
-        '复制Prompt'
-    );
+  const action = await vscode.window.showInformationMessage(
+    `推荐 ${factors.length} 个因子`,
+    '生成策略',
+    '复制Prompt'
+  );
 
-    switch (action) {
-        case '生成策略':
-            vscode.commands.executeCommand('trquant.generateStrategy');
-            break;
-        case '复制Prompt':
-            const prompt = generatePrompt(factors, 'neutral');
-            await vscode.env.clipboard.writeText(prompt);
-            vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-            break;
-    }
+  switch (action) {
+    case '生成策略':
+      vscode.commands.executeCommand('trquant.generateStrategy');
+      break;
+    case '复制Prompt':
+      const prompt = generatePrompt(factors, 'neutral');
+      await vscode.env.clipboard.writeText(prompt);
+      vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+      break;
+  }
 }

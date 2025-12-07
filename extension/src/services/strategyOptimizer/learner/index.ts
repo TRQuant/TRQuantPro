@@ -5,4 +5,3 @@
 export { KnowledgeStore, getKnowledgeStore } from './knowledgeStore';
 export { StrategyLearner, createStrategyLearner } from './strategyLearner';
 export { ManualLearner, createManualLearner } from './manualLearner';
-

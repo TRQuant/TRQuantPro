@@ -1,12 +1,12 @@
 /**
  * 获取市场状态命令
  * ==================
- * 
+ *
  * 功能：
  * - 获取A股市场当前状态（Regime）
  * - 显示指数趋势和风格轮动
  * - 生成AI Prompt
- * 
+ *
  * 遵循：
  * - 单一职责原则
  * - 命令模式
@@ -24,107 +24,109 @@ const MODULE = 'GetMarketStatus';
  * 执行获取市场状态命令
  */
 export async function getMarketStatus(
-    client: TRQuantClient,
-    context: vscode.ExtensionContext
+  client: TRQuantClient,
+  context: vscode.ExtensionContext
 ): Promise<void> {
-    logger.info('执行获取市场状态命令', MODULE);
+  logger.info('执行获取市场状态命令', MODULE);
 
-    await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "TRQuant",
-        cancellable: true
-    }, async (progress, token) => {
-        try {
-            progress.report({ message: '正在获取市场状态...', increment: 0 });
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'TRQuant',
+      cancellable: true,
+    },
+    async (progress, token) => {
+      try {
+        progress.report({ message: '正在获取市场状态...', increment: 0 });
 
-            // 检查取消
-            if (token.isCancellationRequested) {
-                logger.info('用户取消操作', MODULE);
-                return;
-            }
-
-            const result = await client.getMarketStatus({
-                universe: 'CN_EQ',
-                as_of: new Date().toISOString().split('T')[0]
-            });
-
-            progress.report({ increment: 50 });
-
-            if (!result.ok || !result.data) {
-                vscode.window.showErrorMessage(`获取市场状态失败: ${result.error || '未知错误'}`);
-                return;
-            }
-
-            const data = result.data;
-            logger.info(`市场状态: ${data.regime}`, MODULE);
-
-            progress.report({ message: '渲染结果...', increment: 30 });
-
-            // 创建WebView显示结果
-            const panel = createMarketStatusPanel(context, data);
-
-            progress.report({ increment: 20 });
-
-            // 提供后续操作
-            showFollowUpActions(data);
-
-        } catch (error) {
-            ErrorHandler.handle(error, MODULE);
+        // 检查取消
+        if (token.isCancellationRequested) {
+          logger.info('用户取消操作', MODULE);
+          return;
         }
-    });
+
+        const result = await client.getMarketStatus({
+          universe: 'CN_EQ',
+          as_of: new Date().toISOString().split('T')[0],
+        });
+
+        progress.report({ increment: 50 });
+
+        if (!result.ok || !result.data) {
+          vscode.window.showErrorMessage(`获取市场状态失败: ${result.error || '未知错误'}`);
+          return;
+        }
+
+        const data = result.data;
+        logger.info(`市场状态: ${data.regime}`, MODULE);
+
+        progress.report({ message: '渲染结果...', increment: 30 });
+
+        // 创建WebView显示结果
+        const panel = createMarketStatusPanel(context, data);
+
+        progress.report({ increment: 20 });
+
+        // 提供后续操作
+        showFollowUpActions(data);
+      } catch (error) {
+        ErrorHandler.handle(error, MODULE);
+      }
+    }
+  );
 }
 
 /**
  * 创建市场状态WebView面板
  */
 function createMarketStatusPanel(
-    context: vscode.ExtensionContext,
-    data: MarketStatus
+  context: vscode.ExtensionContext,
+  data: MarketStatus
 ): vscode.WebviewPanel {
-    const panel = vscode.window.createWebviewPanel(
-        'trquantMarketStatus',
-        '📊 市场状态',
-        vscode.ViewColumn.Beside,
-        { 
-            enableScripts: true,
-            retainContextWhenHidden: true
-        }
-    );
+  const panel = vscode.window.createWebviewPanel(
+    'trquantMarketStatus',
+    '📊 市场状态',
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    }
+  );
 
-    panel.webview.html = generateWebviewHtml(data);
+  panel.webview.html = generateWebviewHtml(data);
 
-    // 处理WebView消息
-    panel.webview.onDidReceiveMessage(
-        async (message) => {
-            switch (message.command) {
-                case 'copyPrompt':
-                    const prompt = generatePrompt(data);
-                    await vscode.env.clipboard.writeText(prompt);
-                    vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-                    break;
-                case 'refresh':
-                    // 重新执行命令
-                    vscode.commands.executeCommand('trquant.getMarketStatus');
-                    panel.dispose();
-                    break;
-            }
-        },
-        undefined,
-        context.subscriptions
-    );
+  // 处理WebView消息
+  panel.webview.onDidReceiveMessage(
+    async (message) => {
+      switch (message.command) {
+        case 'copyPrompt':
+          const prompt = generatePrompt(data);
+          await vscode.env.clipboard.writeText(prompt);
+          vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+          break;
+        case 'refresh':
+          // 重新执行命令
+          vscode.commands.executeCommand('trquant.getMarketStatus');
+          panel.dispose();
+          break;
+      }
+    },
+    undefined,
+    context.subscriptions
+  );
 
-    return panel;
+  return panel;
 }
 
 /**
  * 生成WebView HTML内容
  */
 function generateWebviewHtml(data: MarketStatus): string {
-    const regimeInfo = getRegimeInfo(data.regime);
-    const indexTrendHtml = generateIndexTrendHtml(data.index_trend);
-    const styleRotationHtml = generateStyleRotationHtml(data.style_rotation);
+  const regimeInfo = getRegimeInfo(data.regime);
+  const indexTrendHtml = generateIndexTrendHtml(data.index_trend);
+  const styleRotationHtml = generateStyleRotationHtml(data.style_rotation);
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -395,49 +397,53 @@ function generateWebviewHtml(data: MarketStatus): string {
  * 获取Regime信息
  */
 function getRegimeInfo(regime: MarketRegime): {
-    icon: string;
-    color: string;
-    description: string;
+  icon: string;
+  color: string;
+  description: string;
 } {
-    const regimeMap: Record<MarketRegime, { icon: string; color: string; description: string }> = {
-        'risk_on': {
-            icon: '📈',
-            color: '#10b981',
-            description: '当前市场风险偏好上升，适合积极配置成长股和高Beta资产。建议关注科技、新能源等高成长板块。'
-        },
-        'risk_off': {
-            icon: '📉',
-            color: '#ef4444',
-            description: '当前市场风险偏好下降，建议防御性配置。可关注高分红、低波动的价值股，适当降低仓位。'
-        },
-        'neutral': {
-            icon: '➡️',
-            color: '#f59e0b',
-            description: '当前市场处于震荡格局，建议均衡配置。可采用市场中性策略，控制风险敞口。'
-        }
-    };
+  const regimeMap: Record<MarketRegime, { icon: string; color: string; description: string }> = {
+    risk_on: {
+      icon: '📈',
+      color: '#10b981',
+      description:
+        '当前市场风险偏好上升，适合积极配置成长股和高Beta资产。建议关注科技、新能源等高成长板块。',
+    },
+    risk_off: {
+      icon: '📉',
+      color: '#ef4444',
+      description:
+        '当前市场风险偏好下降，建议防御性配置。可关注高分红、低波动的价值股，适当降低仓位。',
+    },
+    neutral: {
+      icon: '➡️',
+      color: '#f59e0b',
+      description: '当前市场处于震荡格局，建议均衡配置。可采用市场中性策略，控制风险敞口。',
+    },
+  };
 
-    return regimeMap[regime] || regimeMap['neutral'];
+  return regimeMap[regime] || regimeMap['neutral'];
 }
 
 /**
  * 生成指数趋势HTML
  */
-function generateIndexTrendHtml(indexTrend: Record<string, { zscore: number; trend: string }>): string {
-    const indexNames: Record<string, string> = {
-        'SH000300': '沪深300',
-        'SZ399006': '创业板指',
-        'SH000016': '上证50',
-        'SZ399905': '中证500'
-    };
+function generateIndexTrendHtml(
+  indexTrend: Record<string, { zscore: number; trend: string }>
+): string {
+  const indexNames: Record<string, string> = {
+    SH000300: '沪深300',
+    SZ399006: '创业板指',
+    SH000016: '上证50',
+    SZ399905: '中证500',
+  };
 
-    return Object.entries(indexTrend)
-        .map(([code, info]) => {
-            const name = indexNames[code] || code;
-            const trendIcon = info.trend === 'up' ? '↑' : info.trend === 'down' ? '↓' : '→';
-            const colorClass = info.zscore > 0 ? 'positive' : info.zscore < 0 ? 'negative' : 'neutral';
+  return Object.entries(indexTrend)
+    .map(([code, info]) => {
+      const name = indexNames[code] || code;
+      const trendIcon = info.trend === 'up' ? '↑' : info.trend === 'down' ? '↓' : '→';
+      const colorClass = info.zscore > 0 ? 'positive' : info.zscore < 0 ? 'negative' : 'neutral';
 
-            return `
+      return `
                 <div class="trend-item">
                     <span class="trend-name">${name}</span>
                     <div class="trend-value">
@@ -446,58 +452,64 @@ function generateIndexTrendHtml(indexTrend: Record<string, { zscore: number; tre
                     </div>
                 </div>
             `;
-        })
-        .join('');
+    })
+    .join('');
 }
 
 /**
  * 生成风格轮动HTML
  */
 function generateStyleRotationHtml(styleRotation: Array<{ style: string; score: number }>): string {
-    const styleNames: Record<string, string> = {
-        'growth': '成长',
-        'value': '价值',
-        'momentum': '动量',
-        'quality': '质量',
-        'size': '市值'
-    };
+  const styleNames: Record<string, string> = {
+    growth: '成长',
+    value: '价值',
+    momentum: '动量',
+    quality: '质量',
+    size: '市值',
+  };
 
-    return styleRotation
-        .map(item => {
-            const name = styleNames[item.style] || item.style;
-            const colorClass = item.score > 0 ? 'positive' : item.score < 0 ? 'negative' : 'neutral';
-            const sign = item.score > 0 ? '+' : '';
+  return styleRotation
+    .map((item) => {
+      const name = styleNames[item.style] || item.style;
+      const colorClass = item.score > 0 ? 'positive' : item.score < 0 ? 'negative' : 'neutral';
+      const sign = item.score > 0 ? '+' : '';
 
-            return `
+      return `
                 <div class="style-item">
                     <span class="style-name">${name}</span>
                     <span class="style-score ${colorClass}">${sign}${item.score.toFixed(2)}</span>
                 </div>
             `;
-        })
-        .join('');
+    })
+    .join('');
 }
 
 /**
  * 生成AI Prompt
  */
 function generatePrompt(data: MarketStatus): string {
-    const regimeInfo = getRegimeInfo(data.regime);
-    
-    return `# A股市场状态分析
+  const regimeInfo = getRegimeInfo(data.regime);
+
+  return `# A股市场状态分析
 
 ## 市场Regime: ${data.regime.toUpperCase()}
 ${regimeInfo.description}
 
 ## 指数趋势
 ${Object.entries(data.index_trend)
-    .map(([code, info]) => `- ${code}: ${info.trend} (动量: ${info.zscore >= 0 ? '+' : ''}${info.zscore.toFixed(2)})`)
-    .join('\n')}
+  .map(
+    ([code, info]) =>
+      `- ${code}: ${info.trend} (动量: ${info.zscore >= 0 ? '+' : ''}${info.zscore.toFixed(2)})`
+  )
+  .join('\n')}
 
 ## 风格轮动
 ${data.style_rotation
-    .map(s => `- ${s.style}: ${s.score > 0 ? '占优' : '弱势'} (${s.score >= 0 ? '+' : ''}${s.score.toFixed(2)})`)
-    .join('\n')}
+  .map(
+    (s) =>
+      `- ${s.style}: ${s.score > 0 ? '占优' : '弱势'} (${s.score >= 0 ? '+' : ''}${s.score.toFixed(2)})`
+  )
+  .join('\n')}
 
 ## 分析总结
 ${data.summary || regimeInfo.description}
@@ -515,24 +527,24 @@ ${data.summary || regimeInfo.description}
  * 显示后续操作选项
  */
 async function showFollowUpActions(data: MarketStatus): Promise<void> {
-    const action = await vscode.window.showInformationMessage(
-        `市场状态: ${data.regime.toUpperCase()}`,
-        '复制Prompt',
-        '生成策略',
-        '查看主线'
-    );
+  const action = await vscode.window.showInformationMessage(
+    `市场状态: ${data.regime.toUpperCase()}`,
+    '复制Prompt',
+    '生成策略',
+    '查看主线'
+  );
 
-    switch (action) {
-        case '复制Prompt':
-            const prompt = generatePrompt(data);
-            await vscode.env.clipboard.writeText(prompt);
-            vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-            break;
-        case '生成策略':
-            vscode.commands.executeCommand('trquant.generateStrategy');
-            break;
-        case '查看主线':
-            vscode.commands.executeCommand('trquant.getMainlines');
-            break;
-    }
+  switch (action) {
+    case '复制Prompt':
+      const prompt = generatePrompt(data);
+      await vscode.env.clipboard.writeText(prompt);
+      vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+      break;
+    case '生成策略':
+      vscode.commands.executeCommand('trquant.generateStrategy');
+      break;
+    case '查看主线':
+      vscode.commands.executeCommand('trquant.getMainlines');
+      break;
+  }
 }

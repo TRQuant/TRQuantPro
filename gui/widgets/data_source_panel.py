@@ -34,6 +34,32 @@ logger = logging.getLogger(__name__)
 # 数据源测试工作线程
 # ============================================================
 
+class QuickTestWorker(QThread):
+    """一键检测全部数据源工作线程 - 调用WorkflowOrchestrator"""
+    finished = pyqtSignal(dict)  # result
+    
+    def run(self):
+        """执行检测"""
+        try:
+            from core.workflow_orchestrator import get_workflow_orchestrator
+            
+            orchestrator = get_workflow_orchestrator()
+            result = orchestrator.check_data_sources()
+            
+            self.finished.emit({
+                "success": result.success,
+                "summary": result.summary,
+                "details": result.details
+            })
+        except Exception as e:
+            import traceback
+            logger.error(f"一键检测失败: {traceback.format_exc()}")
+            self.finished.emit({
+                "success": False,
+                "error": str(e)
+            })
+
+
 class DataSourceTestWorker(QThread):
     """数据源连接测试工作线程 - 避免阻塞UI"""
     finished = pyqtSignal(str, dict)  # source_name, result
@@ -1508,6 +1534,66 @@ class DataSourcePanel(QWidget):
         methodology_layout.addLayout(flow_layout)
         
         content_layout.addWidget(methodology_frame)
+        
+        # ============================================================
+        # 一键检测全部数据源 - 快速入口
+        # ============================================================
+        quick_test_frame = QFrame()
+        quick_test_frame.setStyleSheet(f"""
+            QFrame {{
+                background-color: {Colors.SUCCESS}15;
+                border: 2px solid {Colors.SUCCESS}50;
+                border-radius: 12px;
+            }}
+        """)
+        quick_test_layout = QHBoxLayout(quick_test_frame)
+        quick_test_layout.setContentsMargins(20, 16, 20, 16)
+        quick_test_layout.setSpacing(16)
+        
+        quick_test_icon = QLabel("🔍")
+        quick_test_icon.setStyleSheet("font-size: 32px;")
+        quick_test_layout.addWidget(quick_test_icon)
+        
+        quick_test_info = QVBoxLayout()
+        quick_test_info.setSpacing(4)
+        quick_test_title = QLabel("快速检测")
+        quick_test_title.setStyleSheet(f"font-size: 16px; font-weight: 700; color: {Colors.TEXT_PRIMARY};")
+        quick_test_info.addWidget(quick_test_title)
+        quick_test_desc = QLabel("一键检测所有数据源状态（JQData、AKShare、MongoDB）")
+        quick_test_desc.setStyleSheet(f"font-size: 12px; color: {Colors.TEXT_MUTED};")
+        quick_test_info.addWidget(quick_test_desc)
+        quick_test_layout.addLayout(quick_test_info)
+        
+        quick_test_layout.addStretch()
+        
+        # 一键检测按钮
+        self.quick_test_btn = QPushButton("🚀 一键检测全部")
+        self.quick_test_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {Colors.SUCCESS};
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 12px 24px;
+                font-size: 14px;
+                font-weight: 700;
+            }}
+            QPushButton:hover {{
+                background-color: {Colors.SUCCESS}DD;
+            }}
+            QPushButton:disabled {{
+                background-color: {Colors.TEXT_MUTED};
+            }}
+        """)
+        self.quick_test_btn.clicked.connect(self._quick_test_all_sources)
+        quick_test_layout.addWidget(self.quick_test_btn)
+        
+        # 检测结果状态
+        self.quick_test_status = QLabel("")
+        self.quick_test_status.setStyleSheet(f"font-size: 12px; color: {Colors.TEXT_MUTED};")
+        quick_test_layout.addWidget(self.quick_test_status)
+        
+        content_layout.addWidget(quick_test_frame)
         
         # ============================================================
         # 2. 数据分类管理
@@ -3164,6 +3250,65 @@ class DataSourcePanel(QWidget):
         except Exception as e:
             self.cache_status_label.setText(f"❌ 错误: {e}")
     
+    def _quick_test_all_sources(self):
+        """一键检测全部数据源 - 调用WorkflowOrchestrator"""
+        self.quick_test_btn.setEnabled(False)
+        self.quick_test_btn.setText("⏳ 检测中...")
+        self.quick_test_status.setText("正在检测...")
+        
+        # 使用QThread避免阻塞UI
+        self._quick_test_worker = QuickTestWorker()
+        self._quick_test_worker.finished.connect(self._on_quick_test_finished)
+        self._quick_test_worker.start()
+    
+    def _on_quick_test_finished(self, result: dict):
+        """一键检测完成回调"""
+        self.quick_test_btn.setEnabled(True)
+        self.quick_test_btn.setText("🚀 一键检测全部")
+        
+        if result.get("success"):
+            # 显示成功结果
+            details = result.get("details", {})
+            connected_count = sum(1 for v in details.values() if v.get("connected"))
+            total = len(details)
+            
+            status_text = f"✅ {connected_count}/{total} 数据源正常"
+            self.quick_test_status.setText(status_text)
+            self.quick_test_status.setStyleSheet(f"font-size: 12px; color: {Colors.SUCCESS}; font-weight: 600;")
+            
+            # 构建详细信息
+            detail_lines = []
+            for name, info in details.items():
+                if info.get("connected"):
+                    if name == "jqdata":
+                        detail_lines.append(f"✅ JQData: {info.get('account_type', '')} ({info.get('date_range', '')})")
+                    elif name == "mongodb":
+                        detail_lines.append(f"✅ MongoDB: {info.get('collections', 0)} 个集合")
+                    elif name == "akshare":
+                        detail_lines.append(f"✅ AKShare: {info.get('indices', 0)} 个指数")
+                else:
+                    error = info.get("error", "连接失败")[:30]
+                    if name == "jqdata":
+                        detail_lines.append(f"❌ JQData: {error}")
+                    elif name == "mongodb":
+                        detail_lines.append(f"❌ MongoDB: {error}")
+                    elif name == "akshare":
+                        detail_lines.append(f"⚠️ AKShare: {error}")
+            
+            QMessageBox.information(
+                self,
+                "🔍 数据源检测结果",
+                f"{result.get('summary', '')}\n\n" + "\n".join(detail_lines)
+            )
+        else:
+            self.quick_test_status.setText("❌ 检测失败")
+            self.quick_test_status.setStyleSheet(f"font-size: 12px; color: {Colors.ERROR};")
+            QMessageBox.warning(
+                self,
+                "检测失败",
+                result.get("error", "未知错误")
+            )
+
     def _test_data_source(self, source_name: str):
         """测试数据源连接 - 使用异步线程，保持UI响应"""
         # 如果已有测试在运行，先等待

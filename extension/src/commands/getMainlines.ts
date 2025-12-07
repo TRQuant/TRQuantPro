@@ -1,12 +1,12 @@
 /**
  * 获取投资主线命令
  * ==================
- * 
+ *
  * 功能：
  * - 获取A股当前TOP投资主线
  * - 展示主线相关行业和投资逻辑
  * - 支持不同时间周期筛选
- * 
+ *
  * 遵循：
  * - 单一职责原则
  * - 命令模式
@@ -24,127 +24,133 @@ const MODULE = 'GetMainlines';
  * 执行获取投资主线命令
  */
 export async function getMainlines(
-    client: TRQuantClient,
-    context: vscode.ExtensionContext
+  client: TRQuantClient,
+  context: vscode.ExtensionContext
 ): Promise<void> {
-    logger.info('执行获取投资主线命令', MODULE);
+  logger.info('执行获取投资主线命令', MODULE);
 
-    // 让用户选择时间周期
-    const timeHorizon = await vscode.window.showQuickPick([
-        { label: '📅 短期 (1-5天)', value: 'short', description: '适合短线交易' },
-        { label: '📆 中期 (1-4周)', value: 'medium', description: '适合波段操作' },
-        { label: '📆 长期 (1月+)', value: 'long', description: '适合价值投资' },
-    ], {
-        placeHolder: '选择投资周期'
-    });
-
-    if (!timeHorizon) {
-        return;
+  // 让用户选择时间周期
+  const timeHorizon = await vscode.window.showQuickPick(
+    [
+      { label: '📅 短期 (1-5天)', value: 'short', description: '适合短线交易' },
+      { label: '📆 中期 (1-4周)', value: 'medium', description: '适合波段操作' },
+      { label: '📆 长期 (1月+)', value: 'long', description: '适合价值投资' },
+    ],
+    {
+      placeHolder: '选择投资周期',
     }
+  );
 
-    await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "TRQuant",
-        cancellable: true
-    }, async (progress, token) => {
-        try {
-            progress.report({ message: '正在获取投资主线...', increment: 0 });
+  if (!timeHorizon) {
+    return;
+  }
 
-            if (token.isCancellationRequested) {
-                logger.info('用户取消操作', MODULE);
-                return;
-            }
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: 'TRQuant',
+      cancellable: true,
+    },
+    async (progress, token) => {
+      try {
+        progress.report({ message: '正在获取投资主线...', increment: 0 });
 
-            const result = await client.getMainlines({
-                top_n: 20,
-                time_horizon: timeHorizon.value as 'short' | 'medium' | 'long'
-            });
-
-            progress.report({ increment: 60 });
-
-            if (!result.ok || !result.data) {
-                vscode.window.showErrorMessage(`获取投资主线失败: ${result.error || '未知错误'}`);
-                return;
-            }
-
-            const mainlines = result.data;
-            logger.info(`获取到 ${mainlines.length} 条投资主线`, MODULE);
-
-            progress.report({ message: '渲染结果...', increment: 20 });
-
-            // 创建WebView显示结果
-            createMainlinesPanel(context, mainlines, timeHorizon.value);
-
-            progress.report({ increment: 20 });
-
-            // 提供后续操作
-            showFollowUpActions(mainlines);
-
-        } catch (error) {
-            ErrorHandler.handle(error, MODULE);
+        if (token.isCancellationRequested) {
+          logger.info('用户取消操作', MODULE);
+          return;
         }
-    });
+
+        const result = await client.getMainlines({
+          top_n: 20,
+          time_horizon: timeHorizon.value as 'short' | 'medium' | 'long',
+        });
+
+        progress.report({ increment: 60 });
+
+        if (!result.ok || !result.data) {
+          vscode.window.showErrorMessage(`获取投资主线失败: ${result.error || '未知错误'}`);
+          return;
+        }
+
+        const mainlines = result.data;
+        logger.info(`获取到 ${mainlines.length} 条投资主线`, MODULE);
+
+        progress.report({ message: '渲染结果...', increment: 20 });
+
+        // 创建WebView显示结果
+        createMainlinesPanel(context, mainlines, timeHorizon.value);
+
+        progress.report({ increment: 20 });
+
+        // 提供后续操作
+        showFollowUpActions(mainlines);
+      } catch (error) {
+        ErrorHandler.handle(error, MODULE);
+      }
+    }
+  );
 }
 
 /**
  * 创建投资主线WebView面板
  */
 function createMainlinesPanel(
-    context: vscode.ExtensionContext,
-    mainlines: Mainline[],
-    timeHorizon: string
+  context: vscode.ExtensionContext,
+  mainlines: Mainline[],
+  timeHorizon: string
 ): vscode.WebviewPanel {
-    const panel = vscode.window.createWebviewPanel(
-        'trquantMainlines',
-        '🎯 投资主线',
-        vscode.ViewColumn.Beside,
-        {
-            enableScripts: true,
-            retainContextWhenHidden: true
-        }
-    );
+  const panel = vscode.window.createWebviewPanel(
+    'trquantMainlines',
+    '🎯 投资主线',
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    }
+  );
 
-    panel.webview.html = generateWebviewHtml(mainlines, timeHorizon);
+  panel.webview.html = generateWebviewHtml(mainlines, timeHorizon);
 
-    // 处理WebView消息
-    panel.webview.onDidReceiveMessage(
-        async (message) => {
-            switch (message.command) {
-                case 'selectMainline':
-                    handleMainlineSelection(message.mainline);
-                    break;
-                case 'generateStrategy':
-                    vscode.commands.executeCommand('trquant.generateStrategy');
-                    break;
-                case 'copyPrompt':
-                    const prompt = generatePrompt(mainlines, timeHorizon);
-                    await vscode.env.clipboard.writeText(prompt);
-                    vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-                    break;
-            }
-        },
-        undefined,
-        context.subscriptions
-    );
+  // 处理WebView消息
+  panel.webview.onDidReceiveMessage(
+    async (message) => {
+      switch (message.command) {
+        case 'selectMainline':
+          handleMainlineSelection(message.mainline);
+          break;
+        case 'generateStrategy':
+          vscode.commands.executeCommand('trquant.generateStrategy');
+          break;
+        case 'copyPrompt':
+          const prompt = generatePrompt(mainlines, timeHorizon);
+          await vscode.env.clipboard.writeText(prompt);
+          vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+          break;
+      }
+    },
+    undefined,
+    context.subscriptions
+  );
 
-    return panel;
+  return panel;
 }
 
 /**
  * 生成WebView HTML
  */
 function generateWebviewHtml(mainlines: Mainline[], timeHorizon: string): string {
-    const timeHorizonText: Record<string, string> = {
-        'short': '短期 (1-5天)',
-        'medium': '中期 (1-4周)',
-        'long': '长期 (1月+)'
-    };
+  const timeHorizonText: Record<string, string> = {
+    short: '短期 (1-5天)',
+    medium: '中期 (1-4周)',
+    long: '长期 (1月+)',
+  };
 
-    const mainlinesHtml = mainlines.length > 0
-        ? mainlines.map((m, i) => generateMainlineCard(m, i)).join('')
-        : '<div class="empty-state">暂无投资主线数据</div>';
+  const mainlinesHtml =
+    mainlines.length > 0
+      ? mainlines.map((m, i) => generateMainlineCard(m, i)).join('')
+      : '<div class="empty-state">暂无投资主线数据</div>';
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -460,10 +466,10 @@ function generateWebviewHtml(mainlines: Mainline[], timeHorizon: string): string
  * 生成单个主线卡片HTML
  */
 function generateMainlineCard(mainline: Mainline, index: number): string {
-    const rankClass = index < 3 ? `rank-${index + 1}` : 'rank-default';
-    const scoreWidth = Math.min(mainline.score * 100, 100);
+  const rankClass = index < 3 ? `rank-${index + 1}` : 'rank-default';
+  const scoreWidth = Math.min(mainline.score * 100, 100);
 
-    return `
+  return `
         <div class="mainline-card" onclick="selectMainline('${mainline.name}')">
             <div class="mainline-header">
                 <div class="mainline-rank">
@@ -478,7 +484,7 @@ function generateMainlineCard(mainline: Mainline, index: number): string {
                 </div>
             </div>
             <div class="mainline-industries">
-                ${mainline.industries.map(ind => `<span class="industry-tag">${ind}</span>`).join('')}
+                ${mainline.industries.map((ind) => `<span class="industry-tag">${ind}</span>`).join('')}
             </div>
             <div class="mainline-logic">
                 💡 ${mainline.logic || '暂无详细说明'}
@@ -491,32 +497,36 @@ function generateMainlineCard(mainline: Mainline, index: number): string {
  * 统计涉及的行业数量
  */
 function countUniqueIndustries(mainlines: Mainline[]): number {
-    const industries = new Set<string>();
-    mainlines.forEach(m => m.industries.forEach(ind => industries.add(ind)));
-    return industries.size;
+  const industries = new Set<string>();
+  mainlines.forEach((m) => m.industries.forEach((ind) => industries.add(ind)));
+  return industries.size;
 }
 
 /**
  * 生成AI Prompt
  */
 function generatePrompt(mainlines: Mainline[], timeHorizon: string): string {
-    const timeHorizonText: Record<string, string> = {
-        'short': '短期 (1-5天)',
-        'medium': '中期 (1-4周)',
-        'long': '长期 (1月+)'
-    };
+  const timeHorizonText: Record<string, string> = {
+    short: '短期 (1-5天)',
+    medium: '中期 (1-4周)',
+    long: '长期 (1月+)',
+  };
 
-    return `# A股投资主线分析
+  return `# A股投资主线分析
 
 ## 分析周期: ${timeHorizonText[timeHorizon] || timeHorizon}
 
 ## TOP ${mainlines.length} 投资主线
 
-${mainlines.map((m, i) => `
+${mainlines
+  .map(
+    (m, i) => `
 ### ${i + 1}. ${m.name} (评分: ${m.score.toFixed(2)})
 - **相关行业**: ${m.industries.join(', ')}
 - **投资逻辑**: ${m.logic || '暂无'}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ---
 
@@ -536,18 +546,16 @@ ${mainlines.map((m, i) => `
  * 处理主线选择
  */
 function handleMainlineSelection(mainlineName: string): void {
-    vscode.window.showInformationMessage(
-        `已选择主线: ${mainlineName}`,
-        '查看详情',
-        '筛选股票'
-    ).then(selection => {
-        if (selection === '查看详情') {
-            // 可以打开详细分析页面
-            logger.info(`查看主线详情: ${mainlineName}`, MODULE);
-        } else if (selection === '筛选股票') {
-            // 可以基于主线筛选股票
-            logger.info(`基于主线筛选股票: ${mainlineName}`, MODULE);
-        }
+  vscode.window
+    .showInformationMessage(`已选择主线: ${mainlineName}`, '查看详情', '筛选股票')
+    .then((selection) => {
+      if (selection === '查看详情') {
+        // 可以打开详细分析页面
+        logger.info(`查看主线详情: ${mainlineName}`, MODULE);
+      } else if (selection === '筛选股票') {
+        // 可以基于主线筛选股票
+        logger.info(`基于主线筛选股票: ${mainlineName}`, MODULE);
+      }
     });
 }
 
@@ -555,28 +563,28 @@ function handleMainlineSelection(mainlineName: string): void {
  * 显示后续操作选项
  */
 async function showFollowUpActions(mainlines: Mainline[]): Promise<void> {
-    if (mainlines.length === 0) {
-        return;
-    }
+  if (mainlines.length === 0) {
+    return;
+  }
 
-    const action = await vscode.window.showInformationMessage(
-        `获取到 ${mainlines.length} 条投资主线`,
-        '生成策略',
-        '推荐因子',
-        '复制Prompt'
-    );
+  const action = await vscode.window.showInformationMessage(
+    `获取到 ${mainlines.length} 条投资主线`,
+    '生成策略',
+    '推荐因子',
+    '复制Prompt'
+  );
 
-    switch (action) {
-        case '生成策略':
-            vscode.commands.executeCommand('trquant.generateStrategy');
-            break;
-        case '推荐因子':
-            vscode.commands.executeCommand('trquant.recommendFactors');
-            break;
-        case '复制Prompt':
-            const prompt = generatePrompt(mainlines, 'short');
-            await vscode.env.clipboard.writeText(prompt);
-            vscode.window.showInformationMessage('Prompt已复制到剪贴板');
-            break;
-    }
+  switch (action) {
+    case '生成策略':
+      vscode.commands.executeCommand('trquant.generateStrategy');
+      break;
+    case '推荐因子':
+      vscode.commands.executeCommand('trquant.recommendFactors');
+      break;
+    case '复制Prompt':
+      const prompt = generatePrompt(mainlines, 'short');
+      await vscode.env.clipboard.writeText(prompt);
+      vscode.window.showInformationMessage('Prompt已复制到剪贴板');
+      break;
+  }
 }

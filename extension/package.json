@@ -293,6 +293,36 @@
         "command": "trquant.openAShareManual",
         "title": "TRQuant: 📚 A股高倍股实操手册",
         "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openDataCenter",
+        "title": "TRQuant: 📡 数据中心 (步骤1)",
+        "category": "TRQuant",
+        "icon": "$(database)"
+      },
+      {
+        "command": "trquant.openMarketAnalysis",
+        "title": "TRQuant: 📈 市场分析 (步骤2)",
+        "category": "TRQuant",
+        "icon": "$(graph-line)"
+      },
+      {
+        "command": "trquant.openFactorCenter",
+        "title": "TRQuant: 📊 因子中心 (步骤5)",
+        "category": "TRQuant",
+        "icon": "$(symbol-variable)"
+      },
+      {
+        "command": "trquant.openBacktestCenter",
+        "title": "TRQuant: 🔄 回测中心 (步骤7)",
+        "category": "TRQuant",
+        "icon": "$(history)"
+      },
+      {
+        "command": "trquant.openTradingCenter",
+        "title": "TRQuant: 🚀 交易中心 (步骤8)",
+        "category": "TRQuant",
+        "icon": "$(rocket)"
       }
     ],
     "snippets": [
@@ -342,6 +372,10 @@
           "name": "⚡ 快捷操作"
         },
         {
+          "id": "trquant-workflow",
+          "name": "🔄 投资工作流"
+        },
+        {
           "id": "trquant-project",
           "name": "📁 项目资源"
         },
@@ -355,58 +389,13 @@
       {
         "view": "trquant-quick-actions",
         "contents": "🐉 韬睿量化投资助手\n\n[📊 打开主工作台](command:trquant.openDashboard)\n[🖥️ 打开桌面系统](command:trquant.launchDesktopSystem)\n[🧪 运行回测](command:trquant.runBacktest)\n[📁 创建项目](command:trquant.createProject)"
+      },
+      {
+        "view": "trquant-workflow",
+        "contents": "📈 量化投资8步工作流\n\n**数据与分析**\n[📡 1. 数据中心](command:trquant.openDataCenter)\n[📈 2. 市场分析](command:trquant.openMarketAnalysis)\n[🔥 3. 投资主线](command:trquant.openMainlines)\n[📦 4. 候选池](command:trquant.openCandidatePool)\n\n**策略与交易**\n[📊 5. 因子中心](command:trquant.openFactorCenter)\n[🛠️ 6. 策略开发](command:trquant.openStrategyDev)\n[🔄 7. 回测中心](command:trquant.openBacktestCenter)\n[🚀 8. 交易中心](command:trquant.openTradingCenter)"
       }
     ],
     "menus": {
-      "view/item/context": [
-        {
-          "command": "trquant.runStrategyBacktest",
-          "when": "view == trquant-project && viewItem == strategy",
-          "group": "1_run"
-        },
-        {
-          "command": "trquant.openInEditor",
-          "when": "view == trquant-project",
-          "group": "2_open"
-        },
-        {
-          "command": "trquant.deleteFile",
-          "when": "view == trquant-project && viewItem != root && viewItem != folder",
-          "group": "3_delete"
-        },
-        {
-          "command": "trquant.localBackup",
-          "when": "view == trquant-developer && viewItem == localBackup",
-          "group": "inline"
-        },
-        {
-          "command": "trquant.gitCommit",
-          "when": "view == trquant-developer && viewItem == gitCommit",
-          "group": "inline"
-        },
-        {
-          "command": "trquant.refreshSystem",
-          "when": "view == trquant-developer && viewItem == refresh",
-          "group": "inline"
-        }
-      ],
-      "view/title": [
-        {
-          "command": "trquant.refreshProject",
-          "when": "view == trquant-project",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.localBackup",
-          "when": "view == trquant-developer",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.refreshSystem",
-          "when": "view == trquant-developer",
-          "group": "navigation"
-        }
-      ],
       "view/item/context": [
         {
           "command": "trquant.runStrategyBacktest",
@@ -433,6 +422,23 @@
           "when": "view == trquant-backtest-history",
           "group": "navigation"
         }
+      ],
+      "view/title": [
+        {
+          "command": "trquant.refreshProject",
+          "when": "view == trquant-project",
+          "group": "navigation"
+        },
+        {
+          "command": "trquant.localBackup",
+          "when": "view == trquant-developer",
+          "group": "navigation"
+        },
+        {
+          "command": "trquant.refreshSystem",
+          "when": "view == trquant-developer",
+          "group": "navigation"
+        }
       ]
     }
   },
@@ -446,9 +452,10 @@
   "devDependencies": {
     "@types/node": "^20.x",
     "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^6.x",
-    "@typescript-eslint/parser": "^6.x",
-    "eslint": "^8.x",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "prettier": "^3.7.4",
     "ts-loader": "^9.x",
     "typescript": "^5.x",
     "webpack": "^5.x",
@@ -458,4 +465,3 @@
     "axios": "^1.6.0"
   }
 }
-

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -9,15 +8,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -30,15 +29,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -51,15 +50,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -72,15 +71,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -93,15 +92,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -114,15 +113,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -135,20 +134,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -159,15 +156,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -180,15 +177,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -201,15 +198,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -222,15 +219,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -243,15 +240,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -264,15 +261,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -285,20 +282,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -309,15 +304,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -330,15 +325,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -351,15 +346,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -372,15 +367,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -393,15 +388,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -414,15 +409,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -435,22 +430,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -461,15 +452,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -482,15 +473,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -503,15 +494,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -524,15 +515,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -545,15 +536,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -566,15 +557,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -587,20 +578,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -611,15 +600,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -632,15 +621,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -653,15 +642,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -674,15 +663,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -695,15 +684,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -716,15 +705,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -737,20 +726,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -761,15 +748,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -782,15 +769,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -803,15 +790,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -824,15 +811,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -845,15 +832,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -866,15 +853,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -887,20 +874,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
-
-
 
 
 """
@@ -913,15 +896,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -934,15 +917,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -955,15 +938,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -976,15 +959,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -997,15 +980,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1018,15 +1001,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1039,20 +1022,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1063,15 +1044,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1084,15 +1065,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1105,15 +1086,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1126,15 +1107,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1147,15 +1128,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1168,15 +1149,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1189,20 +1170,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1213,15 +1192,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1234,15 +1213,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1255,15 +1234,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1276,15 +1255,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1297,15 +1276,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1318,15 +1297,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1339,22 +1318,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1365,15 +1340,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1386,15 +1361,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1407,15 +1382,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1428,15 +1403,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1449,15 +1424,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1470,15 +1445,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1491,20 +1466,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1515,15 +1488,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1536,15 +1509,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1557,15 +1530,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1578,15 +1551,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1599,15 +1572,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1620,15 +1593,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1641,20 +1614,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1665,15 +1636,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1686,15 +1657,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1707,15 +1678,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1728,15 +1699,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1749,15 +1720,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1770,15 +1741,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1791,22 +1762,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1817,15 +1784,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1838,15 +1805,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1859,15 +1826,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1880,15 +1847,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1901,15 +1868,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1922,15 +1889,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1943,20 +1910,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -1967,15 +1932,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -1988,15 +1953,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2009,15 +1974,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2030,15 +1995,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2051,15 +2016,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2072,15 +2037,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2093,18 +2058,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
 
 
 """
@@ -2117,15 +2080,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2138,15 +2101,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2159,15 +2122,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2180,15 +2143,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2201,15 +2164,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2222,15 +2185,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2243,22 +2206,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -2269,15 +2228,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2290,15 +2249,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2311,15 +2270,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2332,15 +2291,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2353,15 +2312,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2374,15 +2333,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2395,18 +2354,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
 
 
 """
@@ -2419,15 +2376,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2440,15 +2397,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2461,15 +2418,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2482,15 +2439,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2503,15 +2460,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2524,15 +2481,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2545,20 +2502,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -2569,15 +2524,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2590,15 +2545,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2611,15 +2566,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2632,15 +2587,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2653,15 +2608,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2674,15 +2629,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2695,22 +2650,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -2721,15 +2672,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2742,15 +2693,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2763,15 +2714,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2784,15 +2735,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2805,15 +2756,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2826,15 +2777,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2847,18 +2798,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
 
 
 """
@@ -2871,15 +2820,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2892,15 +2841,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2913,15 +2862,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2934,15 +2883,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2955,15 +2904,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2976,15 +2925,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -2997,20 +2946,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3021,15 +2968,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3042,15 +2989,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3063,15 +3010,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3084,15 +3031,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3105,15 +3052,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3126,15 +3073,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3147,20 +3094,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
-
-
 
 
 """
@@ -3173,15 +3116,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3194,15 +3137,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3215,15 +3158,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3236,15 +3179,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3257,15 +3200,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3278,15 +3221,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3299,20 +3242,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3323,15 +3264,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3344,15 +3285,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3365,15 +3306,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3386,15 +3327,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3407,15 +3348,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3428,15 +3369,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3449,20 +3390,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3473,15 +3412,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3494,15 +3433,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3515,15 +3454,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3536,15 +3475,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3557,15 +3496,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3578,15 +3517,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3599,22 +3538,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3625,15 +3560,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3646,15 +3581,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3667,15 +3602,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3688,15 +3623,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3709,15 +3644,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3730,15 +3665,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3751,20 +3686,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3775,15 +3708,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3796,15 +3729,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3817,15 +3750,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3838,15 +3771,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3859,15 +3792,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3880,15 +3813,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3901,20 +3834,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -3925,15 +3856,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3946,15 +3877,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3967,15 +3898,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -3988,15 +3919,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4009,15 +3940,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4030,15 +3961,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4051,20 +3982,16 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
-
-
 
 
 """
@@ -4077,15 +4004,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4098,15 +4025,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4119,15 +4046,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4140,15 +4067,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4161,15 +4088,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4182,15 +4109,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4203,20 +4130,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 
-
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -4227,15 +4152,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4248,15 +4173,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4269,15 +4194,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4290,15 +4215,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4311,15 +4236,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4332,15 +4257,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4353,20 +4278,18 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
 
 
-
 """
 券商接口模块
 支持QMT和PTrade券商终端直连
@@ -4377,15 +4300,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4398,15 +4321,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4419,15 +4342,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4440,15 +4363,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4461,15 +4384,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4482,15 +4405,15 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
 
 """
@@ -4503,27 +4426,13 @@ from .ptrade_broker import PTradeBroker
 from .broker_factory import BrokerFactory
 
 __all__ = [
-    'IBroker',
-    'BrokerStatus',
-    'OrderStatus',
-    'Order',
-    'Position',
-    'Account',
-    'QMTBroker',
-    'PTradeBroker',
-    'BrokerFactory',
+    "IBroker",
+    "BrokerStatus",
+    "OrderStatus",
+    "Order",
+    "Position",
+    "Account",
+    "QMTBroker",
+    "PTradeBroker",
+    "BrokerFactory",
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-

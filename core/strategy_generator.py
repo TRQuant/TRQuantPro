@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 策略生成器
 ==========
@@ -23,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class RebalanceFreq(Enum):
     """调仓频率"""
+
     DAILY = "daily"
     WEEKLY = "weekly"
     BIWEEKLY = "biweekly"
@@ -32,68 +32,76 @@ class RebalanceFreq(Enum):
 
 class StopLossType(Enum):
     """止损类型"""
-    FIXED = "fixed"           # 固定比例止损
-    TRAILING = "trailing"     # 移动止损
-    ATR = "atr"              # ATR止损
-    NONE = "none"            # 不止损
+
+    FIXED = "fixed"  # 固定比例止损
+    TRAILING = "trailing"  # 移动止损
+    ATR = "atr"  # ATR止损
+    NONE = "none"  # 不止损
 
 
 class TakeProfitType(Enum):
     """止盈类型"""
-    FIXED = "fixed"           # 固定比例止盈
-    TRAILING = "trailing"     # 移动止盈
-    TARGET = "target"         # 目标价止盈
-    NONE = "none"            # 不止盈
+
+    FIXED = "fixed"  # 固定比例止盈
+    TRAILING = "trailing"  # 移动止盈
+    TARGET = "target"  # 目标价止盈
+    NONE = "none"  # 不止盈
 
 
 @dataclass
 class FactorConfig:
     """因子配置"""
+
     factor_id: str
     factor_name: str
     weight: float
     direction: str = "positive"  # positive/negative
-    neutralize: bool = False     # 是否中性化
+    neutralize: bool = False  # 是否中性化
 
 
 @dataclass
 class RebalanceConfig:
     """调仓配置"""
+
     frequency: RebalanceFreq = RebalanceFreq.MONTHLY
-    rebalance_day: int = 1       # 月调仓日期
-    rebalance_weekday: int = 0   # 周调仓日（0=周一）
-    position_limit: int = 20     # 最大持仓数
+    rebalance_day: int = 1  # 月调仓日期
+    rebalance_weekday: int = 0  # 周调仓日（0=周一）
+    position_limit: int = 20  # 最大持仓数
     single_stock_limit: float = 0.10  # 单只股票最大仓位
 
 
 @dataclass
 class StopLossConfig:
     """止损配置"""
+
     type: StopLossType = StopLossType.FIXED
-    threshold: float = 0.08     # 止损阈值
-    trailing_step: float = 0.05 # 移动止损步长
-    atr_multiplier: float = 2.0 # ATR倍数
+    threshold: float = 0.08  # 止损阈值
+    trailing_step: float = 0.05  # 移动止损步长
+    atr_multiplier: float = 2.0  # ATR倍数
 
 
 @dataclass
 class TakeProfitConfig:
     """止盈配置"""
+
     type: TakeProfitType = TakeProfitType.FIXED
-    threshold: float = 0.20     # 止盈阈值
-    trailing_step: float = 0.05 # 移动止盈步长
+    threshold: float = 0.20  # 止盈阈值
+    trailing_step: float = 0.05  # 移动止盈步长
 
 
 @dataclass
 class CostConfig:
     """交易成本配置"""
+
     commission_rate: float = 0.0003  # 佣金率 (双边)
-    stamp_tax_rate: float = 0.001    # 印花税 (卖出)
-    slippage: float = 0.001          # 滑点
+    stamp_tax_rate: float = 0.001  # 印花税 (卖出)
+    slippage: float = 0.001  # 滑点
 
 
 @dataclass
 class StrategyConfig:
     """策略配置"""
+
     name: str
     description: str = ""
     factors: List[FactorConfig] = field(default_factory=list)
@@ -102,50 +110,52 @@ class StrategyConfig:
     take_profit: TakeProfitConfig = field(default_factory=TakeProfitConfig)
     cost: CostConfig = field(default_factory=CostConfig)
     benchmark: str = "000300.XSHG"  # 基准指数
-    
+
     def to_dict(self) -> dict:
         return {
-            'name': self.name,
-            'description': self.description,
-            'factors': [
-                {'id': f.factor_id, 'name': f.factor_name, 'weight': f.weight, 
-                 'direction': f.direction, 'neutralize': f.neutralize}
+            "name": self.name,
+            "description": self.description,
+            "factors": [
+                {
+                    "id": f.factor_id,
+                    "name": f.factor_name,
+                    "weight": f.weight,
+                    "direction": f.direction,
+                    "neutralize": f.neutralize,
+                }
                 for f in self.factors
             ],
-            'rebalance': {
-                'frequency': self.rebalance.frequency.value,
-                'position_limit': self.rebalance.position_limit,
-                'single_stock_limit': self.rebalance.single_stock_limit
+            "rebalance": {
+                "frequency": self.rebalance.frequency.value,
+                "position_limit": self.rebalance.position_limit,
+                "single_stock_limit": self.rebalance.single_stock_limit,
             },
-            'stop_loss': {
-                'type': self.stop_loss.type.value,
-                'threshold': self.stop_loss.threshold
+            "stop_loss": {"type": self.stop_loss.type.value, "threshold": self.stop_loss.threshold},
+            "take_profit": {
+                "type": self.take_profit.type.value,
+                "threshold": self.take_profit.threshold,
             },
-            'take_profit': {
-                'type': self.take_profit.type.value,
-                'threshold': self.take_profit.threshold
+            "cost": {
+                "commission": self.cost.commission_rate,
+                "stamp_tax": self.cost.stamp_tax_rate,
+                "slippage": self.cost.slippage,
             },
-            'cost': {
-                'commission': self.cost.commission_rate,
-                'stamp_tax': self.cost.stamp_tax_rate,
-                'slippage': self.cost.slippage
-            },
-            'benchmark': self.benchmark
+            "benchmark": self.benchmark,
         }
 
 
 class StrategyGenerator:
     """策略生成器"""
-    
+
     def __init__(self):
         self._templates = self._load_templates()
-    
+
     def _load_templates(self) -> Dict[str, StrategyConfig]:
         """加载预设模板"""
         templates = {}
-        
+
         # 价值成长策略
-        templates['value_growth'] = StrategyConfig(
+        templates["value_growth"] = StrategyConfig(
             name="价值成长策略",
             description="结合低估值和高成长选股，适合牛市",
             factors=[
@@ -155,16 +165,14 @@ class StrategyGenerator:
                 FactorConfig("momentum_1m", "1月动量", 0.2, "positive"),
             ],
             rebalance=RebalanceConfig(
-                frequency=RebalanceFreq.MONTHLY,
-                position_limit=20,
-                single_stock_limit=0.10
+                frequency=RebalanceFreq.MONTHLY, position_limit=20, single_stock_limit=0.10
             ),
             stop_loss=StopLossConfig(type=StopLossType.TRAILING, threshold=0.08),
-            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.30)
+            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.30),
         )
-        
+
         # 动量策略
-        templates['momentum'] = StrategyConfig(
+        templates["momentum"] = StrategyConfig(
             name="动量策略",
             description="追涨强势股，适合趋势市",
             factors=[
@@ -174,16 +182,14 @@ class StrategyGenerator:
                 FactorConfig("rsi", "RSI", 0.15, "positive"),
             ],
             rebalance=RebalanceConfig(
-                frequency=RebalanceFreq.WEEKLY,
-                position_limit=15,
-                single_stock_limit=0.08
+                frequency=RebalanceFreq.WEEKLY, position_limit=15, single_stock_limit=0.08
             ),
             stop_loss=StopLossConfig(type=StopLossType.FIXED, threshold=0.05),
-            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.15)
+            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.15),
         )
-        
+
         # 低波动价值策略
-        templates['low_vol_value'] = StrategyConfig(
+        templates["low_vol_value"] = StrategyConfig(
             name="低波动价值策略",
             description="低波动+高股息，适合熊市防守",
             factors=[
@@ -193,16 +199,14 @@ class StrategyGenerator:
                 FactorConfig("roe", "净资产收益率", 0.15, "positive"),
             ],
             rebalance=RebalanceConfig(
-                frequency=RebalanceFreq.QUARTERLY,
-                position_limit=30,
-                single_stock_limit=0.05
+                frequency=RebalanceFreq.QUARTERLY, position_limit=30, single_stock_limit=0.05
             ),
             stop_loss=StopLossConfig(type=StopLossType.FIXED, threshold=0.10),
-            take_profit=TakeProfitConfig(type=TakeProfitType.FIXED, threshold=0.25)
+            take_profit=TakeProfitConfig(type=TakeProfitType.FIXED, threshold=0.25),
         )
-        
+
         # 质量成长策略
-        templates['quality_growth'] = StrategyConfig(
+        templates["quality_growth"] = StrategyConfig(
             name="质量成长策略",
             description="高质量+高成长，适合震荡市",
             factors=[
@@ -213,47 +217,45 @@ class StrategyGenerator:
                 FactorConfig("debt_ratio", "资产负债率", 0.1, "negative"),
             ],
             rebalance=RebalanceConfig(
-                frequency=RebalanceFreq.MONTHLY,
-                position_limit=25,
-                single_stock_limit=0.08
+                frequency=RebalanceFreq.MONTHLY, position_limit=25, single_stock_limit=0.08
             ),
             stop_loss=StopLossConfig(type=StopLossType.TRAILING, threshold=0.08),
-            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.25)
+            take_profit=TakeProfitConfig(type=TakeProfitType.TRAILING, threshold=0.25),
         )
-        
+
         return templates
-    
+
     def get_templates(self) -> List[Dict]:
         """获取所有模板列表"""
         return [
             {
-                'id': tid,
-                'name': t.name,
-                'description': t.description,
-                'factors_count': len(t.factors),
-                'rebalance_freq': t.rebalance.frequency.value
+                "id": tid,
+                "name": t.name,
+                "description": t.description,
+                "factors_count": len(t.factors),
+                "rebalance_freq": t.rebalance.frequency.value,
             }
             for tid, t in self._templates.items()
         ]
-    
+
     def get_template(self, template_id: str) -> Optional[StrategyConfig]:
         """获取指定模板"""
         return self._templates.get(template_id)
-    
+
     def create_strategy(self, config: StrategyConfig) -> str:
         """
         生成策略代码
-        
+
         Args:
             config: 策略配置
-        
+
         Returns:
             PTrade格式策略代码
         """
         factors_code = self._generate_factors_code(config.factors)
         rebalance_code = self._generate_rebalance_code(config.rebalance)
         risk_code = self._generate_risk_code(config.stop_loss, config.take_profit)
-        
+
         code = f'''# -*- coding: utf-8 -*-
 """
 {config.name}
@@ -342,9 +344,9 @@ def handle_data(context, data):
     # 检查止损止盈
     check_stop_loss_take_profit(context)
 '''
-        
+
         return code
-    
+
     def _generate_factors_code(self, factors: List[FactorConfig]) -> str:
         """生成因子计算代码"""
         code_lines = []
@@ -352,26 +354,28 @@ def handle_data(context, data):
         code_lines.append('    """计算因子综合得分"""')
         code_lines.append("    score = 0.0")
         code_lines.append("")
-        
+
         for f in factors:
             direction = "1" if f.direction == "positive" else "-1"
             code_lines.append(f"    # {f.factor_name} (权重: {f.weight})")
             code_lines.append(f"    try:")
             code_lines.append(f"        {f.factor_id}_value = get_{f.factor_id}(stock)")
-            code_lines.append(f"        score += {f.weight} * {direction} * normalize({f.factor_id}_value)")
+            code_lines.append(
+                f"        score += {f.weight} * {direction} * normalize({f.factor_id}_value)"
+            )
             code_lines.append(f"    except:")
             code_lines.append(f"        pass")
             code_lines.append("")
-        
+
         code_lines.append("    return score")
         code_lines.append("")
         code_lines.append("def normalize(value):")
         code_lines.append('    """标准化到0-1"""')
         code_lines.append("    # 简单的Min-Max标准化，实际应使用历史数据")
         code_lines.append("    return max(0, min(1, value))")
-        
+
         return "\n".join(code_lines)
-    
+
     def _generate_rebalance_code(self, config: RebalanceConfig) -> str:
         """生成调仓代码"""
         freq_map = {
@@ -381,9 +385,9 @@ def handle_data(context, data):
             RebalanceFreq.MONTHLY: f"run_monthly(rebalance, tradingday={config.rebalance_day}, time='14:30')",
             RebalanceFreq.QUARTERLY: f"run_monthly(rebalance, tradingday={config.rebalance_day}, time='14:30')  # 季度调仓在handle_data中控制",
         }
-        
+
         return f"    {freq_map.get(config.frequency, freq_map[RebalanceFreq.MONTHLY])}"
-    
+
     def _generate_risk_code(self, stop_loss: StopLossConfig, take_profit: TakeProfitConfig) -> str:
         """生成风控代码"""
         code = '''def check_stop_loss_take_profit(context):
@@ -398,36 +402,36 @@ def handle_data(context, data):
         pnl_rate = (current - cost) / cost if cost > 0 else 0
         
 '''
-        
+
         if stop_loss.type != StopLossType.NONE:
-            code += f'''        # 止损检查
+            code += f"""        # 止损检查
         if pnl_rate < -{stop_loss.threshold}:
             order_target_value(stock, 0)
             log.info(f"止损卖出 {{stock}}: 收益率 {{pnl_rate:.2%}}")
             continue
         
-'''
-        
+"""
+
         if take_profit.type != TakeProfitType.NONE:
-            code += f'''        # 止盈检查
+            code += f"""        # 止盈检查
         if pnl_rate > {take_profit.threshold}:
             order_target_value(stock, 0)
             log.info(f"止盈卖出 {{stock}}: 收益率 {{pnl_rate:.2%}}")
-'''
-        
+"""
+
         return code
-    
+
     def save_strategy(self, config: StrategyConfig, file_path: str) -> bool:
         """保存策略到文件"""
         try:
             code = self.create_strategy(config)
-            
-            with open(file_path, 'w', encoding='utf-8') as f:
+
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(code)
-            
+
             logger.info(f"策略已保存: {file_path}")
             return True
-            
+
         except Exception as e:
             logger.error(f"保存策略失败: {e}")
             return False
@@ -436,9 +440,9 @@ def handle_data(context, data):
 # 单例
 _generator = None
 
+
 def get_strategy_generator() -> StrategyGenerator:
     global _generator
     if _generator is None:
         _generator = StrategyGenerator()
     return _generator
-
