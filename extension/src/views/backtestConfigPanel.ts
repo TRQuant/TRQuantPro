@@ -14,8 +14,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
+import { BacktestConfig } from '../types';
 
 const MODULE = 'BacktestConfigPanel';
+
+interface BacktestConfigMessage {
+    command: string;
+    config?: BacktestConfig;
+    strategyCode?: string;
+    [key: string]: unknown;
+}
 
 export class BacktestConfigPanel {
     public static currentPanel: BacktestConfigPanel | undefined;
@@ -71,16 +79,20 @@ export class BacktestConfigPanel {
         return BacktestConfigPanel.currentPanel;
     }
 
-    private async handleMessage(message: any): Promise<void> {
+    private async handleMessage(message: BacktestConfigMessage): Promise<void> {
         switch (message.command) {
             case 'loadStrategyFile':
                 await this.loadStrategyFile();
                 break;
             case 'runBacktest':
-                await this.runBacktest(message.config, message.strategyCode);
+                if (message.config && message.strategyCode) {
+                    await this.runBacktest(message.config, message.strategyCode);
+                }
                 break;
             case 'saveConfig':
-                await this.saveConfig(message.config);
+                if (message.config) {
+                    await this.saveConfig(message.config);
+                }
                 break;
             case 'loadConfig':
                 await this.loadConfig();
@@ -119,7 +131,7 @@ export class BacktestConfigPanel {
     /**
      * 运行回测
      */
-    private async runBacktest(config: any, strategyCode: string): Promise<void> {
+    private async runBacktest(config: BacktestConfig, strategyCode: string): Promise<void> {
         if (this._isRunning) {
             vscode.window.showWarningMessage('回测正在运行中，请稍候...');
             return;
@@ -140,7 +152,7 @@ export class BacktestConfigPanel {
             const result = await this._client.runBacktest({
                 strategy_code: strategyCode,
                 config: config,
-                data_source: config.data_source || 'akshare'
+                data_source: 'akshare' // 默认使用 akshare
             });
 
             this._isRunning = false;
@@ -177,7 +189,7 @@ export class BacktestConfigPanel {
     /**
      * 保存配置
      */
-    private async saveConfig(config: any): Promise<void> {
+    private async saveConfig(config: BacktestConfig): Promise<void> {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders || workspaceFolders.length === 0) {
             vscode.window.showWarningMessage('请先打开一个工作区');
@@ -692,10 +704,12 @@ export class BacktestConfigPanel {
 export function showBacktestConfigPanel(
     extensionUri: vscode.Uri,
     client: TRQuantClient,
-    context: vscode.ExtensionContext
+    _context: vscode.ExtensionContext
 ): void {
     BacktestConfigPanel.createOrShow(extensionUri, client);
 }
+
+
 
 
 

@@ -22,12 +22,24 @@ import { logger } from '../utils/logger';
 const MODULE = 'StrategyOptimizerPanel';
 
 // 获取策略优化器服务
-let strategyOptimizerInstance: any = null;
-async function getStrategyOptimizer() {
+type StrategyOptimizerService = {
+    analyzeStrategy: (code: string, filename?: string) => unknown;
+    convertToPlatform: (code: string, targetPlatform: string, analysis?: unknown) => unknown;
+    generateOptimizationReport: (code: string, name?: string) => OptimizationReport | null;
+    [key: string]: unknown;
+};
+
+let strategyOptimizerInstance: StrategyOptimizerService | null = null;
+async function getStrategyOptimizer(): Promise<StrategyOptimizerService | null> {
     if (!strategyOptimizerInstance) {
         const module = await import('../services/strategyOptimizer');
-        strategyOptimizerInstance = (module as any).strategyOptimizer || 
-                                   (module as any).StrategyOptimizerService?.getInstance();
+        const moduleAny = module as unknown as { 
+            strategyOptimizer?: StrategyOptimizerService;
+            StrategyOptimizerService?: { getInstance: () => StrategyOptimizerService };
+        };
+        strategyOptimizerInstance = moduleAny.strategyOptimizer || 
+                                   moduleAny.StrategyOptimizerService?.getInstance() ||
+                                   null;
     }
     return strategyOptimizerInstance;
 }
@@ -74,7 +86,7 @@ interface StrategyVersion {
 
 export class StrategyOptimizerPanel {
     public static currentPanel: StrategyOptimizerPanel | undefined;
-    private static _lastActiveEditor: vscode.TextEditor | undefined;
+    public static _lastActiveEditor: vscode.TextEditor | undefined;
     
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
@@ -170,10 +182,10 @@ export class StrategyOptimizerPanel {
     /**
      * 消息处理
      */
-    private async handleMessage(message: any): Promise<void> {
+    private async handleMessage(message: { command: string; [key: string]: unknown }): Promise<void> {
         switch (message.command) {
             case 'switchTab':
-                this._currentTab = message.tab;
+                this._currentTab = (message.tab as TabType) || 'editor';
                 this.updateContent();
                 break;
             case 'selectFile':
@@ -186,37 +198,41 @@ export class StrategyOptimizerPanel {
                 await this.analyzeStrategy();
                 break;
             case 'updateParameter':
-                this.updateParameter(message.index, message.field, message.value);
+                this.updateParameter(
+                    (message.index as number) ?? 0,
+                    (message.field as string) ?? '',
+                    message.value as string | number | boolean | undefined
+                );
                 break;
             case 'addParameter':
                 this.addParameter();
                 break;
             case 'removeParameter':
-                this.removeParameter(message.index);
+                this.removeParameter((message.index as number) ?? 0);
                 break;
             case 'startOptimization':
-                await this.startOptimization(message.config);
+                await this.startOptimization((message.config as { algorithm: string; maxIterations: number; target: string }) || { algorithm: 'grid', maxIterations: 100, target: 'sharpe' });
                 break;
             case 'stopOptimization':
                 this.stopOptimization();
                 break;
             case 'applyResult':
-                await this.applyOptimizationResult(message.resultId);
+                await this.applyOptimizationResult((message.resultId as string) || '');
                 break;
             case 'saveVersion':
-                await this.saveVersion(message.description);
+                await this.saveVersion((message.description as string) || '');
                 break;
             case 'loadVersion':
-                await this.loadVersion(message.versionId);
+                await this.loadVersion((message.versionId as string) || '');
                 break;
             case 'compareVersions':
-                await this.compareVersions(message.v1, message.v2);
+                await this.compareVersions((message.v1 as string) || '', (message.v2 as string) || '');
                 break;
             case 'deleteVersion':
-                this.deleteVersion(message.versionId);
+                this.deleteVersion((message.versionId as string) || '');
                 break;
             case 'exportVersion':
-                await this.exportVersion(message.versionId);
+                await this.exportVersion((message.versionId as string) || '');
                 break;
             case 'saveAndBacktest':
                 await this.saveAndBacktest();
@@ -225,24 +241,24 @@ export class StrategyOptimizerPanel {
                 await this.saveAndTrade();
                 break;
             case 'applyAdvice':
-                await this.applyAdvice(message.adviceId);
+                await this.applyAdvice((message.adviceId as string) || '');
                 break;
             case 'codeChanged':
                 // 代码变化时更新
-                this._strategyCode = message.code;
-                this._parameterRanges = this.extractParameters(message.code);
+                this._strategyCode = (message.code as string) || '';
+                this._parameterRanges = this.extractParameters(this._strategyCode);
                 // 不刷新整个页面，避免编辑器重置
                 break;
             case 'getCodeResponse':
                 // 收到webview的代码
-                this._strategyCode = message.code;
-                this._parameterRanges = this.extractParameters(message.code);
+                this._strategyCode = (message.code as string) || '';
+                this._parameterRanges = this.extractParameters(this._strategyCode);
                 // 重新分析
                 await this.analyzeStrategy();
                 break;
             case 'getCodeForSave':
                 // 收到webview的代码用于保存版本
-                this.doSaveVersion(message.code, message.description);
+                this.doSaveVersion((message.code as string) || '', (message.description as string) || '');
                 break;
             case 'applyBestResult':
                 // 应用最佳结果
@@ -257,7 +273,7 @@ export class StrategyOptimizerPanel {
                 vscode.window.showInformationMessage(`检测到 ${this._parameterRanges.length} 个可调参数`);
                 break;
             case 'viewResultDetail':
-                await this.viewResultDetail(message.resultId);
+                await this.viewResultDetail((message.resultId as string) || '');
                 break;
             case 'exportResults':
                 await this.exportResults();
@@ -272,7 +288,7 @@ export class StrategyOptimizerPanel {
                 vscode.window.showInformationMessage('已清空所有版本');
                 break;
             case 'viewVersionCode':
-                await this.viewVersionCode(message.versionId);
+                await this.viewVersionCode((message.versionId as string) || '');
                 break;
             case 'exportVisualization':
                 await this.exportVisualization();
@@ -451,6 +467,9 @@ ${Object.entries(result.parameters).map(([k, v]) => `  ${k} = ${v}`).join('\n')}
             this._panel.webview.postMessage({ command: 'showLoading', message: '正在分析策略...' });
             
             const optimizer = await getStrategyOptimizer();
+            if (!optimizer) {
+                throw new Error('策略优化器服务未初始化');
+            }
             this._report = optimizer.generateOptimizationReport(this._strategyCode, this._strategyName);
             
             this._currentTab = 'analysis';
@@ -598,10 +617,11 @@ ${Object.entries(result.parameters).map(([k, v]) => `  ${k} = ${v}`).join('\n')}
     /**
      * 更新参数
      */
-    private updateParameter(index: number, field: string, value: any): void {
+    private updateParameter(index: number, field: string, value: string | number | boolean | undefined): void {
         if (this._parameterRanges[index]) {
-            (this._parameterRanges[index] as any)[field] = 
-                field === 'name' || field === 'description' ? value : parseFloat(value);
+            const paramRange = this._parameterRanges[index] as unknown as { [key: string]: string | number | boolean | undefined };
+            paramRange[field] = 
+                field === 'name' || field === 'description' ? (typeof value === 'string' ? value : String(value)) : (typeof value === 'number' ? value : parseFloat(String(value)));
         }
     }
 
@@ -667,8 +687,8 @@ ${Object.entries(result.parameters).map(([k, v]) => `  ${k} = ${v}`).join('\n')}
                         params[range.name] = range.min + randomStep * range.step;
                     } else {
                         // 网格搜索
-                        const totalSteps = this._parameterRanges.reduce((acc, r) => 
-                            acc * (Math.floor((r.max - r.min) / r.step) + 1), 1);
+                        // const totalSteps = this._parameterRanges.reduce((acc, r) => 
+                        //     acc * (Math.floor((r.max - r.min) / r.step) + 1), 1); // 暂时未使用
                         let remainder = i;
                         for (const r of this._parameterRanges) {
                             const steps = Math.floor((r.max - r.min) / r.step) + 1;
@@ -1197,7 +1217,7 @@ ${Object.entries(result.parameters).map(([k, v]) => `  ${k} = ${v}`).join('\n')}
                         <button class="btn btn-sm btn-gold" onclick="switchTab('optimize')">⚡ 去优化</button>
                     </div>
                     <div class="params-grid">
-                        ${this._parameterRanges.map((p, i) => `
+                        ${this._parameterRanges.map((p, _i) => `
                             <div class="param-card" onclick="highlightParam('${p.name}')">
                                 <div class="param-name">${p.name}</div>
                                 <div class="param-value">${p.currentValue}</div>
@@ -2850,13 +2870,13 @@ export function registerStrategyOptimizerPanel(context: vscode.ExtensionContext)
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(editor => {
             if (editor?.document.languageId === 'python') {
-                (StrategyOptimizerPanel as any)._lastActiveEditor = editor;
+                StrategyOptimizerPanel._lastActiveEditor = editor;
             }
         })
     );
     
     if (vscode.window.activeTextEditor) {
-        (StrategyOptimizerPanel as any)._lastActiveEditor = vscode.window.activeTextEditor;
+        StrategyOptimizerPanel._lastActiveEditor = vscode.window.activeTextEditor;
     }
     
     context.subscriptions.push(
@@ -2865,7 +2885,7 @@ export function registerStrategyOptimizerPanel(context: vscode.ExtensionContext)
             const storagePath = context.globalStorageUri.fsPath;
             
             if (editor) {
-                (StrategyOptimizerPanel as any)._lastActiveEditor = editor;
+                StrategyOptimizerPanel._lastActiveEditor = editor;
                 const code = editor.document.getText();
                 const fileName = path.basename(editor.document.fileName);
                 StrategyOptimizerPanel.createOrShow(context.extensionUri, code, fileName, storagePath);

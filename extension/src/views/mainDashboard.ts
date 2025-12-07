@@ -20,8 +20,28 @@ import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
 // import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel'; // 文件不存在
 // 临时类型定义
-type BacktestResultData = any;
-const showQuantConnectStyleReport = (data: BacktestResultData) => {
+interface BacktestResultData {
+  metrics?: {
+    total_return?: number;
+    annual_return?: number;
+    sharpe_ratio?: number;
+    max_drawdown?: number;
+    win_rate?: number;
+    trade_count?: number;
+    [key: string]: unknown;
+  };
+  trades?: Array<{
+    date?: string;
+    stock?: string;
+    action?: string;
+    price?: number;
+    volume?: number;
+    [key: string]: unknown;
+  }>;
+  equity_curve?: number[];
+  [key: string]: unknown;
+}
+const _showQuantConnectStyleReport = (_data: BacktestResultData) => {
     vscode.window.showInformationMessage('回测报告功能暂时不可用（quantconnectStylePanel 不存在）');
 };
 import { MarketStatus, Mainline, Factor } from '../types';
@@ -88,14 +108,27 @@ export class MainDashboard {
         return MainDashboard.currentPanel;
     }
 
-    private async handleMessage(message: any): Promise<void> {
+    private async handleMessage(message: { command: string; [key: string]: unknown }): Promise<void> {
         // 调试：记录所有收到的消息
         console.log('[MainDashboard] 收到消息:', message.command);
         
         switch (message.command) {
             // 工作流步骤
             case 'openStep':
-                await this.openWorkflowStep(message.step);
+                const stepInfo = message.step as { id?: string; name?: string; index?: number } | undefined;
+                if (stepInfo?.index !== undefined) {
+                    await this.openWorkflowStep(stepInfo.index);
+                } else if (stepInfo?.id) {
+                    // 根据 id 查找 index（使用固定的步骤列表）
+                    const WORKFLOW_STEPS = [
+                        { id: 'data_source' }, { id: 'market_trend' }, { id: 'mainline' },
+                        { id: 'candidate_pool' }, { id: 'factor' }, { id: 'strategy' }
+                    ];
+                    const stepIndex = WORKFLOW_STEPS.findIndex((s: { id: string }) => s.id === stepInfo.id);
+                    if (stepIndex >= 0) {
+                        await this.openWorkflowStep(stepIndex);
+                    }
+                }
                 break;
             
             // 刷新数据
@@ -184,7 +217,7 @@ export class MainDashboard {
                 await this.exportDatabase();
                 break;
             case 'openFile':
-                await this.openFile(message.path);
+                await this.openFile((message.path as string) || '');
                 break;
             
             // 策略优化
@@ -230,11 +263,11 @@ export class MainDashboard {
         
         try {
             // 2. 调用Python后端执行步骤
-            const result = await this._client.callBridge<any>('run_workflow_step', { step_id: stepInfo.id });
+            const result = await this._client.callBridge<{ ok: boolean; summary?: string; data?: unknown }>('run_workflow_step', { step_id: stepInfo.id });
             
             // 3. 解析结果 - bridge返回: {ok, summary, data}
-            const response = result as any;  // 扩展类型
-            const summary = response.summary || (result.ok ? '执行成功' : '执行失败');
+            const response = result.data as { summary?: string; [key: string]: unknown } | undefined;
+            const summary = response?.summary || (result.ok ? '执行成功' : '执行失败');
             const details = result.data || {};
             
             // 4. 发送结果到前端
@@ -307,7 +340,7 @@ export class MainDashboard {
         return map[regime] || regime;
     }
 
-    private formatIndices(indexTrend: Record<string, any>): Array<{name: string; value: number; change: number}> {
+    private formatIndices(indexTrend: Record<string, { zscore?: number; change_pct?: number }>): Array<{name: string; value: number; change: number}> {
         const result: Array<{name: string; value: number; change: number}> = [];
         const nameMap: Record<string, string> = {
             'sh_index': '上证指数',
@@ -380,7 +413,7 @@ export class MainDashboard {
             title: '🐉 执行完整投资工作流',
             cancellable: true
         }, async (progress, token) => {
-            const results: any[] = [];
+            const results: Array<{ step: string; success: boolean; error?: string }> = [];
             let hasError = false;
             
             for (let i = 0; i < steps.length; i++) {
@@ -417,8 +450,7 @@ export class MainDashboard {
                     if (response.ok) {
                         results.push({
                             step: step.name,
-                            success: true,
-                            data: response.data
+                            success: true
                         });
                         
                         // 更新前端显示结果
@@ -2305,8 +2337,8 @@ export class MainDashboard {
  * 注册主控制台
  */
 export function registerMainDashboard(
-    context: vscode.ExtensionContext,
-    client: TRQuantClient
+    _context: vscode.ExtensionContext,
+    _client: TRQuantClient
 ): void {
     // 注意：trquant.openDashboard 命令已在 extension.ts 的 registerCommands 中注册
     // 这里不再重复注册，避免 "command already exists" 错误

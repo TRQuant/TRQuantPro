@@ -49,7 +49,7 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
         
         const iterations: OptimizationIteration[] = [];
         let bestScore = -Infinity;
-        let bestParameters: Record<string, any> = {};
+        let bestParameters: Record<string, string | number | boolean> = {};
         let bestResult: BacktestResult | null = null;
         const originalResult: BacktestResult | null = null;
         
@@ -89,11 +89,11 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
             }
             
             try {
-                // 创建新的策略配置
-                const candidateConfig: StrategyConfig = {
-                    ...config,
-                    parameters: { ...config.parameters, ...params }
-                };
+                // 创建新的策略配置（用于回测）
+                // const candidateConfig: StrategyConfig = {
+                //     ...config,
+                //     parameters: { ...config.parameters, ...params }
+                // };
                 
                 // 执行回测（这里需要实际的回测接口）
                 // const backtestResult = await backtestInterface.runBacktest(candidateConfig, ...);
@@ -162,15 +162,15 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
             bestStrategy: {
                 version: `v${Date.now()}`,
                 parameters: bestParameters,
-                backtestResult: bestResult || iterations[0]?.backtestResult!,
+                backtestResult: bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
                 score: bestScore
             },
             comparison: {
-                original: originalResult || iterations[0]?.backtestResult!,
-                optimized: bestResult || iterations[0]?.backtestResult!,
+                original: originalResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
+                optimized: bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
                 improvement: this.calculateImprovements(
-                    originalResult || iterations[0]?.backtestResult!,
-                    bestResult || iterations[0]?.backtestResult!
+                    originalResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
+                    bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId))
                 )
             },
             progress: {
@@ -204,13 +204,13 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
     /**
      * 生成所有参数组合（笛卡尔积）
      */
-    private generateParameterCombinations(ranges: ParameterRange[]): Record<string, any>[] {
+    private generateParameterCombinations(ranges: ParameterRange[]): Record<string, string | number | boolean>[] {
         if (ranges.length === 0) {
             return [{}];
         }
         
         // 为每个参数生成值列表
-        const valueLists: any[][] = ranges.map(range => {
+        const valueLists: (string | number | boolean)[][] = ranges.map(range => {
             if (range.type === 'categorical' && range.values) {
                 return range.values;
             } else if (range.type === 'bool') {
@@ -226,12 +226,14 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
                 }
                 return values;
             }
-            return [range.default];
+            // 如果 default 未定义，提供类型安全的默认值
+            const defaultValue: string | number | boolean = range.default ?? (range.type === 'categorical' ? '' : 0);
+            return [defaultValue];
         });
         
         // 计算笛卡尔积
         return this.cartesianProduct(valueLists).map(values => {
-            const combination: Record<string, any> = {};
+            const combination: Record<string, string | number | boolean> = {};
             ranges.forEach((range, index) => {
                 combination[range.name] = values[index];
             });
@@ -261,11 +263,12 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
     /**
      * 计算策略评分
      */
-    private calculateScore(metrics: any, target: OptimizationTarget): number {
+    private calculateScore(metrics: import('../types').BacktestMetrics, target: OptimizationTarget): number {
         let score = 0;
         
         for (const objective of target.objectives) {
-            const value = metrics[objective.metric] || 0;
+            const metricValue = metrics[objective.metric as keyof import('../types').BacktestMetrics];
+            const value = typeof metricValue === 'number' ? metricValue : 0;
             const weight = objective.weight || 1;
             
             if (objective.direction === 'maximize') {
@@ -276,6 +279,30 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
         }
         
         return score;
+    }
+    
+    /**
+     * 创建空的回测结果（用于默认值）
+     */
+    private createEmptyBacktestResult(strategyId: string): BacktestResult {
+        return {
+            strategyId,
+            strategyVersion: 'unknown',
+            parameters: {},
+            metrics: {
+                totalReturn: 0,
+                annualReturn: 0,
+                volatility: 0,
+                sharpeRatio: 0,
+                calmarRatio: 0,
+                maxDrawdown: 0,
+                winRate: 0,
+                profitFactor: 0,
+                totalTrades: 0,
+                avgHoldDays: 0
+            },
+            timestamp: new Date().toISOString()
+        };
     }
     
     /**
@@ -294,15 +321,23 @@ export class GridSearchAlgorithm implements OptimizationAlgorithm {
             change: number;
         }> = [];
         
-        const metrics = ['annualReturn', 'sharpeRatio', 'calmarRatio', 'winRate', 'profitFactor'];
+        const metricMap: Record<string, keyof import('../types').BacktestMetrics> = {
+            'annualReturn': 'annualReturn',
+            'sharpeRatio': 'sharpeRatio',
+            'calmarRatio': 'calmarRatio',
+            'winRate': 'winRate',
+            'profitFactor': 'profitFactor',
+        };
         
-        for (const metric of metrics) {
-            const before = (original.metrics as any)[metric] || 0;
-            const after = (optimized.metrics as any)[metric] || 0;
+        for (const [metricName, metricKey] of Object.entries(metricMap)) {
+            const beforeValue = original.metrics[metricKey];
+            const afterValue = optimized.metrics[metricKey];
+            const before = typeof beforeValue === 'number' ? beforeValue : 0;
+            const after = typeof afterValue === 'number' ? afterValue : 0;
             const change = before !== 0 ? ((after - before) / Math.abs(before)) * 100 : 0;
             
             improvements.push({
-                metric,
+                metric: metricName,
                 before,
                 after,
                 change

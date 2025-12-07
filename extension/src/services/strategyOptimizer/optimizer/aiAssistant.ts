@@ -9,7 +9,6 @@
  * - 优化建议生成
  */
 
-import * as vscode from 'vscode';
 import { logger } from '../../../utils/logger';
 import { AIAssistant } from './interfaces';
 import { BacktestResult, OptimizationContext } from './types';
@@ -31,8 +30,8 @@ interface AIOptimizeResult {
     changes: Array<{
         type: string;
         description: string;
-        before: any;
-        after: any;
+        before: string | number | boolean | null | Record<string, unknown>;
+        after: string | number | boolean | null | Record<string, unknown>;
         reason: string;
     }>;
     explanation: string;
@@ -135,7 +134,7 @@ ${request.strategyCode}
     /**
      * 调用Cursor AI（通过VS Code API）
      */
-    private async callCursorAI(prompt: string): Promise<string | null> {
+    private async callCursorAI(_prompt: string): Promise<string | null> {
         try {
             // 尝试使用VS Code的语言模型API（如果可用）
             // 注意：这需要VS Code 1.90+版本和适当的权限
@@ -329,7 +328,7 @@ ${request.strategyCode}
         hasTakeProfit: boolean;
         hasRebalance: boolean;
         stockNum: number | null;
-        parameters: Array<{ name: string; value: any; description: string }>;
+        parameters: Array<{ name: string; value: string | number | boolean; description: string }>;
     } {
         // 判断平台
         let platform = '未知';
@@ -352,7 +351,7 @@ ${request.strategyCode}
         }
         
         // 提取参数
-        const parameters: Array<{ name: string; value: any; description: string }> = [];
+        const parameters: Array<{ name: string; value: string | number | boolean; description: string }> = [];
         
         const paramPatterns = [
             { pattern: /STOCK_NUM\s*=\s*(\d+)/, name: 'STOCK_NUM', desc: '持股数量' },
@@ -563,8 +562,8 @@ ${request.strategyCode}
         changes: Array<{
             type: string;
             description: string;
-            before: any;
-            after: any;
+            before: string | number | boolean | null;
+            after: string | number | boolean | null;
         }>
     ): Promise<string> {
         let explanation = `## 策略变更说明\n\n`;

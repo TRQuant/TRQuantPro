@@ -73,7 +73,7 @@ const API_MAPPINGS: APIMapping[] = [
     },
     paramMapping: {
       count: 'count',
-      unit: (v) => (v === '1d' ? 'daily' : v === '1m' ? 'minute' : v),
+      unit: (v: unknown) => (String(v) === '1d' ? 'daily' : String(v) === '1m' ? 'minute' : String(v)),
       field: 'field',
       security_list: 'security_list',
       skip_paused: 'skip_paused',
@@ -97,7 +97,7 @@ const API_MAPPINGS: APIMapping[] = [
       signature: 'get_index_stocks(index_code)',
     },
     paramMapping: {
-      index_symbol: (v: string) => v.replace('.XSHG', '.SH').replace('.XSHE', '.SZ'),
+      index_symbol: (v: unknown) => String(v).replace('.XSHG', '.SH').replace('.XSHE', '.SZ'),
     },
     notes: ['股票代码后缀需要转换: .XSHG→.SH, .XSHE→.SZ'],
     examples: {
@@ -120,7 +120,7 @@ const API_MAPPINGS: APIMapping[] = [
     },
     paramMapping: {
       security: 'stock_code',
-      value: (v, ctx) => `${v} / context.portfolio.total_value`, // 需要转换为百分比
+      value: (v: unknown) => `${String(v)} / context.portfolio.total_value`, // 需要转换为百分比
     },
     notes: ['PTrade使用百分比而非金额', '需要计算: percent = value / portfolio.total_value'],
     examples: {
@@ -270,7 +270,8 @@ const API_MAPPINGS: APIMapping[] = [
 // 代码模板
 // ============================================================
 
-const PTRADE_TEMPLATE = `# -*- coding: utf-8 -*-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _PTRADE_TEMPLATE = `# -*- coding: utf-8 -*-
 """
 {strategy_name} - PTrade版本
 ============================
@@ -382,22 +383,23 @@ export class PlatformAdapter {
    * 转换代码到目标平台
    */
   convert(code: string, analysis: StrategyAnalysis, targetPlatform: Platform): ConversionResult {
+    // TODO: 实现代码转换逻辑
     const changes: CodeChange[] = [];
     const warnings: string[] = [];
     const errors: string[] = [];
-
     const convertedCode = code;
     const sourcePlatform = analysis.compatibility.sourcePlatform;
 
     if (sourcePlatform === targetPlatform) {
+      warnings.push('源平台与目标平台相同，无需转换');
       return {
         success: true,
         targetPlatform,
         originalCode: code,
-        convertedCode: code,
-        changes: [],
-        warnings: ['源平台与目标平台相同，无需转换'],
-        errors: [],
+        convertedCode,
+        changes,
+        warnings,
+        errors,
         stats: {
           totalChanges: 0,
           apiChanges: 0,
@@ -592,7 +594,7 @@ ${analysis.meta.description || '无描述'}
   /**
    * PTrade → JoinQuant 转换
    */
-  private convertPTradeToJoinQuant(code: string, analysis: StrategyAnalysis): ConversionResult {
+  private convertPTradeToJoinQuant(code: string, _analysis: StrategyAnalysis): ConversionResult {
     const changes: CodeChange[] = [];
     const warnings: string[] = [];
 
@@ -637,7 +639,7 @@ ${analysis.meta.description || '无描述'}
   /**
    * 查找API映射
    */
-  private findMapping(apiName: string, source: Platform, target: Platform): APIMapping | undefined {
+  private findMapping(apiName: string, source: Platform, _target: Platform): APIMapping | undefined {
     return this.mappings.find((m) => m.source.platform === source && m.source.api === apiName);
   }
 

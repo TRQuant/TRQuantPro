@@ -72,7 +72,7 @@ export class WorkbenchPanel {
         return WorkbenchPanel.currentPanel;
     }
 
-    private async handleMessage(message: any): Promise<void> {
+    private async handleMessage(message: { command: string; [key: string]: unknown }): Promise<void> {
         console.log('[WorkbenchPanel] 收到消息:', message.command);
         
         switch (message.command) {

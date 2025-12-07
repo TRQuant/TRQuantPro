@@ -25,13 +25,16 @@ import {
   OptimizationAdvisor,
   OptimizationReport,
 } from './analyzer/optimizationAdvisor';
+import * as path from 'path';
 import {
   StrategyAnalysis,
   ConversionResult,
   StrategyReport,
   Platform,
+  UserFeedback,
   StrategyPattern,
   BestPractice,
+  PLATFORMS,
 } from './types';
 
 // 导出类型
@@ -97,11 +100,20 @@ export class StrategyOptimizerService {
    */
   async learnFromManual(): Promise<{
     success: boolean;
-    stats: any;
+    stats: {
+      filesScanned: number;
+      patternsExtracted: number;
+      practicesExtracted: number;
+      codeBlocksFound: number;
+    };
     log: string[];
   }> {
     if (!this.manualLearner) {
-      return { success: false, stats: {}, log: ['手册学习器未初始化'] };
+      return { 
+        success: false, 
+        stats: { filesScanned: 0, patternsExtracted: 0, practicesExtracted: 0, codeBlocksFound: 0 }, 
+        log: ['手册学习器未初始化'] 
+      };
     }
     return this.manualLearner.learnFromManual();
   }
@@ -109,7 +121,7 @@ export class StrategyOptimizerService {
   /**
    * 监听手册更新
    */
-  watchManualUpdates(callback?: (file: string) => void): any {
+  watchManualUpdates(callback?: (file: string) => void): import('fs').FSWatcher | null {
     if (!this.manualLearner) return null;
     return this.manualLearner.watchForUpdates(callback);
   }
@@ -219,7 +231,6 @@ export class StrategyOptimizerService {
    * 获取平台信息
    */
   getPlatformInfo(platform: Platform) {
-    const { PLATFORMS } = require('./types');
     return PLATFORMS[platform];
   }
 
@@ -274,7 +285,15 @@ export class StrategyOptimizerService {
     content: string;
   }): void {
     if (this.learner) {
-      this.learner.recordFeedback(feedback);
+      // 转换为 UserFeedback 格式
+      const userFeedback: UserFeedback = {
+        timestamp: new Date().toISOString(),
+        strategyId: feedback.strategyId,
+        type: feedback.type,
+        content: feedback.content,
+        resolved: false,
+      };
+      this.learner.recordFeedback(userFeedback);
     }
   }
 
@@ -422,9 +441,9 @@ export {
  * 注册策略优化器命令和服务
  * 在 extension.ts 的 activate 函数中调用
  */
-export function registerStrategyOptimizer(context: vscode.ExtensionContext, client?: any): void {
-  const logger = require('../../utils/logger').logger;
-  const path = require('path');
+export function registerStrategyOptimizer(context: vscode.ExtensionContext, _client?: unknown): void {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { logger } = require('../../utils/logger') as { logger: typeof import('../../utils/logger').logger };
   const MODULE = 'StrategyOptimizer';
 
   // 初始化学习引擎存储路径
@@ -437,8 +456,9 @@ export function registerStrategyOptimizer(context: vscode.ExtensionContext, clie
   try {
     strategyOptimizer.initLearner(storagePath, manualPath);
     logger.info('策略优化器学习引擎已初始化', MODULE);
-  } catch (error: any) {
-    logger.warn(`初始化学习引擎失败: ${error}`, MODULE);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.warn(`初始化学习引擎失败: ${errorMessage}`, MODULE);
   }
 
   // 注册命令（如果需要额外的命令，可以在这里添加）

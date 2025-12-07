@@ -181,9 +181,38 @@ async function manualInput(): Promise<BacktestMetrics | undefined> {
 }
 
 /**
+ * 回测数据输入格式（支持多种格式）
+ */
+interface BacktestDataInput {
+  total_return?: number;
+  totalReturn?: number;
+  return?: number;
+  annual_return?: number;
+  annualReturn?: number;
+  cagr?: number;
+  sharpe_ratio?: number;
+  sharpeRatio?: number;
+  sharpe?: number;
+  max_drawdown?: number;
+  maxDrawdown?: number;
+  mdd?: number;
+  win_rate?: number;
+  winRate?: number;
+  trade_count?: number;
+  tradeCount?: number;
+  trades?: number;
+  profit_loss_ratio?: number;
+  plRatio?: number;
+  volatility?: number;
+  beta?: number;
+  alpha?: number;
+  [key: string]: unknown;
+}
+
+/**
  * 从数据中提取指标
  */
-function extractMetrics(data: any): BacktestMetrics {
+function extractMetrics(data: BacktestDataInput): BacktestMetrics {
   return {
     total_return: data.total_return ?? data.totalReturn ?? data.return ?? 0,
     annual_return: data.annual_return ?? data.annualReturn ?? data.cagr ?? 0,

@@ -36,7 +36,7 @@ export interface WalkForwardPeriodResult {
     trainingEnd: string;
     testingStart: string;
     testingEnd: string;
-    optimizedParameters: Record<string, any>;
+    optimizedParameters: Record<string, string | number | boolean>;
     trainingMetrics: BacktestResult['metrics'];
     testingMetrics: BacktestResult['metrics'];
     outOfSampleReturn: number;
@@ -205,6 +205,7 @@ export class WalkForwardAnalyzer {
         
         let currentStart = new Date(startDate);
         
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             // 训练期
             const trainingStart = new Date(currentStart);
@@ -252,7 +253,7 @@ export class WalkForwardAnalyzer {
         startDate: string,
         endDate: string
     ): Promise<{
-        parameters: Record<string, any>;
+        parameters: Record<string, string | number | boolean>;
         metrics: BacktestResult['metrics'];
     }> {
         // 克隆策略配置（日期范围在回测时传入）
@@ -267,9 +268,13 @@ export class WalkForwardAnalyzer {
             __endDate: endDate
         };
         
-        // 设置回测接口给算法
-        if ((this.optimizer as any).setBacktestInterface) {
-            (this.optimizer as any).setBacktestInterface(this.backtestInterface);
+        // 设置回测接口给算法（如果算法支持）
+        interface OptimizerWithBacktestInterface extends OptimizationAlgorithm {
+            setBacktestInterface?(backtest: BacktestInterface): void;
+        }
+        const optimizerWithInterface = this.optimizer as OptimizerWithBacktestInterface;
+        if (optimizerWithInterface.setBacktestInterface) {
+            optimizerWithInterface.setBacktestInterface(this.backtestInterface);
         }
         
         // 执行优化
@@ -291,7 +296,7 @@ export class WalkForwardAnalyzer {
      */
     private async validateOnTesting(
         strategy: StrategyConfig,
-        parameters: Record<string, any>,
+        parameters: Record<string, string | number | boolean>,
         startDate: string,
         endDate: string
     ): Promise<BacktestResult> {
@@ -403,7 +408,10 @@ export class WalkForwardAnalyzer {
         const parameterStability: Record<string, number> = {};
         if (strategy.parameterRanges) {
             for (const range of strategy.parameterRanges) {
-                const values = periodResults.map(r => r.optimizedParameters[range.name] || 0);
+                const values = periodResults.map(r => {
+                    const paramValue = r.optimizedParameters[range.name];
+                    return typeof paramValue === 'number' ? paramValue : 0;
+                });
                 const mean = values.reduce((a, b) => a + b, 0) / values.length;
                 const std = Math.sqrt(
                     values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length

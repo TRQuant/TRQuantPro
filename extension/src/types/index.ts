@@ -7,7 +7,7 @@
 /**
  * 通用API响应
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
     ok: boolean;
     data?: T;
     error?: string;
@@ -161,7 +161,7 @@ export interface MCPTool {
     description: string;
     inputSchema: {
         type: 'object';
-        properties: Record<string, any>;
+        properties: Record<string, unknown>;
         required?: string[];
     };
 }
@@ -195,7 +195,7 @@ export interface GenerateStrategyParams {
 
 export interface AnalyzeBacktestParams {
     backtest_file?: string;
-    backtest_data?: any;
+    backtest_data?: unknown;
 }
 
 export interface RiskAssessmentParams {

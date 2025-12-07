@@ -13,11 +13,9 @@
 import {
   StrategyAnalysis,
   StrategyReport,
-  Platform,
   ConversionResult,
   Optimization,
   ModuleDescription,
-  MermaidChart,
 } from '../types';
 
 // ============================================================
@@ -625,7 +623,7 @@ ${report.codeArchitecture.flowChart}
   /**
    * 生成流程图
    */
-  private generateFlowChart(analysis: StrategyAnalysis): string {
+  private generateFlowChart(_analysis: StrategyAnalysis): string {
     return `graph TD
     A[策略启动] --> B[初始化配置]
     B --> C{每日执行}
@@ -647,7 +645,7 @@ ${report.codeArchitecture.flowChart}
   /**
    * 生成数据流图
    */
-  private generateDataFlow(analysis: StrategyAnalysis): string {
+  private generateDataFlow(_analysis: StrategyAnalysis): string {
     return `graph LR
     subgraph 数据层
         A1[行情数据]
@@ -688,16 +686,23 @@ ${report.codeArchitecture.flowChart}
    */
   private generateCompatibility(
     analysis: StrategyAnalysis,
-    conversionResult?: ConversionResult
+    _conversionResult?: ConversionResult
   ): StrategyReport['platformCompatibility'] {
-    const details: any = {};
+    interface PlatformDetails {
+      score: number;
+      level: string;
+      changes: number;
+      notes: string[];
+    }
+
+    const details: Record<string, PlatformDetails> = {};
 
     for (const platform of ['joinquant', 'ptrade', 'qmt'] as const) {
       const compat = analysis.compatibility[platform];
       details[platform] = {
         score: compat.score,
         level: this.translateLevel(compat.level),
-        changes: compat.issues.filter((i: any) => i.severity === 'error').length,
+        changes: compat.issues.filter((i) => i.severity === 'error').length,
         notes: compat.suggestions.slice(0, 2),
       };
     }
@@ -763,7 +768,7 @@ ${report.codeArchitecture.flowChart}
           category: '平台适配',
           priority: compat.score < 50 ? 'high' : 'medium',
           title: `${platform.toUpperCase()} 适配`,
-          description: `需要修改 ${compat.issues.filter((i: any) => i.severity === 'error').length} 处API调用`,
+          description: `需要修改 ${compat.issues.filter((i) => i.severity === 'error').length} 处API调用`,
           impact: `支持在 ${platform.toUpperCase()} 平台运行`,
           implementation: compat.suggestions.join('\n'),
         });

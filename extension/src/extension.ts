@@ -184,7 +184,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             // 获取投资主线
             const mainlinesResult = await client?.getMainlines({ top_n: 5 });
             if (mainlinesResult?.ok && mainlinesResult?.data) {
-              hotMainlines = mainlinesResult.data.slice(0, 5).map((m: any) => ({
+              hotMainlines = mainlinesResult.data.slice(0, 5).map((m) => ({
                 name: m.name || '',
                 industries: m.industries || [],
               }));
@@ -809,7 +809,7 @@ async function updateStatusBar(): Promise<void> {
  * 显示欢迎消息
  * @deprecated 当前未使用，保留以备将来使用
  */
-function showWelcomeMessage(context: vscode.ExtensionContext): void {
+function _showWelcomeMessage(context: vscode.ExtensionContext): void {
   const WELCOME_SHOWN_KEY = 'trquant.welcomeShown';
 
   if (!context.globalState.get(WELCOME_SHOWN_KEY)) {

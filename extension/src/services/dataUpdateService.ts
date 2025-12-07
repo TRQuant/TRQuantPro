@@ -16,7 +16,7 @@ const MODULE = 'DataUpdateService';
 export interface DataUpdateResult {
   success: boolean;
   message: string;
-  details?: any;
+  details?: string | Record<string, unknown>;
 }
 
 export class DataUpdateService {
