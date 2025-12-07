@@ -281,19 +281,19 @@ export class StrategyOptimizerService {
   /**
    * 获取推荐模式
    */
-  getRecommendedPatterns(code: string): StrategyPattern[] {
+  async getRecommendedPatterns(code: string): Promise<StrategyPattern[]> {
     if (!this.learner) return [];
     const analysis = this.analyzeStrategy(code);
-    return this.learner.recommendPatterns(analysis);
+    return await this.learner.recommendPatterns(analysis);
   }
 
   /**
    * 获取推荐最佳实践
    */
-  getRecommendedPractices(code: string): BestPractice[] {
+  async getRecommendedPractices(code: string): Promise<BestPractice[]> {
     if (!this.learner) return [];
     const analysis = this.analyzeStrategy(code);
-    return this.learner.recommendBestPractices(analysis);
+    return await this.learner.recommendBestPractices(analysis);
   }
 
   /**

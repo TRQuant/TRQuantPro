@@ -78,8 +78,6 @@ import { registerWorkflowStepPanels } from './views/workflowStepPanel';
 import { logger } from './utils/logger';
 import { config, ConfigManager } from './utils/config';
 import { ErrorHandler } from './utils/errors';
-import * as path from 'path';
-import * as fs from 'fs';
 
 const MODULE = 'Extension';
 
@@ -811,7 +809,7 @@ async function updateStatusBar(): Promise<void> {
  * 显示欢迎消息
  * @deprecated 当前未使用，保留以备将来使用
  */
-function showWelcomeMessage(_context: vscode.ExtensionContext): void {
+function showWelcomeMessage(context: vscode.ExtensionContext): void {
   const WELCOME_SHOWN_KEY = 'trquant.welcomeShown';
 
   if (!context.globalState.get(WELCOME_SHOWN_KEY)) {
