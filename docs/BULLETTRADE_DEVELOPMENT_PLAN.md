@@ -36,17 +36,36 @@ bullet-trade live demo_strategy.py --broker qmt
 # 远程实盘
 bullet-trade live demo_strategy.py --broker qmt-remote
 
-# 启动服务器（Windows端）
-bullet-trade server --server-type=qmt --listen 0.0.0.0 --port 58620 --token my_security_123456
+# 启动服务器（Windows端）- 支持数据和交易
+bullet-trade server --listen 0.0.0.0 --port 58620 --token secret --enable-data --enable-broker
 ```
+
+### 其他功能
+```bash
+# 参数优化
+bullet-trade optimize strategies/demo_strategy.py --params params.json --start 2020-01-01 --end 2023-12-31 --output optimization.csv
+
+# 报告生成
+bullet-trade report --input backtest_results --format html
+
+# 研究环境
+bullet-trade lab  # 启动 JupyterLab
+```
+
+> **完整文档**：参见 `docs/BULLETTRADE_OFFICIAL_DOCS.md` 和 [官方文档](https://bullettrade.cn/docs/)
 
 ## 🎯 核心目标
 
-1. **回测验证模块**：基于BulletTrade实现策略回测，支持聚宽API兼容
-2. **实盘交易模块**：支持多券商接口（QMT、恒生PTrade、掘金等）
-3. **AI分析模块**：LLM自动生成回测和实盘分析报告
-4. **数据管理**：结构化保存回测和实盘数据，支持版本控制
-5. **闭环流程**：策略开发→回测验证→实盘交易→绩效反馈
+基于 [BulletTrade 官方文档](https://bullettrade.cn/docs/)：
+
+1. **回测验证模块**：基于 BulletTrade 实现策略回测，支持聚宽 API 兼容
+2. **参数优化模块**：多进程并行参数寻优 (`bullet-trade optimize`)
+3. **实盘交易模块**：支持 QMT（本地/远程）、模拟券商
+4. **数据源管理**：JQData、MiniQMT、TuShare、远程 QMT server
+5. **AI分析模块**：LLM 自动生成回测和实盘分析报告
+6. **报告生成**：HTML/Markdown 格式报告 (`bullet-trade report`)
+7. **研究环境**：JupyterLab 集成 (`bullet-trade lab`)
+8. **闭环流程**：策略开发→回测验证→参数优化→实盘交易→绩效反馈
 
 ---
 
@@ -131,7 +150,7 @@ TRQuant/
 **Agent工作流**：每个任务都将使用多Agent协作框架（Architect → CodeGenerator → QualityChecker）
 
 #### 1.1 BulletTrade引擎封装
-- [ ] **任务1.1.1**：安装和配置BulletTrade依赖
+- [x] **任务1.1.1**：安装和配置BulletTrade依赖（已完成 v0.5.1）
   - **Agent工作流**：
     1. Architect Agent：设计依赖管理方案和配置结构
     2. Code Generator Agent：生成requirements.txt更新和配置模块
@@ -140,33 +159,33 @@ TRQuant/
   - 创建BulletTrade配置管理（`.env`支持）
   - 实现BulletTrade环境检测和初始化
 
-- [ ] **任务1.1.2**：实现聚宽API兼容层
+- [x] **任务1.1.2**：实现聚宽API兼容层（已完成）
   - 创建`core/bullettrade/jqdata_compat.py`
   - 实现`from jqdata import *`兼容
   - 实现核心API：`initialize`, `handle_data`, `order`, `order_value`, `get_price`, `run_daily`等
   - 实现`context`对象（包含`portfolio`, `g`等）
   - 实现证券代码格式转换（聚宽格式 ↔ 本地格式）
 
-- [ ] **任务1.1.3**：数据源适配器
+- [x] **任务1.1.3**：数据源适配器（已完成）
   - 创建`core/bullettrade/data_provider_adapter.py`
   - 适配JQData、MiniQMT、TuShare等数据源
   - 实现`get_price`, `history`, `attribute_history`等数据接口
   - 支持数据源切换配置
 
 #### 1.2 回测执行模块
-- [ ] **任务1.2.1**：回测配置管理
+- [x] **任务1.2.1**：回测配置管理（已完成）
   - 创建`core/backtest/backtest_config.py`
   - 定义回测参数（起止日期、频率、基准、滑点、手续费等）
   - 支持YAML/JSON配置文件解析
 
-- [ ] **任务1.2.2**：回测执行器
+- [x] **任务1.2.2**：回测执行器（已完成）
   - 创建`core/backtest/bt_run.py`
   - 封装`bullet-trade backtest`命令调用
   - 实现Python API接口（`run_backtest(strategy_path, config)`）
   - 支持进度回调和结果监听
   - 自动保存回测结果到`backtests/`目录
 
-- [ ] **任务1.2.3**：回测结果处理
+- [x] **任务1.2.3**：回测结果处理（已完成）
   - 创建`core/backtest/backtest_result.py`
   - 解析BulletTrade HTML报告
   - 提取关键指标（收益率、回撤、Sharpe等）
@@ -174,13 +193,13 @@ TRQuant/
   - 保存为CSV格式（`equity_curve.csv`, `trades.csv`）
 
 #### 1.3 报告生成与AI分析
-- [ ] **任务1.3.1**：报告生成器增强
+- [x] **任务1.3.1**：报告生成器增强（已完成）
   - 增强`core/report_generator.py`（或创建`core/reporting/report_generator.py`）
   - 支持从HTML报告提取数据和图表
   - 支持从CSV数据重新生成图表（matplotlib）
   - 生成Markdown格式报告模板
 
-- [ ] **任务1.3.2**：AI分析器
+- [x] **任务1.3.2**：AI分析器（已完成）
   - 创建`core/reporting/ai_analyzer.py`
   - 实现LLM接口调用（OpenAI/本地模型）
   - 构建回测分析Prompt模板
@@ -188,11 +207,25 @@ TRQuant/
   - 保存Markdown格式AI报告
 
 #### 1.4 数据存储管理
-- [ ] **任务1.4.1**：回测数据存储
+- [x] **任务1.4.1**：回测数据存储（已完成）
   - 创建`core/data/backtest_storage.py`
   - 实现回测结果目录结构管理
   - 支持版本化存储（按策略名/版本号组织）
   - 实现数据查询和对比接口
+
+#### 1.5 参数优化（基于官方 `bullet-trade optimize`）
+- [ ] **任务1.5.1**：参数优化模块
+  - 创建`core/bullettrade/optimizer.py`
+  - 封装 `bullet-trade optimize` CLI
+  - 支持 JSON 格式参数配置
+  - 支持多进程并行寻优
+  - 输出优化结果 CSV
+
+#### 1.6 报告生成（基于官方 `bullet-trade report`）
+- [ ] **任务1.6.1**：官方报告生成
+  - 封装 `bullet-trade report` CLI
+  - 支持 HTML/Markdown 格式
+  - 集成到 VS Code Extension
 
 ---
 
