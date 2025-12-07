@@ -99,11 +99,12 @@ function createMarketStatusPanel(
   panel.webview.onDidReceiveMessage(
     async (message) => {
       switch (message.command) {
-        case 'copyPrompt':
+        case 'copyPrompt': {
           const prompt = generatePrompt(data);
           await vscode.env.clipboard.writeText(prompt);
           vscode.window.showInformationMessage('Prompt已复制到剪贴板');
           break;
+        }
         case 'refresh':
           // 重新执行命令
           vscode.commands.executeCommand('trquant.getMarketStatus');
@@ -535,11 +536,12 @@ async function showFollowUpActions(data: MarketStatus): Promise<void> {
   );
 
   switch (action) {
-    case '复制Prompt':
+    case '复制Prompt': {
       const prompt = generatePrompt(data);
       await vscode.env.clipboard.writeText(prompt);
       vscode.window.showInformationMessage('Prompt已复制到剪贴板');
       break;
+    }
     case '生成策略':
       vscode.commands.executeCommand('trquant.generateStrategy');
       break;

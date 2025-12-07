@@ -17,7 +17,6 @@ import * as vscode from 'vscode';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
 import { ErrorHandler } from '../utils/errors';
-import { config } from '../utils/config';
 import { Strategy, StrategyPlatform, StrategyStyle, RiskParams } from '../types';
 
 const MODULE = 'GenerateStrategy';

@@ -75,9 +75,11 @@ import { registerWorkflowProvider } from './providers/workflowProvider';
 import { registerWorkflowStepPanels } from './views/workflowStepPanel';
 
 // 工具
-import { logger, LogLevel } from './utils/logger';
+import { logger } from './utils/logger';
 import { config, ConfigManager } from './utils/config';
 import { ErrorHandler } from './utils/errors';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const MODULE = 'Extension';
 
@@ -115,13 +117,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           let projectsRoot: string;
 
           if (workspaceFolder) {
-            projectsRoot = require('path').join(workspaceFolder.uri.fsPath, 'Projects');
+            projectsRoot = path.join(workspaceFolder.uri.fsPath, 'Projects');
           } else {
-            projectsRoot = require('path').join(context.extensionPath, 'data', 'Projects');
+            projectsRoot = path.join(context.extensionPath, 'data', 'Projects');
           }
 
           // 确保目录存在
-          const fs = require('fs');
           if (!fs.existsSync(projectsRoot)) {
             fs.mkdirSync(projectsRoot, { recursive: true });
           }
@@ -152,14 +153,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
           // 创建项目
           const finalName = projectName.trim();
-          const projectPath = require('path').join(projectsRoot, finalName);
+          const projectPath = path.join(projectsRoot, finalName);
 
           if (!fs.existsSync(projectPath)) {
             fs.mkdirSync(projectPath, { recursive: true });
           }
 
           // 创建策略文件 - 使用完整的外部模板
-          const mainPyPath = require('path').join(projectPath, 'main.py');
+          const mainPyPath = path.join(projectPath, 'main.py');
           const now = new Date();
           const endDate = new Date(now);
           endDate.setMonth(endDate.getMonth() - 3);
@@ -196,7 +197,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
           }
 
           // 读取外部模板文件
-          const templatePath = require('path').join(
+          const templatePath = path.join(
             context.extensionPath,
             'templates',
             'strategies',
@@ -722,7 +723,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
  * 启动桌面系统（PyQt6 GUI）
  * 启动 TRQuant.py - 真正的桌面量化系统
  */
-async function launchDesktopSystem(context: vscode.ExtensionContext): Promise<void> {
+async function launchDesktopSystem(_context: vscode.ExtensionContext): Promise<void> {
   // TRQuant 项目根目录（固定路径，因为桌面系统依赖完整项目结构）
   const trquantRoot = '/home/taotao/dev/QuantTest/TRQuant';
   const mainScript = path.join(trquantRoot, 'TRQuant.py');
@@ -808,8 +809,9 @@ async function updateStatusBar(): Promise<void> {
 
 /**
  * 显示欢迎消息
+ * @deprecated 当前未使用，保留以备将来使用
  */
-function showWelcomeMessage(context: vscode.ExtensionContext): void {
+function showWelcomeMessage(_context: vscode.ExtensionContext): void {
   const WELCOME_SHOWN_KEY = 'trquant.welcomeShown';
 
   if (!context.globalState.get(WELCOME_SHOWN_KEY)) {

@@ -13,7 +13,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
 import { ErrorHandler } from '../utils/errors';
@@ -381,11 +380,12 @@ function showAnalysisPanel(
   panel.webview.onDidReceiveMessage(
     async (message) => {
       switch (message.command) {
-        case 'copyReport':
+        case 'copyReport': {
           const report = generateTextReport(metrics, result);
           await vscode.env.clipboard.writeText(report);
           vscode.window.showInformationMessage('报告已复制到剪贴板');
           break;
+        }
         case 'optimizeStrategy':
           vscode.commands.executeCommand('trquant.generateStrategy');
           break;

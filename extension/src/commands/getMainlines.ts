@@ -121,11 +121,12 @@ function createMainlinesPanel(
         case 'generateStrategy':
           vscode.commands.executeCommand('trquant.generateStrategy');
           break;
-        case 'copyPrompt':
+        case 'copyPrompt': {
           const prompt = generatePrompt(mainlines, timeHorizon);
           await vscode.env.clipboard.writeText(prompt);
           vscode.window.showInformationMessage('Prompt已复制到剪贴板');
           break;
+        }
       }
     },
     undefined,
@@ -581,10 +582,11 @@ async function showFollowUpActions(mainlines: Mainline[]): Promise<void> {
     case '推荐因子':
       vscode.commands.executeCommand('trquant.recommendFactors');
       break;
-    case '复制Prompt':
+    case '复制Prompt': {
       const prompt = generatePrompt(mainlines, 'short');
       await vscode.env.clipboard.writeText(prompt);
       vscode.window.showInformationMessage('Prompt已复制到剪贴板');
       break;
+    }
   }
 }

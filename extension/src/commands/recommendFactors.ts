@@ -105,15 +105,17 @@ function createFactorsPanel(
   panel.webview.onDidReceiveMessage(
     async (message) => {
       switch (message.command) {
-        case 'generateStrategy':
+        case 'generateStrategy': {
           const selectedFactors = message.factors || factors.slice(0, 5).map((f) => f.name);
           generateStrategyWithFactors(selectedFactors);
           break;
-        case 'copyPrompt':
+        }
+        case 'copyPrompt': {
           const prompt = generatePrompt(factors, regime);
           await vscode.env.clipboard.writeText(prompt);
           vscode.window.showInformationMessage('Prompt已复制到剪贴板');
           break;
+        }
       }
     },
     undefined,
@@ -618,10 +620,11 @@ async function showFollowUpActions(factors: Factor[]): Promise<void> {
     case '生成策略':
       vscode.commands.executeCommand('trquant.generateStrategy');
       break;
-    case '复制Prompt':
+    case '复制Prompt': {
       const prompt = generatePrompt(factors, 'neutral');
       await vscode.env.clipboard.writeText(prompt);
       vscode.window.showInformationMessage('Prompt已复制到剪贴板');
       break;
+    }
   }
 }
