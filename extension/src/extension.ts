@@ -50,6 +50,8 @@ import { showBacktestConfigPanel } from './views/backtestConfigPanel';
 // import { registerCandidatePoolPanel } from './views/candidatePoolPanel';
 // import { registerFactorPanel } from './views/factorPanel';
 import { registerStrategyOptimizerPanel } from './views/strategyOptimizerPanel';
+import { registerBulletTradeBacktestPanel } from './views/bulletTradeBacktestPanel';
+import { registerBulletTradeLivePanel } from './views/bulletTradeLivePanel';
 
 // 工作流面板（独立GUI）- 现在在 registerCommands 中动态导入
 // 以下文件不存在，暂时注释
@@ -379,6 +381,10 @@ def handle_data(context, data):
 
     // 注册策略优化器面板
     registerStrategyOptimizerPanel(context);
+
+    // 注册 BulletTrade 面板
+    registerBulletTradeBacktestPanel(context, client);
+    registerBulletTradeLivePanel(context, client);
 
     // 注册A股实操手册命令 - 参考桌面软件实现，直接启动Astro服务器
     context.subscriptions.push(

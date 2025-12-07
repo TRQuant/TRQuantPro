@@ -95,7 +95,13 @@ export class WorkbenchPanel {
                 vscode.commands.executeCommand('trquant.generateStrategy');
                 break;
             case 'runBacktest':
-                vscode.commands.executeCommand('trquant.runBacktest');
+                vscode.commands.executeCommand('trquant.openBulletTradeBacktest');
+                break;
+            case 'openBulletTradeBacktest':
+                vscode.commands.executeCommand('trquant.openBulletTradeBacktest');
+                break;
+            case 'openBulletTradeLive':
+                vscode.commands.executeCommand('trquant.openBulletTradeLive');
                 break;
             case 'optimizeStrategy':
                 vscode.commands.executeCommand('trquant.optimizeStrategy');
@@ -460,15 +466,42 @@ export class WorkbenchPanel {
                 <div class="quick-title">生成策略</div>
                 <div class="quick-desc">AI智能生成策略代码</div>
             </div>
-            <div class="quick-card" onclick="vscode.postMessage({command: 'runBacktest'})">
+            <div class="quick-card" onclick="vscode.postMessage({command: 'openBulletTradeBacktest'})">
                 <div class="quick-icon">🧪</div>
-                <div class="quick-title">运行回测</div>
-                <div class="quick-desc">策略回测验证</div>
+                <div class="quick-title">策略回测</div>
+                <div class="quick-desc">BulletTrade回测验证</div>
             </div>
-            <div class="quick-card" onclick="vscode.postMessage({command: 'optimizeStrategy'})">
-                <div class="quick-icon">🔍</div>
-                <div class="quick-title">策略优化</div>
-                <div class="quick-desc">分析并优化策略</div>
+            <div class="quick-card" onclick="vscode.postMessage({command: 'openBulletTradeLive'})">
+                <div class="quick-icon">📈</div>
+                <div class="quick-title">实盘交易</div>
+                <div class="quick-desc">BulletTrade实盘部署</div>
+            </div>
+        </div>
+        
+        <!-- BulletTrade 专区 -->
+        <div style="margin-top: 24px;">
+            <h3 style="font-size: 14px; margin-bottom: 16px; color: var(--text-secondary);">🚀 BulletTrade 专区</h3>
+            <div class="quick-grid">
+                <div class="quick-card" onclick="vscode.postMessage({command: 'openBulletTradeBacktest'})">
+                    <div class="quick-icon">📊</div>
+                    <div class="quick-title">回测分析</div>
+                    <div class="quick-desc">完整回测配置与结果</div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'openBulletTradeLive'})">
+                    <div class="quick-icon">💹</div>
+                    <div class="quick-title">实盘监控</div>
+                    <div class="quick-desc">持仓与交易监控</div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'optimizeStrategy'})">
+                    <div class="quick-icon">🔍</div>
+                    <div class="quick-title">策略优化</div>
+                    <div class="quick-desc">AI分析与参数优化</div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'openWorkflowPanel'})">
+                    <div class="quick-icon">🖥️</div>
+                    <div class="quick-title">完整工作流</div>
+                    <div class="quick-desc">8步骤投资系统</div>
+                </div>
             </div>
         </div>
         

@@ -2,9 +2,43 @@
 
 ## 📋 项目概述
 
-基于《BulletTrade策略回测验证与实盘交易部署整合方案.pdf》，构建完整的回测验证与实盘交易模块，实现策略从开发→回测→实盘的全生命周期管理。
+基于《BulletTrade策略回测验证与实盘交易部署整合方案.pdf》和 [BulletTrade 官方文档](https://bullettrade.cn/)，构建完整的回测验证与实盘交易模块，实现策略从开发→回测→实盘的全生命周期管理。
 
 **重要**：本项目将采用 **AI Agent 协作框架**（参考 FoundationAgents 最佳实践），确保生成高质量、可运行的代码。详见 `docs/AGENT_INTEGRATION_PLAN.md`。
+
+## 🚀 BulletTrade 官方四步流程
+
+基于官方文档 https://bullettrade.cn/ ：
+
+### 第一步：准备环境
+```bash
+pip install bullet-trade
+# Windows QMT 支持: pip install "bullet-trade[qmt]"
+```
+
+### 第二步：启动研究
+```bash
+bullet-trade lab  # 启动 JupyterLab
+# 配置文件: ~/.bullet-trade/setting.json
+# 环境变量: ~/bullet-trade/.env
+```
+
+### 第三步：运行回测
+```bash
+bullet-trade backtest demo_strategy.py --start 2025-01-01 --end 2025-06-01
+```
+
+### 第四步：实盘与远程
+```bash
+# 本地实盘
+bullet-trade live demo_strategy.py --broker qmt
+
+# 远程实盘
+bullet-trade live demo_strategy.py --broker qmt-remote
+
+# 启动服务器（Windows端）
+bullet-trade server --server-type=qmt --listen 0.0.0.0 --port 58620 --token my_security_123456
+```
 
 ## 🎯 核心目标
 
