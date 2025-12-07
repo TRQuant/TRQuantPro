@@ -387,3 +387,4 @@ def generate_backtest_report(
     return generator.generate_backtest_report(result, output_path, format)
 
 
+

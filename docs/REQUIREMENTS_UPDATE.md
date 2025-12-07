@@ -144,3 +144,4 @@ text = reader.extract_text()
 - [GUI 整合指南](./GUI_INTEGRATION_GUIDE.md)
 
 
+

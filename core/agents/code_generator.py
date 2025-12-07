@@ -281,3 +281,4 @@ class {module_name.title().replace("_", "")}:
 '''
 
 
+
