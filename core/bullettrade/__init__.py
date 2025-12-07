@@ -36,6 +36,51 @@ from .jqdata_compat import (
 )
 from .data_provider_adapter import DataProviderAdapter, DataProviderType
 
+# 新增模块
+from .optimizer import (
+    StrategyOptimizer,
+    OptimizeConfig,
+    OptimizeParam,
+    OptimizeResult,
+    optimize_strategy,
+)
+from .reporter import (
+    ReportGenerator,
+    ReportConfig,
+    ReportResult,
+    generate_report,
+)
+from .live_engine import (
+    LiveTradingEngine,
+    LiveEngineConfig,
+    LiveEngineStatus,
+    BrokerType as LiveBrokerType,
+    QMTServerManager,
+    Position,
+    Trade,
+    AccountInfo,
+)
+from .risk_control import (
+    RiskControlEngine,
+    RiskConfig,
+    RiskEvent,
+    RiskStatus,
+    RiskLevel,
+    RiskAction,
+    create_default_risk_config,
+)
+from .snapshot_manager import (
+    SnapshotManager,
+    DailySnapshot,
+    PositionRecord,
+    TradeRecord,
+    create_snapshot,
+)
+from .ai_daily_report import (
+    AIReportGenerator,
+    DailyReportData,
+)
+
 __all__ = [
     # 引擎
     "BulletTradeEngine",
@@ -64,5 +109,42 @@ __all__ = [
     # 数据适配器
     "DataProviderAdapter",
     "DataProviderType",
+    # 参数优化
+    "StrategyOptimizer",
+    "OptimizeConfig",
+    "OptimizeParam",
+    "OptimizeResult",
+    "optimize_strategy",
+    # 报告生成
+    "ReportGenerator",
+    "ReportConfig",
+    "ReportResult",
+    "generate_report",
+    # 实盘交易
+    "LiveTradingEngine",
+    "LiveEngineConfig",
+    "LiveEngineStatus",
+    "LiveBrokerType",
+    "QMTServerManager",
+    "Position",
+    "Trade",
+    "AccountInfo",
+    # 风控
+    "RiskControlEngine",
+    "RiskConfig",
+    "RiskEvent",
+    "RiskStatus",
+    "RiskLevel",
+    "RiskAction",
+    "create_default_risk_config",
+    # 快照管理
+    "SnapshotManager",
+    "DailySnapshot",
+    "PositionRecord",
+    "TradeRecord",
+    "create_snapshot",
+    # AI日报
+    "AIReportGenerator",
+    "DailyReportData",
 ]
 
