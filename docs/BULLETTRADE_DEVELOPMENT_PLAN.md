@@ -239,7 +239,7 @@ TRQuant/
   - 实现交易信号执行流程
   - 支持多策略实例管理
 
-- [ ] **任务2.1.2**：Broker适配器增强
+- [x] **任务2.1.2**：Broker适配器增强（已完成）
   - 创建`core/trading/broker/base_broker.py`（统一接口）
   - 增强`core/trading/broker/qmt_broker.py`（支持BulletTrade）
   - 增强`core/broker/ptrade_broker.py`（支持BulletTrade）
@@ -261,28 +261,28 @@ TRQuant/
   - 实现持仓集中度控制
   - 支持紧急平仓机制
 
-- [ ] **任务2.2.2**：日志监控
+- [x] **任务2.2.2**：日志监控（已完成）
   - 增强`core/trading/trade_logger.py`
   - 实现实时日志记录（交易、成交、资金变动）
   - 实现异常告警（邮件/短信/企业微信）
   - 支持日志轮转和归档
 
 #### 2.3 实盘数据管理
-- [ ] **任务2.3.1**：持仓快照管理
+- [x] **任务2.3.1**：持仓快照管理（已完成）
   - 创建`core/data/snapshot_manager.py`
   - 实现每日收盘后持仓快照
   - 保存交易流水（`trades_YYYYMMDD.csv`）
   - 保存持仓明细（`positions_YYYYMMDD.csv`）
   - 实现历史快照查询
 
-- [ ] **任务2.3.2**：实盘数据存储
+- [x] **任务2.3.2**：实盘数据存储（已完成）
   - 创建`core/data/live_storage.py`
   - 实现实盘日志存储（`live_trading/logs/`）
   - 实现快照存储（`live_trading/snapshots/`）
   - 实现报告存储（`live_trading/reports/`）
 
 #### 2.4 AI实盘日报
-- [ ] **任务2.4.1**：日报生成
+- [x] **任务2.4.1**：日报生成（已完成）
   - 增强`core/reporting/ai_analyzer.py`
   - 实现实盘日报Prompt模板
   - 分析当日盈亏、交易统计、持仓变化
