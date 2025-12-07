@@ -136,3 +136,4 @@ class ArchitectAgent:
             logger.warning("Failed to parse LLM output as JSON")
             return self._generate_example_architecture(None)
 
+

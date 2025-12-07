@@ -254,3 +254,4 @@ llm_text = reader.to_llm_format(max_length=50000)
 - [pdfminer文档](https://pdfminersix.readthedocs.io/)
 - [项目PDF处理脚本](../extension/AShare-manual/scripts/comprehensive-pdf-extractor.ps1)
 
+

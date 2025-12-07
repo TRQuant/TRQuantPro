@@ -224,6 +224,14 @@ export class MainDashboard {
             case 'optimizeStrategy':
                 vscode.commands.executeCommand('trquant.optimizeStrategy');
                 break;
+            
+            // BulletTrade 专区
+            case 'openBulletTradeBacktest':
+                vscode.commands.executeCommand('trquant.openBulletTradeBacktest');
+                break;
+            case 'openBulletTradeLive':
+                vscode.commands.executeCommand('trquant.openBulletTradeLive');
+                break;
         }
     }
 
@@ -1842,11 +1850,46 @@ export class MainDashboard {
             </div>
         </div>
         
+        <!-- 🚀 BulletTrade 专区 -->
+        <div class="quick-section" style="background: linear-gradient(135deg, rgba(88, 166, 255, 0.05), rgba(163, 113, 247, 0.05)); border: 1px solid rgba(88, 166, 255, 0.2); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+            <div class="section-title" style="color: var(--accent-blue);">🚀 BulletTrade 专区</div>
+            <div class="quick-grid">
+                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBulletTradeBacktest'})" style="border-color: var(--accent-blue);">
+                    <div class="quick-icon">🧪</div>
+                    <div class="quick-info">
+                        <h4>策略回测</h4>
+                        <p>BulletTrade 回测验证</p>
+                    </div>
+                </div>
+                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBulletTradeLive'})" style="border-color: var(--accent-green);">
+                    <div class="quick-icon">📈</div>
+                    <div class="quick-info">
+                        <h4>实盘交易</h4>
+                        <p>BulletTrade 实盘部署</p>
+                    </div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'optimizeStrategy'})">
+                    <div class="quick-icon">🔍</div>
+                    <div class="quick-info">
+                        <h4>策略优化</h4>
+                        <p>AI 分析与参数优化</p>
+                    </div>
+                </div>
+                <div class="quick-card" onclick="openWorkflowPanel()">
+                    <div class="quick-icon">🖥️</div>
+                    <div class="quick-info">
+                        <h4>完整工作流</h4>
+                        <p>8步骤投资系统</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 快捷操作 -->
         <div class="quick-section">
             <div class="section-title">⚡ 快捷操作</div>
             <div class="quick-grid">
-                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBacktestConfig'})">
+                <div class="quick-card" onclick="vscode.postMessage({command: 'openBacktestConfig'})">
                     <div class="quick-icon">🧪</div>
                     <div class="quick-info">
                         <h4>回测配置</h4>

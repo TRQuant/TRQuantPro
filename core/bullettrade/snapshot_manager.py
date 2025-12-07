@@ -429,3 +429,4 @@ def create_snapshot(
         trades=[TradeRecord(**t) for t in trades]
     )
 
+

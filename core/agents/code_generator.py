@@ -280,3 +280,4 @@ class {module_name.title().replace("_", "")}:
         return {{"status": "success"}}
 '''
 
+

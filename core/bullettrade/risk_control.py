@@ -436,3 +436,4 @@ def create_default_risk_config() -> RiskConfig:
         max_trades_per_day=50
     )
 
+

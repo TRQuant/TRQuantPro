@@ -417,3 +417,4 @@ def generate_report(
     generator = ReportGenerator(config)
     return generator.generate()
 
+
