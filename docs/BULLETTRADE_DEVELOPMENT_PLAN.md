@@ -4,6 +4,8 @@
 
 基于《BulletTrade策略回测验证与实盘交易部署整合方案.pdf》，构建完整的回测验证与实盘交易模块，实现策略从开发→回测→实盘的全生命周期管理。
 
+**重要**：本项目将采用 **AI Agent 协作框架**（参考 FoundationAgents 最佳实践），确保生成高质量、可运行的代码。详见 `docs/AGENT_INTEGRATION_PLAN.md`。
+
 ## 🎯 核心目标
 
 1. **回测验证模块**：基于BulletTrade实现策略回测，支持聚宽API兼容
@@ -92,8 +94,14 @@ TRQuant/
 
 ### 阶段一：BulletTrade集成与回测模块（优先级：高）
 
+**Agent工作流**：每个任务都将使用多Agent协作框架（Architect → CodeGenerator → QualityChecker）
+
 #### 1.1 BulletTrade引擎封装
 - [ ] **任务1.1.1**：安装和配置BulletTrade依赖
+  - **Agent工作流**：
+    1. Architect Agent：设计依赖管理方案和配置结构
+    2. Code Generator Agent：生成requirements.txt更新和配置模块
+    3. Quality Checker Agent：检查依赖冲突和配置有效性
   - 添加`bullet-trade`到`requirements.txt`
   - 创建BulletTrade配置管理（`.env`支持）
   - 实现BulletTrade环境检测和初始化
