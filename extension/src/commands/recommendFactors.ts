@@ -16,7 +16,7 @@ import * as vscode from 'vscode';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
 import { ErrorHandler } from '../utils/errors';
-import { Factor, MarketRegime, FactorCategory } from '../types';
+import { Factor, MarketRegime } from '../types';
 
 const MODULE = 'RecommendFactors';
 

@@ -133,7 +133,7 @@ export function registerDeveloperProvider(context: vscode.ExtensionContext): voi
  * 本地备份功能
  * 复制项目文件到备份目录（排除 node_modules, .git, .backups 等）
  */
-export async function localBackup(context: vscode.ExtensionContext): Promise<void> {
+export async function localBackup(_context: vscode.ExtensionContext): Promise<void> {
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
   if (!workspaceFolder) {
     vscode.window.showWarningMessage('请先打开一个工作区');
@@ -222,7 +222,7 @@ export async function localBackup(context: vscode.ExtensionContext): Promise<voi
  * Git Commit 功能
  * 执行 git add 和 git commit
  */
-export async function gitCommit(context: vscode.ExtensionContext): Promise<void> {
+export async function gitCommit(_context: vscode.ExtensionContext): Promise<void> {
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
   if (!workspaceFolder) {
     vscode.window.showWarningMessage('请先打开一个工作区');
@@ -554,7 +554,7 @@ async function copyDirectory(
   src: string,
   dest: string,
   excludePatterns: string[],
-  progress: vscode.Progress<{ message?: string; increment?: number }>
+  _progress: vscode.Progress<{ message?: string; increment?: number }>
 ): Promise<void> {
   const shouldExclude = (name: string): boolean => {
     return excludePatterns.some((pattern) => {

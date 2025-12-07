@@ -63,7 +63,7 @@ export async function getMarketStatus(
         progress.report({ message: '渲染结果...', increment: 30 });
 
         // 创建WebView显示结果
-        const panel = createMarketStatusPanel(context, data);
+        createMarketStatusPanel(context, data);
 
         progress.report({ increment: 20 });
 
