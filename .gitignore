@@ -57,3 +57,9 @@ config/credentials.json
 github_token.txt
 config/emquant_config.json
 config/broker_config.json
+
+# 大文件 - 不应提交到Git
+.taorui/
+*.vsix
+trquant-*.vsix
+extension/*.vsix
