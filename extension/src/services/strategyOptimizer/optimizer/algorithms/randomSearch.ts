@@ -33,8 +33,7 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
         this.stopped = false;
         
         const maxIterations = config.parameterRanges.length * 50; // 默认每个参数采样50次
-        // OptimizationContext 可能包含 maxIterations，但类型定义中没有，使用类型断言
-        const maxIterationsConfig = (context as OptimizationContext & { maxIterations?: number }).maxIterations || maxIterations;
+        const maxIterationsConfig = (context as any).maxIterations || maxIterations;
         
         logger.info('开始随机搜索优化', MODULE, {
             maxIterations: maxIterationsConfig,
@@ -47,7 +46,7 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
         
         const iterations: OptimizationIteration[] = [];
         let bestScore = -Infinity;
-        let bestParameters: Record<string, string | number | boolean> = {};
+        let bestParameters: Record<string, any> = {};
         let bestResult: BacktestResult | null = null;
         const originalResult: BacktestResult | null = null;
         
@@ -87,11 +86,11 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
             }
             
             try {
-                // 创建新的策略配置（用于回测）
-                // const candidateConfig: StrategyConfig = {
-                //     ...config,
-                //     parameters: { ...config.parameters, ...params }
-                // };
+                // 创建新的策略配置
+                const candidateConfig: StrategyConfig = {
+                    ...config,
+                    parameters: { ...config.parameters, ...params }
+                };
                 
                 // 执行回测（占位符）
                 const backtestResult: BacktestResult = {
@@ -160,15 +159,15 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
             bestStrategy: {
                 version: `v${Date.now()}`,
                 parameters: bestParameters,
-                backtestResult: bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
+                backtestResult: bestResult || iterations[0]?.backtestResult!,
                 score: bestScore
             },
             comparison: {
-                original: originalResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
-                optimized: bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
+                original: originalResult || iterations[0]?.backtestResult!,
+                optimized: bestResult || iterations[0]?.backtestResult!,
                 improvement: this.calculateImprovements(
-                    originalResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId)),
-                    bestResult ?? (iterations[0]?.backtestResult ?? this.createEmptyBacktestResult(strategyId))
+                    originalResult || iterations[0]?.backtestResult!,
+                    bestResult || iterations[0]?.backtestResult!
                 )
             },
             progress: {
@@ -202,8 +201,8 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
     /**
      * 随机生成参数值
      */
-    private generateRandomParameters(ranges: ParameterRange[]): Record<string, string | number | boolean> {
-        const params: Record<string, string | number | boolean> = {};
+    private generateRandomParameters(ranges: ParameterRange[]): Record<string, any> {
+        const params: Record<string, any> = {};
         
         for (const range of ranges) {
             if (range.type === 'categorical' && range.values) {
@@ -221,14 +220,7 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
                 const max = range.max || 100;
                 params[range.name] = Math.random() * (max - min) + min;
             } else {
-                // else 分支：range.type 只能是 'categorical'，使用 default 或第一个值
-                if (range.default !== undefined) {
-                    params[range.name] = range.default;
-                } else if (range.values && range.values.length > 0) {
-                    params[range.name] = range.values[0];
-                } else {
-                    params[range.name] = '';
-                }
+                params[range.name] = range.default;
             }
         }
         
@@ -238,12 +230,11 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
     /**
      * 计算策略评分
      */
-    private calculateScore(metrics: import('../types').BacktestMetrics, target: OptimizationTarget): number {
+    private calculateScore(metrics: any, target: OptimizationTarget): number {
         let score = 0;
         
         for (const objective of target.objectives) {
-            const metricValue = metrics[objective.metric as keyof import('../types').BacktestMetrics];
-            const value = typeof metricValue === 'number' ? metricValue : 0;
+            const value = metrics[objective.metric] || 0;
             const weight = objective.weight || 1;
             
             if (objective.direction === 'maximize') {
@@ -254,30 +245,6 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
         }
         
         return score;
-    }
-    
-    /**
-     * 创建空的回测结果（用于默认值）
-     */
-    private createEmptyBacktestResult(strategyId: string): BacktestResult {
-        return {
-            strategyId,
-            strategyVersion: 'unknown',
-            parameters: {},
-            metrics: {
-                totalReturn: 0,
-                annualReturn: 0,
-                volatility: 0,
-                sharpeRatio: 0,
-                calmarRatio: 0,
-                maxDrawdown: 0,
-                winRate: 0,
-                profitFactor: 0,
-                totalTrades: 0,
-                avgHoldDays: 0
-            },
-            timestamp: new Date().toISOString()
-        };
     }
     
     /**
@@ -296,23 +263,15 @@ export class RandomSearchAlgorithm implements OptimizationAlgorithm {
             change: number;
         }> = [];
         
-        const metricMap: Record<string, keyof import('../types').BacktestMetrics> = {
-            'annualReturn': 'annualReturn',
-            'sharpeRatio': 'sharpeRatio',
-            'calmarRatio': 'calmarRatio',
-            'winRate': 'winRate',
-            'profitFactor': 'profitFactor',
-        };
+        const metrics = ['annualReturn', 'sharpeRatio', 'calmarRatio', 'winRate', 'profitFactor'];
         
-        for (const [metricName, metricKey] of Object.entries(metricMap)) {
-            const beforeValue = original.metrics[metricKey];
-            const afterValue = optimized.metrics[metricKey];
-            const before = typeof beforeValue === 'number' ? beforeValue : 0;
-            const after = typeof afterValue === 'number' ? afterValue : 0;
+        for (const metric of metrics) {
+            const before = (original.metrics as any)[metric] || 0;
+            const after = (optimized.metrics as any)[metric] || 0;
             const change = before !== 0 ? ((after - before) / Math.abs(before)) * 100 : 0;
             
             improvements.push({
-                metric: metricName,
+                metric,
                 before,
                 after,
                 change

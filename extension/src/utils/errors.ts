@@ -43,10 +43,10 @@ export enum ErrorCode {
  */
 export class TRQuantError extends Error {
     public readonly code: ErrorCode;
-    public readonly details?: unknown;
+    public readonly details?: any;
     public readonly timestamp: Date;
 
-    constructor(code: ErrorCode, message: string, details?: unknown) {
+    constructor(code: ErrorCode, message: string, details?: any) {
         super(message);
         this.name = 'TRQuantError';
         this.code = code;
@@ -96,7 +96,7 @@ export class TRQuantError extends Error {
  * Python相关错误
  */
 export class PythonError extends TRQuantError {
-    constructor(message: string, details?: unknown) {
+    constructor(message: string, details?: any) {
         super(ErrorCode.PYTHON_EXECUTION_ERROR, message, details);
         this.name = 'PythonError';
     }
@@ -106,7 +106,7 @@ export class PythonError extends TRQuantError {
  * 数据相关错误
  */
 export class DataError extends TRQuantError {
-    constructor(code: ErrorCode, message: string, details?: unknown) {
+    constructor(code: ErrorCode, message: string, details?: any) {
         super(code, message, details);
         this.name = 'DataError';
     }
@@ -116,7 +116,7 @@ export class DataError extends TRQuantError {
  * 配置相关错误
  */
 export class ConfigError extends TRQuantError {
-    constructor(message: string, details?: unknown) {
+    constructor(message: string, details?: any) {
         super(ErrorCode.CONFIG_INVALID, message, details);
         this.name = 'ConfigError';
     }
@@ -193,7 +193,7 @@ export class ErrorHandler {
     /**
      * 验证必需参数
      */
-    static validateRequired(params: Record<string, unknown>, required: string[]): void {
+    static validateRequired(params: Record<string, any>, required: string[]): void {
         const missing = required.filter(key => params[key] === undefined || params[key] === null);
         
         if (missing.length > 0) {

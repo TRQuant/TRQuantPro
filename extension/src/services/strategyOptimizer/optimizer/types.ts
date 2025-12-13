@@ -25,7 +25,7 @@ export interface OptimizationConfig {
     parallel?: boolean;  // 是否并行执行
     randomSeed?: number;
     // 算法特定参数
-    algorithmParams?: Record<string, unknown>;
+    algorithmParams?: Record<string, any>;
 }
 
 // ============================================================
@@ -38,17 +38,17 @@ export interface ParameterRange {
     min?: number;
     max?: number;
     step?: number;
-    values?: (string | number | boolean)[];  // 分类变量的可选值
-    default?: string | number | boolean;
+    values?: any[];  // 分类变量的可选值
+    default?: any;
     description?: string;
 }
 
 export interface StrategyConfig {
     code?: string;  // 策略代码
     configFile?: string;  // 配置文件路径
-    parameters: Record<string, string | number | boolean>;  // 当前参数值
+    parameters: Record<string, any>;  // 当前参数值
     parameterRanges: ParameterRange[];  // 可优化参数范围
-    fixedParameters?: Record<string, string | number | boolean>;  // 固定参数（不可优化）
+    fixedParameters?: Record<string, any>;  // 固定参数（不可优化）
     constraints?: OptimizationConstraint[];  // 约束条件
 }
 
@@ -113,7 +113,7 @@ export interface BacktestMetrics {
 export interface BacktestResult {
     strategyId: string;
     strategyVersion: string;
-    parameters: Record<string, string | number | boolean>;
+    parameters: Record<string, any>;
     metrics: BacktestMetrics;
     equityCurve?: number[];         // 权益曲线
     trades?: TradeRecord[];         // 交易记录
@@ -152,7 +152,7 @@ export interface PositionRecord {
 export interface OptimizationIteration {
     iteration: number;
     candidateId: string;
-    parameters: Record<string, string | number | boolean>;
+    parameters: Record<string, any>;
     backtestResult: BacktestResult;
     score: number;  // 综合评分
     timestamp: string;
@@ -162,7 +162,7 @@ export interface OptimizationProgress {
     currentIteration: number;
     totalIterations?: number;
     bestScore: number;
-    bestParameters: Record<string, string | number | boolean>;
+    bestParameters: Record<string, any>;
     iterations: OptimizationIteration[];
     status: 'running' | 'completed' | 'stopped' | 'error';
     startTime: string;
@@ -183,7 +183,7 @@ export interface OptimizationResult {
     // 最佳策略
     bestStrategy: {
         version: string;
-        parameters: Record<string, string | number | boolean>;
+        parameters: Record<string, any>;
         backtestResult: BacktestResult;
         score: number;
     };
@@ -215,8 +215,8 @@ export interface OptimizationResult {
 export interface StrategyChange {
     type: 'parameter' | 'logic' | 'factor' | 'risk_control';
     description: string;
-    before: string | number | boolean | null | Record<string, unknown>;
-    after: string | number | boolean | null | Record<string, unknown>;
+    before: any;
+    after: any;
     reason: string;
     impact: string;
 }
@@ -225,7 +225,7 @@ export interface OptimizationLogEntry {
     timestamp: string;
     level: 'info' | 'warning' | 'error';
     message: string;
-    data?: unknown;
+    data?: any;
 }
 
 // ============================================================
@@ -255,7 +255,7 @@ export interface StrategyVersion {
     versionId: string;
     strategyId: string;
     version: string;  // 如 "v20251201_r3"
-    parameters: Record<string, string | number | boolean>;
+    parameters: Record<string, any>;
     code?: string;
     backtestResult?: BacktestResult;
     generatedBy: 'algorithm' | 'ai' | 'manual';
@@ -269,7 +269,7 @@ export interface VersionComparison {
     version1: StrategyVersion;
     version2: StrategyVersion;
     differences: {
-        parameters: Record<string, { before: string | number | boolean; after: string | number | boolean }>;
+        parameters: Record<string, { before: any; after: any }>;
         codeDiff?: string;
         performanceDiff: {
             metric: string;

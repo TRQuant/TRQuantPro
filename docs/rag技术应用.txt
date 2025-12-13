@@ -1,0 +1,213 @@
+（美东时间 2025-12-10 00:00:00）
+
+下面给你一套“把 RAG 用到开发手册 + 整个 TRQuant 系统开发”的可落地方案：**目标、架构、数据与索引、检索链路、评测与质量门禁、与 MCP/Cursor 联用、上线与演进**。尽量按你们现有 MCP 体系（docs/spec/code/evidence/task/workflow/quality/report）来做，不另起炉灶。
+
+---
+
+## 0) 总目标（你真正想要的能力）
+
+1. **开发手册**：从“静态文档”升级为“可问可追溯的工程知识库”，支持：章节定位、引用出处、版本差异、自动生成章节草稿。
+2. **系统开发**：把“需求→实现→验证→沉淀”变成可复用流程，减少重复劳动，提高稳定性与可维护性。
+3. **统一标准**：所有回答都能给出**出处（chunk 引用）+ 版本（git tag/commit）+ 证据链（evidence）**，大输出走 artifact。
+
+---
+
+## 1) 架构总览（TRQuant 版 RAG = Retrieval + Governance）
+
+### 1.1 两个索引库（强烈建议分开）
+
+* **Manual KB（手册知识库）**：AShare-manual 第六册 `dev-book/` + docs/ 下与手册对应的设计/指南文档
+* **Engineering KB（工程知识库）**：代码、API、配置、工作流定义、报告模板、历史 evidence
+
+分开原因：检索目标不同（手册偏叙述与规范；工程偏接口与实现），也便于权限和评测隔离。
+
+### 1.2 三层能力
+
+* **R（Retrieval）**：向量检索 + 关键词/BM25 + reranker
+* **G（Generation）**：模板化回答/章节生成（带引用）
+* **G（Governance）**：spec 校验、quality 门禁、evidence 记录、版本绑定、artifact 输出
+
+---
+
+## 2) 数据接入与索引（怎么把文档/代码喂给 RAG）
+
+### 2.1 手册/文档接入（Manual KB）
+
+**数据源**
+
+* `extension/AShare-manual/src/pages/dev-book/**.md`
+* `docs/**.md`（架构、开发指南、平台集成、工作流等）
+
+**切分策略（chunking）**
+
+* Markdown：按标题层级切（H1/H2/H3），每 chunk 目标 300–800 tokens
+* 代码块单独成 chunk（保留语言标签）
+* 每个 chunk 必须带 metadata：
+  `doc_id, path, chapter, section, lang, version(tag/commit), updated_at, anchors`
+
+**索引写入**
+
+* embedding 入库：chunk_text + metadata
+* 同时建一个 BM25/关键词索引（应对专有名词、函数名）
+
+### 2.2 代码/配置接入（Engineering KB）
+
+**数据源**
+
+* repo 代码（python/ts/astro）、配置（json/yaml）、API schema、workflow 定义
+* 建议只索引“关键路径”，避免全库噪音：`core/`, `extension/`, `docs/03_modules/`, `workflow/`
+
+**切分策略**
+
+* 以“符号级”切分：class/function 为一个 chunk（配签名、文件、行号范围）
+* 配置文件：按 section/key 作为 chunk
+* metadata：`repo, file_path, symbol, start_line, end_line, commit`
+
+---
+
+## 3) 在线检索链路（回答时怎么跑）
+
+### 3.1 统一查询入口：`kb.query`
+
+对外只暴露一个入口（让 Cursor/Agent 使用简单），内部做路由：
+
+* 若问题属于“如何写手册/章节定位/规范”：优先 Manual KB
+* 若问题属于“某模块怎么实现/哪里定义/参数含义”：优先 Engineering KB
+* 两者都可能：并行检索后合并 rerank
+
+### 3.2 检索组合（建议固定为 3-stage）
+
+1. **关键词召回（BM25）**：专有名词、函数名命中更稳
+2. **向量召回（Embedding）**：语义相似，覆盖表达差异
+3. **Reranker**：重排候选，输出 Top-K（通常 K=6–10）
+
+### 3.3 生成规则（必须写死，避免“胡编”）
+
+* LLM 回答必须遵守：**“无引用不结论”**
+* 输出结构固定为：
+
+  * 结论（1–3 句话）
+  * 依据（引用 chunk 列表：doc_id/section/版本）
+  * 下一步（具体可执行动作）
+* 大内容（>阈值）自动 artifact 化：返回 pointer + 摘要
+
+---
+
+## 4) 质量保障（让 RAG 可用、可维护、可上线）
+
+### 4.1 评测集（必须先建）
+
+建立两个小而精的黄金集：
+
+* **Manual QA set（50–150 条）**：章节定位、术语解释、开发步骤、规范约束
+* **Engineering QA set（50–150 条）**：API 参数、模块边界、错误码、配置含义、工作流步骤
+
+每条包含：
+
+* question
+* expected citations（应命中哪些章节/文件）
+* expected answer sketch（不要求逐字，但要覆盖要点）
+
+### 4.2 指标（最少这 4 个）
+
+* Recall@K（是否检到正确片段）
+* Citation precision（引用是否相关）
+* Faithfulness（答案是否被引用支撑）
+* Latency（端到端响应时间）
+
+### 4.3 质量门禁（与你们 MCP 体系对齐）
+
+* **spec_server**：校验回答结构、引用格式、frontmatter/章节 schema
+* **quality_server**：对评测集定期跑回归（日报/周报）
+* **evidence_server**：记录索引版本、评测结果、回归失败原因
+* **report_server**：自动生成“RAG 质量报告”（趋势、回归差异、失败样例）
+
+---
+
+## 5) 如何应用到“开发手册”（具体落地方式）
+
+### 5.1 手册写作模式升级：从“写作”变成“检索+生成+校验”
+
+建议在你手册开发步骤中新增一个固定工作流（每个章节都一样）：
+
+**章节生成工作流（建议写成 workflow 模板）**
+
+1. `docs.search/read` 找到源文档（docs 目录）
+2. `kb.query` 生成章节草稿（带引用）
+3. `spec.validate` 校验 Astro frontmatter + 章节导航 + 链接格式
+4. `docs.write/update` 写回 `dev-book/章节`（写操作走 confirm_token）
+5. `docs.validate` + `lint.check`（链接、代码块、图片）
+6. `evidence.record` 记录：来源文档、生成策略、变更影响
+7. `report.generate` 产出章节验收报告（含引用覆盖率、缺口）
+
+### 5.2 手册内嵌“可检索锚点”
+
+为每个小节强制加锚点规范（如 `## 8.x 策略优化与对比`），metadata 里保留 `chapter/section`，这样 RAG 引用可精确到小节。
+
+---
+
+## 6) 如何应用到“整个 TRQuant 系统开发”（工程闭环）
+
+### 6.1 关键：让 RAG 成为“开发工作台”的一层，而非独立功能
+
+把 RAG 融入你们的工程循环（你前面要的 Plan→Work→Review→Codify）：
+
+* **Plan**：`kb.query` 自动收集相关设计、历史决策、相似模块实现；输出计划时自动附引用
+* **Work**：`kb.query` 用于“定位接口/示例/模式”；`code.search` 与 `kb.query` 联用（检索到符号→打开上下文）
+* **Review**：回归评测（QA set）+ 质量报告（report.compare）
+* **Codify**：把本次变更沉淀回 docs + 手册，并触发索引增量更新
+
+### 6.2 增量更新（索引如何随开发演进）
+
+* 每次 merge/tag 后跑 `kb.index_update`（增量：只处理变更文件）
+* 更新后跑 `kb.eval_run`（评测集回归）
+* 若回归失败：阻断发布或降级（只读模式/降低权重）
+
+---
+
+## 7) MCP 工具设计草案（最小可交付）
+
+建议新增一个 `kb_server`（或把能力并入 docs_server/code_server，但我建议独立，边界更清晰）：
+
+### 7.1 Tools（P0 最小集）
+
+1. `kb.index.build(scope, mode)`
+
+   * scope: `manual|engineering|all`
+   * mode: `dry_run|execute`
+2. `kb.index.update(changed_paths, mode)`
+3. `kb.query(query, scope, top_k, filters)`
+
+   * filters: version/tag/lang/chapter/module
+4. `kb.eval.run(eval_set, scope)`
+5. `kb.report.generate(run_id)` → report_server 产出报告（或直接返回 report_id）
+
+### 7.2 输出统一格式（与你们 envelope 对齐）
+
+* `answer`（短）
+* `citations`（必须）
+* `artifact_ptrs`（大输出）
+* `trace_id`
+* `version_ref`（index_version + git tag）
+
+---
+
+## 8) 你提到的“策略优化/实盘反馈”如何纳入 RAG + 工作流
+
+你可以让 RAG 做两件关键事：
+
+1. **解释与建议**：当实盘监控触发异常（滑点/回撤/因子漂移），RAG 自动引用“历史类似事件”的 evidence + 对应策略章节，给出“可审计建议”。
+2. **生成升级方案草稿**：自动生成“优化计划+对比指标+回滚方案”，但真正上线仍必须走 confirm_token + evidence + report.compare。
+
+---
+
+## 9) 建议你还需要补充的内容（很关键）
+
+1. **权限与脱敏**：工程 KB 可能含敏感配置/密钥痕迹，索引前必须过滤（规则化 redact）。
+2. **引用与版权边界**：手册生成必须保持“引用片段可追溯”，避免大段复制粘贴；长内容走摘要+指针。
+3. **“无答案策略”**：检索不到足够证据时必须返回“缺口清单”（需要补的文档/代码），并自动生成 task。
+
+---
+
+如果你希望我把这套方案直接“嵌入到你那份《开发手册开发步骤》文本里”，我可以输出一份**可复制粘贴的修订稿**：新增一节《RAG 知识库与工程工作台》，并在 Phase2/Phase3 每步里补上对应的 `kb.*` 工具调用与验收标准（引用覆盖率、回归评测通过、索引版本绑定）。
+

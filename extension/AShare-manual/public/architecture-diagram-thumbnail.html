@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+<body>
+  <div class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'primaryTextColor':'#1a1a1a','primaryBorderColor':'#666','primaryColor':'#7aa6d8','lineColor':'#64748b','secondaryColor':'transparent','tertiaryColor':'transparent','background':'transparent','mainBkg':'transparent','secondBkg':'transparent','tertiaryBkg':'transparent','subtitleColor':'#1a1a1a','titleColor':'#1a1a1a'},'flowchart':{'useMaxWidth':true,'htmlLabels':true,'curve':'basis','padding':8,'nodeSpacing':30,'rankSpacing':40}}}%%
+flowchart TB
+
+%% 简化缩略图 - 只显示主要层次（高对比度优化，粉色/紫色使用白色文字）
+classDef layerUi fill:#e3f2fd,stroke:#1976d2,stroke-width:2.5px,color:#0d47a1
+classDef layerApi fill:#e8f5e9,stroke:#388e3c,stroke-width:2.5px,color:#1b5e20
+classDef layerAI fill:#e91e63,stroke:#c2185b,stroke-width:2.5px,color:#ffffff
+classDef layerOrch fill:#9c27b0,stroke:#7b1fa2,stroke-width:2.5px,color:#ffffff
+classDef layerCore fill:#fff3e0,stroke:#f57c00,stroke-width:2.5px,color:#e65100
+classDef layerData fill:#fff8e1,stroke:#f9a825,stroke-width:2.5px,color:#f57f17
+classDef layerExec fill:#e0f2f1,stroke:#00796b,stroke-width:2.5px,color:#004d40
+
+subgraph P["表现层"]
+  direction LR
+  UI["GUI/CLI/手册/扩展"]:::layerUi
+end
+
+subgraph A["API 接口层"]
+  API["TRQuantAPIBase"]:::layerApi
+end
+
+subgraph AI["AI 代理层"]
+  LLM["AI Agent Hub"]:::layerAI
+end
+
+subgraph O["编排与工具链层"]
+  direction TB
+  ORC["WorkflowOrchestrator"]:::layerOrch
+  TOOL["MCP/RAG/StrategyKB/Evidence"]:::layerOrch
+end
+
+subgraph C["核心业务层"]
+  direction LR
+  CORE["8个核心模块<br/>DataSource/Trend/Mainline<br/>Candidate/Factor/Strategy<br/>Optimizer/Backtest"]:::layerCore
+end
+
+subgraph D["数据与知识平台"]
+  direction LR
+  DATA["7个数据存储<br/>MarketData/FactorStore/BacktestDB<br/>StrategyKB/Evidence/Knowledge/Vector"]:::layerData
+end
+
+subgraph E["执行层"]
+  direction LR
+  EXE["PTrade/QMT"]:::layerExec
+end
+
+UI --> API
+UI --> LLM
+API --> LLM
+API --> ORC
+LLM --> TOOL
+ORC --> TOOL
+TOOL --> CORE
+CORE --> DATA
+TOOL --> DATA
+CORE --> EXE
+
+
+
+
+
+
+  </div>
+</body>
+</html>

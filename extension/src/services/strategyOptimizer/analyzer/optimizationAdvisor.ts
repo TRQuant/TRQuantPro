@@ -12,7 +12,7 @@
  */
 
 import { logger } from '../../../utils/logger';
-import { StrategyAnalysis } from './strategyAnalyzer';
+import { StrategyAnalysis, StrategyIssue } from './strategyAnalyzer';
 import { KnowledgeStore } from '../learner/knowledgeStore';
 import { BestPractice } from '../types';
 

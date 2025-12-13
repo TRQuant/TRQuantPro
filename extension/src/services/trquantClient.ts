@@ -18,10 +18,10 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-// import * as os from 'os'; // 暂时未使用
+import * as os from 'os';
 
 import { logger } from '../utils/logger';
-import { ConfigManager } from '../utils/config';
+import { config, ConfigManager } from '../utils/config';
 import { 
     TRQuantError, 
     ErrorCode, 
@@ -41,8 +41,7 @@ import {
     RecommendFactorsParams,
     GenerateStrategyParams,
     AnalyzeBacktestParams,
-    RiskAssessmentParams,
-    RunBacktestParams
+    RiskAssessmentParams
 } from '../types';
 
 /**
@@ -50,7 +49,7 @@ import {
  */
 interface BridgeRequest {
     action: string;
-    params: Record<string, unknown>;
+    params: Record<string, any>;
 }
 
 /**
@@ -114,7 +113,7 @@ export class TRQuantClient {
         params: GenerateStrategyParams
     ): Promise<ApiResponse<Strategy>> {
         // 验证必需参数
-        ErrorHandler.validateRequired(params as unknown as Record<string, unknown>, ['factors']);
+        ErrorHandler.validateRequired(params, ['factors']);
         
         const riskParams = {
             max_position: params.risk_params?.max_position || 
@@ -139,21 +138,7 @@ export class TRQuantClient {
     async analyzeBacktest(
         params: AnalyzeBacktestParams
     ): Promise<ApiResponse<BacktestResult>> {
-        return this.callBridge<BacktestResult>('analyze_backtest', params as Record<string, unknown>);
-    }
-
-    /**
-     * 运行回测
-     */
-    async runBacktest(
-        params: RunBacktestParams
-    ): Promise<ApiResponse<unknown>> {
-        ErrorHandler.validateRequired(params as unknown as Record<string, unknown>, ['strategy_code', 'config']);
-        return this.callBridge('run_backtest', {
-            strategy_code: params.strategy_code,
-            config: params.config,
-            data_source: params.data_source || 'akshare'
-        });
+        return this.callBridge<BacktestResult>('analyze_backtest', params);
     }
 
     /**
@@ -162,8 +147,8 @@ export class TRQuantClient {
     async assessRisk(
         params: RiskAssessmentParams
     ): Promise<ApiResponse<RiskAssessment>> {
-        ErrorHandler.validateRequired(params as unknown as Record<string, unknown>, ['portfolio']);
-        return this.callBridge<RiskAssessment>('risk_assessment', params as unknown as Record<string, unknown>);
+        ErrorHandler.validateRequired(params, ['portfolio']);
+        return this.callBridge<RiskAssessment>('risk_assessment', params);
     }
 
     /**
@@ -181,11 +166,11 @@ export class TRQuantClient {
     // ==================== Bridge调用方法 ====================
 
     /**
-     * 调用Python Bridge（公共方法，供其他模块使用）
+     * 调用Python Bridge (公共方法，供外部使用)
      */
-    public async callBridge<T = unknown>(
+    async callBridge<T>(
         action: string,
-        params: Record<string, unknown> | { [key: string]: unknown }
+        params: Record<string, any>
     ): Promise<ApiResponse<T>> {
         const startTime = Date.now();
         
@@ -201,7 +186,7 @@ export class TRQuantClient {
                 { duration: `${duration}ms`, ok: response.ok }
             );
 
-            return response as ApiResponse<T>;
+            return response;
         } catch (error) {
             const duration = Date.now() - startTime;
             logger.error(
@@ -218,7 +203,7 @@ export class TRQuantClient {
      */
     private executeSubprocess<T>(
         action: string,
-        params: Record<string, unknown> | { [key: string]: unknown }
+        params: Record<string, any>
     ): Promise<ApiResponse<T>> {
         return new Promise((resolve, reject) => {
             const pythonPath = this.configManager.getPythonPath(this.extensionPath);

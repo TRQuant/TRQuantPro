@@ -8,7 +8,6 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
-import * as fs from 'fs';
 import { logger } from '../utils/logger';
 
 const MODULE = 'DataUpdateService';
@@ -16,7 +15,7 @@ const MODULE = 'DataUpdateService';
 export interface DataUpdateResult {
   success: boolean;
   message: string;
-  details?: string | Record<string, unknown>;
+  details?: any;
 }
 
 export class DataUpdateService {
@@ -42,6 +41,13 @@ export class DataUpdateService {
   public async updateMarketData(): Promise<DataUpdateResult> {
     try {
       logger.info('开始更新行情数据...', MODULE);
+
+      const scriptPath = path.join(
+        vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '',
+        'python',
+        'tools',
+        'update_market_data.py'
+      );
 
       // 使用与桌面端一致的数据源管理器
       const result = await this.executePythonScript(`
@@ -382,6 +388,7 @@ except Exception as e:
 
       // 创建临时脚本文件
       const tempScriptPath = path.join(workspacePath, '.temp_data_update.py');
+      const fs = require('fs');
 
       // 替换脚本中的工作区路径占位符
       const fixedScript = script.replace(/__WORKSPACE_PATH__/g, workspacePath.replace(/\\/g, '/'));

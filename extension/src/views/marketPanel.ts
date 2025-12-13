@@ -227,7 +227,7 @@ export class MarketPanel {
     ${mainlines ? `
     <div class="section">
         <div class="section-title">🎯 热门主线 TOP 5</div>
-        ${mainlines.slice(0, 5).map((m, i: number) => `
+        ${mainlines.slice(0, 5).map((m: any, i: number) => `
             <div class="mainline-item">
                 <span>${i + 1}. ${m.name}</span>
                 <span style="color: #667eea">${m.score?.toFixed(2)}</span>

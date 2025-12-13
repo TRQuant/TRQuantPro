@@ -13,7 +13,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { KnowledgeStore, getKnowledgeStore } from './knowledgeStore';
-import { StrategyPattern, BestPractice } from '../types';
+import { StrategyPattern, BestPractice, APIMapping, Platform } from '../types';
 
 // ============================================================
 // 手册章节映射
@@ -130,22 +130,6 @@ const EXTRACTION_PATTERNS = {
 };
 
 // ============================================================
-// 类型定义
-// ============================================================
-
-interface ManualLearningStats {
-  filesScanned: number;
-  patternsExtracted: number;
-  practicesExtracted: number;
-  codeBlocksFound: number;
-}
-
-interface BookInfo {
-  name: string;
-  chapters: Record<string, { name: string; category: string }> & { [key: string]: { name: string; category: string } };
-}
-
-// ============================================================
 // 手册学习器类
 // ============================================================
 
@@ -153,7 +137,7 @@ export class ManualLearner {
   private store: KnowledgeStore;
   private manualPath: string;
   private learningLog: string[] = [];
-  private stats: ManualLearningStats = {
+  private stats = {
     filesScanned: 0,
     patternsExtracted: 0,
     practicesExtracted: 0,
@@ -170,7 +154,7 @@ export class ManualLearner {
    */
   async learnFromManual(): Promise<{
     success: boolean;
-    stats: ManualLearningStats;
+    stats: any;
     log: string[];
   }> {
     this.log('开始扫描A股实操手册...');
@@ -207,7 +191,7 @@ export class ManualLearner {
   /**
    * 扫描书籍目录
    */
-  private async scanBookDirectory(bookPath: string, bookDir: string, bookInfo: BookInfo): Promise<void> {
+  private async scanBookDirectory(bookPath: string, bookDir: string, bookInfo: any): Promise<void> {
     this.log(`扫描: ${bookInfo.name} (${bookDir})`);
 
     const files = this.getAllMarkdownFiles(bookPath);
@@ -220,7 +204,7 @@ export class ManualLearner {
         // 确定章节信息
         const chapterMatch = filename.match(/(\d{3})_Chapter(\d+)/);
         const chapterNum = chapterMatch ? chapterMatch[1] : '000';
-        const chapterInfo = bookInfo.chapters[chapterNum] || {
+        const chapterInfo = (bookInfo.chapters as any)[chapterNum] || {
           name: '未知',
           category: '通用',
         };
@@ -441,7 +425,7 @@ export class ManualLearner {
       return { patterns: [], practices: [] };
     }
 
-    const chapterInfo = (bookInfo.chapters as Record<string, { name: string; category: string }>)[chapterNum];
+    const chapterInfo = (bookInfo.chapters as any)[chapterNum];
     if (!chapterInfo) {
       return { patterns: [], practices: [] };
     }

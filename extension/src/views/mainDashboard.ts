@@ -18,32 +18,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
-// import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel'; // 文件不存在
-// 临时类型定义
-interface BacktestResultData {
-  metrics?: {
-    total_return?: number;
-    annual_return?: number;
-    sharpe_ratio?: number;
-    max_drawdown?: number;
-    win_rate?: number;
-    trade_count?: number;
-    [key: string]: unknown;
-  };
-  trades?: Array<{
-    date?: string;
-    stock?: string;
-    action?: string;
-    price?: number;
-    volume?: number;
-    [key: string]: unknown;
-  }>;
-  equity_curve?: number[];
-  [key: string]: unknown;
-}
-const _showQuantConnectStyleReport = (_data: BacktestResultData) => {
-    vscode.window.showInformationMessage('回测报告功能暂时不可用（quantconnectStylePanel 不存在）');
-};
+import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel';
 import { MarketStatus, Mainline, Factor } from '../types';
 
 const MODULE = 'MainDashboard';
@@ -108,27 +83,14 @@ export class MainDashboard {
         return MainDashboard.currentPanel;
     }
 
-    private async handleMessage(message: { command: string; [key: string]: unknown }): Promise<void> {
+    private async handleMessage(message: any): Promise<void> {
         // 调试：记录所有收到的消息
         console.log('[MainDashboard] 收到消息:', message.command);
         
         switch (message.command) {
             // 工作流步骤
             case 'openStep':
-                const stepInfo = message.step as { id?: string; name?: string; index?: number } | undefined;
-                if (stepInfo?.index !== undefined) {
-                    await this.openWorkflowStep(stepInfo.index);
-                } else if (stepInfo?.id) {
-                    // 根据 id 查找 index（使用固定的步骤列表）
-                    const WORKFLOW_STEPS = [
-                        { id: 'data_source' }, { id: 'market_trend' }, { id: 'mainline' },
-                        { id: 'candidate_pool' }, { id: 'factor' }, { id: 'strategy' }
-                    ];
-                    const stepIndex = WORKFLOW_STEPS.findIndex((s: { id: string }) => s.id === stepInfo.id);
-                    if (stepIndex >= 0) {
-                        await this.openWorkflowStep(stepIndex);
-                    }
-                }
+                await this.openWorkflowStep(message.step);
                 break;
             
             // 刷新数据
@@ -192,17 +154,15 @@ export class MainDashboard {
                 await this.runFullWorkflow();
                 break;
             
-            // 打开桌面系统
+            // 打开桌面系统（完整工作流面板）
             case 'openWorkflowPanel':
                 console.log('[MainDashboard] 准备启动桌面系统');
                 try {
-                    await vscode.commands.executeCommand('trquant.launchDesktopSystem');
+                    await vscode.commands.executeCommand('trquant.openWorkflowPanel');
                     console.log('[MainDashboard] 桌面系统启动命令已执行');
-                    vscode.window.showInformationMessage('🖥️ 桌面系统正在启动...');
                 } catch (error) {
                     console.error('[MainDashboard] 启动桌面系统失败:', error);
-                    const errorMsg = error instanceof Error ? error.message : String(error);
-                    vscode.window.showErrorMessage(`启动桌面系统失败: ${errorMsg}`);
+                    vscode.window.showErrorMessage(`启动桌面系统失败: ${error}`);
                 }
                 break;
             
@@ -217,20 +177,12 @@ export class MainDashboard {
                 await this.exportDatabase();
                 break;
             case 'openFile':
-                await this.openFile((message.path as string) || '');
+                await this.openFile(message.path);
                 break;
             
             // 策略优化
             case 'optimizeStrategy':
                 vscode.commands.executeCommand('trquant.optimizeStrategy');
-                break;
-            
-            // BulletTrade 专区
-            case 'openBulletTradeBacktest':
-                vscode.commands.executeCommand('trquant.openBulletTradeBacktest');
-                break;
-            case 'openBulletTradeLive':
-                vscode.commands.executeCommand('trquant.openBulletTradeLive');
                 break;
         }
     }
@@ -271,11 +223,11 @@ export class MainDashboard {
         
         try {
             // 2. 调用Python后端执行步骤
-            const result = await this._client.callBridge<{ ok: boolean; summary?: string; data?: unknown }>('run_workflow_step', { step_id: stepInfo.id });
+            const result = await this._client.callBridge<any>('run_workflow_step', { step_id: stepInfo.id });
             
             // 3. 解析结果 - bridge返回: {ok, summary, data}
-            const response = result.data as { summary?: string; [key: string]: unknown } | undefined;
-            const summary = response?.summary || (result.ok ? '执行成功' : '执行失败');
+            const response = result as any;  // 扩展类型
+            const summary = response.summary || (result.ok ? '执行成功' : '执行失败');
             const details = result.data || {};
             
             // 4. 发送结果到前端
@@ -348,7 +300,7 @@ export class MainDashboard {
         return map[regime] || regime;
     }
 
-    private formatIndices(indexTrend: Record<string, { zscore?: number; change_pct?: number }>): Array<{name: string; value: number; change: number}> {
+    private formatIndices(indexTrend: Record<string, any>): Array<{name: string; value: number; change: number}> {
         const result: Array<{name: string; value: number; change: number}> = [];
         const nameMap: Record<string, string> = {
             'sh_index': '上证指数',
@@ -421,7 +373,7 @@ export class MainDashboard {
             title: '🐉 执行完整投资工作流',
             cancellable: true
         }, async (progress, token) => {
-            const results: Array<{ step: string; success: boolean; error?: string }> = [];
+            const results: any[] = [];
             let hasError = false;
             
             for (let i = 0; i < steps.length; i++) {
@@ -458,7 +410,8 @@ export class MainDashboard {
                     if (response.ok) {
                         results.push({
                             step: step.name,
-                            success: true
+                            success: true,
+                            data: response.data
                         });
                         
                         // 更新前端显示结果
@@ -1626,7 +1579,7 @@ export class MainDashboard {
             <div class="logo">TR</div>
             <div class="header-title">
                 <h1>韬睿量化工作台</h1>
-                <div class="subtitle">TRQuant Professional - A股完整投资流程系统</div>
+                <div class="subtitle">TRQuant Professional - A股完整投资流程系统 V1</div>
             </div>
         </div>
         <div class="header-right">
@@ -1694,41 +1647,6 @@ export class MainDashboard {
                     <div class="quick-info">
                         <h4>策略优化</h4>
                         <p>分析并优化策略代码</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 🚀 BulletTrade 专区 (置顶显示) -->
-        <div class="quick-section" style="background: linear-gradient(135deg, rgba(88, 166, 255, 0.08), rgba(163, 113, 247, 0.08)); border: 2px solid rgba(88, 166, 255, 0.3); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
-            <div class="section-title" style="color: #58a6ff; font-size: 15px; font-weight: 700;">🚀 BulletTrade 专区</div>
-            <div class="quick-grid">
-                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBulletTradeBacktest'})" style="border: 2px solid #58a6ff; background: rgba(88, 166, 255, 0.1);">
-                    <div class="quick-icon">🧪</div>
-                    <div class="quick-info">
-                        <h4 style="color: #58a6ff;">策略回测</h4>
-                        <p>BulletTrade 回测验证</p>
-                    </div>
-                </div>
-                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBulletTradeLive'})" style="border: 2px solid #3fb950; background: rgba(63, 185, 80, 0.1);">
-                    <div class="quick-icon">📈</div>
-                    <div class="quick-info">
-                        <h4 style="color: #3fb950;">实盘交易</h4>
-                        <p>BulletTrade 实盘部署</p>
-                    </div>
-                </div>
-                <div class="quick-card" onclick="vscode.postMessage({command: 'optimizeStrategy'})">
-                    <div class="quick-icon">🔍</div>
-                    <div class="quick-info">
-                        <h4>策略优化</h4>
-                        <p>AI 分析与参数优化</p>
-                    </div>
-                </div>
-                <div class="quick-card" onclick="openWorkflowPanel()">
-                    <div class="quick-icon">🖥️</div>
-                    <div class="quick-info">
-                        <h4>完整工作流</h4>
-                        <p>8步骤投资系统</p>
                     </div>
                 </div>
             </div>
@@ -1885,10 +1803,38 @@ export class MainDashboard {
             </div>
         </div>
         
-        <!-- 其他快捷操作 -->
+        <!-- 快捷操作 -->
         <div class="quick-section">
-            <div class="section-title">📋 其他功能</div>
+            <div class="section-title">⚡ 快捷操作</div>
             <div class="quick-grid">
+                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'openBacktestConfig'})">
+                    <div class="quick-icon">🧪</div>
+                    <div class="quick-info">
+                        <h4>回测配置</h4>
+                        <p>配置并运行策略回测</p>
+                    </div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'createProject'})">
+                    <div class="quick-icon">📁</div>
+                    <div class="quick-info">
+                        <h4>新建项目</h4>
+                        <p>创建新的量化项目</p>
+                    </div>
+                </div>
+                <div class="quick-card" onclick="vscode.postMessage({command: 'generateStrategy'})">
+                    <div class="quick-icon">🤖</div>
+                    <div class="quick-info">
+                        <h4>AI生成策略</h4>
+                        <p>智能生成PTrade代码</p>
+                    </div>
+                </div>
+                <div class="quick-card highlight" onclick="vscode.postMessage({command: 'optimizeStrategy'})">
+                    <div class="quick-icon">🔍</div>
+                    <div class="quick-info">
+                        <h4>策略优化</h4>
+                        <p>分析并优化策略代码</p>
+                    </div>
+                </div>
                 <div class="quick-card" onclick="vscode.postMessage({command: 'showLogs'})">
                     <div class="quick-icon">📋</div>
                     <div class="quick-info">
@@ -2352,12 +2298,15 @@ export class MainDashboard {
  * 注册主控制台
  */
 export function registerMainDashboard(
-    _context: vscode.ExtensionContext,
-    _client: TRQuantClient
+    context: vscode.ExtensionContext,
+    client: TRQuantClient
 ): void {
-    // 注意：trquant.openDashboard 命令已在 extension.ts 的 registerCommands 中注册
-    // 这里不再重复注册，避免 "command already exists" 错误
-    
+    context.subscriptions.push(
+        vscode.commands.registerCommand('trquant.openDashboard', () => {
+            MainDashboard.createOrShow(context.extensionUri, client);
+        })
+    );
+
     logger.info('投资工作流仪表盘已注册', MODULE);
 }
 

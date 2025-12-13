@@ -9,22 +9,8 @@ import * as vscode from 'vscode';
 import { TRQuantClient } from '../services/trquantClient';
 import { DataUpdateService } from '../services/dataUpdateService';
 import { logger } from '../utils/logger';
-import { MarketStatus, Mainline, Factor } from '../types';
 
 const MODULE = 'WorkflowStepPanel';
-
-/**
- * Webview 消息接口
- */
-interface WebviewMessage {
-    command: string;
-    step?: WorkflowStep;
-    commandId?: string;
-    dataType?: string;
-    criteria?: Record<string, unknown>;
-    step_id?: string;
-    [key: string]: unknown;
-}
 
 export type WorkflowStep = 
     | 'data-center'      // 步骤1: 数据中心
@@ -113,10 +99,10 @@ export class WorkflowStepPanel {
     private _disposables: vscode.Disposable[] = [];
 
     // 缓存数据
-    private _marketStatus: MarketStatus | null = null;
-    private _mainlines: Mainline[] = [];
-    private _factors: Factor[] = [];
-    private _candidates: unknown[] = [];
+    private _marketStatus: any = null;
+    private _mainlines: any[] = [];
+    private _factors: any[] = [];
+    private _candidates: any[] = [];
 
     private constructor(
         panel: vscode.WebviewPanel,
@@ -171,22 +157,19 @@ export class WorkflowStepPanel {
         return instance;
     }
 
-    private async handleMessage(message: WebviewMessage): Promise<void> {
+    private async handleMessage(message: any): Promise<void> {
         console.log(`[${MODULE}] 收到消息:`, message.command);
         
         switch (message.command) {
             case 'refresh':
                 await this.loadData();
                 break;
-            case 'navigateStep': {
+            case 'navigateStep':
                 const targetStep = message.step as WorkflowStep;
                 WorkflowStepPanel.createOrShow(this._extensionUri, this._client, targetStep);
                 break;
-            }
             case 'executeCommand':
-                if (message.commandId) {
-                    vscode.commands.executeCommand(message.commandId);
-                }
+                vscode.commands.executeCommand(message.commandId);
                 break;
             case 'updateData':
                 await this.updateData(message.dataType);
@@ -194,20 +177,18 @@ export class WorkflowStepPanel {
             case 'testJQAuth':
                 await this.testJQAuth();
                 break;
-            case 'filterCandidates': {
+            case 'filterCandidates':
                 await this.filterCandidates(message.criteria);
                 break;
-            }
             case 'recommendFactors':
                 await this.recommendFactors();
                 break;
             case 'runBacktest':
                 vscode.commands.executeCommand('trquant.runBacktest');
                 break;
-            case 'run_workflow_step': {
-                await this.runWorkflowStep(message.step_id || '');
+            case 'run_workflow_step':
+                await this.runWorkflowStep(message.step_id);
                 break;
-            }
             default:
                 logger.warn(`未知命令: ${message.command}`, MODULE);
         }
@@ -217,28 +198,25 @@ export class WorkflowStepPanel {
         try {
             switch (this._step) {
                 case 'market-analysis':
-                case 'data-center': {
+                case 'data-center':
                     const marketResult = await this._client.getMarketStatus({});
                     if (marketResult.ok && marketResult.data) {
                         this._marketStatus = marketResult.data;
                     }
                     break;
-                }
-                case 'mainlines': {
+                case 'mainlines':
                     const mainlinesResult = await this._client.getMainlines({ top_n: 10 });
                     if (mainlinesResult.ok && mainlinesResult.data) {
                         this._mainlines = mainlinesResult.data;
                     }
                     break;
-                }
-                case 'factor-center': {
+                case 'factor-center':
                     const regime = this._marketStatus?.regime || 'neutral';
                     const factorsResult = await this._client.recommendFactors({ market_regime: regime, top_n: 10 });
                     if (factorsResult.ok && factorsResult.data) {
                         this._factors = factorsResult.data;
                     }
                     break;
-                }
             }
             this.updateContent();
         } catch (error) {
@@ -277,10 +255,7 @@ export class WorkflowStepPanel {
                             outputChannel.appendLine(result.message);
                             if (result.details) {
                                 outputChannel.appendLine('\n详细信息:');
-                                const detailsStr = typeof result.details === 'string' 
-                                    ? result.details 
-                                    : JSON.stringify(result.details, null, 2);
-                                outputChannel.appendLine(detailsStr);
+                                outputChannel.appendLine(result.details);
                             }
                             outputChannel.show();
                         }
@@ -292,10 +267,7 @@ export class WorkflowStepPanel {
                             outputChannel.appendLine(result.message);
                             if (result.details) {
                                 outputChannel.appendLine('\n错误详情:');
-                                const detailsStr = typeof result.details === 'string' 
-                                    ? result.details 
-                                    : JSON.stringify(result.details, null, 2);
-                                outputChannel.appendLine(detailsStr);
+                                outputChannel.appendLine(result.details);
                             }
                             outputChannel.show();
                         }
@@ -333,10 +305,7 @@ export class WorkflowStepPanel {
                             outputChannel.appendLine(result.message);
                             if (result.details) {
                                 outputChannel.appendLine('\n详细信息:');
-                                const detailsStr = typeof result.details === 'string' 
-                                    ? result.details 
-                                    : JSON.stringify(result.details, null, 2);
-                                outputChannel.appendLine(detailsStr);
+                                outputChannel.appendLine(result.details);
                             }
                             outputChannel.show();
                         }
@@ -348,10 +317,7 @@ export class WorkflowStepPanel {
                             outputChannel.appendLine(result.message);
                             if (result.details) {
                                 outputChannel.appendLine('\n错误详情:');
-                                const detailsStr = typeof result.details === 'string' 
-                                    ? result.details 
-                                    : JSON.stringify(result.details, null, 2);
-                                outputChannel.appendLine(detailsStr);
+                                outputChannel.appendLine(result.details);
                             }
                             outputChannel.show();
                         } else if (selection === '打开配置') {
@@ -371,7 +337,7 @@ export class WorkflowStepPanel {
         });
     }
 
-    private async filterCandidates(_criteria?: Record<string, unknown>): Promise<void> {
+    private async filterCandidates(criteria: any): Promise<void> {
         // TODO: 实现候选池筛选逻辑
         vscode.window.showInformationMessage('🔍 正在筛选候选股票...');
     }
@@ -407,14 +373,7 @@ export class WorkflowStepPanel {
 
                 progress.report({ increment: 100, message: '完成' });
 
-                interface WorkflowStepResponse {
-                    ok: boolean;
-                    summary?: string;
-                    data?: unknown;
-                    error?: string;
-                }
-
-                const resp = response as WorkflowStepResponse;
+                const resp = response as any;
                 if (response.ok) {
                     const summary = resp.summary || '执行成功';
                     vscode.window.showInformationMessage(`✅ ${summary}`, '查看详情').then(selection => {
@@ -744,25 +703,15 @@ export class WorkflowStepPanel {
     }
 
     private renderMainlinesContent(): string {
-        interface MainlineDisplay {
-            name: string;
-            score: number;
-            industries: string[];
-            reasoning?: string;
-            logic?: string;
-        }
-
-        const mainlines: MainlineDisplay[] = this._mainlines.length > 0 
-            ? this._mainlines.map(m => ({ ...m, reasoning: m.logic }))
-            : [
-                { name: '人工智能', score: 92, industries: ['软件', '计算机设备'], reasoning: 'AI应用加速落地' },
-                { name: '华为产业链', score: 88, industries: ['电子', '通信'], reasoning: '自主可控持续推进' },
-                { name: '数据要素', score: 85, industries: ['计算机', '传媒'], reasoning: '政策支持力度大' },
-            ];
+        const mainlines = this._mainlines.length > 0 ? this._mainlines : [
+            { name: '人工智能', score: 92, industries: ['软件', '计算机设备'], reasoning: 'AI应用加速落地' },
+            { name: '华为产业链', score: 88, industries: ['电子', '通信'], reasoning: '自主可控持续推进' },
+            { name: '数据要素', score: 85, industries: ['计算机', '传媒'], reasoning: '政策支持力度大' },
+        ];
         
         return `
             <div class="mainlines-grid">
-                ${mainlines.map((m, i) => `
+                ${mainlines.map((m: any, i: number) => `
                     <div class="mainline-card ${i === 0 ? 'highlight' : ''}">
                         <div class="mainline-header">
                             <span class="mainline-rank">#${i + 1}</span>
@@ -935,7 +884,7 @@ export class WorkflowStepPanel {
                     </div>
                     <div class="card-body">
                         <div class="factor-list">
-                            ${factors.map((f) => `
+                            ${factors.map((f: any) => `
                                 <div class="factor-item">
                                     <div class="factor-info">
                                         <span class="factor-name">${f.name}</span>

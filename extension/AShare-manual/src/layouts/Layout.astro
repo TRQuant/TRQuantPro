@@ -1043,6 +1043,15 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
         else if (currentPath.startsWith('/ashare-book5/')) {
           currentBook = 'ashare-trading';
         }
+        // A股手册第六册第一章小节页面
+        else if (currentPath.startsWith('/ashare-book6/001_Chapter1_System_Overview/')) {
+          // 第一章小节页面使用专用侧边栏
+          currentBook = 'ashare-dev-chapter1';
+        }
+        // A股手册第六册 - 检测 /ashare-book6/ 路径
+        else if (currentPath.startsWith('/ashare-book6/')) {
+          currentBook = 'ashare-dev';
+        }
         // /handbook/theory 显示A股手册第一册导航
         else if (currentPath === '/handbook/theory') {
           currentBook = 'ashare-theory';
@@ -1063,6 +1072,10 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
         else if (currentPath === '/handbook/trading') {
           currentBook = 'ashare-trading';
         }
+        // /handbook/dev 显示A股手册第六册导航
+        else if (currentPath === '/handbook/dev') {
+          currentBook = 'ashare-dev';
+        }
         
         const bookConfigs = {
           home: {
@@ -1072,7 +1085,8 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
               { number: '🌍', title: 'A股实操手册II - 宏观经济', url: '/handbook/macro' },
               { number: '🔍', title: 'A股实操手册III - 个股研究', url: '/handbook/stocks' },
               { number: '📊', title: 'A股实操手册IV - 量化因子', url: '/handbook/quantitative' },
-              { number: '⚡', title: 'A股实操手册V - 回测实盘', url: '/handbook/trading' }
+              { number: '⚡', title: 'A股实操手册V - 回测实盘', url: '/handbook/trading' },
+              { number: '💻', title: 'A股实操手册VI - 系统开发', url: '/handbook/dev' }
             ]
           },
           theory: {
@@ -1356,6 +1370,21 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
               { number: '10.6', title: '终身学习与成长', url: '/ashare-book1/010_Chapter10/10.6_Lifelong_Learning_CN' }
             ]
           },
+          'ashare-dev-chapter1': {
+            title: '📖 第一章：系统概述',
+            chapters: [
+              { number: '↩️', title: '返回第六册目录', url: '/ashare-book6/001_Chapter1_System_Overview/001_Chapter1_System_Overview_CN' },
+              { number: '1.1', title: '项目背景与目标', url: '/ashare-book6/001_Chapter1_System_Overview/1.1_Project_Background_CN' },
+              { number: '1.2', title: '系统架构总览', url: '/ashare-book6/001_Chapter1_System_Overview/1.2_System_Architecture_CN' },
+              { number: '1.3', title: '技术栈选型', url: '/ashare-book6/001_Chapter1_System_Overview/1.3_Tech_Stack_CN' },
+              { number: '1.4', title: '开发历程', url: '/ashare-book6/001_Chapter1_System_Overview/1.4_Development_History_CN' },
+              { number: '1.5', title: '系统开发状态', url: '/ashare-book6/001_Chapter1_System_Overview/1.5_System_Status_CN' },
+              { number: '1.6', title: '桌面系统架构', url: '/ashare-book6/001_Chapter1_System_Overview/1.6_Desktop_System_Architecture_CN' },
+              { number: '1.7', title: 'Cursor扩展架构', url: '/ashare-book6/001_Chapter1_System_Overview/1.7_Cursor_Extension_Architecture_CN' },
+              { number: '1.8', title: '前端技术栈', url: '/ashare-book6/001_Chapter1_System_Overview/1.8_Frontend_Tech_Stack_CN' },
+              { number: '1.9', title: '数据库架构设计', url: '/ashare-book6/001_Chapter1_System_Overview/1.9_Database_Architecture_CN' }
+            ]
+          },
           'ashare-macro': {
             title: '🌍 A股实操手册II',
             chapters: [
@@ -1580,6 +1609,25 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
               { number: '9️⃣', title: '第九章：文件管理系统', url: '/ashare-book5/009_Chapter9_File_Management_CN' },
               { number: '🔟', title: '第十章：韬睿平台完整工作流', url: '/ashare-book5/010_Chapter10_Complete_Workflow_CN' },
               { number: '📋', title: '附录', url: '/ashare-book5/011_Appendix_CN' }
+            ]
+          },
+          'ashare-dev': {
+            title: '💻 A股实操手册VI',
+            chapters: [
+              { number: '📖', title: '序言', url: '/ashare-book6/000_Preface_CN' },
+              { number: '1️⃣', title: '第一章：系统概述', url: '/ashare-book6/001_Chapter1_System_Overview/001_Chapter1_System_Overview_CN' },
+              { number: '2️⃣', title: '第二章：数据源', url: '/ashare-book6/002_Chapter2_Data_Source/002_Chapter2_Data_Source_CN' },
+              { number: '3️⃣', title: '第三章：市场分析', url: '/ashare-book6/003_Chapter3_Market_Analysis/003_Chapter3_Market_Analysis_CN' },
+              { number: '4️⃣', title: '第四章：主线识别', url: '/ashare-book6/004_Chapter4_Mainline_Identification/004_Chapter4_Mainline_Identification_CN' },
+              { number: '5️⃣', title: '第五章：候选池', url: '/ashare-book6/005_Chapter5_Candidate_Pool/005_Chapter5_Candidate_Pool_CN' },
+              { number: '6️⃣', title: '第六章：因子库', url: '/ashare-book6/006_Chapter6_Factor_Library/006_Chapter6_Factor_Library_CN' },
+              { number: '7️⃣', title: '第七章：策略开发', url: '/ashare-book6/007_Chapter7_Strategy_Development/007_Chapter7_Strategy_Development_CN' },
+              { number: '8️⃣', title: '第八章：回测系统', url: '/ashare-book6/008_Chapter8_Backtest/008_Chapter8_Backtest_CN' },
+              { number: '9️⃣', title: '第九章：平台集成', url: '/ashare-book6/009_Chapter9_Platform_Integration/009_Chapter9_Platform_Integration_CN' },
+              { number: '🔟', title: '第十章：开发指南', url: '/ashare-book6/010_Chapter10_Development_Guide/010_Chapter10_Development_Guide_CN' },
+              { number: '1️⃣1️⃣', title: '第十一章：用户手册', url: '/ashare-book6/011_Chapter11_User_Manual/011_Chapter11_User_Manual_CN' },
+              { number: '1️⃣2️⃣', title: '第十二章：API参考', url: '/ashare-book6/012_Chapter12_API_Reference/012_Chapter12_API_Reference_CN' },
+              { number: '📋', title: '附录', url: '/ashare-book6/013_Appendix/013_Appendix_CN' }
             ]
           }
         };
@@ -1887,6 +1935,31 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
         // A股手册第五册章节页，返回第五册导航页
         if (currentPath.startsWith('/ashare-book5/')) {
           return '/handbook/trading';
+        }
+        
+        // A股手册第六册导航页，返回序言
+        if (currentPath === '/ashare-book6/index' || currentPath === '/handbook/dev') {
+          return '/ashare-book6/000_Preface_CN';
+        }
+        // A股手册第六册第一章导航页，返回章节目录首页
+        if (currentPath === '/ashare-book6/001_Chapter1_System_Overview/001_Chapter1_System_Overview_CN') {
+          return '/handbook/dev';
+        }
+        // A股手册第六册第一章小节页，返回第一章导航页
+        if (currentPath.startsWith('/ashare-book6/001_Chapter1_System_Overview/')) {
+          return '/ashare-book6/001_Chapter1_System_Overview/001_Chapter1_System_Overview_CN';
+        }
+        // A股手册第六册第十章导航页，返回章节目录首页
+        if (currentPath === '/ashare-book6/010_Chapter10_Development_Guide/010_Chapter10_Development_Guide_CN') {
+          return '/handbook/dev';
+        }
+        // A股手册第六册第十章小节页，返回第十章导航页
+        if (currentPath.startsWith('/ashare-book6/010_Chapter10_Development_Guide/')) {
+          return '/ashare-book6/010_Chapter10_Development_Guide/010_Chapter10_Development_Guide_CN';
+        }
+        // A股手册第六册章节页，返回第六册导航页
+        if (currentPath.startsWith('/ashare-book6/')) {
+          return '/handbook/dev';
         }
         
         // 如果在手册导航页，返回首页
@@ -2202,7 +2275,125 @@ const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.
           '/ashare-book5/008_Chapter8_Strategy_Iteration_CN',
           '/ashare-book5/009_Chapter9_File_Management_CN',
           '/ashare-book5/010_Chapter10_Complete_Workflow_CN',
-          '/ashare-book5/011_Appendix_CN'
+          '/ashare-book5/011_Appendix_CN',
+          
+          // ===== A股手册第六册：系统开发 =====
+          '/handbook/dev',
+          '/ashare-book6/000_Preface_CN',
+          
+          // 第一章：系统概述
+          '/ashare-book6/001_Chapter1_System_Overview/001_Chapter1_System_Overview_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.1_Project_Background_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.2_System_Architecture_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.3_Tech_Stack_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.4_Development_History_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.5_System_Status_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.6_Desktop_System_Architecture_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.7_Cursor_Extension_Architecture_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.8_Frontend_Tech_Stack_CN',
+          '/ashare-book6/001_Chapter1_System_Overview/1.9_Database_Architecture_CN',
+          
+          // 第二章：数据源
+          '/ashare-book6/002_Chapter2_Data_Source/002_Chapter2_Data_Source_CN',
+          '/ashare-book6/002_Chapter2_Data_Source/2.1_Data_Source_Management_CN',
+          '/ashare-book6/002_Chapter2_Data_Source/2.2_Data_Quality_CN',
+          '/ashare-book6/002_Chapter2_Data_Source/2.3_Data_Storage_Architecture_CN',
+          '/ashare-book6/002_Chapter2_Data_Source/2.4_MCP_Tool_Integration_CN',
+          
+          // 第三章：市场分析
+          '/ashare-book6/003_Chapter3_Market_Analysis/003_Chapter3_Market_Analysis_CN',
+          '/ashare-book6/003_Chapter3_Market_Analysis/3.1_Trend_Analysis_CN',
+          '/ashare-book6/003_Chapter3_Market_Analysis/3.2_Market_Status_CN',
+          '/ashare-book6/003_Chapter3_Market_Analysis/3.3_Five_Dimensional_Scoring_CN',
+          '/ashare-book6/003_Chapter3_Market_Analysis/3.4_MCP_Tool_Integration_CN',
+          
+          // 第四章：主线识别
+          '/ashare-book6/004_Chapter4_Mainline_Identification/004_Chapter4_Mainline_Identification_CN',
+          '/ashare-book6/004_Chapter4_Mainline_Identification/4.1_Mainline_Scoring_CN',
+          '/ashare-book6/004_Chapter4_Mainline_Identification/4.2_Mainline_Filtering_CN',
+          '/ashare-book6/004_Chapter4_Mainline_Identification/4.3_Mainline_Engine_CN',
+          '/ashare-book6/004_Chapter4_Mainline_Identification/4.4_MCP_Tool_Integration_CN',
+          
+          // 第五章：候选池
+          '/ashare-book6/005_Chapter5_Candidate_Pool/005_Chapter5_Candidate_Pool_CN',
+          '/ashare-book6/005_Chapter5_Candidate_Pool/5.1_Stock_Pool_Management_CN',
+          '/ashare-book6/005_Chapter5_Candidate_Pool/5.2_Filtering_Rules_CN',
+          '/ashare-book6/005_Chapter5_Candidate_Pool/5.3_Stock_Scoring_CN',
+          '/ashare-book6/005_Chapter5_Candidate_Pool/5.4_MCP_Tool_Integration_CN',
+          
+          // 第六章：因子库
+          '/ashare-book6/006_Chapter6_Factor_Library/006_Chapter6_Factor_Library_CN',
+          '/ashare-book6/006_Chapter6_Factor_Library/6.1_Factor_Calculation_CN',
+          '/ashare-book6/006_Chapter6_Factor_Library/6.2_Factor_Management_CN',
+          '/ashare-book6/006_Chapter6_Factor_Library/6.3_Factor_Optimization_CN',
+          '/ashare-book6/006_Chapter6_Factor_Library/6.4_Factor_Pipeline_CN',
+          '/ashare-book6/006_Chapter6_Factor_Library/6.5_Factor_Pool_Integration_CN',
+          
+          // 第七章：策略开发
+          '/ashare-book6/007_Chapter7_Strategy_Development/007_Chapter7_Strategy_Development_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.1_Strategy_Template_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.2_Strategy_Generation_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.3_Strategy_Optimization_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.4_Strategy_Standardization_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.5_Strategy_Testing_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.6_Strategy_Deployment_CN',
+          '/ashare-book6/007_Chapter7_Strategy_Development/7.7_MCP_Tool_Integration_CN',
+          
+          // 第八章：回测系统
+          '/ashare-book6/008_Chapter8_Backtest/008_Chapter8_Backtest_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.1_Backtest_Framework_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.2_Backtest_Analyzer_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.3_Return_Analysis_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.4_Risk_Analysis_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.5_Trade_Analysis_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.6_Backtest_Report_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.7_Walk_Forward_Analysis_CN',
+          '/ashare-book6/008_Chapter8_Backtest/8.8_Optimization_Suggestions_CN',
+          
+          // 第九章：平台集成
+          '/ashare-book6/009_Chapter9_Platform_Integration/009_Chapter9_Platform_Integration_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.1_PTrade_Integration_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.2_QMT_Integration_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.3_Desktop_System_Architecture_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.4_GUI_Workflow_System_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.5_Cursor_Extension_Integration_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.6_Live_Trading_Management_CN',
+          '/ashare-book6/009_Chapter9_Platform_Integration/9.7_Online_Feedback_Loop_CN',
+          
+          // 第十章：开发指南
+          '/ashare-book6/010_Chapter10_Development_Guide/010_Chapter10_Development_Guide_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.1_Environment_Setup_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.2_Development_Principles_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.3_Development_Workflow_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.4_Desktop_System_Development_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.5_Cursor_Extension_Development_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.6_Frontend_Development_Guide_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.7_MCP_Server_Development_Guide_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.8_Version_Release_Mechanism_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.9_MCP_Cursor_Workflow_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.10_RAG_KB_Development_Guide_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.11_Development_Methodology_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.12_GUI_Development_Guide_CN',
+          '/ashare-book6/010_Chapter10_Development_Guide/10.13_Web_Crawler_Development_Guide_CN',
+          
+          // 第十一章：用户手册
+          '/ashare-book6/011_Chapter11_User_Manual/011_Chapter11_User_Manual_CN',
+          '/ashare-book6/011_Chapter11_User_Manual/11.1_Quick_Start_CN',
+          '/ashare-book6/011_Chapter11_User_Manual/11.2_GUI_Guide_CN',
+          '/ashare-book6/011_Chapter11_User_Manual/11.3_Workflow_Guide_CN',
+          
+          // 第十二章：API参考
+          '/ashare-book6/012_Chapter12_API_Reference/012_Chapter12_API_Reference_CN',
+          '/ashare-book6/012_Chapter12_API_Reference/12.1_Module_API_CN',
+          '/ashare-book6/012_Chapter12_API_Reference/12.2_Data_Source_API_CN',
+          '/ashare-book6/012_Chapter12_API_Reference/12.3_Config_Reference_CN',
+          
+          // 附录
+          '/ashare-book6/013_Appendix/013_Appendix_CN',
+          '/ashare-book6/013_Appendix/A.1_Glossary_CN',
+          '/ashare-book6/013_Appendix/A.2_Changelog_CN',
+          '/ashare-book6/013_Appendix/A.3_Contributing_CN',
+          '/ashare-book6/013_Appendix/A.4_References_CN'
         ];
       }
 

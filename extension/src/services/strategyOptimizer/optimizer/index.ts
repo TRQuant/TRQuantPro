@@ -5,7 +5,7 @@
  * 根据《策略优化模块设计方案》实现的核心优化引擎
  */
 
-// import * as vscode from 'vscode'; // 暂时未使用
+import * as vscode from 'vscode';
 import { logger } from '../../../utils/logger';
 import {
     OptimizationConfig,
@@ -86,7 +86,7 @@ export class StrategyOptimizationEngine {
         optimizationConfig: OptimizationConfig,
         target: OptimizationTarget,
         context: OptimizationContext,
-        onProgress?: (progress: import('./types').OptimizationProgress) => void
+        onProgress?: (progress: any) => void
     ): Promise<OptimizationResult> {
         if (!this.backtestInterface) {
             throw new Error('回测接口未设置');
@@ -150,8 +150,8 @@ export class StrategyOptimizationEngine {
         changes: Array<{
             type: string;
             description: string;
-            before: string | number | boolean | null | Record<string, unknown>;
-            after: string | number | boolean | null | Record<string, unknown>;
+            before: any;
+            after: any;
             reason: string;
         }>;
         explanation: string;

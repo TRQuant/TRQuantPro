@@ -9,7 +9,7 @@
  * - 回滚到指定版本
  */
 
-// import * as vscode from 'vscode'; // 暂时未使用
+import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { logger } from '../../../utils/logger';
@@ -22,7 +22,7 @@ const MODULE = 'VersionManager';
 interface FullVersionInfo extends VersionInfo {
     code: string;
     tags: string[];
-    metadata: Record<string, unknown>;
+    metadata: Record<string, any>;
 }
 
 /**
@@ -93,7 +93,7 @@ export class VersionManagerImpl implements VersionManager {
     async saveVersion(info: {
         strategyId: string;
         version: string;
-        parameters: Record<string, string | number | boolean>;
+        parameters: Record<string, any>;
         code: string;
         backtestResult?: BacktestResult;
         generatedBy: 'user' | 'algorithm' | 'ai';
@@ -194,8 +194,8 @@ export class VersionManagerImpl implements VersionManager {
     ): Promise<{
         parameterChanges: Array<{
             parameter: string;
-            oldValue: string | number | boolean;
-            newValue: string | number | boolean;
+            oldValue: any;
+            newValue: any;
         }>;
         performanceComparison: {
             metric: string;
@@ -221,8 +221,8 @@ export class VersionManagerImpl implements VersionManager {
         // 参数变化
         const parameterChanges: Array<{
             parameter: string;
-            oldValue: string | number | boolean;
-            newValue: string | number | boolean;
+            oldValue: any;
+            newValue: any;
         }> = [];
         
         const allParams = new Set([
@@ -250,13 +250,8 @@ export class VersionManagerImpl implements VersionManager {
         const metrics = ['totalReturn', 'annualizedReturn', 'sharpeRatio', 'maxDrawdown', 'winRate'];
         
         for (const metric of metrics) {
-            const metricKey = metric as keyof import('./types').BacktestMetrics;
-            const v1Value = typeof v1.backtestResult?.metrics[metricKey] === 'number' 
-                ? v1.backtestResult.metrics[metricKey] 
-                : 0;
-            const v2Value = typeof v2.backtestResult?.metrics[metricKey] === 'number'
-                ? v2.backtestResult.metrics[metricKey]
-                : 0;
+            const v1Value = (v1.backtestResult?.metrics as any)?.[metric] || 0;
+            const v2Value = (v2.backtestResult?.metrics as any)?.[metric] || 0;
             const change = v2Value - v1Value;
             const changePercent = v1Value !== 0 ? (change / Math.abs(v1Value)) * 100 : 0;
             
@@ -356,15 +351,10 @@ export class VersionManagerImpl implements VersionManager {
         if (versions.length === 0) return null;
         
         let best = versions[0];
-        const metricKey = metric as keyof import('./types').BacktestMetrics;
-        let bestValue = typeof best.backtestResult?.metrics[metricKey] === 'number'
-            ? best.backtestResult.metrics[metricKey]
-            : 0;
+        let bestValue = (best.backtestResult?.metrics as any)?.[metric] || 0;
         
         for (const v of versions) {
-            const value = typeof v.backtestResult?.metrics[metricKey] === 'number'
-                ? v.backtestResult.metrics[metricKey]
-                : 0;
+            const value = (v.backtestResult?.metrics as any)?.[metric] || 0;
             
             // 对于回撤，越小越好
             const isBetter = metric === 'maxDrawdown'

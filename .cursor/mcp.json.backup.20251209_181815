@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ]
+    },
+
+    "git": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "-m",
+        "mcp_server_git",
+        "--repository",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ]
+    },
+    
+    "trquant-spec": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/spec_server.py"
+      ]
+    },
+    "trquant-business": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "extension/python/mcp_server.py"
+      ]
+    }
+  }
+}

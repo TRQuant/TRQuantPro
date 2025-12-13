@@ -1,0 +1,1039 @@
+---
+title: "8.1 回测框架"
+description: "深入解析回测框架系统，包括回测引擎、数据管理、交易模拟、性能计算等核心技术"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# ⚙️ 8.1 回测框架
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的回测框架，采用**双层回测架构**：内部使用BulletTrade回测引擎+聚宽数据源进行策略开发和验证，生成的策略代码部署到国金证券的PTrade/QMT平台进行券商环境回测和实盘交易。BulletTrade是一个兼容聚宽(JoinQuant) API的本地量化框架，策略代码使用聚宽风格的API，数据源通过聚宽(JQData)获取。通过理解双层回测架构、BulletTrade回测引擎、聚宽数据源集成、PTrade/QMT部署流程，帮助开发者掌握完整的回测和实盘部署流程。
+
+回测框架是回测验证模块的核心，采用**双层回测架构**，负责提供完整的回测和实盘部署功能。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-8-1-1')">
+    <h4>⚙️ 8.1.1 回测引擎</h4>
+    <p>事件驱动回测、时间序列处理、策略执行、回测配置</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-8-1-2')">
+    <h4>📊 8.1.2 数据管理</h4>
+    <p>历史数据获取、数据预处理、数据对齐、数据缓存</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-8-1-3')">
+    <h4>💹 8.1.3 交易模拟</h4>
+    <p>订单生成、订单执行、滑点模拟、手续费计算</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-8-1-4')">
+    <h4>📈 8.1.4 投资组合管理</h4>
+    <p>持仓管理、资金管理、资产估值、历史记录</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-8-1-5')">
+    <h4>📊 8.1.5 性能计算</h4>
+    <p>收益率计算、风险指标计算、绩效分析、指标汇总</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-8-1-6')">
+    <h4>🔄 8.1.6 回测工作流</h4>
+    <p>回测配置、回测执行、结果生成、工作流集成</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **理解回测引擎**：掌握事件驱动回测和时间序列处理机制
+- **掌握数据管理**：理解历史数据获取、预处理和缓存方法
+- **实现交易模拟**：掌握订单生成、执行和滑点模拟技术
+- **管理投资组合**：理解持仓管理、资金管理和资产估值方法
+- **计算性能指标**：掌握收益率、风险指标和绩效分析方法
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤7 - 🔄 回测验证
+- **核心职责**：回测引擎、数据管理、交易模拟、性能计算
+- **服务对象**：策略优化、实盘交易
+
+### 双层回测架构
+
+回测框架采用双层回测架构，实现从开发到实盘的完整流程：
+
+#### 第一层：内部回测（韬睿系统）
+
+**技术栈**：
+- **回测引擎**：BulletTrade（兼容聚宽API的本地量化框架）
+- **数据源**：聚宽(JQData)（主要数据源）
+- **策略格式**：聚宽风格策略代码（`from jqdata import *`）
+- **执行方式**：BulletTrade CLI（`bullet-trade backtest`）
+
+**功能**：
+- 策略开发和快速验证
+- 历史数据回测
+- 性能指标计算
+- HTML报告生成
+
+#### 第二层：券商平台回测（国金证券）
+
+**技术栈**：
+- **交易平台**：PTrade（恒生交易系统）/ QMT（迅投量化终端）
+- **券商**：国金证券
+- **策略格式**：聚宽风格策略代码（适配PTrade/QMT API）
+- **执行方式**：PTrade/QMT平台回测和实盘交易
+
+**功能**：
+- 券商环境回测验证
+- 实盘交易执行
+- 交易数据同步
+- 风控和合规检查
+
+### 完整流程
+
+```
+策略开发（韬睿系统）
+    ↓
+BulletTrade回测（聚宽数据源）
+    ↓
+策略代码生成（聚宽风格）
+    ↓
+PTrade/QMT平台部署（国金证券）
+    ↓
+券商环境回测验证
+    ↓
+实盘交易执行
+```
+
+### 设计理念
+
+回测框架遵循以下设计理念：
+
+1. **聚宽兼容**：策略代码使用聚宽API，无需修改即可在BulletTrade中运行
+2. **真实模拟**：采用实际市场价格撮合交易，自动处理分红送股等
+3. **双层验证**：内部回测快速迭代，券商平台回测确保实盘一致性
+4. **自动化**：一键回测，自动生成HTML报告
+5. **可部署性**：生成的策略代码可直接部署到PTrade/QMT平台
+
+### 设计决策：为什么选择BulletTrade + JQData + PTrade/QMT双层架构？
+
+**决策**：采用内部BulletTrade回测 + 外部PTrade/QMT回测的双层架构
+
+**背景**：
+- 需要快速迭代策略（内部回测）
+- 需要确保实盘一致性（券商平台回测）
+- 需要支持实盘交易（PTrade/QMT平台）
+
+**考虑因素**：
+
+1. **开发效率**：
+   - **内部回测（BulletTrade）**：快速迭代，无需连接券商平台
+   - **外部回测（PTrade/QMT）**：真实环境验证，确保实盘一致性
+
+2. **数据一致性**：
+   - **JQData**：统一数据源，内部回测和策略生成使用相同数据
+   - **券商平台**：使用券商实际数据，确保实盘一致性
+
+3. **部署便利性**：
+   - **聚宽风格代码**：策略代码使用聚宽API，易于转换到PTrade/QMT
+   - **自动转换**：系统自动将聚宽风格代码转换为PTrade/QMT格式
+
+**决策**：选择双层架构
+
+**后果**：
+- ✅ **优点**：
+  - 开发效率高（内部快速迭代）
+  - 实盘一致性好（券商平台验证）
+  - 部署便利（自动代码转换）
+- ❌ **缺点**：
+  - 需要维护两套回测环境
+  - 代码转换可能不完全准确
+- 📝 **缓解措施**：
+  - 建立代码转换测试，确保转换准确性
+  - 在券商平台回测通过后再实盘
+
+<h2 id="section-8-1-1">⚙️ 8.1.1 回测引擎</h2>
+
+回测引擎是回测框架的核心，基于**BulletTrade回测引擎**，负责执行策略回测。
+
+### BulletTrade回测引擎
+
+BulletTrade是一个兼容聚宽(JoinQuant) API的本地量化框架，策略代码使用聚宽风格的API，可以直接在本地运行回测。
+
+#### 初始化BulletTrade引擎
+
+```python
+from core.bullettrade import BulletTradeEngine, BTConfig
+
+# 创建回测配置
+# 设计原理：配置参数分离，便于复用和测试
+# 原因：不同策略可能需要不同的回测配置，分离配置便于管理
+config = BTConfig(
+    start_date="2023-01-01",
+    end_date="2024-12-31",
+    initial_capital=1000000,  # 设计考虑：初始资金影响回测结果，需要合理设置
+    commission_rate=0.0003,  # 设计考虑：手续费率影响收益，需要与实际一致
+    stamp_tax_rate=0.001,  # 设计考虑：印花税仅卖出时收取，需要准确模拟
+    slippage=0.001,  # 设计考虑：滑点影响大单交易，需要合理估计
+    benchmark="000300.XSHG",  # 设计考虑：基准用于计算超额收益，选择市场代表性指数
+    data_provider="jqdata"  # 设计原理：使用JQData作为数据源，与策略生成保持一致
+)
+
+# 创建回测引擎
+# 设计原理：引擎与配置分离，支持多配置复用
+engine = BulletTradeEngine(config)
+
+# 检查BulletTrade CLI可用性
+# 设计原理：检查CLI可用性，不可用时降级到简化引擎
+# 原因：CLI提供完整功能，简化引擎提供基本功能，保证系统可用性
+if engine.check_cli_available():
+    print("BulletTrade CLI可用")
+else:
+    print("警告：BulletTrade CLI不可用，将使用简化回测引擎")
+```
+
+**设计说明**：
+
+- **配置分离**：回测配置独立于引擎，便于复用和测试。不同策略可以使用不同配置，无需创建多个引擎实例。
+- **参数设计**：
+  - **初始资金**：影响回测结果的可比性，建议使用标准金额（如100万）
+  - **手续费率**：需要与实际交易一致，避免回测结果过于乐观
+  - **滑点**：大单交易时滑点影响显著，需要合理估计（一般0.1%-0.2%）
+  - **基准**：用于计算超额收益，选择市场代表性指数（如沪深300）
+- **数据源选择**：使用JQData作为数据源，与策略生成保持一致，确保数据一致性。
+- **降级策略**：CLI不可用时自动降级到简化引擎，保证系统可用性。
+
+#### 执行回测
+
+```python
+# 加载策略代码（聚宽风格）
+strategy_path = "strategies/my_strategy.py"
+
+# 执行回测
+result = engine.run_backtest(
+    strategy_path=strategy_path,
+    start_date="2023-01-01",
+    end_date="2024-12-31",
+    frequency="day"  # 日线回测
+)
+
+# 获取回测结果
+print(f"总收益率: {result.total_return:.2%}")
+print(f"年化收益率: {result.annual_return:.2%}")
+print(f"最大回撤: {result.max_drawdown:.2%}")
+print(f"夏普比率: {result.sharpe_ratio:.2f}")
+
+# 生成HTML报告
+report_path = engine.generate_report(result, output_dir="backtest_results")
+print(f"回测报告已生成: {report_path}")
+```
+
+#### 使用BulletTrade CLI
+
+```bash
+# 执行回测
+bullet-trade backtest strategies/my_strategy.py \
+    --start 2023-01-01 \
+    --end 2024-12-31 \
+    --frequency day \
+    --output backtest_results
+
+# 查看回测报告
+open backtest_results/report.html
+```
+
+### PTrade/QMT平台部署
+
+生成的策略代码需要部署到国金证券的PTrade/QMT平台进行券商环境回测和实盘交易。
+
+#### PTrade平台部署
+
+```python
+from core.ptrade_integration import PTradeConfig, PTradeDeployer
+
+# 配置PTrade连接
+ptrade_config = PTradeConfig(
+    host="ptrade.gjzq.com",
+    port=7709,
+    account_id="8885019982",
+    strategy_path="/path/to/ptrade/strategies"
+)
+
+# 创建部署器
+deployer = PTradeDeployer(ptrade_config)
+
+# 部署策略代码（聚宽风格 → PTrade格式）
+strategy_code = load_strategy_code("strategies/my_strategy.py")
+ptrade_code = deployer.convert_to_ptrade(strategy_code)
+
+# 上传到PTrade平台
+deployer.upload_strategy(
+    strategy_name="my_strategy",
+    strategy_code=ptrade_code
+)
+
+# 在PTrade平台执行回测
+backtest_result = deployer.run_backtest(
+    strategy_name="my_strategy",
+    start_date="2023-01-01",
+    end_date="2024-12-31"
+)
+
+# 如果回测通过，启动实盘交易
+if backtest_result.total_return > 0.15:  # 收益率超过15%
+    deployer.start_live_trading("my_strategy")
+```
+
+#### QMT平台部署
+
+```python
+from core.trading.qmt_interface import QMTTrader, QMTConfig
+
+# 配置QMT连接
+qmt_config = QMTConfig(
+    qmt_path="/path/to/qmt",
+    account_id="8885019982",
+    session_id=123456
+)
+
+# 创建QMT交易接口
+qmt_trader = QMTTrader(qmt_config)
+
+# 连接QMT
+if qmt_trader.connect():
+    print("QMT连接成功")
+    
+    # 部署策略代码
+    strategy_code = load_strategy_code("strategies/my_strategy.py")
+    qmt_trader.upload_strategy("my_strategy", strategy_code)
+    
+    # 在QMT平台执行回测
+    backtest_result = qmt_trader.run_backtest(
+        strategy_name="my_strategy",
+        start_date="2023-01-01",
+        end_date="2024-12-31"
+    )
+    
+    # 如果回测通过，启动实盘交易
+    if backtest_result.total_return > 0.15:
+        qmt_trader.start_live_trading("my_strategy")
+```
+
+### 事件驱动回测（BulletTrade内部实现）
+
+```python
+from datetime import datetime, timedelta
+from typing import List, Dict, Callable, Any
+from enum import Enum
+import pandas as pd
+
+class EventType(Enum):
+    """事件类型"""
+    MARKET_OPEN = "market_open"
+    MARKET_CLOSE = "market_close"
+    BEFORE_TRADING = "before_trading"
+    AFTER_TRADING = "after_trading"
+    BAR = "bar"  # K线数据
+    ORDER_FILLED = "order_filled"
+    ORDER_CANCELLED = "order_cancelled"
+
+class Event:
+    """回测事件"""
+    def __init__(self, event_type: EventType, timestamp: datetime, data: Any = None):
+        self.event_type = event_type
+        self.timestamp = timestamp
+        self.data = data
+
+class BacktestEngine:
+    """回测引擎"""
+    
+    def __init__(self, config: BacktestConfig):
+        self.config = config
+        self.events = []  # 事件队列
+        self.current_date = None
+        self.strategy = None
+        self.portfolio = None
+        self.data_provider = None
+        self.order_manager = None
+    
+    def run(self, strategy: Any) -> BacktestResult:
+        """
+        执行回测
+        
+        Args:
+            strategy: 策略对象
+        
+        Returns:
+            BacktestResult: 回测结果
+        """
+        # 初始化
+        self.strategy = strategy
+        self.portfolio = Portfolio(self.config.initial_capital)
+        self.order_manager = OrderManager(
+            commission_rate=self.config.commission_rate,
+            slippage=self.config.slippage
+        )
+        
+        # 生成事件序列
+        self._generate_events()
+        
+        # 处理事件
+        while self.events:
+            event = self.events.pop(0)
+            self._process_event(event)
+        
+        # 计算性能指标
+        return self._calculate_results()
+    
+    def _generate_events(self):
+        """生成事件序列"""
+        # 获取交易日期
+        dates = pd.date_range(
+            self.config.start_date,
+            self.config.end_date,
+            freq='B'  # 工作日
+        )
+        
+        for date in dates:
+            # 盘前事件
+            self.events.append(Event(
+                EventType.BEFORE_TRADING,
+                date.replace(hour=9, minute=0)
+            ))
+            
+            # 开盘事件
+            self.events.append(Event(
+                EventType.MARKET_OPEN,
+                date.replace(hour=9, minute=30)
+            ))
+            
+            # K线数据事件
+            self.events.append(Event(
+                EventType.BAR,
+                date.replace(hour=15, minute=0),
+                data={'date': date}
+            ))
+            
+            # 收盘事件
+            self.events.append(Event(
+                EventType.MARKET_CLOSE,
+                date.replace(hour=15, minute=0)
+            ))
+            
+            # 盘后事件
+            self.events.append(Event(
+                EventType.AFTER_TRADING,
+                date.replace(hour=15, minute=30)
+            ))
+        
+        # 按时间排序
+        self.events.sort(key=lambda e: e.timestamp)
+    
+    def _process_event(self, event: Event):
+        """处理事件"""
+        self.current_date = event.timestamp
+        
+        if event.event_type == EventType.BEFORE_TRADING:
+            if hasattr(self.strategy, 'before_trading_start'):
+                self.strategy.before_trading_start(self._get_context())
+        
+        elif event.event_type == EventType.MARKET_OPEN:
+            if hasattr(self.strategy, 'market_open'):
+                self.strategy.market_open(self._get_context())
+        
+        elif event.event_type == EventType.BAR:
+            # 更新数据
+            market_data = self._get_market_data(event.data['date'])
+            
+            # 执行策略
+            if hasattr(self.strategy, 'handle_data'):
+                self.strategy.handle_data(market_data, event.data['date'])
+            
+            # 处理订单
+            self._process_orders(market_data)
+            
+            # 更新持仓
+            self._update_positions(market_data)
+        
+        elif event.event_type == EventType.MARKET_CLOSE:
+            if hasattr(self.strategy, 'market_close'):
+                self.strategy.market_close(self._get_context())
+        
+        elif event.event_type == EventType.AFTER_TRADING:
+            if hasattr(self.strategy, 'after_trading_end'):
+                self.strategy.after_trading_end(self._get_context())
+            
+            # 记录组合状态
+            self.portfolio.record(event.timestamp)
+```
+
+### 回测配置
+
+```python
+@dataclass
+class BacktestConfig:
+    """回测配置"""
+    
+    start_date: str                    # 开始日期
+    end_date: str                      # 结束日期
+    initial_capital: float = 1000000.0  # 初始资金
+    commission_rate: float = 0.0003    # 佣金率
+    stamp_tax_rate: float = 0.001      # 印花税
+    slippage: float = 0.001            # 滑点
+    benchmark: str = "000300.XSHG"     # 基准
+    position_limit: int = 20           # 最大持仓数
+    rebalance_freq: str = "monthly"    # 调仓频率
+    
+    def validate(self) -> Tuple[bool, List[str]]:
+        """验证配置"""
+        errors = []
+        
+        # 验证日期
+        try:
+            start = pd.to_datetime(self.start_date)
+            end = pd.to_datetime(self.end_date)
+            if start >= end:
+                errors.append("开始日期必须早于结束日期")
+        except Exception as e:
+            errors.append(f"日期格式错误: {e}")
+        
+        # 验证资金
+        if self.initial_capital <= 0:
+            errors.append("初始资金必须大于0")
+        
+        # 验证费率
+        if self.commission_rate < 0 or self.commission_rate > 0.01:
+            errors.append("佣金率必须在0-1%之间")
+        
+        return len(errors) == 0, errors
+```
+
+<h2 id="section-8-1-2">📊 8.1.2 数据管理</h2>
+
+数据管理负责历史数据的获取、预处理和缓存。
+
+### 聚宽数据源集成
+
+BulletTrade通过聚宽(JQData)数据源获取历史行情数据。
+
+```python
+from core.data_source_manager import DataSourceManager
+from core.data_provider import DataProvider
+
+# 初始化数据源管理器
+data_manager = DataSourceManager()
+
+# 配置聚宽数据源
+from config.config_manager import get_config_manager
+config_manager = get_config_manager()
+jq_config = config_manager.get_jqdata_config()
+
+# 初始化聚宽客户端
+data_manager.init_jqdata(
+    username=jq_config.get('username'),
+    password=jq_config.get('password')
+)
+
+# 创建数据提供者
+data_provider = DataProvider(jq_client=data_manager.get_jq_client())
+
+# 获取价格数据（聚宽格式）
+securities = ['000001.XSHE', '000002.XSHE']  # 聚宽股票代码格式
+start_date = '2023-01-01'
+end_date = '2024-12-31'
+
+price_data = data_provider.get_price(
+    securities=securities,
+    start_date=start_date,
+    end_date=end_date,
+    frequency='day'  # 日线数据
+)
+
+# 数据格式：聚宽标准格式
+# Index: 日期
+# Columns: open, high, low, close, volume
+print(price_data.head())
+```
+
+### 数据缓存管理
+
+```python
+class DataProvider:
+    """数据提供者（聚宽数据源）"""
+    
+    def __init__(self, jq_client=None):
+        self.jq_client = jq_client
+        self.cache = {}  # 内存缓存
+        self.cache_dir = Path("data/cache")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+    
+    def get_price(
+        self,
+        securities: List[str],
+        start_date: str,
+        end_date: str,
+        frequency: str = 'day'
+    ) -> pd.DataFrame:
+        """
+        获取价格数据（聚宽格式）
+        
+        Args:
+            securities: 股票代码列表（聚宽格式，如 '000001.XSHE'）
+            start_date: 开始日期
+            end_date: 结束日期
+            frequency: 频率（'day', 'minute'等）
+        
+        Returns:
+            pd.DataFrame: 价格数据（聚宽格式）
+        """
+        # 检查缓存
+        cache_key = f"{','.join(securities)}_{start_date}_{end_date}_{frequency}"
+        cache_file = self.cache_dir / f"{hash(cache_key)}.parquet"
+        
+        if cache_file.exists():
+            return pd.read_parquet(cache_file)
+        
+        # 从聚宽获取数据
+        if self.jq_client is None:
+            raise Exception("未设置聚宽客户端，无法获取数据")
+        
+        logger.info(f"从聚宽API获取数据: {securities}, {start_date} to {end_date}")
+        data = self.jq_client.get_price(
+            securities=securities,
+            start_date=start_date,
+            end_date=end_date,
+            frequency=frequency
+        )
+        
+        # 缓存数据
+        data.to_parquet(cache_file)
+        self.cache[cache_key] = data
+        
+        return data
+```
+
+<h2 id="section-8-1-3">💹 8.1.3 交易模拟</h2>
+
+交易模拟负责订单生成、执行和滑点模拟。
+
+### 订单管理器
+
+```python
+class OrderManager:
+    """订单管理器"""
+    
+    def __init__(self, commission_rate: float = 0.0003, slippage: float = 0.001):
+        self.commission_rate = commission_rate
+        self.slippage = slippage
+        self.orders: List[Order] = []
+        self.filled_orders: List[Order] = []
+    
+    def create_order(
+        self,
+        security: str,
+        amount: float,
+        order_type: OrderType = OrderType.MARKET,
+        price: Optional[float] = None
+    ) -> Order:
+        """创建订单"""
+        order = Order(security, amount, order_type, price)
+        self.orders.append(order)
+        return order
+    
+    def process_order(self, order: Order, current_price: float) -> bool:
+        """处理订单（模拟成交）"""
+        if order.status != OrderStatus.PENDING:
+            return False
+        
+        # 计算成交价格（考虑滑点）
+        if order.order_type == OrderType.MARKET:
+            if order.amount > 0:  # 买入
+                fill_price = current_price * (1 + self.slippage)
+            else:  # 卖出
+                fill_price = current_price * (1 - self.slippage)
+        else:  # 限价单
+            if order.price is None:
+                order.status = OrderStatus.REJECTED
+                return False
+            
+            if order.amount > 0:  # 买入限价单
+                if current_price <= order.price:
+                    fill_price = min(current_price, order.price) * (1 + self.slippage)
+                else:
+                    return False  # 价格未达到
+            else:  # 卖出限价单
+                if current_price >= order.price:
+                    fill_price = max(current_price, order.price) * (1 - self.slippage)
+                else:
+                    return False  # 价格未达到
+        
+        # 计算手续费
+        commission = abs(order.amount * fill_price) * self.commission_rate
+        
+        # 成交订单
+        order.fill(fill_price, time=datetime.now())
+        self.filled_orders.append(order)
+        
+        return True
+```
+
+<h2 id="section-8-1-4">📈 8.1.4 投资组合管理</h2>
+
+投资组合管理负责持仓管理、资金管理和资产估值。
+
+### 投资组合类
+
+```python
+class Portfolio:
+    """投资组合"""
+    
+    def __init__(self, initial_cash: float = 1000000):
+        self.initial_cash = initial_cash
+        self.cash = initial_cash
+        self.positions: Dict[str, Position] = {}
+        self.total_value_history = []
+        self.cash_history = []
+        self.date_history = []
+    
+    def add_position(self, security: str, amount: float, price: float):
+        """添加持仓"""
+        if security in self.positions:
+            # 更新持仓
+            pos = self.positions[security]
+            total_cost = pos.cost_value + amount * price
+            total_amount = pos.amount + amount
+            pos.amount = total_amount
+            pos.cost_price = total_cost / total_amount if total_amount > 0 else price
+        else:
+            # 新建持仓
+            self.positions[security] = Position(security, amount, price)
+    
+    def remove_position(self, security: str, amount: float, price: float):
+        """减少持仓"""
+        if security not in self.positions:
+            return
+        
+        pos = self.positions[security]
+        if amount >= pos.amount:
+            del self.positions[security]
+        else:
+            pos.amount -= amount
+    
+    def get_total_value(self) -> float:
+        """获取总资产"""
+        positions_value = sum(pos.market_value for pos in self.positions.values())
+        return self.cash + positions_value
+```
+
+<h2 id="section-8-1-5">📊 8.1.5 性能计算</h2>
+
+性能计算负责收益率、风险指标和绩效分析。
+
+### 性能指标计算
+
+```python
+class PerformanceCalculator:
+    """性能计算器"""
+    
+    def calculate_metrics(
+        self,
+        equity_curve: pd.DataFrame,
+        benchmark_curve: pd.DataFrame = None
+    ) -> PerformanceMetrics:
+        """计算性能指标"""
+        returns = equity_curve['equity'].pct_change().dropna()
+        
+        # 总收益率
+        total_return = (equity_curve['equity'].iloc[-1] / equity_curve['equity'].iloc[0]) - 1
+        
+        # 年化收益率
+        days = (equity_curve.index[-1] - equity_curve.index[0]).days
+        years = days / 365.25
+        annual_return = (1 + total_return) ** (1 / years) - 1 if years > 0 else 0
+        
+        # 最大回撤
+        max_drawdown, max_drawdown_duration = self._calculate_max_drawdown(equity_curve)
+        
+        # 夏普比率
+        sharpe_ratio = self._calculate_sharpe_ratio(returns)
+        
+        # 波动率
+        volatility = returns.std() * np.sqrt(252)
+        
+        return PerformanceMetrics(
+            total_return=total_return,
+            annual_return=annual_return,
+            sharpe_ratio=sharpe_ratio,
+            max_drawdown=max_drawdown,
+            max_drawdown_duration=max_drawdown_duration,
+            volatility=volatility
+        )
+```
+
+<h2 id="section-8-1-6">🔄 8.1.6 回测工作流</h2>
+
+回测工作流整合所有组件，提供完整的双层回测功能，包括内部BulletTrade回测和PTrade/QMT平台部署。
+
+### 完整双层回测工作流
+
+```python
+from core.bullettrade import BulletTradeEngine, BTConfig
+from core.ptrade_integration import PTradeDeployer, PTradeConfig
+from core.trading.qmt_interface import QMTTrader, QMTConfig
+
+def run_complete_backtest_workflow(
+    strategy_path: str,
+    start_date: str,
+    end_date: str,
+    deploy_to_ptrade: bool = True,
+    deploy_to_qmt: bool = False
+) -> Dict:
+    """
+    执行完整双层回测工作流
+    
+    1. 内部回测：BulletTrade + 聚宽数据源
+    2. 券商平台回测：PTrade/QMT平台
+    3. 实盘部署：如果回测通过
+    
+    Args:
+        strategy_path: 策略代码路径（聚宽风格）
+        start_date: 开始日期
+        end_date: 结束日期
+        deploy_to_ptrade: 是否部署到PTrade
+        deploy_to_qmt: 是否部署到QMT
+    
+    Returns:
+        Dict: 包含内部回测和券商平台回测结果
+    """
+    results = {
+        'internal_backtest': None,
+        'ptrade_backtest': None,
+        'qmt_backtest': None,
+        'deployment_status': {}
+    }
+    
+    # ========== 第一层：内部回测（BulletTrade + 聚宽数据源） ==========
+    print("=" * 60)
+    print("第一层：内部回测（BulletTrade + 聚宽数据源）")
+    print("=" * 60)
+    
+    # 1. 创建BulletTrade配置
+    bt_config = BTConfig(
+        start_date=start_date,
+        end_date=end_date,
+        initial_capital=1000000,
+        commission_rate=0.0003,
+        stamp_tax_rate=0.001,
+        slippage=0.001,
+        benchmark="000300.XSHG",
+        data_provider="jqdata"  # 使用聚宽数据源
+    )
+    
+    # 2. 初始化BulletTrade引擎
+    bt_engine = BulletTradeEngine(bt_config)
+    
+    # 3. 执行内部回测
+    print(f"执行BulletTrade回测: {strategy_path}")
+    internal_result = bt_engine.run_backtest(
+        strategy_path=strategy_path,
+        start_date=start_date,
+        end_date=end_date,
+        frequency="day"
+    )
+    
+    results['internal_backtest'] = {
+        'total_return': internal_result.total_return,
+        'annual_return': internal_result.annual_return,
+        'max_drawdown': internal_result.max_drawdown,
+        'sharpe_ratio': internal_result.sharpe_ratio,
+        'report_path': internal_result.report_path
+    }
+    
+    print(f"内部回测完成:")
+    print(f"  总收益率: {internal_result.total_return:.2%}")
+    print(f"  年化收益率: {internal_result.annual_return:.2%}")
+    print(f"  最大回撤: {internal_result.max_drawdown:.2%}")
+    print(f"  夏普比率: {internal_result.sharpe_ratio:.2f}")
+    
+    # 4. 判断是否满足部署条件
+    if internal_result.total_return < 0.10:  # 收益率低于10%
+        print("警告：内部回测收益率较低，不建议部署到券商平台")
+        return results
+    
+    # ========== 第二层：券商平台回测（PTrade/QMT） ==========
+    print("\n" + "=" * 60)
+    print("第二层：券商平台回测（国金证券 PTrade/QMT）")
+    print("=" * 60)
+    
+    # 5. PTrade平台部署和回测
+    if deploy_to_ptrade:
+        print("\n部署到PTrade平台...")
+        try:
+            ptrade_config = PTradeConfig.load()
+            ptrade_deployer = PTradeDeployer(ptrade_config)
+            
+            # 转换策略代码（聚宽风格 → PTrade格式）
+            strategy_code = open(strategy_path, 'r', encoding='utf-8').read()
+            ptrade_code = ptrade_deployer.convert_to_ptrade(strategy_code)
+            
+            # 上传策略
+            strategy_name = Path(strategy_path).stem
+            ptrade_deployer.upload_strategy(strategy_name, ptrade_code)
+            
+            # 在PTrade平台执行回测
+            print("在PTrade平台执行回测...")
+            ptrade_result = ptrade_deployer.run_backtest(
+                strategy_name=strategy_name,
+                start_date=start_date,
+                end_date=end_date
+            )
+            
+            results['ptrade_backtest'] = {
+                'total_return': ptrade_result.total_return,
+                'annual_return': ptrade_result.annual_return,
+                'max_drawdown': ptrade_result.max_drawdown,
+                'sharpe_ratio': ptrade_result.sharpe_ratio
+            }
+            
+            print(f"PTrade回测完成:")
+            print(f"  总收益率: {ptrade_result.total_return:.2%}")
+            print(f"  年化收益率: {ptrade_result.annual_return:.2%}")
+            print(f"  最大回撤: {ptrade_result.max_drawdown:.2%}")
+            
+            # 如果PTrade回测通过，启动实盘交易
+            if ptrade_result.total_return > 0.15:
+                print("PTrade回测通过，启动实盘交易...")
+                ptrade_deployer.start_live_trading(strategy_name)
+                results['deployment_status']['ptrade'] = 'live_trading'
+            else:
+                results['deployment_status']['ptrade'] = 'backtest_only'
+                
+        except Exception as e:
+            print(f"PTrade部署失败: {e}")
+            results['deployment_status']['ptrade'] = f'failed: {str(e)}'
+    
+    # 6. QMT平台部署和回测
+    if deploy_to_qmt:
+        print("\n部署到QMT平台...")
+        try:
+            qmt_config = QMTConfig(
+                qmt_path="/path/to/qmt",
+                account_id="8885019982",
+                session_id=123456
+            )
+            qmt_trader = QMTTrader(qmt_config)
+            
+            if qmt_trader.connect():
+                # 上传策略
+                strategy_code = open(strategy_path, 'r', encoding='utf-8').read()
+                strategy_name = Path(strategy_path).stem
+                qmt_trader.upload_strategy(strategy_name, strategy_code)
+                
+                # 在QMT平台执行回测
+                print("在QMT平台执行回测...")
+                qmt_result = qmt_trader.run_backtest(
+                    strategy_name=strategy_name,
+                    start_date=start_date,
+                    end_date=end_date
+                )
+                
+                results['qmt_backtest'] = {
+                    'total_return': qmt_result.total_return,
+                    'annual_return': qmt_result.annual_return,
+                    'max_drawdown': qmt_result.max_drawdown,
+                    'sharpe_ratio': qmt_result.sharpe_ratio
+                }
+                
+                print(f"QMT回测完成:")
+                print(f"  总收益率: {qmt_result.total_return:.2%}")
+                print(f"  年化收益率: {qmt_result.annual_return:.2%}")
+                print(f"  最大回撤: {qmt_result.max_drawdown:.2%}")
+                
+                # 如果QMT回测通过，启动实盘交易
+                if qmt_result.total_return > 0.15:
+                    print("QMT回测通过，启动实盘交易...")
+                    qmt_trader.start_live_trading(strategy_name)
+                    results['deployment_status']['qmt'] = 'live_trading'
+                else:
+                    results['deployment_status']['qmt'] = 'backtest_only'
+            else:
+                print("QMT连接失败")
+                results['deployment_status']['qmt'] = 'connection_failed'
+                
+        except Exception as e:
+            print(f"QMT部署失败: {e}")
+            results['deployment_status']['qmt'] = f'failed: {str(e)}'
+    
+    return results
+```
+
+### 使用示例
+
+```python
+# 执行完整双层回测工作流
+results = run_complete_backtest_workflow(
+    strategy_path="strategies/my_strategy.py",
+    start_date="2023-01-01",
+    end_date="2024-12-31",
+    deploy_to_ptrade=True,
+    deploy_to_qmt=False
+)
+
+# 查看结果
+print("\n回测结果汇总:")
+print(f"内部回测（BulletTrade）: {results['internal_backtest']}")
+print(f"PTrade回测: {results['ptrade_backtest']}")
+print(f"部署状态: {results['deployment_status']}")
+```
+
+## 🔗 相关章节
+
+- **7.2 策略生成**：了解策略生成，回测基于生成的策略
+- **7.3 策略优化**：了解策略优化，回测结果为优化提供反馈
+- **8.2 回测分析器**：了解回测分析，分析回测结果
+
+## 💡 关键要点
+
+1. **双层回测架构**：内部BulletTrade回测（快速迭代）+ 券商平台回测（实盘验证）
+2. **聚宽兼容**：策略代码使用聚宽API，无需修改即可在BulletTrade中运行
+3. **真实模拟**：BulletTrade采用实际市场价格撮合交易，自动处理分红送股等
+4. **数据源统一**：内部回测使用聚宽数据源，确保数据质量和一致性
+5. **可部署性**：生成的策略代码可直接部署到国金证券的PTrade/QMT平台
+6. **完整流程**：从策略开发 → 内部回测 → 券商平台回测 → 实盘交易的完整闭环
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了TRQuant系统的回测框架，采用双层回测架构：内部使用BulletTrade回测引擎+聚宽数据源进行策略开发和快速验证，生成的策略代码部署到国金证券的PTrade/QMT平台进行券商环境回测和实盘交易。通过理解双层回测架构、BulletTrade回测引擎、聚宽数据源集成、PTrade/QMT部署流程，帮助开发者掌握完整的回测和实盘部署流程。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了回测框架后，下一节将介绍回测分析器，包括收益分析、风险分析和交易分析。通过理解回测分析的核心技术，帮助开发者掌握如何深入分析回测结果，识别策略的优缺点。</p>
+  
+  <a href="/ashare-book6/008_Chapter8_Backtest/8.2_Backtest_Analyzer_CN" class="next-section">
+    继续学习：8.2 回测分析器 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

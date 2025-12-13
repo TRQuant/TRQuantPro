@@ -1,0 +1,336 @@
+（美东时间 2025-12-10 00:00:00）
+
+下面给你一套“TRQuant 版 Compounding Engineering（Plan→Work→Review→Codify）”**落到哪些工具**的推荐，以及一份可直接推进实现的 **MCP 工具设计草案**（工具名、输入输出 schema、执行门禁、与 Cursor 联用方式）。
+
+---
+
+## 一、推荐落到哪些工具（TRQuant 工具映射）
+
+### 1) Plan（规划/拆解/约束）
+
+* **task_server**：承载需求拆解、优先级、里程碑、进度
+* **docs_server**：拉取现有文档/规范/模块说明作为依据
+* **spec_server**：把“计划结构”校验成稳定 schema（避免每次输出风格漂移）
+* **evidence_server**：记录“为什么这么做”的决策证据（ADR/Decision Log）
+
+### 2) Work（实现/变更/产出工件）
+
+* **code_server**：定位代码、生成 patch、抽取上下文、生成示例
+* **git（外部 MCP）**：分支/提交/PR（建议只做：commit、diff、status、tag）
+* **filesystem（外部 MCP）**：落地 artifacts（报告、日志、截图、导出 markdown）
+* **workflow_server**：把实现步骤编排成可重复执行的流程（含 dry_run）
+
+### 3) Review（质量门禁/回归/风险）
+
+* **spec_server**：结构/契约检查（API 文档、frontmatter、章节导航）
+* **quality_server**：数据质量/结果质量（尤其涉及回测/指标）
+* **report_server**：生成对比报告（baseline vs new），作为“审查证据”
+* **workflow_server**：跑 smoke / E2E（dry_run→execute 分段）
+
+### 4) Codify（沉淀/固化/复用）
+
+* **docs_server**：把结论写回开发手册、模块文档、FAQ
+* **evidence_server**：形成可检索的 changelog / postmortem / lessons learned
+* **task_server**：把“后续优化”转为 backlog（防止只在聊天里说完）
+
+> 这套映射的关键：**每一步都有可追溯产物（artifact / report / evidence）**，而不是只在对话里“完成”。
+
+---
+
+## 二、设计草案（MCP 工具层）：推荐新增一个“engineering_server”
+
+你可以新建一个轻量 MCP Server：`engineering_server`，它不是取代现有 servers，而是把它们编排成“工程循环”。
+（实现上是 orchestrator：调用 task/docs/spec/code/workflow/report/quality/evidence + git/filesystem）
+
+### 2.1 核心对象模型（建议统一）
+
+* `objective_id`：目标/需求 ID（可以等同 task_id 或由 engineering_server 生成）
+* `trace_id`：贯穿一次循环
+* `artifact_ptr[]`：所有大输出必须走工件指针
+* `baseline_ref`：对比基准（git tag / report_id / workflow_run_id）
+* `mode`：`dry_run | execute`
+* `confirm_token`：涉及写操作的统一门禁
+
+---
+
+## 三、工具接口草案（Tool list + schema）
+
+下面给出“最小可落地”的 8 个工具。你们可以先实现 1-4（P0），再做 5-8（P1）。
+
+### Tool 1：`engineering.plan`
+
+**目的**：把一个目标拆成可执行任务树，并给出约束、验收与风险点。
+**输入**
+
+```json
+{
+  "objective": "string",
+  "context": {
+    "repo": "string",
+    "docs_scope": ["string"],
+    "constraints": ["string"],
+    "baseline_ref": "string|null"
+  },
+  "priority": "P0|P1|P2",
+  "mode": "dry_run|execute"
+}
+```
+
+**输出**
+
+```json
+{
+  "objective_id": "string",
+  "task_tree": [
+    {"title":"string","priority":"P0|P1|P2","acceptance":["string"],"deps":["string"]}
+  ],
+  "risk_register": [{"risk":"string","mitigation":"string"}],
+  "next_actions": ["string"],
+  "artifact_ptrs": ["string"]
+}
+```
+
+**后端动作建议**
+
+* 调 `docs.search/read` 拉依据
+* 调 `spec.validate(schema="engineering_plan")` 固化结构
+* `mode=execute` 时：批量 `task.create`
+
+---
+
+### Tool 2：`engineering.bootstrap`
+
+**目的**：为目标创建工作区（分支、目录、规范文件、记录框架）。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "repo": "string",
+  "branch_strategy": "feature|hotfix",
+  "mode": "dry_run|execute",
+  "confirm_token": "string|null",
+  "evidence": {"reason":"string","scope":"string","rollback":"string"}
+}
+```
+
+**输出**
+
+```json
+{
+  "branch": "string",
+  "created_paths": ["string"],
+  "checks": [{"name":"string","status":"pass|fail","details":"string"}],
+  "artifact_ptrs": ["string"]
+}
+```
+
+**动作**
+
+* git：create branch（execute）
+* filesystem：创建 `artifacts/objective_id/...`
+* evidence.record：写入“启动记录”
+
+---
+
+### Tool 3：`engineering.work`
+
+**目的**：按任务执行实现（生成/修改代码 + 同步文档 + 生成可运行示例）。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "tasks": ["string"],
+  "work_items": [
+    {"type":"code|doc|config","target":"string","instruction":"string"}
+  ],
+  "mode": "dry_run|execute",
+  "confirm_token": "string|null",
+  "evidence": {"reason":"string","scope":"string","rollback":"string"}
+}
+```
+
+**输出**
+
+```json
+{
+  "changes": [{"file":"string","diff_ptr":"string","summary":"string"}],
+  "local_tests": [{"name":"string","cmd":"string","result":"pass|fail","log_ptr":"string"}],
+  "artifact_ptrs": ["string"]
+}
+```
+
+**动作**
+
+* code.search/get_context → patch 生成
+* spec.validate（文档/配置结构）
+* execute 时：真正写入（由你们既有 confirm_token 机制守门）
+
+---
+
+### Tool 4：`engineering.verify`
+
+**目的**：把“Review”标准化：结构校验、回归测试、工作流 smoke、报告生成。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "verification_profile": "quick|standard|release",
+  "baseline_ref": "string|null",
+  "mode": "dry_run|execute"
+}
+```
+
+**输出**
+
+```json
+{
+  "status": "pass|fail",
+  "checks": [
+    {"name":"spec","status":"pass|fail","details_ptr":"string"},
+    {"name":"lint","status":"pass|fail","details_ptr":"string"},
+    {"name":"workflow_smoke","status":"pass|fail","run_id":"string"},
+    {"name":"quality","status":"pass|fail","report_ptr":"string"}
+  ],
+  "report_ids": ["string"],
+  "artifact_ptrs": ["string"]
+}
+```
+
+**动作**
+
+* spec.validate（文档结构、API schema）
+* workflow.run（smoke）
+* quality.validate（数据/结果）
+* report.generate + report.compare（对比基准）
+
+---
+
+### Tool 5：`engineering.release`
+
+**目的**：合并、打 tag、发布文档与工件，生成 release note。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "release_type": "dev|rc|prod",
+  "version": "string",
+  "mode": "dry_run|execute",
+  "confirm_token": "string|null",
+  "evidence": {"reason":"string","scope":"string","rollback":"string"}
+}
+```
+
+**输出**
+
+```json
+{
+  "tag": "string",
+  "release_notes_ptr": "string",
+  "published_artifacts": ["string"],
+  "status": "ok|blocked"
+}
+```
+
+---
+
+### Tool 6：`engineering.codify`
+
+**目的**：把这次循环固化成“文档 + 规范 + 模板 + FAQ + Changelog”。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "targets": [
+    {"doc_id":"string","section":"string","content_instruction":"string"}
+  ],
+  "mode": "dry_run|execute",
+  "confirm_token": "string|null"
+}
+```
+
+**输出**
+
+```json
+{
+  "updated_docs": [{"doc_id":"string","diff_ptr":"string"}],
+  "new_templates": [{"name":"string","path":"string"}],
+  "evidence_ids": ["string"]
+}
+```
+
+---
+
+### Tool 7：`engineering.retrospective`
+
+**目的**：自动生成复盘（做得好/问题/根因/改进/行动项）。
+**输入**
+
+```json
+{
+  "objective_id": "string",
+  "include": ["tasks","diffs","reports","quality","incidents"],
+  "mode": "dry_run|execute"
+}
+```
+
+**输出**
+
+```json
+{
+  "retro_ptr": "string",
+  "action_items": [{"title":"string","priority":"P0|P1|P2"}]
+}
+```
+
+execute 时可自动 `task.create` 行动项。
+
+---
+
+### Tool 8：`engineering.guardrails.status`
+
+**目的**：可观测与合规面板（可维护性）。
+**输出**：列出最近 N 次 objective 的成功率、平均耗时、失败原因分布、未闭环项（缺 report/evidence/tag）。
+
+---
+
+## 四、与 Cursor 的联用方式（写进手册的“操作范式”）
+
+建议手册中固定三种运行方式：
+
+1. **Planner 模式（只读）**
+   在 Cursor 里：让 Agent 调 `engineering.plan(dry_run)`，输出任务树与风险清单。
+
+2. **Executor 模式（分段执行）**
+   按“每个任务一个工作段”：
+
+* `engineering.work(dry_run)` → 看 diff_ptr
+* 人确认后再 `engineering.work(execute + confirm_token + evidence)`
+* 每完成一段，跑 `engineering.verify(quick)` 防止积累风险
+
+3. **Release 模式（强门禁）**
+   只允许在 `engineering.verify(standard)=pass` 后执行：
+
+* `engineering.release(execute + confirm_token + evidence)`
+* `engineering.codify(execute)` 更新手册与 changelog
+
+---
+
+## 五、稳定/高效/易维护：你需要写进手册的“硬性验收”
+
+每次循环必须满足：
+
+* ✅ 有 `report.compare`（对比证据）
+* ✅ 有 `evidence.record`（理由、范围、回滚）
+* ✅ 有 git tag（可回退）
+* ✅ 大输出全 artifact 化（终端/聊天不粘大块）
+* ✅ 关键流程可重复（workflow smoke 可重跑）
+
+---
+
+如果你同意这套方向，我建议你们 Phase4 先做 **P0：Tool 1-4**，就能在 Cursor 里跑出完整的“工程循环”；之后再扩展 release/codify/retro，让系统真正“复利式”进化。
+

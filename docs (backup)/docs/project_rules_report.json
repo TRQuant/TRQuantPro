@@ -1,0 +1,2201 @@
+{
+  "timestamp": "2025-07-03T16:48:50.538245",
+  "total_violations": 273,
+  "files_checked": 53,
+  "violations_by_severity": {
+    "error": 226,
+    "info": 45,
+    "warning": 2
+  },
+  "violations_by_rule": {
+    "HTML零空行检查": 226,
+    "核心摘要格式检查": 45,
+    "组件化检查": 2
+  },
+  "detailed_violations": [
+    {
+      "file": "src/pages\\000_Preface_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 40,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\000_Preface_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\000_Preface_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 79,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\000_Preface_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 84,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\000_Preface_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 12,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1_Know_Yourself_and_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 34,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1_Know_Yourself_and_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 48,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1_Know_Yourself_and_the_World_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 13,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2_Investment_Psychology_and_Risk_Management_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 33,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2_Investment_Psychology_and_Risk_Management_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 47,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2_Investment_Psychology_and_Risk_Management_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 61,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2_Investment_Psychology_and_Risk_Management_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 12,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 125,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3_Historical_Patterns_and_Multibagger_Stocks_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\004_Chapter4_Track_Selection_and_Industry_Trends_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\005_Chapter5_Stock_Screening_Strategies_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\006_Chapter6_Trading_Strategies_and_Execution_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7_Investment_Decision_Tools_and_Resources_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\008_Chapter8_Case_Review_and_Strategy_Improvement_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\008_Chapter8_Case_Review_and_Strategy_Improvement_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\008_Chapter8_Case_Review_and_Strategy_Improvement_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\009_Chapter9_Building_an_Investment_System_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\009_Chapter9_Building_an_Investment_System_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\009_Chapter9_Building_an_Investment_System_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\010_Chapter10_Trading_Execution_and_Practical_Guide_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\010_Chapter10_Trading_Execution_and_Practical_Guide_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\010_Chapter10_Trading_Execution_and_Practical_Guide_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 32,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 60,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 102,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 116,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 130,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 144,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 51,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 68,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 85,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 102,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 121,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 150,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 176,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\index.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 185,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.1_Self_Awareness_and_Investment_Wisdom_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 228,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.1_Self_Awareness_and_Investment_Wisdom_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 70,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 90,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 135,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 178,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 243,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 269,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 300,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 332,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 375,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 396,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 434,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 485,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 523,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 599,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 646,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 716,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 736,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 793,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 798,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 803,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 808,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 813,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 832,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 843,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.2_Understanding_the_World_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 46,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 55,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 99,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 104,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 133,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 146,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 179,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 219,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 233,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 247,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 278,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 292,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 315,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 320,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 339,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\001_Chapter1\\1.3_From_Cognition_to_Action_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 350,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 51,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 74,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 100,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 131,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 141,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 151,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 176,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 185,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 209,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 219,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 250,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 262,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 287,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 296,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 331,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 353,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 384,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 389,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 394,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 413,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 423,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 434,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.1_Personalized_Risk_Tolerance_Model_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 55,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 69,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 97,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 120,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 125,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 156,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 169,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 200,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 213,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 227,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 265,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 299,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 311,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 344,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 361,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 397,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 412,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 436,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 441,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 446,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 465,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 475,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 486,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.2_Stop_Loss_and_Risk_Control_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 67,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 99,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 131,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 193,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 219,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 245,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 271,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 328,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 353,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 401,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 420,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 448,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 453,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 458,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 477,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 487,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.3_Investment_Emotions_and_Decision_Traps_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 34,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 332,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 396,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 420,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 444,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 487,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 529,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 544,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 633,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\002_Chapter2\\2.4_Maintaining_Discipline_in_Volatile_Markets_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.1_Definition_and_Time_Dimensions_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 938,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.1_Definition_and_Time_Dimensions_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 1013,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.1_Definition_and_Time_Dimensions_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.2_Industry_Distribution_and_Characteristics_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 720,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.2_Industry_Distribution_and_Characteristics_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 726,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.2_Industry_Distribution_and_Characteristics_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.3_Driving_Factors_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 257,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.3_Driving_Factors_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 263,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.3_Driving_Factors_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\003_Chapter3\\3.4_Case_Studies_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.1_Track_Screening_Methods_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 585,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.1_Track_Screening_Methods_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.2_AI_and_Big_Data_Revolution_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 517,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.2_AI_and_Big_Data_Revolution_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.3_New_Energy_and_EV_Golden_Decade_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 413,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.3_New_Energy_and_EV_Golden_Decade_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.4_Biotech_and_Precision_Medicine_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 477,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.4_Biotech_and_Precision_Medicine_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.5_Semiconductor_and_Metaverse_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 476,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.5_Semiconductor_and_Metaverse_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.6_Chinese_Stocks_Opportunities_CN.md",
+      "rule": "组件化检查",
+      "message": "建议使用ChapterOverview组件替代原生HTML",
+      "severity": "warning",
+      "line": 16,
+      "column": 9
+    },
+    {
+      "file": "src/pages\\004_Chapter4\\4.6_Chinese_Stocks_Opportunities_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 11,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\005_Chapter5\\5.1_Stock_Screening_Methods_CN.md",
+      "rule": "组件化检查",
+      "message": "建议使用ChapterOverview组件替代原生HTML",
+      "severity": "warning",
+      "line": 18,
+      "column": 9
+    },
+    {
+      "file": "src/pages\\005_Chapter5\\5.1_Stock_Screening_Methods_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 13,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\005_Chapter5\\5.3_Technical_Analysis_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 385,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.1_GuruFocus_Morningstar_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.2_Technical_Analysis_Tools_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.3_Data_Driven_Decision_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.4_Research_News_Resources_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.5_Broker_Platform_Tools_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\007_Chapter7\\7.6_ChatGPT_Integration_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\A.1_Financial_Indicators_and_Formulas_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\B.1_Recommended_Reading_List_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\C.1_Quantitative_Analysis_and_Backtesting_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\D.1_Trading_Plan_Templates_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\E.1_Broker_Platform_Guide_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\F.1_GuruFocus_Plus_Case_Study_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\G.1_Charlie_Munger_Wisdom_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\H.1_Intelligent_Trading_System_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\I.1_US_Stock_Investment_FAQ_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\011_Appendix\\J.1_Document_System_Construction_Guide_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 174,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\011_Appendix\\J.1_Document_System_Construction_Guide_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 286,
+      "column": 3
+    },
+    {
+      "file": "src/pages\\011_Appendix\\J.1_Document_System_Construction_Guide_CN.md",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 369,
+      "column": 0
+    },
+    {
+      "file": "src/pages\\011_Appendix\\J.1_Document_System_Construction_Guide_CN.md",
+      "rule": "核心摘要格式检查",
+      "message": "核心摘要格式检查",
+      "severity": "info",
+      "line": 10,
+      "column": 2
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 29,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 43,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 52,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 61,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 70,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 79,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 97,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 108,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 122,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 131,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 140,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 151,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 175,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\macro.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 184,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\quantitative.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 29,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\quantitative.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 44,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\quantitative.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 66,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\stocks.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 29,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\stocks.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 44,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\stocks.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 66,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\technical.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 29,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\technical.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 44,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\technical.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 66,
+      "column": 6
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 29,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 43,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 52,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 61,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 70,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 79,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 88,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 97,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 106,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 115,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 124,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 133,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 144,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 158,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 167,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 176,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 185,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 194,
+      "column": 8
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 205,
+      "column": 4
+    },
+    {
+      "file": "src/pages\\handbook\\theory.astro",
+      "rule": "HTML零空行检查",
+      "message": "HTML标签间不允许空行，违反项目规则",
+      "severity": "error",
+      "line": 214,
+      "column": 4
+    }
+  ]
+}

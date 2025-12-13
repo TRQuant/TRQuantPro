@@ -101,12 +101,12 @@ export class WorkflowPanel {
 
     // ==================== 消息处理 ====================
 
-    private async _handleMessage(message: { command: string; [key: string]: unknown }): Promise<void> {
+    private async _handleMessage(message: any): Promise<void> {
         logger.info(`[WorkflowPanel] 收到消息: ${message.command}`, MODULE);
 
         switch (message.command) {
             case 'runStep':
-                await this._runStep((message.stepId as string) || '');
+                await this._runStep(message.stepId);
                 break;
             case 'runAll':
                 await this._runAll();
@@ -146,7 +146,7 @@ export class WorkflowPanel {
                 step_id: stepId
             });
 
-            const resp = response as { ok: boolean; summary?: string; data?: unknown; step_name?: string };
+            const resp = response as any;
             if (response.ok) {
                 // 执行成功
                 this._postMessage({
@@ -163,7 +163,7 @@ export class WorkflowPanel {
                     command: 'stepFinished',
                     stepId,
                     success: false,
-                    summary: (typeof resp === 'object' && resp !== null && 'error' in resp && typeof resp.error === 'string') ? resp.error : '执行失败',
+                    summary: resp.error || '执行失败',
                     details: {},
                     stepName: WORKFLOW_STEPS.find(s => s.id === stepId)?.name || stepId
                 });
@@ -202,8 +202,8 @@ export class WorkflowPanel {
             location: vscode.ProgressLocation.Notification,
             title: '🔄 执行完整工作流',
             cancellable: true
-        }, async (progress, _token) => {
-            const results: Array<{ step: string; success: boolean; error?: string }> = [];
+        }, async (progress, token) => {
+            const results: any[] = [];
             let hasError = false;
 
             // 通知前端开始执行全部
@@ -213,15 +213,9 @@ export class WorkflowPanel {
                 // 通过Python Bridge调用完整工作流
                 const response = await this._client.callBridge('run_full_workflow', {});
 
-                const resp = response as { ok: boolean; data?: unknown; summary?: string };
+                const resp = response as any;
                 if (response.ok && resp.data) {
-                    const data = resp.data as { 
-                        results?: Array<{ step: string; success: boolean; error?: string }>;
-                        steps?: Array<{ step_name: string; success: boolean; summary?: string; details?: unknown; error?: string }>;
-                        strategy_file?: string;
-                        total_time?: number;
-                        [key: string]: unknown;
-                    };
+                    const data = resp.data as any;
                     const steps = data.steps || [];
                     
                     // 逐个通知步骤完成
@@ -302,7 +296,7 @@ export class WorkflowPanel {
         return nameMap[stepName] || stepName.toLowerCase().replace(/\s+/g, '_');
     }
 
-    private _postMessage(message: { command: string; [key: string]: unknown }): void {
+    private _postMessage(message: any): void {
         this._panel.webview.postMessage(message);
     }
 
@@ -795,7 +789,7 @@ export function registerWorkflowPanel(
                     console.error('[WorkflowPanel] 搜索trquant相关命令:', commands.filter(c => c.startsWith('trquant.')));
                     logger.error('工作流面板命令注册验证失败', MODULE);
                 }
-            }, (err: unknown) => {
+            }, (err: any) => {
                 console.error('[WorkflowPanel] 验证命令时出错:', err);
             });
         }, 1000);

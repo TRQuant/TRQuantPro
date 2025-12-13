@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ]
+    },
+    "trquant-spec": {
+      "command": "python",
+      "args": [
+        "mcp_servers/spec_server.py"
+      ]
+    },
+    "trquant-business": {
+      "command": "python",
+      "args": [
+        "extension/python/mcp_server.py"
+      ]
+    }
+  }
+}

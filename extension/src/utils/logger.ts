@@ -19,7 +19,7 @@ export interface LogEntry {
     message: string;
     timestamp: Date;
     module?: string;
-    data?: unknown;
+    data?: any;
 }
 
 /**
@@ -63,35 +63,35 @@ export class Logger {
     /**
      * 记录DEBUG级别日志
      */
-    debug(message: string, module?: string, data?: unknown): void {
+    debug(message: string, module?: string, data?: any): void {
         this.log(LogLevel.DEBUG, message, module, data);
     }
 
     /**
      * 记录INFO级别日志
      */
-    info(message: string, module?: string, data?: unknown): void {
+    info(message: string, module?: string, data?: any): void {
         this.log(LogLevel.INFO, message, module, data);
     }
 
     /**
      * 记录WARN级别日志
      */
-    warn(message: string, module?: string, data?: unknown): void {
+    warn(message: string, module?: string, data?: any): void {
         this.log(LogLevel.WARN, message, module, data);
     }
 
     /**
      * 记录ERROR级别日志
      */
-    error(message: string, module?: string, data?: unknown): void {
+    error(message: string, module?: string, data?: any): void {
         this.log(LogLevel.ERROR, message, module, data);
     }
 
     /**
      * 核心日志方法
      */
-    private log(level: LogLevel, message: string, module?: string, data?: unknown): void {
+    private log(level: LogLevel, message: string, module?: string, data?: any): void {
         if (level < this.minLevel) {
             return;
         }

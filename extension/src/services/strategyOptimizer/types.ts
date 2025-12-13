@@ -69,7 +69,7 @@ export interface APIUsage {
     name: string;
     platform: Platform;
     line: number;
-    params: Record<string, unknown>;
+    params: Record<string, any>;
     context: string;
     canConvert: boolean;
     targetAPI?: string;
@@ -85,7 +85,7 @@ export interface FactorUsage {
 export interface IndicatorUsage {
     name: string;
     type: 'ma' | 'macd' | 'rsi' | 'kdj' | 'boll' | 'atr' | 'custom';
-    params?: Record<string, unknown>;
+    params?: Record<string, any>;
 }
 
 export interface CompatibilityScore {
@@ -172,8 +172,8 @@ export interface APIMapping {
         api: string;
         signature: string;
     };
-    paramMapping: Record<string, string | ((...args: unknown[]) => unknown)>;
-    returnMapping?: (result: unknown) => unknown;
+    paramMapping: Record<string, string | ((value: any, context: any) => any)>;
+    returnMapping?: (result: any) => any;
     notes?: string[];
     examples?: {
         before: string;

@@ -4,7 +4,7 @@
  */
 
 import {
-    // OptimizationConfig, // 暂时未使用
+    OptimizationConfig,
     StrategyConfig,
     OptimizationTarget,
     BacktestResult,
@@ -118,7 +118,7 @@ export interface VersionInfo {
     strategyId: string;
     version: string;
     timestamp: string;
-    parameters: Record<string, string | number | boolean>;
+    parameters: Record<string, any>;
     backtestResult?: BacktestResult;
     notes?: string;
 }
@@ -133,7 +133,7 @@ export interface VersionManager {
     saveVersion(version: {
         strategyId: string;
         version: string;
-        parameters: Record<string, string | number | boolean>;
+        parameters: Record<string, any>;
         code: string;
         backtestResult?: BacktestResult;
         generatedBy: 'algorithm' | 'ai' | 'user';
@@ -165,8 +165,8 @@ export interface VersionManager {
     ): Promise<{
         parameterChanges: Array<{
             parameter: string;
-            oldValue: string | number | boolean;
-            newValue: string | number | boolean;
+            oldValue: any;
+            newValue: any;
         }>;
         performanceComparison: {
             metric: string;
@@ -206,8 +206,8 @@ export interface AIAssistant {
         changes: Array<{
             type: string;
             description: string;
-            before: string | number | boolean | null | Record<string, unknown>;
-            after: string | number | boolean | null | Record<string, unknown>;
+            before: any;
+            after: any;
             reason: string;
         }>;
         explanation: string;
@@ -221,8 +221,8 @@ export interface AIAssistant {
         changes: Array<{
             type: string;
             description: string;
-            before: string | number | boolean | null | Record<string, unknown>;
-            after: string | number | boolean | null | Record<string, unknown>;
+            before: any;
+            after: any;
         }>
     ): Promise<string>;
 }

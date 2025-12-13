@@ -1,0 +1,699 @@
+---
+title: "7.5 策略测试"
+description: "深入解析策略测试系统，包括单元测试、集成测试、回测验证等核心技术"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 🧪 7.5 策略测试
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的策略测试系统，包括单元测试、集成测试和回测验证。通过理解策略测试的核心技术，帮助开发者掌握如何验证策略的正确性和性能，确保策略质量。
+
+策略测试是策略开发的重要环节，通过单元测试、集成测试和回测验证确保策略的正确性和性能。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-7-5-1')">
+    <h4>🔬 7.5.1 单元测试</h4>
+    <p>函数测试、逻辑测试、边界测试、异常测试</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-5-2')">
+    <h4>🔗 7.5.2 集成测试</h4>
+    <p>模块集成测试、接口测试、数据流测试</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-5-3')">
+    <h4>📊 7.5.3 回测验证</h4>
+    <p>回测框架、回测配置、回测执行、结果验证</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **编写单元测试**：掌握函数测试、逻辑测试和边界测试方法
+- **进行集成测试**：理解模块集成测试和接口测试
+- **执行回测验证**：掌握回测框架的使用和结果验证
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤6 - 🛠️ 策略生成（策略规范化之后）
+- **核心职责**：单元测试、集成测试、回测验证
+- **服务对象**：策略优化、策略部署
+
+<h2 id="section-7-5-1">🔬 7.5.1 单元测试</h2>
+
+单元测试针对策略中的单个函数或逻辑单元进行测试，确保每个函数和逻辑单元的正确性。
+
+### 测试框架
+
+```python
+import pytest
+import unittest
+from unittest.mock import Mock, patch, MagicMock
+import pandas as pd
+import numpy as np
+
+class StrategyUnitTest:
+    """策略单元测试"""
+    
+    def test_initialize_function(self):
+        """测试初始化函数"""
+        # 创建模拟context
+        context = Mock()
+        context.portfolio = Mock()
+        context.portfolio.total_value = 1000000
+        context.portfolio.available_cash = 1000000
+        context.portfolio.positions = {}
+        
+        # 执行初始化
+        initialize(context)
+        
+        # 验证参数设置
+        assert hasattr(context, 'max_position')
+        assert context.max_position == 0.1
+        assert hasattr(context, 'stop_loss')
+        assert hasattr(context, 'take_profit')
+        assert hasattr(context, 'universe')
+    
+    def test_rebalance_logic(self):
+        """测试调仓逻辑"""
+        context = Mock()
+        context.universe = ['000001.XSHE', '000002.XSHE', '600000.XSHG']
+        context.max_stocks = 10
+        context.portfolio = Mock()
+        context.portfolio.positions = {}
+        context.portfolio.available_cash = 1000000
+        context.portfolio.total_value = 1000000
+        context.current_dt = pd.Timestamp('2024-01-01')
+        
+        # 模拟get_price返回数据
+        with patch('get_price') as mock_get_price:
+            mock_get_price.return_value = pd.DataFrame({
+                'close': [10.0, 20.0, 30.0]
+            })
+            
+            # 执行调仓
+            rebalance(context)
+            
+            # 验证调仓结果
+            assert len(context.portfolio.positions) <= context.max_stocks
+    
+    def test_risk_control_stop_loss(self):
+        """测试止损逻辑"""
+        context = Mock()
+        context.stop_loss = 0.08
+        context.portfolio = Mock()
+        
+        # 创建持仓
+        position = Mock()
+        position.avg_cost = 10.0
+        position.total_amount = 1000
+        context.portfolio.positions = {'000001.XSHE': position}
+        
+        # 模拟当前价格（触发止损）
+        with patch('get_current_data') as mock_get_current:
+            mock_get_current.return_value = {
+                '000001.XSHE': Mock(last_price=9.0)  # 亏损10%
+            }
+            
+            # 执行风控
+            risk_control(context)
+            
+            # 验证止损触发
+            # 应该卖出股票
+            pass
+    
+    def test_factor_calculation(self):
+        """测试因子计算函数"""
+        stocks = ['000001.XSHE', '000002.XSHE']
+        date = '2024-01-01'
+        
+        # 测试因子计算
+        factor_values = calculate_factor(stocks, date)
+        
+        # 验证结果
+        assert isinstance(factor_values, pd.DataFrame)
+        assert len(factor_values) == len(stocks)
+        assert not factor_values.empty
+```
+
+### 边界测试
+
+```python
+class BoundaryTest:
+    """边界测试"""
+    
+    def test_empty_universe(self):
+        """测试空股票池"""
+        context = Mock()
+        context.universe = []
+        context.max_stocks = 10
+        
+        # 应该不会报错
+        rebalance(context)
+        assert len(context.portfolio.positions) == 0
+    
+    def test_single_stock(self):
+        """测试单只股票"""
+        context = Mock()
+        context.universe = ['000001.XSHE']
+        context.max_stocks = 10
+        
+        rebalance(context)
+        assert len(context.portfolio.positions) <= 1
+    
+    def test_extreme_parameters(self):
+        """测试极端参数"""
+        context = Mock()
+        context.max_position = 1.0  # 100%仓位
+        context.stop_loss = 0.01    # 1%止损
+        context.take_profit = 1.0   # 100%止盈
+        
+        # 应该能正常处理
+        initialize(context)
+        assert context.max_position == 1.0
+```
+
+### 异常测试
+
+```python
+class ExceptionTest:
+    """异常测试"""
+    
+    def test_data_fetch_failure(self):
+        """测试数据获取失败"""
+        context = Mock()
+        context.universe = ['000001.XSHE']
+        
+        # 模拟数据获取失败
+        with patch('get_price', side_effect=Exception("数据获取失败")):
+            # 应该优雅处理异常
+            rebalance(context)
+            # 不应该崩溃
+    
+    def test_invalid_stock_code(self):
+        """测试无效股票代码"""
+        context = Mock()
+        context.universe = ['INVALID_CODE']
+        
+        # 应该跳过无效代码
+        rebalance(context)
+        assert 'INVALID_CODE' not in context.portfolio.positions
+```
+
+<h2 id="section-7-5-2">🔗 7.5.2 集成测试</h2>
+
+集成测试验证策略各模块之间的集成是否正确，包括模块集成测试、接口测试和数据流测试。
+
+### 完整工作流测试
+
+```python
+class StrategyIntegrationTest:
+    """策略集成测试"""
+    
+    def test_strategy_workflow(self):
+        """
+        测试策略完整工作流
+        
+        **设计原理**：
+        - **端到端测试**：测试策略从初始化到执行的完整流程
+        - **多交易日模拟**：模拟多个交易日，验证策略的持续运行能力
+        - **状态验证**：验证每个阶段的状态，确保策略正常运行
+        
+        **为什么这样设计**：
+        1. **完整性**：端到端测试确保策略各模块协同工作
+        2. **真实性**：多交易日模拟更接近实际运行环境
+        3. **可靠性**：状态验证确保策略在长期运行中保持稳定
+        
+        **使用场景**：
+        - 策略开发完成后，验证完整工作流
+        - 策略修改后，确保不影响整体流程
+        - 策略部署前，进行最终验证
+        """
+        # 设计原理：初始化测试
+        # 原因：验证策略初始化是否正确，确保基础环境就绪
+        context = create_test_context()
+        initialize(context)
+        
+        # 验证初始化结果
+        assert hasattr(context, 'universe')
+        assert len(context.universe) > 0
+        
+        # 设计原理：多交易日模拟
+        # 原因：策略需要长期运行，多交易日测试验证持续运行能力
+        # 实现方式：使用pd.date_range生成交易日序列，模拟实际运行
+        test_dates = pd.date_range('2024-01-01', '2024-01-10', freq='B')
+        
+        for date in test_dates:
+            context.current_dt = date
+            
+            # 设计原理：按时间顺序执行策略函数
+            # 原因：策略函数有执行顺序（盘前→开盘→盘后），需要按顺序调用
+            # 盘前处理
+            before_market_open(context)
+            
+            # 开盘处理
+            market_open(context)
+            
+            # 盘后处理
+            after_market_close(context)
+        
+        # 设计原理：最终状态验证
+        # 原因：验证策略运行后的最终状态，确保策略正常执行
+        # 验证项：总资产>0（策略有持仓），持仓数量<=限制（风控有效）
+        assert context.portfolio.total_value > 0
+        assert len(context.portfolio.positions) <= context.max_stocks
+    
+    def test_module_integration(self):
+        """测试模块集成"""
+        context = create_test_context()
+        
+        # 测试选股模块与调仓模块的集成
+        selected_stocks = select_stocks(context)
+        rebalance(context, selected_stocks)
+        
+        # 验证集成结果
+        assert all(
+            stock in context.portfolio.positions 
+            for stock in selected_stocks[:context.max_stocks]
+        )
+    
+    def test_data_flow(self):
+        """测试数据流"""
+        context = create_test_context()
+        
+        # 1. 数据获取
+        market_data = get_market_data(context.universe)
+        assert market_data is not None
+        
+        # 2. 因子计算
+        factor_scores = calculate_factor_scores(market_data)
+        assert factor_scores is not None
+        
+        # 3. 选股
+        selected = select_stocks_by_scores(factor_scores)
+        assert len(selected) > 0
+        
+        # 4. 调仓
+        rebalance(context, selected)
+        
+        # 验证数据流完整性
+        assert len(context.portfolio.positions) > 0
+```
+
+<h2 id="section-7-5-3">📊 7.5.3 回测验证</h2>
+
+回测验证通过历史数据验证策略性能，确保策略在历史数据上的表现符合预期。TRQuant系统使用**BulletTrade回测引擎**和**聚宽(JQData)数据源**进行策略回测验证。
+
+### 回测框架
+
+TRQuant系统的回测验证基于以下技术栈：
+
+- **回测引擎**：BulletTrade（兼容聚宽API的本地量化框架）
+- **数据源**：聚宽(JQData)（主要数据源）
+- **策略格式**：聚宽风格策略代码（`from jqdata import *`）
+- **执行方式**：BulletTrade CLI（`bullet-trade backtest`）
+
+> **注意**：详细的回测框架说明请参考[第8章：回测验证](/ashare-book6/008_Chapter8_Backtest/8.1_Backtest_Framework_CN)。本节重点介绍如何在策略测试中使用回测验证。
+
+### BulletTrade回测配置
+
+```python
+from core.bullettrade import BulletTradeEngine, BTConfig
+from pathlib import Path
+
+def test_backtest_validation():
+    """回测验证测试（使用BulletTrade+聚宽数据源）"""
+    
+    # 设计原理：BulletTrade回测配置
+    # 原因：使用BulletTrade进行回测验证，确保策略在历史数据上表现良好
+    # 数据源：使用聚宽(JQData)数据源，与策略开发环境一致
+    # 配置说明：
+    # - start_date/end_date: 回测时间范围，建议至少3年，覆盖不同市场环境
+    # - initial_capital: 初始资金，使用标准金额便于对比
+    # - commission_rate: 手续费率，与实际交易一致
+    # - slippage: 滑点，大单交易时需要考虑
+    # - benchmark: 基准指数，用于计算超额收益
+    bt_config = BTConfig(
+        start_date="2020-01-01",
+        end_date="2023-12-31",
+        initial_capital=1000000,
+        commission_rate=0.0003,
+        stamp_tax_rate=0.001,
+        slippage=0.002,
+        benchmark="000300.XSHG",  # 沪深300
+        data_provider="jqdata"    # 使用聚宽数据源
+    )
+    
+    # 设计原理：创建BulletTrade引擎
+    # 原因：BulletTrade兼容聚宽API，策略代码无需修改即可回测
+    engine = BulletTradeEngine(bt_config)
+    
+    # 设计原理：检查CLI可用性
+    # 原因：BulletTrade CLI是回测执行的关键，需要确保可用
+    # 容错性：CLI不可用时抛出异常，避免后续执行失败
+    if not engine.check_cli_available():
+        raise RuntimeError("BulletTrade CLI不可用，请检查安装")
+    
+    # 4. 策略代码路径（聚宽风格）
+    strategy_path = "strategies/test_strategy.py"
+    
+    # 5. 执行回测
+    backtest_result = engine.run_backtest(
+        strategy_path=strategy_path,
+        start_date="2020-01-01",
+        end_date="2023-12-31",
+        frequency="day"  # 日线回测
+    )
+    
+    # 6. 验证回测结果
+    assert backtest_result.total_return > 0, "总收益率应为正"
+    assert backtest_result.sharpe_ratio > 1.0, "夏普比率应大于1.0"
+    assert backtest_result.max_drawdown < 0.20, "最大回撤应小于20%"
+    assert backtest_result.annual_return > 0.05, "年化收益率应大于5%"
+    
+    # 7. 生成HTML报告（可选）
+    report_path = engine.generate_report(
+        backtest_result, 
+        output_dir="backtest_results"
+    )
+    assert Path(report_path).exists(), "回测报告应已生成"
+    
+    return backtest_result
+```
+
+### 使用BulletTrade CLI进行回测验证
+
+```python
+import subprocess
+from pathlib import Path
+
+def test_backtest_with_cli():
+    """使用BulletTrade CLI进行回测验证"""
+    
+    strategy_path = "strategies/test_strategy.py"
+    output_dir = "backtest_results"
+    
+    # 执行BulletTrade CLI命令
+    cmd = [
+        "bullet-trade", "backtest", strategy_path,
+        "--start", "2020-01-01",
+        "--end", "2023-12-31",
+        "--frequency", "day",
+        "--output", output_dir
+    ]
+    
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        check=True
+    )
+    
+    # 验证回测报告已生成
+    report_path = Path(output_dir) / "report.html"
+    assert report_path.exists(), "回测报告应已生成"
+    
+    # 解析回测结果（从报告或JSON文件）
+    # ... 解析逻辑 ...
+    
+    return True
+```
+
+### 回测结果验证
+
+```python
+from typing import Dict, Any, Tuple, List
+
+class BacktestResultValidator:
+    """回测结果验证器（基于BulletTrade结果）"""
+    
+    def validate_backtest_result(
+        self,
+        backtest_result: Any  # BulletTrade回测结果对象
+    ) -> Tuple[bool, List[str]]:
+        """
+        验证回测结果
+        
+        Args:
+            backtest_result: BulletTrade回测结果对象
+        
+        Returns:
+            Tuple[bool, List[str]]: (是否有效, 错误列表)
+        """
+        errors = []
+        
+        # 检查必需指标
+        required_metrics = [
+            'total_return', 'annual_return', 'sharpe_ratio', 
+            'max_drawdown', 'win_rate', 'total_trades'
+        ]
+        
+        for metric in required_metrics:
+            if not hasattr(backtest_result, metric):
+                errors.append(f"缺少必需指标: {metric}")
+        
+        # 验证指标合理性
+        if hasattr(backtest_result, 'sharpe_ratio'):
+            sharpe = backtest_result.sharpe_ratio
+            if sharpe < -5 or sharpe > 10:
+                errors.append(f"夏普比率异常: {sharpe:.2f}")
+        
+        if hasattr(backtest_result, 'max_drawdown'):
+            max_dd = backtest_result.max_drawdown
+            if max_dd < 0 or max_dd > 1:
+                errors.append(f"最大回撤异常: {max_dd:.2%}")
+        
+        if hasattr(backtest_result, 'total_return'):
+            total_return = backtest_result.total_return
+            if total_return < -1 or total_return > 10:
+                errors.append(f"总收益率异常: {total_return:.2%}")
+        
+        # 验证回测报告路径
+        if hasattr(backtest_result, 'report_path'):
+            report_path = Path(backtest_result.report_path)
+            if not report_path.exists():
+                errors.append(f"回测报告不存在: {report_path}")
+        
+        return len(errors) == 0, errors
+    
+    def validate_performance_thresholds(
+        self,
+        backtest_result: Any,
+        min_sharpe: float = 1.0,
+        max_drawdown: float = 0.20,
+        min_annual_return: float = 0.05
+    ) -> Tuple[bool, List[str]]:
+        """
+        验证性能阈值
+        
+        Args:
+            backtest_result: BulletTrade回测结果对象
+            min_sharpe: 最小夏普比率
+            max_drawdown: 最大回撤阈值
+            min_annual_return: 最小年化收益率
+        
+        Returns:
+            Tuple[bool, List[str]]: (是否通过, 错误列表)
+        """
+        errors = []
+        
+        if hasattr(backtest_result, 'sharpe_ratio'):
+            if backtest_result.sharpe_ratio < min_sharpe:
+                errors.append(
+                    f"夏普比率 {backtest_result.sharpe_ratio:.2f} "
+                    f"低于阈值 {min_sharpe}"
+                )
+        
+        if hasattr(backtest_result, 'max_drawdown'):
+            if backtest_result.max_drawdown > max_drawdown:
+                errors.append(
+                    f"最大回撤 {backtest_result.max_drawdown:.2%} "
+                    f"超过阈值 {max_drawdown:.2%}"
+                )
+        
+        if hasattr(backtest_result, 'annual_return'):
+            if backtest_result.annual_return < min_annual_return:
+                errors.append(
+                    f"年化收益率 {backtest_result.annual_return:.2%} "
+                    f"低于阈值 {min_annual_return:.2%}"
+                )
+        
+        return len(errors) == 0, errors
+```
+
+### 回测验证工作流
+
+```python
+def strategy_backtest_validation_workflow(
+    strategy_path: str,
+    start_date: str,
+    end_date: str
+) -> Dict[str, Any]:
+    """
+    策略回测验证完整工作流
+    
+    1. 配置BulletTrade回测引擎
+    2. 使用聚宽数据源执行回测
+    3. 验证回测结果
+    4. 生成回测报告
+    
+    Args:
+        strategy_path: 策略代码路径（聚宽风格）
+        start_date: 开始日期
+        end_date: 结束日期
+    
+    Returns:
+        Dict: 回测验证结果
+    """
+    from core.bullettrade import BulletTradeEngine, BTConfig
+    
+    # 1. 创建回测配置
+    bt_config = BTConfig(
+        start_date=start_date,
+        end_date=end_date,
+        initial_capital=1000000,
+        commission_rate=0.0003,
+        stamp_tax_rate=0.001,
+        slippage=0.002,
+        benchmark="000300.XSHG",
+        data_provider="jqdata"  # 使用聚宽数据源
+    )
+    
+    # 2. 初始化BulletTrade引擎
+    engine = BulletTradeEngine(bt_config)
+    
+    # 3. 执行回测
+    backtest_result = engine.run_backtest(
+        strategy_path=strategy_path,
+        start_date=start_date,
+        end_date=end_date,
+        frequency="day"
+    )
+    
+    # 4. 验证回测结果
+    validator = BacktestResultValidator()
+    is_valid, errors = validator.validate_backtest_result(backtest_result)
+    
+    if not is_valid:
+        raise ValueError(f"回测结果验证失败: {errors}")
+    
+    # 5. 验证性能阈值
+    passed, threshold_errors = validator.validate_performance_thresholds(
+        backtest_result,
+        min_sharpe=1.0,
+        max_drawdown=0.20,
+        min_annual_return=0.05
+    )
+    
+    # 6. 生成回测报告
+    report_path = engine.generate_report(
+        backtest_result,
+        output_dir="backtest_results"
+    )
+    
+    return {
+        'backtest_result': backtest_result,
+        'is_valid': is_valid,
+        'passed_thresholds': passed,
+        'threshold_errors': threshold_errors,
+        'report_path': report_path
+    }
+```
+
+### 回测结果验证
+
+```python
+class BacktestResultValidator:
+    """回测结果验证器"""
+    
+    def validate_backtest_result(
+        self,
+        backtest_result: Dict[str, Any]
+    ) -> Tuple[bool, List[str]]:
+        """
+        验证回测结果
+        
+        Args:
+            backtest_result: 回测结果
+        
+        Returns:
+            Tuple[bool, List[str]]: (是否有效, 错误列表)
+        """
+        errors = []
+        
+        # 检查必需指标
+        required_metrics = [
+            'total_return', 'sharpe_ratio', 'max_drawdown',
+            'win_rate', 'total_trades'
+        ]
+        
+        for metric in required_metrics:
+            if metric not in backtest_result:
+                errors.append(f"缺少必需指标: {metric}")
+        
+        # 验证指标合理性
+        if 'sharpe_ratio' in backtest_result:
+            sharpe = backtest_result['sharpe_ratio']
+            if sharpe < -5 or sharpe > 10:
+                errors.append(f"夏普比率异常: {sharpe}")
+        
+        if 'max_drawdown' in backtest_result:
+            max_dd = backtest_result['max_drawdown']
+            if max_dd < 0 or max_dd > 1:
+                errors.append(f"最大回撤异常: {max_dd}")
+        
+        return len(errors) == 0, errors
+```
+
+## 🔗 相关章节
+
+- **7.4 策略规范化**：了解策略规范化，测试基于规范化后的策略
+- **第8章：回测验证**：了解回测验证的详细内容
+
+## 💡 关键要点
+
+1. **单元测试**：确保每个函数和逻辑单元的正确性
+2. **集成测试**：验证模块之间的集成是否正确
+3. **回测验证**：通过历史数据验证策略性能
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了策略测试系统，包括单元测试、集成测试和回测验证。通过理解策略测试的核心技术，帮助开发者掌握如何验证策略的正确性和性能，确保策略质量。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了策略测试后，下一节将介绍策略部署，包括策略打包、策略上传和策略监控。通过理解策略部署的核心技术，帮助开发者掌握如何将策略部署到实盘交易平台。</p>
+  
+  <a href="/ashare-book6/007_Chapter7_Strategy_Development/7.6_Strategy_Deployment_CN" class="next-section">
+    继续学习：7.6 策略部署 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12
+

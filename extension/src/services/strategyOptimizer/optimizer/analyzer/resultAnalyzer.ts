@@ -7,9 +7,9 @@
 
 import { ResultAnalyzer } from '../interfaces';
 import { BacktestResult, OptimizationResult } from '../types';
-// import { logger } from '../../../../utils/logger'; // 暂时未使用
+import { logger } from '../../../../utils/logger';
 
-// const MODULE = 'ResultAnalyzer'; // 暂时未使用
+const MODULE = 'ResultAnalyzer';
 
 export class ResultAnalyzerImpl implements ResultAnalyzer {
     analyze(result: BacktestResult): {
@@ -90,7 +90,7 @@ export class ResultAnalyzerImpl implements ResultAnalyzer {
             percentage: number;
         }> = [];
         
-        // const metrics = ['annualReturn', 'sharpeRatio', 'calmarRatio', 'winRate', 'profitFactor']; // 暂时未使用
+        const metrics = ['annualReturn', 'sharpeRatio', 'calmarRatio', 'winRate', 'profitFactor'];
         const metricNames: Record<string, string> = {
             annualReturn: '年化收益率',
             sharpeRatio: '夏普比率',
@@ -99,31 +99,21 @@ export class ResultAnalyzerImpl implements ResultAnalyzer {
             profitFactor: '盈亏比'
         };
         
-        const metricMap: Record<string, keyof import('../types').BacktestMetrics> = {
-            'annualReturn': 'annualReturn',
-            'sharpeRatio': 'sharpeRatio',
-            'calmarRatio': 'calmarRatio',
-            'winRate': 'winRate',
-            'profitFactor': 'profitFactor',
-        };
-        
-        for (const [metricName, metricKey] of Object.entries(metricMap)) {
-            const v1Value = result1.metrics[metricKey];
-            const v2Value = result2.metrics[metricKey];
-            const v1 = typeof v1Value === 'number' ? v1Value : 0;
-            const v2 = typeof v2Value === 'number' ? v2Value : 0;
+        for (const metric of metrics) {
+            const v1 = (result1.metrics as any)[metric] || 0;
+            const v2 = (result2.metrics as any)[metric] || 0;
             const change = v2 - v1;
             const percentage = v1 !== 0 ? (change / Math.abs(v1)) * 100 : 0;
             
             if (change > 0) {
                 improvements.push({
-                    metric: metricNames[metricName] || metricName,
+                    metric: metricNames[metric] || metric,
                     change: change,
                     percentage: percentage
                 });
             } else if (change < 0) {
                 regressions.push({
-                    metric: metricNames[metricName] || metricName,
+                    metric: metricNames[metric] || metric,
                     change: change,
                     percentage: percentage
                 });

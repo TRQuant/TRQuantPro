@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>鬼迷日眼熊猫策略 - 策略回测报告</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "SimHei", "WenQuanYi Micro Hei", sans-serif;
+            margin: 0;
+            padding: 32px 24px 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1c1f23;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .metric-value.positive {
+            color: #10b981;
+        }
+        .metric-value.negative {
+            color: #ef4444;
+        }
+        .chart-container {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container canvas,
+        .chart-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        /* 确保图表中的中文也能正常显示 */
+        svg text, canvas text, .chart text {
+            font-family: "PingFang SC", "Microsoft YaHei", "SimHei", "WenQuanYi Micro Hei", sans-serif !important;
+        }
+        .matplotlib-chart {
+            font-family: "PingFang SC", "Microsoft YaHei", "SimHei", sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        table tr:hover {
+            background: #f9fafb;
+        }
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        .info-box strong {
+            color: #1e40af;
+        }
+        footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            padding: 32px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>鬼迷日眼熊猫策略</h1>
+            <p>策略回测报告 | 生成时间: 2025-12-08 05:54:04</p>
+        </header>
+        
+        <div class="content">
+            <!-- 回测信息 -->
+            <section>
+                <h2>📊 回测信息</h2>
+                <div class="info-box">
+                    <strong>策略文件:</strong> 策略文件<br>
+                    <strong>回测周期:</strong> 2024-09-01 至 2025-09-01<br>
+                    <strong>初始资金:</strong> 1,000,000 元<br>
+                    <strong>基准指数:</strong> 000300.XSHG
+                </div>
+            </section>
+            
+            <!-- 核心指标 -->
+            <section>
+                <h2>📈 核心指标</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">总收益率</div>
+                        <div class="metric-value negative">0.00%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">年化收益率</div>
+                        <div class="metric-value negative">0.00%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">最大回撤</div>
+                        <div class="metric-value negative">0.00%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">夏普比率</div>
+                        <div class="metric-value negative">0.00</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">交易胜率</div>
+                        <div class="metric-value">0.00%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">交易次数</div>
+                        <div class="metric-value">4</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 净值曲线 -->
+            <section>
+                <h2>📉 净值曲线</h2>
+                <div class="chart-container">
+                    
+        <svg width="800" height="400" style="font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.1" />
+                </linearGradient>
+            </defs>
+            <rect x="40" y="40" width="720" height="320" 
+                  fill="url(#gradient)" opacity="0.5"/>
+            <path d="M 40.0,360.0 L 280.0,360.0 L 520.0,360.0 L 760.0,360.0" fill="none" stroke="#667eea" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="400.0" y="390" text-anchor="middle" font-size="14" fill="#6b7280">日期</text>
+            <text x="20" y="200.0" text-anchor="middle" font-size="14" fill="#6b7280" transform="rotate(-90 20 200.0)">净值</text>
+        </svg>
+        
+                </div>
+            </section>
+            
+            <!-- 详细指标 -->
+            <section>
+                <h2>📋 详细指标</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>指标名称</th>
+                            <th>数值</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td><strong>总收益率</strong></td>
+                    <td>0.00%</td>
+                    <td>策略在整个回测期间的总收益率</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>年化收益率</strong></td>
+                    <td>0.00%</td>
+                    <td>策略的年化收益率</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>最大回撤</strong></td>
+                    <td>0.00%</td>
+                    <td>策略净值从最高点到最低点的最大跌幅</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>夏普比率</strong></td>
+                    <td>0.0000</td>
+                    <td>风险调整后的收益指标，值越高越好</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>索提诺比率</strong></td>
+                    <td>0.0000</td>
+                    <td>只考虑下行风险的收益指标</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>Calmar比率</strong></td>
+                    <td>0.0000</td>
+                    <td>年化收益与最大回撤的比值</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>波动率</strong></td>
+                    <td>0.00%</td>
+                    <td>策略收益的波动程度</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>交易胜率</strong></td>
+                    <td>0</td>
+                    <td>盈利交易占总交易的比例</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>交易天数</strong></td>
+                    <td>4</td>
+                    <td>回测期间的总交易天数</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>交易次数</strong></td>
+                    <td>0</td>
+                    <td>回测期间的总交易次数</td>
+                </tr>
+            
+
+                <tr>
+                    <td><strong>盈亏比</strong></td>
+                    <td>0</td>
+                    <td>平均盈利与平均亏损的比值</td>
+                </tr>
+            
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        
+        <footer>
+            <p>本报告由 TRQuant 系统自动生成 | 基于 BulletTrade 回测引擎</p>
+        </footer>
+    </div>
+</body>
+</html>
+

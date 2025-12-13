@@ -6,7 +6,7 @@
   "publisher": "trquant",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TRQuant/TRQuantExt"
+    "url": "https://github.com/trquant/TRQuant"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -25,22 +25,7 @@
     "strategy"
   ],
   "activationEvents": [
-    "onStartupFinished",
-    "onCommand:trquant.openDashboard",
-    "onCommand:trquant.createProject",
-    "onCommand:trquant.optimizeStrategy",
-    "onCommand:trquant.runBacktest",
-    "onCommand:trquant.openWorkflowPanel",
-    "onCommand:trquant.openDataSource",
-    "onCommand:trquant.openMarketTrend",
-    "onCommand:trquant.openMainlines",
-    "onCommand:trquant.openCandidatePool",
-    "onCommand:trquant.openFactors",
-    "onCommand:trquant.openStrategyDev",
-    "onCommand:trquant.openBacktestConfig",
-    "onCommand:trquant.openTrading",
-    "onCommand:trquant.openAShareManual",
-    "workspaceContains:**/*.py"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -103,39 +88,6 @@
         "category": "TRQuant"
       },
       {
-        "command": "trquant.optimizeStrategy",
-        "title": "TRQuant: 优化策略",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openStrategyOptimizer",
-        "title": "TRQuant: 策略优化器",
-        "category": "TRQuant",
-        "icon": "$(tools)"
-      },
-      {
-        "command": "trquant.convertToPTrade",
-        "title": "TRQuant: 转换为PTrade格式",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.generateStrategyReport",
-        "title": "TRQuant: 生成策略报告",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.learnFromManual",
-        "title": "TRQuant: 从实操手册学习",
-        "category": "TRQuant",
-        "icon": "$(book)"
-      },
-      {
-        "command": "trquant.showKnowledgeStats",
-        "title": "TRQuant: 知识库统计",
-        "category": "TRQuant",
-        "icon": "$(database)"
-      },
-      {
         "command": "trquant.refreshProject",
         "title": "刷新项目",
         "icon": "$(refresh)"
@@ -195,134 +147,6 @@
         "command": "trquant.compareBacktests",
         "title": "TRQuant: 对比回测结果",
         "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openDataSource",
-        "title": "TRQuant: 📡 信息获取 (步骤1)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openMarketTrend",
-        "title": "TRQuant: 📈 市场趋势 (步骤2)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openMainlines",
-        "title": "TRQuant: 🔥 投资主线 (步骤3)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openCandidatePool",
-        "title": "TRQuant: 📦 候选池 (步骤4)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openFactors",
-        "title": "TRQuant: 📊 因子构建 (步骤5)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openStrategyDev",
-        "title": "TRQuant: 🛠️ 策略开发 (步骤6)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openBacktestConfig",
-        "title": "TRQuant: 🔄 回测验证 (步骤7)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openWorkflowPanel",
-        "title": "TRQuant: 🖥️ 打开桌面系统（完整工作流）",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.launchDesktopSystem",
-        "title": "TRQuant: 🐉 韬睿量化桌面系统",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.localBackup",
-        "title": "💾 本地备份",
-        "category": "TRQuant",
-        "icon": "$(save)"
-      },
-      {
-        "command": "trquant.gitCommit",
-        "title": "📝 Git Commit",
-        "category": "TRQuant",
-        "icon": "$(git-commit)"
-      },
-      {
-        "command": "trquant.refreshSystem",
-        "title": "🔄 刷新系统",
-        "category": "TRQuant",
-        "icon": "$(sync)"
-      },
-      {
-        "command": "trquant.openWorkflowPanelWebview",
-        "title": "TRQuant: 🖥️ 打开桌面系统（WebView版）",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openTrading",
-        "title": "TRQuant: 🚀 实盘交易 (步骤8)",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.showLogs",
-        "title": "TRQuant: 📋 查看日志",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.refreshStatus",
-        "title": "TRQuant: 刷新状态",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openFileManager",
-        "title": "TRQuant: 📁 文件管理",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openKnowledgeBase",
-        "title": "TRQuant: 📖 知识库",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openAShareManual",
-        "title": "TRQuant: 📚 A股高倍股实操手册",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.openDataCenter",
-        "title": "TRQuant: 📡 数据中心 (步骤1)",
-        "category": "TRQuant",
-        "icon": "$(database)"
-      },
-      {
-        "command": "trquant.openMarketAnalysis",
-        "title": "TRQuant: 📈 市场分析 (步骤2)",
-        "category": "TRQuant",
-        "icon": "$(graph-line)"
-      },
-      {
-        "command": "trquant.openFactorCenter",
-        "title": "TRQuant: 📊 因子中心 (步骤5)",
-        "category": "TRQuant",
-        "icon": "$(symbol-variable)"
-      },
-      {
-        "command": "trquant.openBacktestCenter",
-        "title": "TRQuant: 🔄 回测中心 (步骤7)",
-        "category": "TRQuant",
-        "icon": "$(history)"
-      },
-      {
-        "command": "trquant.openTradingCenter",
-        "title": "TRQuant: 🚀 交易中心 (步骤8)",
-        "category": "TRQuant",
-        "icon": "$(rocket)"
       }
     ],
     "snippets": [
@@ -368,38 +192,37 @@
     "views": {
       "trquant-sidebar": [
         {
-          "id": "trquant-quick-actions",
-          "name": "⚡ 快捷操作"
-        },
-        {
-          "id": "trquant-workflow",
-          "name": "🔄 投资工作流"
-        },
-        {
           "id": "trquant-project",
           "name": "📁 项目资源"
         },
         {
-          "id": "trquant-developer",
-          "name": "🛠️ 开发者功能"
+          "id": "trquant-backtest-history",
+          "name": "🧪 回测历史"
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "trquant-quick-actions",
-        "contents": "🐉 韬睿量化投资助手\n\n[📊 打开主工作台](command:trquant.openDashboard)\n[🖥️ 打开桌面系统](command:trquant.launchDesktopSystem)\n[🧪 运行回测](command:trquant.runBacktest)\n[📁 创建项目](command:trquant.createProject)"
-      },
-      {
-        "view": "trquant-workflow",
-        "contents": "📈 量化投资8步工作流\n\n**数据与分析**\n[📡 1. 数据中心](command:trquant.openDataCenter)\n[📈 2. 市场分析](command:trquant.openMarketAnalysis)\n[🔥 3. 投资主线](command:trquant.openMainlines)\n[📦 4. 候选池](command:trquant.openCandidatePool)\n\n**策略与交易**\n[📊 5. 因子中心](command:trquant.openFactorCenter)\n[🛠️ 6. 策略开发](command:trquant.openStrategyDev)\n[🔄 7. 回测中心](command:trquant.openBacktestCenter)\n[🚀 8. 交易中心](command:trquant.openTradingCenter)"
-      }
-    ],
     "menus": {
       "view/item/context": [
         {
           "command": "trquant.runStrategyBacktest",
           "when": "view == trquant-project && viewItem == strategy",
+          "group": "1_run"
+        },
+        {
+          "command": "trquant.openInEditor",
+          "when": "view == trquant-project",
+          "group": "2_open"
+        },
+        {
+          "command": "trquant.deleteFile",
+          "when": "view == trquant-project && viewItem != root && viewItem != folder",
+          "group": "3_delete"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "trquant.refreshProject",
+          "when": "view == trquant-project",
           "group": "navigation"
         },
         {
@@ -422,23 +245,6 @@
           "when": "view == trquant-backtest-history",
           "group": "navigation"
         }
-      ],
-      "view/title": [
-        {
-          "command": "trquant.refreshProject",
-          "when": "view == trquant-project",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.localBackup",
-          "when": "view == trquant-developer",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.refreshSystem",
-          "when": "view == trquant-developer",
-          "group": "navigation"
-        }
       ]
     }
   },
@@ -452,10 +258,9 @@
   "devDependencies": {
     "@types/node": "^20.x",
     "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.1",
-    "prettier": "^3.7.4",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
     "ts-loader": "^9.x",
     "typescript": "^5.x",
     "webpack": "^5.x",
@@ -465,3 +270,4 @@
     "axios": "^1.6.0"
   }
 }
+

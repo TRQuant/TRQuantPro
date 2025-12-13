@@ -1,0 +1,1 @@
+{"version":1,"resource":"file:///home/taotao/dev/QuantTest/TRQuant/extension/AShare-manual/src/pages/ashare-book6/010_Chapter10_Development_Guide/10.8_Version_Management_CN.md","entries":[{"id":"q7gN.md","timestamp":1765583606823}]}

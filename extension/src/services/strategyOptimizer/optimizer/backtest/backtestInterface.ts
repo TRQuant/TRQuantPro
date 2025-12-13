@@ -119,7 +119,7 @@ export class BacktestInterfaceImpl implements BacktestInterface {
         }
     }
     
-    async checkStatus(_taskId: string): Promise<'pending' | 'running' | 'completed' | 'failed'> {
+    async checkStatus(taskId: string): Promise<'pending' | 'running' | 'completed' | 'failed'> {
         // TODO: 实现任务状态查询
         return 'completed';
     }

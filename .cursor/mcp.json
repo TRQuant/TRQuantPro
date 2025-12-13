@@ -1,0 +1,173 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ]
+    },
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git"
+      ],
+      "env": {
+        "GIT_REPOSITORY": "/home/taotao/dev/QuantTest/TRQuant"
+      }
+    },
+    "trquant-spec": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/spec_server.py"
+      ]
+    },
+    "trquant-test": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/test_server.py"
+      ]
+    },
+    "trquant-code": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/code_server.py"
+      ]
+    },
+    "trquant-lint": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/lint_server.py"
+      ]
+    },
+    "trquant-schema": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/schema_server.py"
+      ]
+    },
+    "trquant-adr": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/adr_server.py"
+      ]
+    },
+    "trquant-task": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/task_server.py"
+      ]
+    },
+    "trquant-data-source": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/data_source_server.py"
+      ]
+    },
+    "trquant-backtest": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/backtest_server.py"
+      ]
+    },
+    "trquant-evidence": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/evidence_server.py"
+      ]
+    },
+    "trquant-secrets": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/secrets_server.py"
+      ]
+    },
+    "trquant-business": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "extension/python/mcp_server.py"
+      ]
+    },
+    "trquant-factor": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/factor_server.py"
+      ]
+    },
+    "trquant-strategy-template": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/strategy_template_server.py"
+      ]
+    },
+    "trquant-report": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/report_server.py"
+      ]
+    },
+    "trquant-docs": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/docs_server.py"
+      ]
+    },
+    "trquant-config": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/config_server.py"
+      ]
+    },
+    "trquant-strategy-optimizer": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/strategy_optimizer_server.py"
+      ]
+    },
+    "trquant-workflow": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/workflow_server.py"
+      ]
+    },
+    "trquant-data-quality": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/data_quality_server.py"
+      ]
+    },
+    "trquant-trading": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/trading_server.py"
+      ]
+    },
+    "trquant-engineering": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "mcp_servers/engineering_server.py"
+      ]
+    },
+    "data-collector": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "${workspaceFolder}/mcp_servers/data_collector_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+      },
+      "cwd": "${workspaceFolder}"
+    },
+    "kb": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "${workspaceFolder}/mcp_servers/kb_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+      },
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

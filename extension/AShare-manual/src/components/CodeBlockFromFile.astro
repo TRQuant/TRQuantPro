@@ -1,0 +1,141 @@
+---
+/**
+ * 从文件直接读取代码的组件（简化版）
+ * 
+ * 使用方式：
+ * <CodeBlockFromFile 
+ *   filePath="code_library/003_Chapter3_Market_Analysis/3.2/code_3_2_2_analyze_price_dimension.py" 
+ * />
+ */
+
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+
+interface Props {
+  filePath: string;  // 代码文件路径（相对于项目根目录）
+  language?: string;  // 编程语言，默认 "python"
+  showDesignPrinciples?: boolean;  // 是否显示设计原理，默认 true
+  showLineNumbers?: boolean;  // 是否显示行号，默认 false
+}
+
+const {
+  filePath,
+  language = 'python',
+  showDesignPrinciples = true,
+  showLineNumbers = false
+} = Astro.props;
+
+// 读取代码文件
+let codeContent = '';
+let designPrinciples = '';
+let error: string | null = null;
+
+try {
+  const fullPath = join(process.cwd(), filePath);
+  codeContent = await readFile(fullPath, 'utf-8');
+  
+  // 提取设计原理说明
+  if (showDesignPrinciples) {
+    const designMatch = codeContent.match(/\*\*设计原理\*\*[：:]\s*\n(.*?)(?=\*\*|$)/s);
+    if (designMatch) {
+      designPrinciples = designMatch[1].trim();
+    }
+  }
+  
+  // 移除设计原理注释，只保留代码
+  codeContent = codeContent.replace(/\*\*设计原理\*\*[：:].*?(?=\*\*|$)/gs, '').trim();
+  
+} catch (e) {
+  error = `无法加载代码文件: ${filePath}. 错误: ${e instanceof Error ? e.message : String(e)}`;
+  console.error(error);
+}
+
+const lines = codeContent.split('\n');
+---
+
+{error ? (
+  <div class="code-error">
+    <p>⚠️ {error}</p>
+  </div>
+) : (
+  <div class="code-block-container">
+    {showDesignPrinciples && designPrinciples && (
+      <div class="design-principles">
+        <h4>💡 设计原理</h4>
+        <div class="principles-content">
+          {designPrinciples.split('\n').map(line => {
+            if (line.trim().startsWith('- **')) {
+              const match = line.match(/- \*\*(.*?)\*\*[：:]\s*(.*)/);
+              if (match) {
+                return (
+                  <p>
+                    <strong>{match[1]}</strong>：{match[2]}
+                  </p>
+                );
+              }
+            }
+            return <p>{line}</p>;
+          })}
+        </div>
+      </div>
+    )}
+    
+    <pre class={`language-${language}`}>
+      <code class={`language-${language}`}>
+        {codeContent}
+      </code>
+    </pre>
+  </div>
+)}
+
+<style>
+  .code-block-container {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border-color, #e1e4e8);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--code-bg, #f6f8fa);
+  }
+  
+  .design-principles {
+    padding: 1rem 1.5rem;
+    background: var(--principles-bg, #fff9e6);
+    border-bottom: 1px solid var(--border-color, #e1e4e8);
+  }
+  
+  .design-principles h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #586069);
+  }
+  
+  .principles-content {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary, #24292e);
+  }
+  
+  .principles-content p {
+    margin: 0.5rem 0;
+  }
+  
+  pre code {
+    display: block;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text-primary, #24292e);
+    background: transparent;
+  }
+  
+  .code-error {
+    padding: 1rem;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    color: #856404;
+  }
+</style>
+

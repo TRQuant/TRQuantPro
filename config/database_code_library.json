@@ -1,0 +1,8 @@
+{
+  "host": "localhost",
+  "port": 5432,
+  "database": "trquant",
+  "user": "trquant",
+  "password": "your_password_here"
+}
+

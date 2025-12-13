@@ -7,7 +7,7 @@
 /**
  * 通用API响应
  */
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = any> {
     ok: boolean;
     data?: T;
     error?: string;
@@ -161,7 +161,7 @@ export interface MCPTool {
     description: string;
     inputSchema: {
         type: 'object';
-        properties: Record<string, unknown>;
+        properties: Record<string, any>;
         required?: string[];
     };
 }
@@ -195,31 +195,10 @@ export interface GenerateStrategyParams {
 
 export interface AnalyzeBacktestParams {
     backtest_file?: string;
-    backtest_data?: unknown;
+    backtest_data?: any;
 }
 
 export interface RiskAssessmentParams {
     portfolio: Record<string, number>;
-}
-
-export interface RunBacktestParams {
-    strategy_code: string;
-    config: BacktestConfig;
-    data_source?: 'akshare' | 'jqdata';
-}
-
-export interface BacktestConfig {
-    start_date: string;
-    end_date: string;
-    initial_capital: number;
-    benchmark?: string;
-    commission?: number;
-    slippage?: number;
-    max_position?: number;
-    single_stock_max?: number;
-    stop_loss?: number;
-    take_profit?: number;
-    symbols?: string[];
-    data_source?: 'akshare' | 'jqdata';
 }
 

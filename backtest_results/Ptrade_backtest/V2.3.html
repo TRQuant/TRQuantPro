@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.2.7.2 (Linux)"/>
+	<meta name="created" content="2025-12-08T13:09:58.522670973"/>
+	<meta name="changed" content="2025-12-08T13:10:47.035232632"/>
+	<style type="text/css">
+		h2.cjk { font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-family: "Noto Sans Devanagari" }
+		h3.cjk { font-family: "Noto Serif CJK SC" }
+		h3.ctl { font-family: "Noto Sans Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-US" dir="ltr"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">结合您提供的策略代码（</span></font></font><code class="western">main_v2.3.py</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）、回测结果图表、</span></font></font>PDF<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">报告以及目标需求“获取</span></font></font>A<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">股最高超额收益，避免频繁调仓，优选主线和长期成长股”，我对策略行为与性能进行了详细分析，并给出优化建议如下：</span></font></font></p>
+<hr/>
+
+<h2 class="western">✅ <font face="Noto Serif CJK SC"><span lang="zh-CN">策略总体评价</span></font></h2>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>当前策略特征</strong>（策略名：</span></font></font>AI_gen_test2.3<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）：</span></font></font></p>
+<ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">策略收益：</span></font></font><strong>-5.06%</strong>
+	vs <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">沪深</span></font></font>300<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">基准收益
+	</span></font></font><strong>+32.06%</strong> → <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">明显跑输</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">胜率：</span></font></font>44.55%<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，盈亏比
+	</span></font></font>99.82%<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，说明止盈止损机制过于激进</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">最大回撤：</span></font></font>20.18%<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，不算特别激进</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调仓频率过高：平均持仓时间仅
+	</span></font></font><strong>11.3 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">天</span></font></font></strong></p></li>
+	<li><p>Sharpe<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">比率：</span></font></font><strong>-0.43</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，策略不具备长期稳定性</span></font></font></p></li>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">超额收益：</span></font></font><strong>-37.34%</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，年化收益为
+	</span></font></font>-22.22%<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，</span></font></font>Alpha
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">为负（</span></font></font>-0.12<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</span></font></font></p></li>
+</ul>
+<p>📌 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>结论：策略频繁调仓、收益波动大，未有效捕捉主线结构性行情，存在严重策略失效迹象。</strong></span></font></font></p>
+<hr/>
+
+<h2 class="western">⚙️ <font face="Noto Serif CJK SC"><span lang="zh-CN">策略代码亮点与问题</span></font></h2>
+<h3 class="western">✅ <font face="Noto Serif CJK SC"><span lang="zh-CN">优点：</span></font></h3>
+<ul>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">完整使用
+	</span></font></font>PTrade API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，无兼容性问题；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">市场状态识别（牛市、熊市、震荡）
+	→ 动态选因子权重；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">使用全市场选股（非成分股限制）；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线动量因子设计：调用
+	</span></font></font><code class="western">get_stock_blocks()</code>
+	<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">和概念板块动量；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">多因子综合选股，并
+	</span></font></font>Z-score <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">标准化评分；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">引入持仓质量评估（</span></font></font>evaluate_position_quality<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">止盈止损机制细致（包括单票和组合层）；</span></font></font></p></li>
+	<li><p>✔ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">支持紧急调仓（波动</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">质量</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">市场
+	</span></font></font>Regime <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">变化触发）；</span></font></font></p></li>
+</ul>
+<h3 class="western">❌ <font face="Noto Serif CJK SC"><span lang="zh-CN">问题：</span></font></h3>
+<ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>调仓太频繁</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">设置
+		</span></font></font><code class="western">REBALANCE_INTERVAL =
+		5</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（交易日），同时有
+		<strong>紧急调仓</strong>（若质量</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">波动超过阈值）。</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">导致平均持仓周期仅
+		</span></font></font>11.3 <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">天（太短，无法捕捉主线轮动或成长逻辑）。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>主线动量因子弱化了主题性</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">当前用“平均动量前</span></font></font>N<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">个行业”，但并未精选板块主线，缺乏情绪认知、资金合流能力。</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建议使用
+		<strong>主线库</strong></strong></strong></span></font></font><strong>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">研报</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">新闻语义分析</strong>
+		定向辅助生成主题池（例如高端制造、算力、</span></font></font>AI<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">应用）。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>因子设计未能识别强趋势或高景气度标的</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">当前动量、成长定义为
+		</span></font></font>n <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">日涨幅，未结合“趋势持续时间”“机构参与”；</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">缺少行业景气度因子、资金强度因子、机构持仓、换手率等重要指标；</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>选股范围过大
+	→ 噪声多</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">全市场
+		</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">简单价格</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">成交量筛选
+		→ 候选股干扰多，容易中低质量股；</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建议使用
+		<strong>主线驱动候选池</strong>，限制到精选</span></font></font>300~500<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">只。</span></font></font></p></li>
+	</ul>
+</ol>
+<hr/>
+
+<h2 class="western">🧠 <font face="Noto Serif CJK SC"><span lang="zh-CN">优化建议（目标：增强“抓主线
+</span></font>+ <font face="Noto Serif CJK SC"><span lang="zh-CN">低频轮动”）</span></font></h2>
+<h3 class="western">✅ <font face="Noto Serif CJK SC"><span lang="zh-CN">方向一：主线趋势型策略（长期成长
+</span></font>+ <font face="Noto Serif CJK SC"><span lang="zh-CN">情绪辅助）</span></font></h3>
+<table cellpadding="2" cellspacing="2">
+	<thead>
+		<tr>
+			<th style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">模块</span></font></font></p>
+			</th>
+			<th style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建议内容</span></font></font></p>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">调仓周期</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><code class="western">REBALANCE_INTERVAL
+				= 15~20</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，紧急调仓阈值放宽至</span></font></font>10~15%<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，或取消</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">持仓控制</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">引入“最低持仓评分”（避免过早止盈），</span></font></font><code class="western">MIN_HOLD_DAYS
+				= 10+</code></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线识别</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建立
+				</span></font></font><code class="western">mainline_pool.py</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：结合研报热词、新闻情绪、龙虎榜板块、社交热度等</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">候选池构建</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">候选股优先来自主线主题内，非全市场泛选</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">因子设计</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">强化趋势因子（</span></font></font>ADX<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、</span></font></font>MACD<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">稳定性），加入行业景气度、板块涨幅相对强度</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">风控设计</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">移除全组合止损，保留个股止损</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">止盈，提高容错区间</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">持仓评估</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">优化
+				</span></font></font><code class="western">evaluate_position_quality()</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">，加权打分行业
+				</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">个股表现
+				</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">波动率</span></font></font></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回测设置</span></font></font></p>
+			</td>
+			<td style="border: none; padding: 0in"><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">建议用半年</span></font></font>/1<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">年周期移动回测，对策略迭代敏感性测试</span></font></font></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<hr/>
+
+<h2 class="western">📁 <font face="Noto Serif CJK SC"><span lang="zh-CN">开发与管理建议（在韬睿量化系统中）</span></font></h2>
+<h3 class="western">✅ <font face="Noto Serif CJK SC"><span lang="zh-CN">文件模块划分（</span></font>Cursor
+<font face="Noto Serif CJK SC"><span lang="zh-CN">项目结构）</span></font></h3>
+<pre class="western"><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">韬睿项目目录</code></span></font><code class="western">/</code>
+<code class="western">├── </code><code class="western">main.py                   # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">主策略入口（引用子模块）</code></span></font>
+<code class="western">├── </code><code class="western">config.yaml               # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">参数配置文件</code></span></font>
+<code class="western">├── </code><code class="western">candidate_pool.py         # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">候选池构建模块（主题过滤</code></span></font><code class="western">/</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">行业</code></span></font><code class="western">/</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">价格等）</code></span></font>
+<code class="western">├── </code><code class="western">mainline_pool.py          # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">主线挖掘模块（</code></span></font><code class="western">AI</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">辅助研报关键词</code></span></font><code class="western">+</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">新闻语义）</code></span></font>
+<code class="western">├── </code><code class="western">factor_engine.py          # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">多因子打分模块（成长、趋势、价值、波动等）</code></span></font>
+<code class="western">├── </code><code class="western">position_manager.py       # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">仓位控制、止损止盈、调仓逻辑</code></span></font>
+<code class="western">├── </code><code class="western">report_generator.py       # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">回测报告输出、性能评价</code></span></font>
+<code class="western">├── </code><code class="western">market_regime.py          # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">市场状态判断、策略切换控制</code></span></font>
+<code class="western">├── </code><code class="western">signals/                  # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">信号函数库（各类技术因子、模型辅助判断）</code></span></font>
+<code class="western">├── </code><code class="western">docs/                     # Markdown</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">策略说明、版本日志等</code></span></font>
+<code class="western">└── </code><code class="western">backtest_results/         # </code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">回测输出（图、表、</code></span></font><code class="western">csv</code><font face="Noto Sans Mono CJK SC, monospace"><span lang="zh-CN"><code class="cjk">、图像）</code></span></font></pre>
+<hr/>
+
+<h3 class="western">🧠 <font face="Noto Serif CJK SC"><span lang="zh-CN">如何在
+</span></font>Cursor + PTrade <font face="Noto Serif CJK SC"><span lang="zh-CN">中迭代优化</span></font></h3>
+<ol>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>使用
+	</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">插件调用
+	</span></font></font>LLM</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">根据
+		</span></font></font><code class="western">config.yaml</code>
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">配置调用模板化生成策略代码；</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">让
+		</span></font></font>LLM <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">检查是否重复已有策略
+		</span></font></font>hash <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或生成时间，避免重复输出。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>构建版本索引数据库（</span></font></font>SQLite<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">每次生成策略自动记录
+		</span></font></font>hash<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">、参数摘要、收益指标、路径；</span></font></font></p></li>
+		<li><p>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">或工具链在调用时检索是否已有类似版本。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>自动生成报告
+	</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">误差追踪</strong>：</span></font></font></p>
+	<ul>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">回测后由
+		</span></font></font>LLM <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成自然语言总结（</span></font></font>Markdown
+		<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">格式）；</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">保存路径与策略版本号一致，如：</span></font></font><code class="western">backtest_results/v2.3/report.md</code><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">。</span></font></font></p></li>
+	</ul>
+	<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN"><strong>推荐
+	</span></font></font>MCP <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工具链：</span></font></font>CrewAI
+	+ LangChain Tools</strong><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">：</span></font></font></p>
+	<ul>
+		<li><p>CrewAI <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用于定义“策略生成者”“绩效分析者”“候选池维护者”等多</span></font></font>Agent<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">任务；</span></font></font></p></li>
+		<li><p>LangChain <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">用于调用外部</span></font></font>API<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">（如新闻热词提取、同花顺板块、研报解析）；</span></font></font></p></li>
+		<li><p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">可嵌入开发工作流，监测“需要调仓</span></font></font>/<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">生成新策略”的触发条件。</span></font></font></p></li>
+	</ul>
+</ol>
+<hr/>
+
+<h2 class="western">🔚 <font face="Noto Serif CJK SC"><span lang="zh-CN">总结</span></font></h2>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">当前策略在结构上已具备完整框架，但最大问题是
+<strong>调仓频繁、选股信号过度敏感、缺乏主线趋势捕捉能力</strong>。若目标为“捕捉长期成长、主线驱动的高胜率高盈亏比策略”，建议转向“低频趋势追踪
+</span></font></font>+ <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">主线动量驱动”模式，放弃短线博弈。</span></font></font></p>
+<p><font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">是否需要我帮您重构一个基于上述建议的新策略代码骨架（</span></font></font>v3.0<font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">）？我可以输出对应模块的
+</span></font></font>Cursor <font face="Noto Serif CJK SC"><font size="2" style="font-size: 10pt"><span lang="zh-CN">工程结构与文件模板。</span></font></font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

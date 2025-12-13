@@ -1,0 +1,966 @@
+---
+title: "7.3 策略优化"
+description: "深入解析策略优化系统，包括参数调优、因子权重优化、风控参数优化、策略逻辑优化等核心技术"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# ⚡ 7.3 策略优化
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的策略优化系统，作为广义策略生成的关键组件，负责接收前序步骤信息和回测结果，对策略进行迭代优化。通过理解参数调优、因子权重优化、风控参数优化、策略逻辑优化和智能优化算法，帮助开发者掌握如何对生成的策略进行优化，提高策略性能和稳健性。
+
+策略优化是广义策略生成的关键组件，位于策略生成之后、回测验证之前，接收前序步骤信息和回测结果进行迭代优化。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-7-3-1')">
+    <h4>🎯 7.3.1 优化定位与流程</h4>
+    <p>策略优化在工作流中的定位、首次优化流程、迭代优化流程</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-3-2')">
+    <h4>📊 7.3.2 参数调优</h4>
+    <p>因子权重优化、风控参数优化、调仓频率优化、选股数量优化</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-3-3')">
+    <h4>🧠 7.3.3 智能优化算法</h4>
+    <p>网格搜索、随机搜索、贝叶斯优化、遗传算法、强化学习</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-3-4')">
+    <h4>🔄 7.3.4 策略逻辑优化</h4>
+    <p>选股逻辑优化、择时逻辑优化、风控逻辑优化、执行逻辑优化</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-3-5')">
+    <h4>📈 7.3.5 Walk-Forward分析</h4>
+    <p>时间序列分割、训练集优化、测试集验证、稳健性评估</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-7-3-6')">
+    <h4>🤖 7.3.6 自动化与智能化</h4>
+    <p>自动触发优化、自动迭代优化、AI辅助优化、工作流集成</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **理解优化定位**：掌握策略优化在工作流中的定位和作用
+- **实现参数调优**：理解因子权重优化、风控参数优化等方法
+- **应用优化算法**：掌握网格搜索、贝叶斯优化等智能优化算法
+- **优化策略逻辑**：理解选股逻辑、择时逻辑等策略逻辑优化
+- **进行Walk-Forward分析**：掌握时间序列分割和稳健性评估方法
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤6.5 - ⚡ 策略优化（广义策略生成的关键组件）
+- **核心职责**：参数调优、因子权重优化、策略逻辑优化、迭代改进
+- **服务对象**：策略生成（步骤6）、回测验证（步骤7）
+
+### 设计理念
+
+策略优化系统遵循以下设计理念：
+
+1. **迭代改进**：通过多轮优化迭代，逐步提升策略性能
+2. **知识驱动**：基于前序步骤信息和回测结果进行优化
+3. **稳健性优先**：避免过拟合，确保策略在不同市场环境下的稳健性
+4. **自动化**：支持自动触发和自动迭代优化
+5. **智能化**：使用AI算法智能探索参数空间
+
+<h2 id="section-7-3-1">🎯 7.3.1 优化定位与流程</h2>
+
+策略优化是广义策略生成的关键组件，与策略生成共同构成完整的策略开发流程。
+
+### 优化定位
+
+策略优化不是独立的步骤，而是**广义策略生成的关键组件**：
+
+```
+策略生成（步骤6）
+    ↓
+接收前序信息：
+  - 市场状态（步骤2）
+  - 投资主线（步骤3）
+  - 候选池（步骤4）
+  - 因子推荐（步骤5）
+    ↓
+策略优化（步骤6.5）← 关键组件
+  - 参数调优
+  - 因子权重优化
+  - 风控参数优化
+  - 策略逻辑优化
+    ↓
+输出优化后的策略
+    ↓
+回测验证（步骤7）
+    ↓
+回测结果反馈
+    ↓
+再优化（迭代）
+    ↓
+最终优化策略
+```
+
+### 首次优化流程
+
+```python
+from core.strategy_optimizer import StrategyOptimizer
+from core.factor_weight_optimizer import FactorWeightOptimizer
+
+def first_optimization(
+    strategy: Dict[str, Any],
+    market_context: Dict[str, Any],
+    mainlines: List[Dict],
+    candidate_pool: List[str],
+    factor_recommendations: List[Dict]
+) -> Dict[str, Any]:
+    """
+    首次策略优化
+    
+    Args:
+        strategy: 初始策略（来自步骤6）
+        market_context: 市场状态（来自步骤2）
+        mainlines: 投资主线（来自步骤3）
+        candidate_pool: 候选池（来自步骤4）
+        factor_recommendations: 因子推荐（来自步骤5）
+    
+    Returns:
+        Dict: 优化结果
+    """
+    optimizer = StrategyOptimizer()
+    
+    # 1. 分析前序信息
+    market_regime = market_context.get('regime', 'neutral')
+    mainline_names = [m.get('name', '') for m in mainlines]
+    factors = [f.get('name', '') for f in factor_recommendations]
+    
+    # 2. 配置优化目标
+    optimization_config = {
+        'target_metric': 'sharpe_ratio',
+        'direction': 'maximize',
+        'min_sharpe': 1.5,
+        'max_drawdown_limit': 0.15,
+        'algorithm': 'grid_search'
+    }
+    
+    # 3. 执行优化
+    result = optimizer.optimize(
+        strategy=strategy,
+        market_context=market_context,
+        mainlines=mainlines,
+        candidate_pool=candidate_pool,
+        factors=factor_recommendations,
+        optimization_config=optimization_config
+    )
+    
+    return result
+```
+
+### 迭代优化流程
+
+```python
+def iterative_optimization(
+    strategy: Dict[str, Any],
+    backtest_result: Dict[str, Any],
+    market_context: Dict[str, Any],
+    max_iterations: int = 5
+) -> Dict[str, Any]:
+    """
+    迭代优化流程
+    
+    Args:
+        strategy: 当前策略
+        backtest_result: 回测结果
+        market_context: 市场状态
+        max_iterations: 最大迭代次数
+    
+    Returns:
+        Dict: 最终优化结果
+    """
+    optimizer = StrategyOptimizer()
+    current_strategy = strategy
+    iteration = 0
+    
+    while iteration < max_iterations:
+        # 检查是否满足要求
+        sharpe_ratio = backtest_result.get('sharpe_ratio', 0)
+        max_drawdown = backtest_result.get('max_drawdown', 1.0)
+        
+        if sharpe_ratio >= 1.5 and max_drawdown <= 0.15:
+            logger.info(f"✅ 策略已满足要求，停止优化")
+            break
+        
+        # 分析回测结果，识别优化点
+        optimization_points = optimizer.analyze_backtest_result(backtest_result)
+        
+        # 执行优化
+        optimization_result = optimizer.optimize(
+            strategy=current_strategy,
+            backtest_result=backtest_result,
+            market_context=market_context,
+            optimization_points=optimization_points
+        )
+        
+        # 更新策略
+        current_strategy = optimization_result['optimized_strategy']
+        
+        # 再次回测（这里需要调用回测模块）
+        # backtest_result = run_backtest(current_strategy)
+        
+        iteration += 1
+        logger.info(f"迭代 {iteration}/{max_iterations} 完成")
+    
+    return {
+        'optimized_strategy': current_strategy,
+        'iterations': iteration,
+        'final_backtest_result': backtest_result
+    }
+```
+
+<h2 id="section-7-3-2">📊 7.3.2 参数调优</h2>
+
+参数调优是策略优化的核心内容，包括因子权重优化、风控参数优化等。
+
+### 因子权重优化
+
+```python
+from core.factor_weight_optimizer import FactorWeightOptimizer, MarketScenario
+
+class FactorWeightOptimizer:
+    """因子权重优化器"""
+    
+    def __init__(self):
+        self.scenario_library = SCENARIO_WEIGHT_LIBRARY
+    
+    def optimize_by_scenario(
+        self,
+        factors: List[str],
+        market_scenario: MarketScenario
+    ) -> Dict[str, float]:
+        """
+        根据市场情景优化因子权重
+        
+        **设计原理**：
+        - **情景库驱动**：基于预设的市场情景库，为不同市场环境配置最优因子权重
+        - **类型映射**：将具体因子映射到因子类型，使用类型级别的权重配置
+        - **权重归一化**：确保所有权重之和为1，保证权重分配的合理性
+        
+        **为什么这样设计**：
+        1. **适应性**：不同市场环境（牛市、熊市、震荡市）需要不同的因子权重
+        2. **可维护性**：情景库集中管理，便于调整和扩展
+        3. **灵活性**：支持因子类型映射，适应不同因子组合
+        
+        **使用场景**：
+        - 根据当前市场状态（risk_on/risk_off/neutral）调整因子权重
+        - 不同市场阶段（牛市、熊市、震荡市）使用不同权重配置
+        - 策略优化时，根据市场情景选择最优权重
+        
+        **注意事项**：
+        - 情景库需要定期更新，反映市场变化
+        - 因子类型映射需要准确，否则权重分配可能不合理
+        - 默认等权作为降级方案，保证系统可用性
+        
+        Args:
+            factors: 因子列表
+            scenario: 市场情景
+        
+        Returns:
+            Dict: 优化后的因子权重（已归一化）
+        """
+        # 设计原理：从情景库获取配置
+        # 原因：不同市场情景需要不同的因子权重配置
+        scenario_config = self.scenario_library.get(market_scenario)
+        if not scenario_config:
+            # 设计原理：默认等权作为降级方案
+            # 原因：情景库未配置时，使用等权保证系统可用性
+            return {factor: 1.0 / len(factors) for factor in factors}
+        
+        base_weights = scenario_config['weights']
+        
+        # 设计原理：因子类型映射
+        # 原因：情景库配置的是因子类型权重，需要映射到具体因子
+        # 实现方式：根据因子类型匹配权重，未匹配的使用默认权重
+        optimized_weights = {}
+        for factor in factors:
+            # 根据因子类型匹配权重
+            factor_type = self._get_factor_type(factor)
+            weight = base_weights.get(factor_type, 1.0 / len(factors))
+            optimized_weights[factor] = weight
+        
+        # 设计原理：权重归一化
+        # 原因：确保所有权重之和为1，保证权重分配的合理性
+        # 实现方式：计算总和，按比例缩放
+        total = sum(optimized_weights.values())
+        if total > 0:
+            optimized_weights = {
+                k: v / total for k, v in optimized_weights.items()
+            }
+        
+        return optimized_weights
+    
+    def grid_search_optimize(
+        self,
+        factors: List[str],
+        eval_func: Callable[[Dict[str, float]], float],
+        weight_range: Tuple[float, float] = (0.0, 0.5),
+        step: float = 0.1
+    ) -> OptimizationResult:
+        """
+        网格搜索优化因子权重
+        
+        **设计原理**：
+        - **穷举搜索**：遍历所有权重组合，找到全局最优解
+        - **权重归一化**：每个组合都归一化，确保权重之和为1
+        - **结果排序**：保留所有结果并排序，便于分析
+        
+        **为什么这样设计**：
+        1. **全局最优**：穷举搜索保证找到全局最优解（在搜索空间内）
+        2. **可解释性**：保留所有结果，便于分析权重对性能的影响
+        3. **鲁棒性**：评估失败时继续搜索，不中断优化过程
+        
+        **使用场景**：
+        - 因子数量较少（<5）时，计算量可接受
+        - 需要找到全局最优解时
+        - 需要分析权重对性能的影响时
+        
+        **注意事项**：
+        - **计算复杂度**：O(n^m)，n为候选权重数，m为因子数
+        - **步长选择**：步长越小，搜索越精细，但计算量越大
+        - **权重范围**：默认0.0-0.5，避免单个因子权重过大
+        
+        **替代方案对比**：
+        - **方案A：随机搜索**
+          - 优点：计算量小
+          - 缺点：可能错过最优解
+        - **方案B：贝叶斯优化**
+          - 优点：智能搜索，效率高
+          - 缺点：实现复杂，需要调参
+        - **当前方案：网格搜索**
+          - 优点：全局最优，结果可解释
+          - 缺点：计算量大，仅适用于少量因子
+        
+        Args:
+            factors: 因子列表
+            eval_func: 评估函数（输入权重字典，返回性能分数）
+            weight_range: 权重范围（默认0.0-0.5）
+            step: 步长（默认0.1，即0.0, 0.1, 0.2, ..., 0.5）
+        
+        Returns:
+            OptimizationResult: 优化结果，包含最优权重、最佳性能、所有结果等
+        """
+        from itertools import product
+        import numpy as np
+        
+        # 设计原理：生成候选权重序列
+        # 原因：网格搜索需要遍历所有可能的权重组合
+        min_w, max_w = weight_range
+        weight_candidates = np.arange(min_w, max_w + step, step)
+        
+        best_weights = None
+        best_score = float("-inf")
+        all_results = []
+        iterations = 0
+        
+        # 设计原理：使用product生成所有权重组合
+        # 原因：穷举搜索需要遍历所有可能的权重组合
+        # 复杂度：O(n^m)，n为候选权重数，m为因子数
+        for weights_tuple in product(weight_candidates, repeat=len(factors)):
+            weights = list(weights_tuple)
+            
+            # 设计原理：权重归一化
+            # 原因：确保权重之和为1，保证权重分配的合理性
+            total = sum(weights)
+            if total == 0:
+                continue
+            weights = [w / total for w in weights]
+            
+            # 构建权重字典
+            weight_dict = dict(zip(factors, weights))
+            
+            # 设计原理：评估每个权重组合
+            # 原因：找到性能最优的权重组合
+            # 容错性：评估失败时继续搜索，不中断优化过程
+            try:
+                score = eval_func(weight_dict)
+                iterations += 1
+                
+                # 设计原理：保留所有结果
+                # 原因：便于分析权重对性能的影响
+                all_results.append((weight_dict.copy(), score))
+                
+                if score > best_score:
+                    best_score = score
+                    best_weights = weight_dict.copy()
+            except Exception as e:
+                logger.warning(f"评估失败: {e}")
+                continue
+        
+        return OptimizationResult(
+            best_weights=best_weights or {},
+            best_performance=best_score,
+            all_results=sorted(all_results, key=lambda x: x[1], reverse=True)[:20],
+            optimization_method="grid_search",
+            iterations=iterations
+        )
+    
+    def ic_weighted_optimize(
+        self,
+        factor_ic_dict: Dict[str, float],
+        min_weight: float = 0.05,
+        max_weight: float = 0.40
+    ) -> Dict[str, float]:
+        """
+        IC加权优化
+        
+        Args:
+            factor_ic_dict: 因子IC值字典
+            min_weight: 最小权重
+            max_weight: 最大权重
+        
+        Returns:
+            Dict: 优化后的因子权重
+        """
+        if not factor_ic_dict:
+            return {}
+        
+        # 计算IC绝对值
+        ic_abs = {k: abs(v) for k, v in factor_ic_dict.items()}
+        total_ic = sum(ic_abs.values())
+        
+        if total_ic == 0:
+            # 等权
+            return {k: 1.0 / len(factor_ic_dict) for k in factor_ic_dict.keys()}
+        
+        # IC加权
+        weights = {k: v / total_ic for k, v in ic_abs.items()}
+        
+        # 应用权重限制
+        weights = {
+            k: max(min_weight, min(max_weight, v))
+            for k, v in weights.items()
+        }
+        
+        # 重新归一化
+        total = sum(weights.values())
+        if total > 0:
+            weights = {k: v / total for k, v in weights.items()}
+        
+        return weights
+```
+
+### 风控参数优化
+
+```python
+class RiskParameterOptimizer:
+    """风控参数优化器"""
+    
+    def optimize_stop_loss(
+        self,
+        strategy: Dict[str, Any],
+        backtest_results: List[Dict[str, Any]],
+        stop_loss_range: Tuple[float, float] = (0.05, 0.15),
+        step: float = 0.01
+    ) -> float:
+        """
+        优化止损线
+        
+        Args:
+            strategy: 策略配置
+            backtest_results: 历史回测结果
+            stop_loss_range: 止损线范围
+            step: 步长
+        
+        Returns:
+            float: 最优止损线
+        """
+        best_stop_loss = stop_loss_range[0]
+        best_sharpe = -float('inf')
+        
+        min_sl, max_sl = stop_loss_range
+        for stop_loss in np.arange(min_sl, max_sl + step, step):
+            # 模拟不同止损线的影响
+            sharpe = self._evaluate_stop_loss(
+                strategy, backtest_results, stop_loss
+            )
+            
+            if sharpe > best_sharpe:
+                best_sharpe = sharpe
+                best_stop_loss = stop_loss
+        
+        return best_stop_loss
+    
+    def optimize_position_sizing(
+        self,
+        strategy: Dict[str, Any],
+        backtest_results: List[Dict[str, Any]],
+        max_position_range: Tuple[float, float] = (0.05, 0.20),
+        step: float = 0.01
+    ) -> float:
+        """
+        优化单票最大仓位
+        
+        Args:
+            strategy: 策略配置
+            backtest_results: 历史回测结果
+            max_position_range: 最大仓位范围
+            step: 步长
+        
+        Returns:
+            float: 最优最大仓位
+        """
+        best_max_position = max_position_range[0]
+        best_sharpe = -float('inf')
+        
+        min_pos, max_pos = max_position_range
+        for max_position in np.arange(min_pos, max_pos + step, step):
+            # 模拟不同仓位的影响
+            sharpe = self._evaluate_position_sizing(
+                strategy, backtest_results, max_position
+            )
+            
+            if sharpe > best_sharpe:
+                best_sharpe = sharpe
+                best_max_position = max_position
+        
+        return best_max_position
+```
+
+<h2 id="section-7-3-3">🧠 7.3.3 智能优化算法</h2>
+
+智能优化算法使用AI技术智能探索参数空间，寻找最优参数组合。
+
+### 网格搜索
+
+```python
+class GridSearchOptimizer:
+    """网格搜索优化器"""
+    
+    def optimize(
+        self,
+        parameter_ranges: Dict[str, Tuple[float, float, float]],
+        eval_func: Callable[[Dict[str, float]], float],
+        max_iterations: int = None
+    ) -> OptimizationResult:
+        """
+        网格搜索优化
+        
+        Args:
+            parameter_ranges: 参数范围字典 {param_name: (min, max, step)}
+            eval_func: 评估函数
+            max_iterations: 最大迭代次数（可选）
+        
+        Returns:
+            OptimizationResult: 优化结果
+        """
+        from itertools import product
+        
+        # 生成参数网格
+        param_names = list(parameter_ranges.keys())
+        param_values = [
+            np.arange(min_val, max_val + step, step)
+            for min_val, max_val, step in parameter_ranges.values()
+        ]
+        
+        # 生成所有组合
+        combinations = list(product(*param_values))
+        
+        if max_iterations:
+            combinations = combinations[:max_iterations]
+        
+        best_params = None
+        best_score = -float('inf')
+        all_results = []
+        
+        for combo in combinations:
+            params = dict(zip(param_names, combo))
+            
+            try:
+                score = eval_func(params)
+                all_results.append((params.copy(), score))
+                
+                if score > best_score:
+                    best_score = score
+                    best_params = params.copy()
+            except Exception as e:
+                logger.warning(f"评估失败: {e}")
+                continue
+        
+        return OptimizationResult(
+            best_weights=best_params or {},
+            best_performance=best_score,
+            all_results=sorted(all_results, key=lambda x: x[1], reverse=True)[:20],
+            optimization_method="grid_search",
+            iterations=len(combinations)
+        )
+```
+
+### 贝叶斯优化
+
+```python
+from skopt import gp_minimize
+from skopt.space import Real
+
+class BayesianOptimizer:
+    """贝叶斯优化器"""
+    
+    def optimize(
+        self,
+        parameter_ranges: Dict[str, Tuple[float, float]],
+        eval_func: Callable[[Dict[str, float]], float],
+        n_calls: int = 50
+    ) -> OptimizationResult:
+        """
+        贝叶斯优化
+        
+        Args:
+            parameter_ranges: 参数范围字典 {param_name: (min, max)}
+            eval_func: 评估函数（注意：需要返回负值用于最小化）
+            n_calls: 评估次数
+        
+        Returns:
+            OptimizationResult: 优化结果
+        """
+        # 定义搜索空间
+        dimensions = [
+            Real(low=min_val, high=max_val, name=name)
+            for name, (min_val, max_val) in parameter_ranges.items()
+        ]
+        
+        # 包装评估函数（转换为最小化问题）
+        def objective(params):
+            param_dict = dict(zip(parameter_ranges.keys(), params))
+            score = eval_func(param_dict)
+            return -score  # 转换为最小化
+        
+        # 执行优化
+        result = gp_minimize(
+            func=objective,
+            dimensions=dimensions,
+            n_calls=n_calls,
+            random_state=42
+        )
+        
+        # 提取最优参数
+        best_params = dict(zip(parameter_ranges.keys(), result.x))
+        best_score = -result.fun  # 转换回最大化问题的分数
+        
+        return OptimizationResult(
+            best_weights=best_params,
+            best_performance=best_score,
+            all_results=[(best_params, best_score)],
+            optimization_method="bayesian",
+            iterations=n_calls
+        )
+```
+
+### 遗传算法
+
+```python
+from deap import base, creator, tools
+import random
+
+class GeneticAlgorithmOptimizer:
+    """遗传算法优化器"""
+    
+    def optimize(
+        self,
+        parameter_ranges: Dict[str, Tuple[float, float]],
+        eval_func: Callable[[Dict[str, float]], float],
+        population_size: int = 50,
+        generations: int = 50
+    ) -> OptimizationResult:
+        """
+        遗传算法优化
+        
+        Args:
+            parameter_ranges: 参数范围字典
+            eval_func: 评估函数
+            population_size: 种群大小
+            generations: 进化代数
+        
+        Returns:
+            OptimizationResult: 优化结果
+        """
+        # 创建类型
+        creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+        creator.create("Individual", list, fitness=creator.FitnessMax)
+        
+        # 初始化工具箱
+        toolbox = base.Toolbox()
+        
+        # 定义参数生成函数
+        param_names = list(parameter_ranges.keys())
+        for i, (name, (min_val, max_val)) in enumerate(parameter_ranges.items()):
+            toolbox.register(
+                f"attr_{i}",
+                random.uniform,
+                min_val,
+                max_val
+            )
+        
+        # 创建个体和种群
+        toolbox.register(
+            "individual",
+            tools.initCycle,
+            creator.Individual,
+            [getattr(toolbox, f"attr_{i}") for i in range(len(param_names))],
+            n=1
+        )
+        toolbox.register(
+            "population",
+            tools.initRepeat,
+            list,
+            toolbox.individual
+        )
+        
+        # 定义评估函数
+        def evaluate(individual):
+            params = dict(zip(param_names, individual))
+            return (eval_func(params),)
+        
+        toolbox.register("evaluate", evaluate)
+        toolbox.register("mate", tools.cxBlend, alpha=0.5)
+        toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=0.1, indpb=0.2)
+        toolbox.register("select", tools.selTournament, tournsize=3)
+        
+        # 创建初始种群
+        population = toolbox.population(n=population_size)
+        
+        # 评估初始种群
+        fitnesses = list(map(toolbox.evaluate, population))
+        for ind, fit in zip(population, fitnesses):
+            ind.fitness.values = fit
+        
+        # 进化
+        for generation in range(generations):
+            # 选择
+            offspring = toolbox.select(population, len(population))
+            offspring = list(map(toolbox.clone, offspring))
+            
+            # 交叉
+            for child1, child2 in zip(offspring[::2], offspring[1::2]):
+                if random.random() < 0.5:
+                    toolbox.mate(child1, child2)
+                    del child1.fitness.values
+                    del child2.fitness.values
+            
+            # 变异
+            for mutant in offspring:
+                if random.random() < 0.2:
+                    toolbox.mutate(mutant)
+                    del mutant.fitness.values
+            
+            # 评估新个体
+            invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+            fitnesses = map(toolbox.evaluate, invalid_ind)
+            for ind, fit in zip(invalid_ind, fitnesses):
+                ind.fitness.values = fit
+            
+            # 更新种群
+            population[:] = offspring
+        
+        # 提取最优个体
+        best_ind = tools.selBest(population, 1)[0]
+        best_params = dict(zip(param_names, best_ind))
+        best_score = best_ind.fitness.values[0]
+        
+        return OptimizationResult(
+            best_weights=best_params,
+            best_performance=best_score,
+            all_results=[(best_params, best_score)],
+            optimization_method="genetic",
+            iterations=population_size * generations
+        )
+```
+
+<h2 id="section-7-3-4">🔄 7.3.4 策略逻辑优化</h2>
+
+策略逻辑优化针对策略的选股逻辑、择时逻辑等进行优化。
+
+### 选股逻辑优化
+
+```python
+class StockSelectionOptimizer:
+    """选股逻辑优化器"""
+    
+    def optimize_selection_criteria(
+        self,
+        strategy: Dict[str, Any],
+        backtest_result: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        优化选股标准
+        
+        Args:
+            strategy: 当前策略
+            backtest_result: 回测结果
+        
+        Returns:
+            Dict: 优化后的选股标准
+        """
+        # 分析回测结果
+        win_rate = backtest_result.get('win_rate', 0)
+        avg_return = backtest_result.get('avg_return', 0)
+        
+        current_criteria = strategy.get('selection_criteria', {})
+        
+        # 根据胜率和平均收益调整选股标准
+        if win_rate < 0.5:
+            # 胜率低，提高选股标准
+            current_criteria['min_score'] = current_criteria.get('min_score', 0) + 0.1
+            current_criteria['top_n'] = max(5, current_criteria.get('top_n', 10) - 2)
+        elif avg_return < 0:
+            # 平均收益为负，提高选股标准
+            current_criteria['min_score'] = current_criteria.get('min_score', 0) + 0.15
+        
+        return current_criteria
+```
+
+<h2 id="section-7-3-5">📈 7.3.5 Walk-Forward分析</h2>
+
+Walk-Forward分析通过时间序列分割，在训练集上优化，在测试集上验证，确保策略的稳健性。
+
+### 时间序列分割
+
+```python
+class WalkForwardAnalyzer:
+    """Walk-Forward分析器"""
+    
+    def split_time_series(
+        self,
+        start_date: str,
+        end_date: str,
+        train_period: int = 252,  # 训练期（交易日）
+        test_period: int = 63,     # 测试期（交易日）
+        step: int = 21             # 步长（交易日）
+    ) -> List[Tuple[str, str, str, str]]:
+        """
+        时间序列分割
+        
+        Args:
+            start_date: 开始日期
+            end_date: 结束日期
+            train_period: 训练期长度
+            test_period: 测试期长度
+            step: 步长
+        
+        Returns:
+            List[Tuple]: (train_start, train_end, test_start, test_end)列表
+        """
+        from datetime import datetime, timedelta
+        
+        start = datetime.strptime(start_date, '%Y-%m-%d')
+        end = datetime.strptime(end_date, '%Y-%m-%d')
+        
+        splits = []
+        current = start
+        
+        while current + timedelta(days=train_period + test_period) <= end:
+            train_start = current
+            train_end = current + timedelta(days=train_period)
+            test_start = train_end
+            test_end = test_start + timedelta(days=test_period)
+            
+            splits.append((
+                train_start.strftime('%Y-%m-%d'),
+                train_end.strftime('%Y-%m-%d'),
+                test_start.strftime('%Y-%m-%d'),
+                test_end.strftime('%Y-%m-%d')
+            ))
+            
+            current += timedelta(days=step)
+        
+        return splits
+```
+
+<h2 id="section-7-3-6">🤖 7.3.6 自动化与智能化</h2>
+
+自动化与智能化实现策略优化的自动触发和AI辅助优化。
+
+### 自动触发优化
+
+```python
+class AutoOptimizationTrigger:
+    """自动优化触发器"""
+    
+    def should_trigger_optimization(
+        self,
+        strategy: Dict[str, Any],
+        backtest_result: Dict[str, Any] = None
+    ) -> bool:
+        """
+        判断是否应该触发优化
+        
+        Args:
+            strategy: 策略配置
+            backtest_result: 回测结果（可选）
+        
+        Returns:
+            bool: 是否触发优化
+        """
+        # 策略生成后自动触发首次优化
+        if backtest_result is None:
+            return True
+        
+        # 回测结果不满足要求时触发优化
+        sharpe_ratio = backtest_result.get('sharpe_ratio', 0)
+        max_drawdown = backtest_result.get('max_drawdown', 1.0)
+        
+        if sharpe_ratio < 1.5 or max_drawdown > 0.15:
+            return True
+        
+        return False
+```
+
+## 🔗 相关章节
+
+- **7.1 策略模板**：了解策略模板，为策略优化提供基础
+- **7.2 策略生成**：了解策略生成，策略优化基于生成的策略进行优化
+- **第8章：回测验证**：了解回测验证，策略优化需要回测结果反馈
+- **第6章：因子库**：了解因子库，因子权重优化需要因子数据
+
+## 💡 关键要点
+
+1. **迭代改进**：通过多轮优化迭代，逐步提升策略性能
+2. **知识驱动**：基于前序步骤信息和回测结果进行优化
+3. **稳健性优先**：避免过拟合，确保策略在不同市场环境下的稳健性
+4. **自动化**：支持自动触发和自动迭代优化
+5. **智能化**：使用AI算法智能探索参数空间
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了TRQuant系统的策略优化系统，作为广义策略生成的关键组件，负责接收前序步骤信息和回测结果，对策略进行迭代优化。通过理解参数调优、因子权重优化、风控参数优化、策略逻辑优化和智能优化算法，帮助开发者掌握如何对生成的策略进行优化，提高策略性能和稳健性。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了策略优化后，下一节将介绍策略规范化，包括代码规范化、参数规范化和接口规范化方法。通过理解策略规范化的完整流程，帮助开发者掌握如何确保生成的策略代码符合规范。</p>
+  
+  <a href="/ashare-book6/007_Chapter7_Strategy_Development/7.4_Strategy_Standardization_CN" class="next-section">
+    继续学习：7.4 策略规范化 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12
+

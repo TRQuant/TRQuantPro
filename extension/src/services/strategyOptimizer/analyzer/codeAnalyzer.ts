@@ -583,12 +583,7 @@ export class CodeAnalyzer {
    * 检查是否有API映射
    */
   private hasAPIMapping(apiName: string, source: Platform, target: Platform): boolean {
-    interface PlatformMapping {
-      joinquant?: string | null;
-      ptrade?: string | null;
-      qmt?: string | null;
-    }
-    const mappings: Record<string, PlatformMapping> = {
+    const mappings: Record<string, any> = {
       get_price: {
         joinquant: 'get_price',
         ptrade: 'get_history',
@@ -617,8 +612,7 @@ export class CodeAnalyzer {
 
     const mapping = mappings[apiName];
     if (!mapping) return false;
-    const targetMapping = mapping[target as keyof PlatformMapping];
-    return targetMapping !== null && targetMapping !== undefined;
+    return mapping[target] !== null;
   }
 
   /**
