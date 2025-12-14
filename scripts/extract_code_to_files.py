@@ -160,13 +160,33 @@ class CodeExtractor:
             # 小节目录（如 1.4, 1.9）
             section_dir = f"{chapter}.{section}"
             
-            # 生成文件名
+            # 生成文件名（优先使用函数名，确保命名风格一致）
             if name:
-                # 使用函数名或类名
+                # 优先使用函数名或类名（与第3章风格一致）
                 file_name = f"code_{chapter}_{section}_{name}.py"
             else:
-                # 使用索引
-                file_name = f"code_{chapter}_{section}_{index:02d}.py"
+                # 如果没有函数名，尝试从上下文提取描述
+                # 查找代码块前的标题
+                context_lines = code_block.get('context', '').split('
+')[-10:]
+                desc_name = None
+                for line in reversed(context_lines):
+                    # 查找标题（###, ####）
+                    title_match = re.search(r'^#{3,4}\s+(.+?)$', line.strip())
+                    if title_match:
+                        title = title_match.group(1).strip()
+                        # 清理标题，生成文件名
+                        desc_name = re.sub(r'[^\w\s一-鿿-]', '', title)
+                        desc_name = re.sub(r'\s+', '_', desc_name).lower()
+                        # 只保留前30个字符
+                        desc_name = desc_name[:30] if len(desc_name) > 30 else desc_name
+                        break
+                
+                if desc_name:
+                    file_name = f"code_{chapter}_{section}_{desc_name}.py"
+                else:
+                    # 最后才使用索引（应该尽量避免）
+                    file_name = f"code_{chapter}_{section}_{index:02d}.py"
             
             # 简化路径：直接放在小节文件夹下
             # 检查output_dir是否已经包含小节目录
