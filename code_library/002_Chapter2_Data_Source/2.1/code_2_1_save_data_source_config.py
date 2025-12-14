@@ -2,15 +2,13 @@
 文件名: code_2_1_save_data_source_config.py
 保存路径: code_library/002_Chapter2_Data_Source/2.1/code_2_1_save_data_source_config.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.1_Data_Source_Management_CN.md
-提取时间: 2025-12-13 20:33:42
+提取时间: 2025-12-13 20:33:59
 函数/类名: save_data_source_config
 
 说明：
 此文件由代码提取脚本自动生成，从Markdown文档中提取的代码块。
 如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
 """
-
-from typing import Dict, List, Optional
 
 from core.db import get_db_connection
 import json
@@ -48,23 +46,8 @@ def save_data_source_config(name: str, source_type: str, config: dict):
             SET source_type = EXCLUDED.source_type,
                 config = EXCLUDED.config,
                 updated_at = CURRENT_TIMESTAMP
-        """, (name, source_type, json.dumps(config)))
-    conn.commit()
-
-def get_data_source_config(name: str) -> dict:
-    """从PostgreSQL获取数据源配置"""
-    conn = get_db_connection()
-    with conn.cursor() as cur:
-        cur.execute("""
-            SELECT name, source_type, config, status
-            FROM data_source_configs
-            WHERE name = %s
-        """, (name,))
-        row = cur.fetchone()
-        if row:
-            return {
-                "name": row[0<CodeFromFile 
-  filePath="code_library/002_Chapter2_Data_Source/2.1/002_Chapter2_Data_Source/2.1/code_2_1_store_market_data_to_timeseries.py"
+     <CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.1/code_2_1_get_data_with_cache.py"
   language="python"
   showDesignPrinciples="true"
 />

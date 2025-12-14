@@ -2,7 +2,7 @@
 文件名: code_2_1_05.py
 保存路径: code_library/002_Chapter2_Data_Source/2.1/code_2_1_05.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.1_Data_Source_Management_CN.md
-提取时间: 2025-12-13 20:33:42
+提取时间: 2025-12-13 20:33:59
 函数/类名: None
 
 说明：
@@ -10,11 +10,6 @@
 如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
 """
 
-# 数据源优先级配置
-priority_config = {
-    'daily': ['jqdata', 'akshare', 'tushare'],      # 日线数据优先级
-    'minute': ['jqdata', 'akshare'],                # 分钟数据优先级
-    'realtime': ['akshare', 'jqdata'],              # 实时数据优先级
-    'fundamental': ['jqdata', 'tushare'],          # 基本面数据优先级
-    'factor': ['jqdata'],                          # 因子数据优先级
-}
+# DataFrame columns: time, open, high, low, close, volume, amount
+# time: datetime类型，索引列
+# 其他字段同日线数据

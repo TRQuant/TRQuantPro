@@ -2,7 +2,7 @@
 文件名: code_2_1__failover_fetch.py
 保存路径: code_library/002_Chapter2_Data_Source/2.1/code_2_1__failover_fetch.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.1_Data_Source_Management_CN.md
-提取时间: 2025-12-13 20:33:42
+提取时间: 2025-12-13 20:33:59
 函数/类名: _failover_fetch
 
 说明：
@@ -52,13 +52,8 @@ def _failover_fetch(self, symbol: str, start_date: str, end_date: str,
     for source_name in candidates:
         try:
             logger.info(f"尝试备用数据源: {source_name}")
-            data = self._fetch_from_source(source_name, symbol, start_date, end_date, data_type)
-            
-            # 记录成功切换
-            self._record_failover(failed_source, source_name, symbol, data_type)
-            return data
-        except Exception a<CodeFromFile 
-  filePath="code_library/002_Chapter2_Data_Source/2.1/002_Chapter2_Data_Source/2.1/code_2_1_get_data_with_load_balance.py"
+            data = self._fetch_from_source(source_name, symbol, start_date, end_date, data_typ<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.1/code_2_1_save_data_source_config.py"
   language="python"
   showDesignPrinciples="true"
 />
