@@ -84,7 +84,7 @@ class CodeExtractor:
         path_parts = self.markdown_file.parts
         chapter_info = {}
         
-        # 查找章节编号（如 3.1, 3.2）
+        # 查找章节编号（如 1.4, 1.9, 3.1, 3.2）
         for part in path_parts:
             match = re.search(r'(\d+)\.(\d+)', part)
             if match:
@@ -92,11 +92,29 @@ class CodeExtractor:
                 chapter_info['section'] = match.group(2)
                 break
         
-        # 提取章节名称
-        filename = self.markdown_file.stem
-        if '_' in filename:
-            parts = filename.split('_')
-            chapter_info['section_name'] = parts[-1] if len(parts) > 1 else None
+        # 从文件路径中提取章节目录名（如 001_Chapter1_System_Overview）
+        for part in path_parts:
+            if part.startswith('001_Chapter1'):
+                chapter_info['chapter_dir'] = part
+                break
+            elif part.startswith('002_Chapter2'):
+                chapter_info['chapter_dir'] = part
+                break
+            elif part.startswith('003_Chapter3'):
+                chapter_info['chapter_dir'] = part
+                break
+            elif part.startswith('00') and '_Chapter' in part:
+                chapter_info['chapter_dir'] = part
+                break
+        
+        # 如果没有找到，尝试从路径构建
+        if 'chapter_dir' not in chapter_info and chapter_info.get('chapter'):
+            chapter = chapter_info['chapter']
+            # 从路径中查找章节名称
+            for part in path_parts:
+                if f'Chapter{chapter}' in part or f'chapter{chapter}' in part:
+                    chapter_info['chapter_dir'] = part
+                    break
         
         return chapter_info
     
@@ -121,6 +139,7 @@ class CodeExtractor:
             
             # 章节目录名（如 003_Chapter3_Market_Analysis）
             chapter_dir_name = f"00{chapter}_Chapter{chapter}_Market_Analysis"
+            # 小节目录（如 1.4, 1.9）
             section_dir = f"{chapter}.{section}"
             
             # 生成文件名
@@ -131,6 +150,7 @@ class CodeExtractor:
                 # 使用索引
                 file_name = f"code_{chapter}_{section}_{index:02d}.py"
             
+            # 简化路径：直接放在小节文件夹下
             code_file_path = (
                 self.output_dir / 
                 chapter_dir_name / 
