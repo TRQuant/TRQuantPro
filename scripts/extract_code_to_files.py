@@ -155,12 +155,25 @@ class CodeExtractor:
                 file_name = f"code_{chapter}_{section}_{index:02d}.py"
             
             # 简化路径：直接放在小节文件夹下
-            code_file_path = (
-                self.output_dir / 
-                chapter_dir_name / 
-                section_dir / 
-                file_name
-            )
+            # 检查output_dir是否已经包含小节目录
+            output_str = str(self.output_dir)
+            section_dir_str = f"{chapter}.{section}"
+            
+            # 如果output_dir已经包含小节目录，直接使用output_dir
+            if section_dir_str in output_str:
+                # 已经包含小节目录，直接添加文件名
+                code_file_path = self.output_dir / file_name
+            elif chapter_dir_name in output_str:
+                # 只包含章节目录，添加小节目录和文件名
+                code_file_path = self.output_dir / section_dir / file_name
+            else:
+                # 都不包含，添加章节目录、小节目录和文件名
+                code_file_path = (
+                    self.output_dir / 
+                    chapter_dir_name / 
+                    section_dir / 
+                    file_name
+                )
         else:
             # 如果无法提取章节信息，使用默认路径
             if name:
