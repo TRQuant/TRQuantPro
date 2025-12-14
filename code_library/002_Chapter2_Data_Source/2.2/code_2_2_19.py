@@ -1,6 +1,6 @@
 """
-文件名: code_2_2_14.py
-保存路径: code_library/002_Chapter2_Data_Source/2.2/code_2_2_14.py
+文件名: code_2_2_19.py
+保存路径: code_library/002_Chapter2_Data_Source/2.2/code_2_2_19.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.2_Data_Quality_CN.md
 提取时间: 2025-12-13 20:36:29
 函数/类名: None
@@ -19,11 +19,8 @@ data_collector.collect_academic(
 )
 
 # 2. 爬取技术文档
-data_col<CodeFromFile 
-  fil<CodeFromFile 
-  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_monitor_data_quality.py"
-  language="python"
-  showDesignPrinciples="true"
-/>
-
-<!-- 原始代码（保留作为备份）：
+data_collector.crawl_web(
+    url="https://pandas.pydata.org/docs/user_guide/missing_data.html",
+    max_depth=1,
+    output_dir="data/collected/docs/pandas_missing_data"
+)

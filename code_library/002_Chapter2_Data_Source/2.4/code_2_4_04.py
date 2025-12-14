@@ -2,7 +2,7 @@
 文件名: code_2_4_04.py
 保存路径: code_library/002_Chapter2_Data_Source/2.4/code_2_4_04.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.4_MCP_Tool_Integration_CN.md
-提取时间: 2025-12-13 20:36:08
+提取时间: 2025-12-13 20:36:29
 函数/类名: None
 
 说明：
@@ -10,14 +10,11 @@
 如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
 """
 
-# 用户请求：
-"请收集关于金融数据源质量的学术论文"
-
-# AI执行：
-data_collector.collect_academic(
-    database="arxiv",  # 或 "ieee", "acm"
-    query="financial data source quality assessment",
-    max_res<CodeFromFile 
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data<CodeFromFile 
   filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_06.py"
   language="python"
   showDesignPrinciples="true"

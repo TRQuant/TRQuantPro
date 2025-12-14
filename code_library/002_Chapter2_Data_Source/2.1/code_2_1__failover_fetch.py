@@ -2,7 +2,7 @@
 文件名: code_2_1__failover_fetch.py
 保存路径: code_library/002_Chapter2_Data_Source/2.1/code_2_1__failover_fetch.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.1_Data_Source_Management_CN.md
-提取时间: 2025-12-13 20:33:59
+提取时间: 2025-12-13 20:36:29
 函数/类名: _failover_fetch
 
 说明：
@@ -39,21 +39,14 @@ def _failover_fetch(self, symbol: str, start_date: str, end_date: str,
         # 返回值说明
     """
     # 1. 获取备用数据源列表
-    candidates = self.priority.get(data_type, [])
-    
-    # 2. 排除失败的数据源
-    candidates = [s for s in candidates if s != failed_source and s in self.sources]
-    
-    # 3. 记录故障
-    logger.warning(f"数据源 {failed_source} 故障，尝试备用数据源: {candidates}")
-    self._record_failure(failed_source, symbol, data_type)
-    
-    # 4. 尝试备用数据源
-    for source_name in candidates:
-        try:
-            logger.info(f"尝试备用数据源: {source_name}")
-            data = self._fetch_from_source(source_name, symbol, start_date, end_date, data_typ<CodeFromFile 
+    candidates = self.priority.get(<CodeFromFile 
   filePath="code_library/002_Chapter2_Data_Source/2.1/code_2_1_save_data_source_config.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.1/code_2_1_14.py"
   language="python"
   showDesignPrinciples="true"
 />

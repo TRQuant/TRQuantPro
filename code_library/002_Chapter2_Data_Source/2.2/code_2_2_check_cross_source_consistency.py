@@ -2,7 +2,7 @@
 文件名: code_2_2_check_cross_source_consistency.py
 保存路径: code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_cross_source_consistency.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.2_Data_Quality_CN.md
-提取时间: 2025-12-13 20:34:05
+提取时间: 2025-12-13 20:36:29
 函数/类名: check_cross_source_consistency
 
 说明：
@@ -91,8 +91,10 @@ def check_cross_source_consistency(self, data_sources: Dict[str, pd.DataFrame],
     
     # 计算一致性得分
     total_comparisons = len(common_fields) * len(common_index) * (len(data_sources) - 1) / 2
-    if total_comparisons > 0:
-        inconsistent_count = sum(v["inconsistent_count"] for v in result["inconsistent_fields"])
-        result["consistency_score"] = 1.0 - (inconsistent_count / total_comparisons)
-    
-    return result
+    if total_compariso<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_detect_anomalies_statistical.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
