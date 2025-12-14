@@ -2,7 +2,7 @@
 文件名: code_2_3_enqueue_data_update_task.py
 保存路径: code_library/002_Chapter2_Data_Source/2.3/code_2_3_enqueue_data_update_task.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.3_Data_Storage_Architecture_CN.md
-提取时间: 2025-12-13 20:34:05
+提取时间: 2025-12-13 20:36:02
 函数/类名: enqueue_data_update_task
 
 说明：
@@ -51,7 +51,8 @@ def dequeue_data_update_task() -> dict:
     """从队列中取出最高优先级的任务"""
     # 获取最高优先级的任务
     tasks = r.zrevrange(<CodeFromFile 
-  filePath="code_library/002_Chapter2_Data_Source/2.3/002_Chapter2_Data_Source/2.3/code_2_3_cache_source_health.py"
+  filePath="<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.3/code_2_3_cache_source_health.py"
   language="python"
   showDesignPrinciples="true"
 />

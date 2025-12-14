@@ -2,7 +2,7 @@
 文件名: code_2_3_store_market_data.py
 保存路径: code_library/002_Chapter2_Data_Source/2.3/code_2_3_store_market_data.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.3_Data_Storage_Architecture_CN.md
-提取时间: 2025-12-13 20:35:50
+提取时间: 2025-12-13 20:36:02
 函数/类名: store_market_data
 
 说明：
@@ -74,6 +74,12 @@ def query_market_data(symbol: str, start_date: str, end_date: str) -> pd.DataFra
     """
     return dc.clickhouse_client.qu<CodeFromFile 
   filePath="code_library/002_Chapter2_Data_Source/2.3/002_Chapter2_Data_Source/2.3/code_2_3_cache_market_snapshot.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.3/code_2_3_cache_market_snapshot.py"
   language="python"
   showDesignPrinciples="true"
 />

@@ -1,6 +1,6 @@
 """
-文件名: code_2_4_01.py
-保存路径: code_library/002_Chapter2_Data_Source/2.4/code_2_4_01.py
+文件名: code_2_4_09.py
+保存路径: code_library/002_Chapter2_Data_Source/2.4/code_2_4_09.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.4_MCP_Tool_Integration_CN.md
 提取时间: 2025-12-13 20:36:08
 函数/类名: None
@@ -10,12 +10,9 @@
 如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
 """
 
-# 用户请求：
-"请下载JQData使用手册PDF"
-
-# AI执行：
-data_collector.download_pdf(
-    url="https://www.joinquant.com/help/download/jqdata_manual.pdf",
-    output_dir="data/collected/manuals",
-    filename="jqdata_manual.pdf"  # 可选：指定文件名
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
 )

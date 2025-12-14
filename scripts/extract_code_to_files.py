@@ -462,35 +462,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-    
-    markdown_file = Path(args.markdown_file)
-    if not markdown_file.is_absolute():
-        markdown_file = PROJECT_ROOT / markdown_file
-    
-    if not markdown_file.exists():
-        print(f"❌ 文件不存在: {markdown_file}")
-        sys.exit(1)
-    
-    output_dir = None
-    if args.output_dir:
-        output_dir = Path(args.output_dir)
-        if not output_dir.is_absolute():
-            output_dir = PROJECT_ROOT / output_dir
-    
-    extractor = CodeExtractor(markdown_file, output_dir)
-    result = extractor.process(dry_run=args.dry_run)
-    
-    print(f"\n📊 处理完成:")
-    print(f"   提取代码块: {result['extracted']}/{result['total']}")
-    print(f"   更新Markdown: {result['updated']}/{result['total']}")
-
-
-if __name__ == '__main__':
-    main()
-
-
-
-if __name__ == "__main__":
-    main()
