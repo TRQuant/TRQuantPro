@@ -1,0 +1,61 @@
+"""
+文件名: code_5_1_create_dynamic_pool.py
+保存路径: code_library/005_Chapter5_Candidate_Pool/5.1/code_5_1_create_dynamic_pool.py
+来源文件: extension/AShare-manual/src/pages/ashare-book6/005_Chapter5_Candidate_Pool/5.1_Stock_Pool_Management_CN.md
+提取时间: 2025-12-13 21:16:46
+函数/类名: create_dynamic_pool
+
+说明：
+此文件由代码提取脚本自动生成，从Markdown文档中提取的代码块。
+如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
+"""
+
+from typing import Dict, List, Optional
+
+def create_dynamic_pool(
+    conditions: Dict,
+    description: str = ""
+) -> StockPool:
+        """
+    create_dynamic_pool函数
+    
+    **设计原理**：
+    - **核心功能**：实现create_dynamic_pool的核心逻辑
+    - **设计思路**：通过XXX方式实现XXX功能
+    - **性能考虑**：使用XXX方法提高效率
+    
+    **为什么这样设计**：
+    1. **原因1**：说明设计原因
+    2. **原因2**：说明设计原因
+    3. **原因3**：说明设计原因
+    
+    **使用场景**：
+    - 场景1：使用场景说明
+    - 场景2：使用场景说明
+    
+    Args:
+        # 参数说明
+    
+    Returns:
+        # 返回值说明
+    """
+    pool = StockPool(
+        description=description or "动态股票池"
+    )
+    
+    # 根据条件筛选股票
+    filtered_stocks = filter_stocks_by_conditions(conditions)
+    
+    for stock_code in filtered_stocks:
+        stock_info = get_stock_info(stock_code)
+        item = StockPoolItem(
+            code=stock_code,
+            name=stock_info.get("name", ""),
+            industry=stock_info.get("industry", ""),
+            source="dynamic",
+            entry_reason=f"动态筛选：{conditions}"
+        )
+        pool.add_stock(item)
+    
+    pool.calculate_summary()
+    return pool

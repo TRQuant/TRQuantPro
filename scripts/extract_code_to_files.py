@@ -70,8 +70,7 @@ class CodeExtractor:
             else:
                 # 如果代码块中没有函数/类，尝试从上下文提取
                 # 查找代码块前的标题或描述
-                context_lines = context.split('
-')[-10:]  # 取最后10行上下文
+                context_lines = context.split('\n')[-10:]  # 取最后10行上下文
                 for line in reversed(context_lines):
                     # 查找可能的函数名提示（如 "### function_name" 或 "**function_name**"）
                     title_match = re.search(r'###\s+(\w+)|[*]{2}(\w+)[*]{2}', line)
@@ -167,8 +166,7 @@ class CodeExtractor:
             else:
                 # 如果没有函数名，尝试从上下文提取描述
                 # 查找代码块前的标题
-                context_lines = code_block.get('context', '').split('
-')[-10:]
+                context_lines = code_block.get('context', '').split('\n')[-10:]
                 desc_name = None
                 for line in reversed(context_lines):
                     # 查找标题（###, ####）
