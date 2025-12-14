@@ -2,7 +2,7 @@
 文件名: code_2_4_03.py
 保存路径: code_library/002_Chapter2_Data_Source/2.4/code_2_4_03.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.4_MCP_Tool_Integration_CN.md
-提取时间: 2025-12-13 20:34:05
+提取时间: 2025-12-13 20:35:50
 函数/类名: None
 
 说明：
@@ -17,7 +17,10 @@
 data_collector.collect_academic(
     database="arxiv",  # 或 "ieee", "acm"
     query="financial data source quality assessment",
-    max_results=10,
-    output_dir="data/collected/papers",
-    format="pdf"  # 下载PDF格式
-)
+    max_res<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_04.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
