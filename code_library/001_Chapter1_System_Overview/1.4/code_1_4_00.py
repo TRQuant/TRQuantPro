@@ -18,3 +18,5 @@ MCP_TOOLS = [
     "trquant_generate_strategy",  # 生成策略
     "trquant_analyze_backtest"    # 分析回测
 ]
+
+#测试

@@ -103,9 +103,6 @@ class CodeExtractor:
             elif part.startswith('003_Chapter3'):
                 chapter_info['chapter_dir'] = part
                 break
-            elif re.match(r'00\d+_Chapter\d+', part):
-                chapter_info['chapter_dir'] = part
-                break
             elif part.startswith('00') and '_Chapter' in part:
                 chapter_info['chapter_dir'] = part
                 break
@@ -135,18 +132,19 @@ class CodeExtractor:
         chapter_info = code_block['chapter_info']
         name = code_block['name']
         
-        # 构建路径：code_library/00X_ChapterX/3.X/code_3_X_X_name.py
+        # 构建路径：code_library/001_Chapter1_System_Overview/1.4/code_1_4_03.py
         if chapter_info.get('chapter') and chapter_info.get('section'):
             chapter = chapter_info['chapter']
             section = chapter_info['section']
             
-            # 章节目录名（如 003_Chapter3_Market_Analysis）
             # 章节目录名（从路径提取，如 001_Chapter1_System_Overview）
-            chapter_dir_name = chapter_info.get("chapter_dir")
-            section_dir = f"{chapter}.{section}"
+            chapter_dir_name = chapter_info.get('chapter_dir')
             if not chapter_dir_name:
                 # 如果没找到，尝试构建（兼容旧格式）
                 chapter_dir_name = f"00{chapter}_Chapter{chapter}_System_Overview"
+            
+            # 小节目录（如 1.4, 1.9）
+            section_dir = f"{chapter}.{section}"
             
             # 生成文件名
             if name:
@@ -157,19 +155,12 @@ class CodeExtractor:
                 file_name = f"code_{chapter}_{section}_{index:02d}.py"
             
             # 简化路径：直接放在小节文件夹下
-            # 检查output_dir是否已经包含章节目录
-            output_parts = str(self.output_dir).split('/')
-            if chapter_dir_name in output_parts:
-                # 如果已经包含，只添加小节目录和文件名
-                code_file_path = self.output_dir / file_name
-            else:
-                # 否则添加章节目录、小节目录和文件名
-                code_file_path = (
-                    self.output_dir / 
-                    chapter_dir_name / 
-                    section_dir / 
-                    file_name
-                )
+            code_file_path = (
+                self.output_dir / 
+                chapter_dir_name / 
+                section_dir / 
+                file_name
+            )
         else:
             # 如果无法提取章节信息，使用默认路径
             if name:
@@ -433,6 +424,33 @@ def main():
     parser.add_argument('--batch', action='store_true', help='批量处理模式')
     
     args = parser.parse_args()
+    
+    markdown_file = Path(args.markdown_file)
+    if not markdown_file.is_absolute():
+        markdown_file = PROJECT_ROOT / markdown_file
+    
+    if not markdown_file.exists():
+        print(f"❌ 文件不存在: {markdown_file}")
+        sys.exit(1)
+    
+    output_dir = None
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+        if not output_dir.is_absolute():
+            output_dir = PROJECT_ROOT / output_dir
+    
+    extractor = CodeExtractor(markdown_file, output_dir)
+    result = extractor.process(dry_run=args.dry_run)
+    
+    print(f"\n📊 处理完成:")
+    print(f"   提取代码块: {result['extracted']}/{result['total']}")
+    print(f"   更新Markdown: {result['updated']}/{result['total']}")
+
+
+if __name__ == '__main__':
+    main()
+
+
     
     markdown_file = Path(args.markdown_file)
     if not markdown_file.is_absolute():
