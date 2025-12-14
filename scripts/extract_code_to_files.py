@@ -55,15 +55,29 @@ class CodeExtractor:
             context_start = max(0, start_pos - 500)
             context = self.content[context_start:start_pos]
             
-            # 尝试提取函数名或类名
-            func_match = re.search(r'def\s+(\w+)', code_content)
-            class_match = re.search(r'class\s+(\w+)', code_content)
+            # 尝试提取函数名或类名（优先使用第一个函数）
+            # 查找所有函数定义，使用第一个
+            func_matches = list(re.finditer(r'def\s+(\w+)', code_content))
+            class_matches = list(re.finditer(r'class\s+(\w+)', code_content))
             
             name = None
-            if func_match:
-                name = func_match.group(1)
-            elif class_match:
-                name = class_match.group(1)
+            if func_matches:
+                # 使用第一个函数名（通常是主要函数）
+                name = func_matches[0].group(1)
+            elif class_matches:
+                # 使用第一个类名
+                name = class_matches[0].group(1)
+            else:
+                # 如果代码块中没有函数/类，尝试从上下文提取
+                # 查找代码块前的标题或描述
+                context_lines = context.split('
+')[-10:]  # 取最后10行上下文
+                for line in reversed(context_lines):
+                    # 查找可能的函数名提示（如 "### function_name" 或 "**function_name**"）
+                    title_match = re.search(r'###\s+(\w+)|[*]{2}(\w+)[*]{2}', line)
+                    if title_match:
+                        name = title_match.group(1) or title_match.group(2)
+                        break
             
             # 提取章节信息（从文件路径）
             chapter_info = self._extract_chapter_info()
