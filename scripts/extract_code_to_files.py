@@ -55,28 +55,15 @@ class CodeExtractor:
             context_start = max(0, start_pos - 500)
             context = self.content[context_start:start_pos]
             
-            # 尝试提取函数名或类名（优先使用第一个函数）
-            # 查找所有函数定义，使用第一个
-            func_matches = list(re.finditer(r'def\s+(\w+)', code_content))
-            class_matches = list(re.finditer(r'class\s+(\w+)', code_content))
+            # 尝试提取函数名或类名
+            func_match = re.search(r'def\s+(\w+)', code_content)
+            class_match = re.search(r'class\s+(\w+)', code_content)
             
             name = None
-            if func_matches:
-                # 使用第一个函数名（通常是主要函数）
-                name = func_matches[0].group(1)
-            elif class_matches:
-                # 使用第一个类名
-                name = class_matches[0].group(1)
-            else:
-                # 如果代码块中没有函数/类，尝试从上下文提取
-                # 查找代码块前的标题或描述
-                context_lines = context.split('\n')[-10:]  # 取最后10行上下文
-                for line in reversed(context_lines):
-                    # 查找可能的函数名提示（如 "### function_name" 或 "**function_name**"）
-                    title_match = re.search(r'###\s+(\w+)|[*]{2}(\w+)[*]{2}', line)
-                    if title_match:
-                        name = title_match.group(1) or title_match.group(2)
-                        break
+            if func_match:
+                name = func_match.group(1)
+            elif class_match:
+                name = class_match.group(1)
             
             # 提取章节信息（从文件路径）
             chapter_info = self._extract_chapter_info()
@@ -97,7 +84,7 @@ class CodeExtractor:
         path_parts = self.markdown_file.parts
         chapter_info = {}
         
-        # 查找章节编号（如 1.4, 1.9, 3.1, 3.2）
+        # 查找章节编号（如 3.1, 3.2）
         for part in path_parts:
             match = re.search(r'(\d+)\.(\d+)', part)
             if match:
@@ -105,29 +92,11 @@ class CodeExtractor:
                 chapter_info['section'] = match.group(2)
                 break
         
-        # 从文件路径中提取章节目录名（如 001_Chapter1_System_Overview）
-        for part in path_parts:
-            if part.startswith('001_Chapter1'):
-                chapter_info['chapter_dir'] = part
-                break
-            elif part.startswith('002_Chapter2'):
-                chapter_info['chapter_dir'] = part
-                break
-            elif part.startswith('003_Chapter3'):
-                chapter_info['chapter_dir'] = part
-                break
-            elif part.startswith('00') and '_Chapter' in part:
-                chapter_info['chapter_dir'] = part
-                break
-        
-        # 如果没有找到，尝试从路径构建
-        if 'chapter_dir' not in chapter_info and chapter_info.get('chapter'):
-            chapter = chapter_info['chapter']
-            # 从路径中查找章节名称
-            for part in path_parts:
-                if f'Chapter{chapter}' in part or f'chapter{chapter}' in part:
-                    chapter_info['chapter_dir'] = part
-                    break
+        # 提取章节名称
+        filename = self.markdown_file.stem
+        if '_' in filename:
+            parts = filename.split('_')
+            chapter_info['section_name'] = parts[-1] if len(parts) > 1 else None
         
         return chapter_info
     
@@ -145,67 +114,29 @@ class CodeExtractor:
         chapter_info = code_block['chapter_info']
         name = code_block['name']
         
-        # 构建路径：code_library/001_Chapter1_System_Overview/1.4/code_1_4_03.py
+        # 构建路径：code_library/00X_ChapterX/3.X/code_3_X_X_name.py
         if chapter_info.get('chapter') and chapter_info.get('section'):
             chapter = chapter_info['chapter']
             section = chapter_info['section']
             
-            # 章节目录名（从路径提取，如 001_Chapter1_System_Overview）
-            chapter_dir_name = chapter_info.get('chapter_dir')
-            if not chapter_dir_name:
-                # 如果没找到，尝试构建（兼容旧格式）
-                chapter_dir_name = f"00{chapter}_Chapter{chapter}_System_Overview"
-            
-            # 小节目录（如 1.4, 1.9）
+            # 章节目录名（如 003_Chapter3_Market_Analysis）
+            chapter_dir_name = f"00{chapter}_Chapter{chapter}_Market_Analysis"
             section_dir = f"{chapter}.{section}"
             
-            # 生成文件名（优先使用函数名，确保命名风格一致）
+            # 生成文件名
             if name:
-                # 优先使用函数名或类名（与第3章风格一致）
+                # 使用函数名或类名
                 file_name = f"code_{chapter}_{section}_{name}.py"
             else:
-                # 如果没有函数名，尝试从上下文提取描述
-                # 查找代码块前的标题
-                context_lines = code_block.get('context', '').split('\n')[-10:]
-                desc_name = None
-                for line in reversed(context_lines):
-                    # 查找标题（###, ####）
-                    title_match = re.search(r'^#{3,4}\s+(.+?)$', line.strip())
-                    if title_match:
-                        title = title_match.group(1).strip()
-                        # 清理标题，生成文件名
-                        desc_name = re.sub(r'[^\w\s一-鿿-]', '', title)
-                        desc_name = re.sub(r'\s+', '_', desc_name).lower()
-                        # 只保留前30个字符
-                        desc_name = desc_name[:30] if len(desc_name) > 30 else desc_name
-                        break
-                
-                if desc_name:
-                    file_name = f"code_{chapter}_{section}_{desc_name}.py"
-                else:
-                    # 最后才使用索引（应该尽量避免）
-                    file_name = f"code_{chapter}_{section}_{index:02d}.py"
+                # 使用索引
+                file_name = f"code_{chapter}_{section}_{index:02d}.py"
             
-            # 简化路径：直接放在小节文件夹下
-            # 检查output_dir是否已经包含小节目录
-            output_str = str(self.output_dir)
-            section_dir_str = f"{chapter}.{section}"
-            
-            # 如果output_dir已经包含小节目录，直接使用output_dir（不再添加任何路径）
-            if section_dir_str in output_str:
-                # 已经包含小节目录，直接添加文件名
-                code_file_path = self.output_dir / file_name
-            elif chapter_dir_name in output_str:
-                # 只包含章节目录，添加小节目录和文件名
-                code_file_path = self.output_dir / section_dir / file_name
-            else:
-                # 都不包含，添加章节目录、小节目录和文件名
-                code_file_path = (
-                    self.output_dir / 
-                    chapter_dir_name / 
-                    section_dir / 
-                    file_name
-                )
+            code_file_path = (
+                self.output_dir / 
+                chapter_dir_name / 
+                section_dir / 
+                file_name
+            )
         else:
             # 如果无法提取章节信息，使用默认路径
             if name:
@@ -494,3 +425,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -1,6 +1,6 @@
 """
-文件名: code_4_1_dimension_config.py
-保存路径: code_library/004_Chapter4_Mainline_Identification/4.1/code_4_1_dimension_config.py
+文件名: code_4_1_维度配置.py
+保存路径: code_library/004_Chapter4_Mainline_Identification/4.1/code_4_1_维度配置.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/004_Chapter4_Mainline_Identification/4.1_Mainline_Scoring_CN.md
 提取时间: 2025-12-13 21:16:42
 函数/类名: 维度配置
