@@ -159,7 +159,7 @@ class CodeExtractor:
             output_str = str(self.output_dir)
             section_dir_str = f"{chapter}.{section}"
             
-            # 如果output_dir已经包含小节目录，直接使用output_dir
+            # 如果output_dir已经包含小节目录，直接使用output_dir（不再添加任何路径）
             if section_dir_str in output_str:
                 # 已经包含小节目录，直接添加文件名
                 code_file_path = self.output_dir / file_name
