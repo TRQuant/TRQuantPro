@@ -2,7 +2,7 @@
 文件名: code_2_2_validate_business_logic.py
 保存路径: code_library/002_Chapter2_Data_Source/2.2/code_2_2_validate_business_logic.py
 来源文件: extension/AShare-manual/src/pages/ashare-book6/002_Chapter2_Data_Source/2.2_Data_Quality_CN.md
-提取时间: 2025-12-13 20:36:52
+提取时间: 2025-12-13 20:37:33
 函数/类名: validate_business_logic
 
 说明：
