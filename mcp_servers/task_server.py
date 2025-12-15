@@ -46,6 +46,7 @@ try:
     TRQUANT_ROOT = Path(__file__).parent.parent
     sys.path.insert(0, str(TRQUANT_ROOT))
     from mcp_servers.utils.envelope import wrap_success_response, wrap_error_response, extract_trace_id_from_request
+    from mcp_servers.utils.mcp_integration_helper import process_mcp_tool_call
     
     MCP_SDK_AVAILABLE = True
     logger.info("使用官方MCP SDK")
@@ -340,172 +341,114 @@ async def list_tools() -> List[Tool]:
     ]
 
 
+
+def _adapt_mcp_result_to_text_content(result: Dict[str, Any]) -> List[TextContent]:
+    """将process_mcp_tool_call的结果转换为List[TextContent]格式"""
+    if isinstance(result, dict) and "content" in result:
+        text_content = []
+        for item in result.get("content", []):
+            if item.get("type") == "text":
+                text_content.append(TextContent(type="text", text=item.get("text", "")))
+        return text_content if text_content else [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
+    else:
+        return [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
+
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> List[TextContent]:
     """调用工具（返回统一envelope格式）"""
-    # 提取trace_id（如果存在）
-    trace_id = arguments.get("trace_id")
     
-    try:
-        if name == "task.list":
-            project = arguments.get("project", "default")
-            status = arguments.get("status")
-            
-            tasks = list_tasks(project, status)
-            
-            result = {
-                "project": project,
-                "tasks": tasks,
-                "total": len(tasks),
-                "by_status": {
-                    s.value: len([t for t in tasks if t.get("status") == s.value])
-                    for s in TaskStatus
-                },
-                "timestamp": datetime.now().isoformat()
-            }
-            
-        elif name == "task.create":
-            title = arguments.get("title")
-            description = arguments.get("description", "")
-            status = arguments.get("status", TaskStatus.PENDING.value)
-            parent_id = arguments.get("parent_id")
-            project = arguments.get("project", "default")
-            
-            if not title:
-                raise ValueError("title参数是必需的")
-            
-            task = create_task(title, description, status, parent_id, project)
-            
-            result = {
-                "task": task,
-                "message": "任务创建成功",
-                "timestamp": datetime.now().isoformat()
-            }
-            
-        elif name == "task.update":
-            task_id = arguments.get("task_id")
-            title = arguments.get("title")
-            description = arguments.get("description")
-            status = arguments.get("status")
-            project = arguments.get("project", "default")
-            
-            if not task_id:
-                raise ValueError("task_id参数是必需的")
-            
-            task = update_task(task_id, title, description, status, project)
-            
-            result = {
-                "task": task,
-                "message": "任务更新成功",
-                "timestamp": datetime.now().isoformat()
-            }
-            
-        elif name == "task.complete":
-            task_id = arguments.get("task_id")
-            project = arguments.get("project", "default")
-            
-            if not task_id:
-                raise ValueError("task_id参数是必需的")
-            
-            task = update_task(task_id, status=TaskStatus.COMPLETED.value, project=project)
-            
-            result = {
-                "task": task,
-                "message": "任务已完成",
-                "timestamp": datetime.now().isoformat()
-            }
-            
-        elif name == "task.get":
-            task_id = arguments.get("task_id")
-            project = arguments.get("project", "default")
-            
-            if not task_id:
-                raise ValueError("task_id参数是必需的")
-            
-            tasks_data = load_tasks(project)
-            task = find_task(tasks_data.get("tasks", []), task_id)
-            
-            if not task:
-                raise ValueError(f"未找到任务: {task_id}")
-            
-            result = {
-                "task": task,
-                "timestamp": datetime.now().isoformat()
-            }
-        else:
-            raise ValueError(f"未知工具: {name}")
+    def handle_task_create(args):
+        task_type = args.get("task_type")
+        task_config = args.get("task_config", {})
         
-        # 包装为统一envelope格式
-        envelope = wrap_success_response(
-            data=result,
-            server_name="trquant-task",
-            tool_name=name,
-            version="1.0.0",
-            trace_id=trace_id
-        )
+        if not task_type:
+            raise ValueError("task_type参数是必需的")
         
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
-    except ValueError as e:
-        # 参数验证错误
-        logger.error(f"工具执行失败: {name}, 错误: {e}")
-        envelope = wrap_error_response(
-            error_code="VALIDATION_ERROR",
-            error_message=str(e),
-            server_name="trquant-task",
+        task = create_task(task_type, task_config)
+        return task
+    
+    def handle_task_list(args):
+        status = args.get("status")
+        task_type = args.get("task_type")
+        
+        tasks = list_tasks(status, task_type)
+        return {
+            "tasks": tasks,
+            "total": len(tasks),
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def handle_task_get(args):
+        task_id = args.get("task_id")
+        if not task_id:
+            raise ValueError("task_id参数是必需的")
+        
+        task = get_task(task_id)
+        if not task:
+            raise ValueError(f"未找到任务: {task_id}")
+        
+        return {
+            "task": task,
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def handle_task_update(args):
+        task_id = args.get("task_id")
+        updates = args.get("updates", {})
+        
+        if not task_id:
+            raise ValueError("task_id参数是必需的")
+        
+        task = update_task(task_id, updates)
+        return {
+            "task": task,
+            "message": "任务已更新",
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def handle_task_cancel(args):
+        task_id = args.get("task_id")
+        if not task_id:
+            raise ValueError("task_id参数是必需的")
+        
+        task = cancel_task(task_id)
+        return {
+            "task": task,
+            "message": "任务已取消",
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    tool_handlers = {
+        "task.create": handle_task_create,
+        "task.list": handle_task_list,
+        "task.get": handle_task_get,
+        "task.update": handle_task_update,
+        "task.cancel": handle_task_cancel,
+    }
+    
+    handler = tool_handlers.get(name)
+    if handler:
+        result = process_mcp_tool_call(
             tool_name=name,
-            version="1.0.0",
-            error_hint="请检查输入参数是否符合工具Schema要求",
-            trace_id=trace_id
-        )
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
-    except FileNotFoundError as e:
-        # 文件不存在错误
-        logger.error(f"工具执行失败: {name}, 错误: {e}")
-        envelope = wrap_error_response(
-            error_code="NOT_FOUND",
-            error_message=str(e),
+            arguments=arguments,
+            tools_list=server.list_tools(),
+            tool_handler_func=handler,
             server_name="trquant-task",
-            tool_name=name,
-            version="1.0.0",
-            error_hint="请检查文件是否存在",
-            trace_id=trace_id
+            version="1.0.0"
         )
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
-    except Exception as e:
-        # 其他内部错误
-        logger.error(f"工具执行失败: {name}, 错误: {e}")
-        envelope = wrap_error_response(
-            error_code="INTERNAL_ERROR",
-            error_message=str(e),
-            server_name="trquant-task",
-            tool_name=name,
-            version="1.0.0",
-            error_details={"exception_type": type(e).__name__},
-            trace_id=trace_id
+        return _adapt_mcp_result_to_text_content(result)
+    else:
+        from mcp_servers.utils.error_handler import MCPError, ErrorCodes
+        raise MCPError(
+            code=ErrorCodes.TOOL_NOT_FOUND,
+            message=f"未知工具: {name}",
+            hint="请检查工具名称是否正确"
         )
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
 
 
-if __name__ == "__main__":
-    import asyncio
-    from mcp.server.stdio import stdio_server
-    
-    # 使用官方SDK的标准方式
-    async def main():
-        async with stdio_server() as (read_stream, write_stream):
-            await server.run(read_stream, write_stream, server.create_initialization_options())
+async def main():
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(read_stream, write_stream, server.create_initialization_options())
     
     asyncio.run(main())
 

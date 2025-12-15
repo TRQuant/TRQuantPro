@@ -199,6 +199,20 @@ updateDate: "2025-12-12"
     </div>
     <a href="/ashare-book6/010_Chapter10_Development_Guide/10.13_Web_Crawler_Development_Guide_CN" class="chapter-link">开始学习 →</a>
   </div>
+
+  <div class="chapter-card">
+    <div class="chapter-header">
+      <span class="chapter-number">10.14</span>
+      <h3>详细开发方案 ⭐</h3>
+    </div>
+    <p>基于软件工程优化建议制定的18周详细开发方案，包括MCP规范、GUI优化、工作流编排、数据库实施等完整实施计划。</p>
+    <div class="chapter-features">
+      <span class="feature-tag">📋 开发方案</span>
+      <span class="feature-tag">🗓️ 18周计划</span>
+      <span class="feature-tag">✅ 实施路线图</span>
+    </div>
+    <a href="/ashare-book6/010_Chapter10_Development_Guide/10.14_Detailed_Development_Plan_CN" class="chapter-link">开始学习 →</a>
+  </div>
 </div>
 
 ## 🎯 学习目标

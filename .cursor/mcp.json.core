@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "trquant": {
+      "command": "python3",
+      "args": [
+        "extension/python/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "TRQuant业务服务器 - 市场状态、投资主线、因子推荐、策略生成"
+    },
+    "trquant-task-optimizer": {
+      "command": "python3",
+      "args": [
+        "mcp_servers/task_optimizer_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "任务优化器 - 任务复杂度分析、上下文缓存、工作流优化"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ],
+      "description": "文件系统服务器 - 文件读写操作"
+    }
+  }
+}

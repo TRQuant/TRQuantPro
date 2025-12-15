@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>动量策略回测报告</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #eee; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; background: linear-gradient(90deg, #00d2ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5em; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; text-align: center; }
+        .metric-value { font-size: 2em; font-weight: bold; margin-bottom: 8px; }
+        .metric-label { color: #888; font-size: 0.9em; }
+        .positive { color: #00ff88; }
+        .negative { color: #ff4757; }
+        .neutral { color: #3498db; }
+        .chart-container { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; margin-bottom: 30px; }
+        .chart-title { font-size: 1.2em; margin-bottom: 15px; color: #ddd; }
+        .footer { text-align: center; color: #666; margin-top: 30px; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 动量策略回测报告</h1>
+        <div class="metrics-grid">
+            <div class="metric-card"><div class="metric-value positive">0.18%</div><div class="metric-label">总收益率</div></div>
+            <div class="metric-card"><div class="metric-value positive">0.34%</div><div class="metric-label">年化收益</div></div>
+            <div class="metric-card"><div class="metric-value neutral">0.08</div><div class="metric-label">夏普比率</div></div>
+            <div class="metric-card"><div class="metric-value negative">5.61%</div><div class="metric-label">最大回撤</div></div>
+            <div class="metric-card"><div class="metric-value neutral">40.8%</div><div class="metric-label">胜率</div></div>
+            <div class="metric-card"><div class="metric-value neutral">291</div><div class="metric-label">交易次数</div></div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">📈 累计收益曲线</div>
+            <canvas id="returnChart" height="300"></canvas>
+        </div>
+        <div class="footer">生成时间: 2025-12-15 09:33:12 | 韬睿量化系统</div>
+    </div>
+    <script>
+        const ctx = document.getElementById('returnChart').getContext('2d');
+        const cumData = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.065, -0.4442, -0.3856, -0.3025, -0.9327, -1.4155, -1.2977, -0.0133, -1.2534, -1.3737, -0.4355, -1.3446, -1.6342, -2.1534, -0.4928, 0.6077, 0.6585, -0.1864, -0.8166, -1.2863, -1.2801, -1.2276, -2.0126, -2.4839, -3.6608, -2.9031, -3.1167, -3.4167, -2.4727, -2.5662, -2.1802, -2.218, -2.1527, -0.8201, -0.6793, -0.4782, -0.9874, -1.7839, -0.6729, -0.8551, -1.3156, -1.3148, -1.0556, -0.8288, -0.0349, -0.6657, -0.6042, 0.0318, -0.0983, 0.7652, 1.9662, 1.6382, 1.2115, 0.8785, 1.3368, -0.243, 1.2233, 2.2962, 2.8973, 2.8238, 2.5632, 3.616, 4.4849, 4.133, 3.8858, 4.6501, 4.3069, 3.913, 4.2823, 4.2616, 3.6706, 3.3695, 3.9204, 3.4005, 2.5165, 2.867, 2.3308, 2.6953, 2.6048, 2.6456, 2.7688, 2.6154, 2.1669, 1.1013, 0.8764, 0.8694, 0.7221, 1.6564, 2.3468, 3.2553, 2.101, 0.1521, 0.3645, -0.1524, 0.0726, 0.36, 1.1019, 1.4076, -0.0686, 0.1835, 0.1867, -0.1193, -0.6774, -0.2626, -0.6036, -1.2198, -0.5626, -0.1377, -0.2945, 0.177];
+        new Chart(ctx, {
+            type: 'line',
+            data: { labels: cumData.map((_, i) => i + 1), datasets: [{ label: '累计收益 (%)', data: cumData, borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)', fill: true, tension: 0.4, pointRadius: 0 }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888', callback: function(value) { return value + '%'; } } } } }
+        });
+    </script>
+</body>
+</html>

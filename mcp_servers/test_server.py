@@ -42,6 +42,7 @@ try:
     from mcp.server import Server
     from mcp.server.stdio import stdio_server
     from mcp.types import Tool, TextContent
+    from mcp_servers.utils.mcp_integration_helper import process_mcp_tool_call
     MCP_SDK_AVAILABLE = True
     logger.info("使用官方MCP SDK")
 except ImportError:
@@ -208,87 +209,70 @@ async def list_tools() -> List[Tool]:
     ]
 
 
+
+def _adapt_mcp_result_to_text_content(result: Dict[str, Any]) -> List[TextContent]:
+    """将process_mcp_tool_call的结果转换为List[TextContent]"""
+    if isinstance(result, dict) and "content" in result:
+        text_content = []
+        for item in result.get("content", []):
+            if item.get("type") == "text":
+                text_content.append(TextContent(type="text", text=item.get("text", "")))
+        return text_content if text_content else [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
+    else:
+        return [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
+
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> List[TextContent]:
-    """调用工具（返回统一envelope格式）"""
-    # 提取trace_id（如果存在）
-    trace_id = arguments.get("trace_id")
-    
+    """调用工具（使用process_mcp_tool_call）"""
+    # 获取工具列表
+    tools_list = []
     try:
+        import inspect
+        for obj_name in dir(server):
+            obj = getattr(server, obj_name, None)
+            if inspect.iscoroutinefunction(obj) and obj_name == 'list_tools':
+                tools_result = await obj()
+                if tools_result:
+                    tools_list = tools_result
+                    break
+    except:
+        pass
+    
+    def handler(validated_args):
         if name == "test.run":
-            result = run_pytest(
-                arguments.get("test_path"),
-                arguments.get("args")
+            return run_pytest(
+                validated_args.get("test_path"),
+                validated_args.get("args")
             )
         elif name == "test.report":
-            # 运行测试并生成报告
-            test_result = run_pytest(arguments.get("test_path"))
-            result = {
+            test_result = run_pytest(validated_args.get("test_path"))
+            return {
                 "test_result": test_result,
                 "report": test_result.get("report", {}),
                 "summary": test_result.get("summary", {})
             }
         elif name == "test.coverage":
-            result = get_test_coverage(arguments.get("test_path"))
+            return get_test_coverage(validated_args.get("test_path"))
         else:
             raise ValueError(f"未知工具: {name}")
-        
-        # 包装为统一envelope格式
-        envelope = wrap_success_response(
-            data=result,
-            server_name="trquant-test",
-            tool_name=name,
-            version="1.0.0",
-            trace_id=trace_id
-        )
-        
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
-    except ValueError as e:
-        # 参数验证错误
-        logger.error(f"工具执行失败: {name}, 错误: {e}")
-        envelope = wrap_error_response(
-            error_code="VALIDATION_ERROR",
-            error_message=str(e),
-            server_name="trquant-test",
-            tool_name=name,
-            version="1.0.0",
-            error_hint="请检查输入参数是否符合工具Schema要求",
-            trace_id=trace_id
-        )
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
-    except Exception as e:
-        # 其他内部错误
-        logger.error(f"工具执行失败: {name}, 错误: {e}")
-        envelope = wrap_error_response(
-            error_code="INTERNAL_ERROR",
-            error_message=str(e),
-            server_name="trquant-test",
-            tool_name=name,
-            version="1.0.0",
-            error_details={"exception_type": type(e).__name__},
-            trace_id=trace_id
-        )
-        return [TextContent(
-            type="text",
-            text=json.dumps(envelope, ensure_ascii=False, indent=2)
-        )]
+    
+    result = process_mcp_tool_call(
+        server_name="trquant-test",
+        tool_name=name,
+        arguments=arguments,
+        mcp_tools_list=tools_list,
+        tool_handler=handler,
+        server_version="1.0.0"
+    )
+    return _adapt_mcp_result_to_text_content(result)
+
+async def main():
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 if __name__ == "__main__":
     import asyncio
-    from mcp.server.stdio import stdio_server
-    
-    # 使用官方SDK的标准方式
-    async def main():
-        async with stdio_server() as (read_stream, write_stream):
-            await server.run(read_stream, write_stream, server.create_initialization_options())
-    
     asyncio.run(main())
 
 

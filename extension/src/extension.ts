@@ -39,6 +39,7 @@ import { WelcomePanel } from './views/welcomePanel';
 import { registerProjectExplorer } from './views/projectExplorer';
 import { registerBacktestReportCommands } from './views/backtestReportPanel';
 import { MainDashboard, registerMainDashboard } from './views/mainDashboard';
+import { StrategyManagerPanel } from './views/strategyManagerPanel';
 
 // 提供者
 import { registerStrategyCompletionProvider } from './providers/strategyCompletionProvider';
@@ -210,17 +211,24 @@ function registerCommands(context: vscode.ExtensionContext): void {
             }
         },
         {
+        {
             id: 'trquant.refreshStatus',
             handler: async () => {
                 await updateStatusBar();
                 vscode.window.showInformationMessage('状态已刷新');
             }
-        }
-    ];
-
-    for (const { id, handler } of commands) {
-        const disposable = vscode.commands.registerCommand(id, async () => {
-            logger.debug(`执行命令: ${id}`, MODULE);
+        },
+        {
+            id: 'trquant.showStrategyManager',
+            handler: async () => {
+                StrategyManagerPanel.createOrShow(context.extensionUri);
+            }
+        },
+        {
+            id: 'trquant.showStrategyManager',
+            handler: async () => {
+                StrategyManagerPanel.createOrShow(context.extensionUri);
+            }
             await ErrorHandler.wrap(handler, id);
         });
         context.subscriptions.push(disposable);

@@ -168,3 +168,140 @@ def wrap_exception_response(
 
 
 
+
+
+# ============================================================================
+# 新的错误码体系（模块_类型_编号格式）
+# ============================================================================
+
+class MCPError(Exception):
+    """MCP工具基础异常类"""
+    
+    def __init__(self, code: str, message: str, details: Dict[str, Any] = None, trace_id: Optional[str] = None):
+        self.code = code
+        self.message = message
+        self.details = details or {}
+        self.trace_id = trace_id
+        super().__init__(self.message)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典格式"""
+        return {
+            "code": self.code,
+            "message": self.message,
+            "type": self._get_error_type(),
+            "module": self._get_module(),
+            "trace_id": self.trace_id,
+            "details": self.details
+        }
+    
+    def _get_error_type(self) -> str:
+        """从错误码中提取错误类型"""
+        parts = self.code.split('_')
+        if len(parts) >= 2:
+            return parts[1]
+        return "UNKNOWN"
+    
+    def _get_module(self) -> str:
+        """从错误码中提取模块名"""
+        parts = self.code.split('_')
+        if len(parts) >= 1:
+            return parts[0]
+        return "UNKNOWN"
+
+
+class MCPParameterError(MCPError):
+    """参数错误"""
+    pass
+
+
+class MCPSystemError(MCPError):
+    """系统错误"""
+    pass
+
+
+class MCPBusinessError(MCPError):
+    """业务错误"""
+    pass
+
+
+class MCPDataError(MCPError):
+    """数据错误"""
+    pass
+
+
+def create_error_response(
+    error: MCPError,
+    server_name: str,
+    tool_name: str,
+    version: str = "1.0.0"
+) -> Dict[str, Any]:
+    """
+    创建标准错误响应
+    
+    Args:
+        error: MCP错误对象
+        server_name: 服务器名称
+        tool_name: 工具名称
+        version: 服务器版本
+    
+    Returns:
+        标准错误响应字典
+    """
+    from mcp_servers.utils.trace_manager import TraceManager
+    
+    trace_id = error.trace_id or TraceManager.get_trace_id()
+    
+    return {
+        "error": error.to_dict(),
+        "server": server_name,
+        "tool": tool_name,
+        "version": version,
+        "trace_id": trace_id
+    }
+
+
+# 错误码常量定义
+class ErrorCodes:
+    """错误码常量"""
+    
+    # 参数错误
+    PARAM_MISSING = "_PARAM_001"
+    PARAM_TYPE_ERROR = "_PARAM_002"
+    PARAM_FORMAT_ERROR = "_PARAM_003"
+    PARAM_RANGE_ERROR = "_PARAM_004"
+    PARAM_VALIDATION_FAILED = "_PARAM_005"
+    
+    # 系统错误
+    SYSTEM_INTERNAL = "_SYSTEM_001"
+    SYSTEM_UNAVAILABLE = "_SYSTEM_002"
+    SYSTEM_TIMEOUT = "_SYSTEM_003"
+    SYSTEM_RESOURCE = "_SYSTEM_004"
+    SYSTEM_CONFIG = "_SYSTEM_005"
+    
+    # 业务错误
+    BUSINESS_NOT_FOUND = "_BUSINESS_001"
+    BUSINESS_FORBIDDEN = "_BUSINESS_002"
+    BUSINESS_CONFLICT = "_BUSINESS_003"
+    BUSINESS_RULE_VIOLATION = "_BUSINESS_004"
+    BUSINESS_OPERATION_FAILED = "_BUSINESS_005"
+    
+    # 数据错误
+    DATA_NOT_FOUND = "_DATA_001"
+    DATA_FORMAT_ERROR = "_DATA_002"
+    DATA_VALIDATION_FAILED = "_DATA_003"
+    DATA_ACCESS_FAILED = "_DATA_004"
+    
+    @staticmethod
+    def build_code(module: str, error_type: str) -> str:
+        """
+        构建错误码
+        
+        Args:
+            module: 模块名（如KB, DATA）
+            error_type: 错误类型常量（如PARAM_MISSING）
+        
+        Returns:
+            完整错误码
+        """
+        return f"{module}{error_type}"

@@ -1,0 +1,24 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="256" height="256" fill="#1a1a2e"/>
+  
+  <!-- 外圈 -->
+  <circle cx="128" cy="128" r="108" fill="#00d9ff" stroke="#00ff88" stroke-width="4"/>
+  
+  <!-- 内圈装饰 -->
+  <circle cx="128" cy="128" r="90" fill="none" stroke="#1a1a2e" stroke-width="2" opacity="0.3"/>
+  
+  <!-- 文字 TRQ -->
+  <text x="128" y="110" font-family="Arial, sans-serif" font-size="72" font-weight="bold" 
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">TRQ</text>
+  
+  <!-- 文字 回测 -->
+  <text x="128" y="160" font-family="Arial, sans-serif" font-size="36" 
+        fill="#1a1a2e" text-anchor="middle" dominant-baseline="middle">回测</text>
+  
+  <!-- 装饰线条 -->
+  <line x1="60" y1="60" x2="80" y2="80" stroke="#00ff88" stroke-width="2" opacity="0.6"/>
+  <line x1="196" y1="60" x2="176" y2="80" stroke="#00ff88" stroke-width="2" opacity="0.6"/>
+  <line x1="60" y1="196" x2="80" y2="176" stroke="#00ff88" stroke-width="2" opacity="0.6"/>
+  <line x1="196" y1="196" x2="176" y2="176" stroke="#00ff88" stroke-width="2" opacity="0.6"/>
+</svg>

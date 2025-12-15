@@ -297,6 +297,31 @@ class MCPServer:
     
     async def _generate_strategy(self, args: dict) -> dict:
         """生成策略代码"""
+        # 查询平台API知识库
+        try:
+            from pymongo import MongoClient
+            client = MongoClient("localhost", 27017, serverSelectionTimeoutMS=2000)
+            db = client["trquant"]
+            platform = args.get('platform', 'ptrade')
+            
+            # 查询关键API信息
+            api_info = {}
+            for api_name in ['set_commission', 'set_slippage', 'get_history', 'get_price']:
+                api_doc = db.platform_api_kb.find_one({"platform": platform, "api_name": api_name})
+                if api_doc:
+                    api_info[api_name] = {
+                        "signature": api_doc.get("signature"),
+                        "examples": api_doc.get("examples", [])
+                    }
+            
+            # 如果查询到信息，记录日志
+            if api_info:
+                logger.info(f"从知识库获取{len(api_info)}个API信息")
+        except Exception as e:
+            logger.warning(f"查询API知识库失败: {e}")
+            api_info = {}
+        
+        
         from tools.strategy_generator import StrategyGenerator
         
         generator = StrategyGenerator()
