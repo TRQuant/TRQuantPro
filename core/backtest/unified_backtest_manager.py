@@ -563,31 +563,54 @@ class UnifiedBacktestManager:
     def _run_bullettrade(self, strategy_code: str, result: UnifiedBacktestResult) -> UnifiedBacktestResult:
         """运行BulletTrade回测"""
         try:
+            # 确保使用 extension/venv 中的 BulletTrade
+            import sys
+            from pathlib import Path
+            
+            extension_venv = Path(__file__).parent.parent.parent / "extension" / "venv" / "lib" / "python3.12" / "site-packages"
+            if extension_venv.exists() and str(extension_venv) not in sys.path:
+                sys.path.insert(0, str(extension_venv))
+            
             from core.bullettrade import BulletTradeEngine, BTConfig
+            
+            # BulletTrade 使用 'day' 或 'minute'，不是 '1d'
+            freq_map = {
+                DataFrequency.DAILY: "day",
+                DataFrequency.WEEKLY: "day",  # 周线也用 day
+                DataFrequency.MIN_1: "minute",
+                DataFrequency.MIN_5: "minute",
+                DataFrequency.MIN_15: "minute",
+                DataFrequency.MIN_30: "minute",
+                DataFrequency.MIN_60: "minute",
+            }
+            bt_frequency = freq_map.get(self.config.frequency, "day")
             
             bt_config = BTConfig(
                 start_date=self.config.start_date,
                 end_date=self.config.end_date,
                 initial_capital=self.config.initial_capital,
                 benchmark=self.config.benchmark,
-                frequency=self._convert_frequency(self.config.frequency),
+                frequency=bt_frequency,
             )
             
             engine = BulletTradeEngine(bt_config)
             bt_result = engine.run_backtest(strategy_code=strategy_code)
             
-            result.success = bt_result.success
+            # BTResult 没有 success 属性，使用 is_profitable 或其他指标判断
+            result.success = True  # BulletTrade 执行成功即认为成功
             result.total_return = bt_result.total_return / 100 if bt_result.total_return else 0
             result.annual_return = bt_result.annual_return / 100 if bt_result.annual_return else 0
             result.sharpe_ratio = bt_result.sharpe_ratio or 0
             result.max_drawdown = bt_result.max_drawdown / 100 if bt_result.max_drawdown else 0
-            result.win_rate = bt_result.win_rate or 0
+            result.win_rate = bt_result.win_rate / 100 if bt_result.win_rate else 0
             result.total_trades = bt_result.total_trades or 0
             
         except ImportError as e:
-            result.error = f"BulletTrade未安装: {e}"
+            result.error = f"BulletTrade未安装（应在 extension/venv 中）: {e}"
+            result.success = False
         except Exception as e:
             result.error = f"BulletTrade回测失败: {e}"
+            result.success = False
         
         return result
     
@@ -739,10 +762,10 @@ class UnifiedBacktestManager:
         return results
     
     def _generate_strategy_code(self, strategy_type: str, params: Dict) -> str:
-        """生成策略代码"""
+        """生成策略代码（BulletTrade API）"""
         if strategy_type == "momentum":
             return f'''
-# 动量策略
+# 动量策略 - BulletTrade API
 def initialize(context):
     context.lookback = {params.get("lookback", 20)}
     context.top_n = {params.get("top_n", 10)}
@@ -760,14 +783,19 @@ def handle_data(context, data):
     sorted_stocks = sorted(momentum.items(), key=lambda x: x[1], reverse=True)
     selected = [s[0] for s in sorted_stocks[:context.top_n]]
     
-    # 调仓
-    for stock in context.portfolio.positions:
-        if stock not in selected:
-            order_target_percent(stock, 0)
-    
+    # 调仓 - 使用 order_target_value (BulletTrade API)
+    total_value = context.portfolio.total_value
     weight = 1.0 / len(selected) if selected else 0
+    
+    # 清仓不在选择列表中的股票
+    for stock in list(context.portfolio.positions.keys()):
+        if stock not in selected:
+            order_target_value(stock, 0)
+    
+    # 买入选中的股票
     for stock in selected:
-        order_target_percent(stock, weight)
+        target_value = total_value * weight
+        order_target_value(stock, target_value)
 '''
         else:
             return "# 默认策略\ndef initialize(context): pass\ndef handle_data(context, data): pass"

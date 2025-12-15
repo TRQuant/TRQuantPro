@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-15T17:57:46Z",
+  "generated_at": "2025-12-15T21:52:43Z",
   "metrics": {
     "策略收益": 0.0,
     "策略年化收益": 0.0,
@@ -18,17 +18,17 @@
     "交易盈利次数": 0,
     "交易亏损次数": 0,
     "盈亏比": 0.0,
-    "交易天数": 117,
+    "交易天数": 7,
     "胜率": 0.0,
     "收益回撤比": 0.0
   },
   "meta": {
-    "strategy_file": "strategies/bullettrade/TRQuant_momentum_v3_bt.py",
+    "strategy_file": "/tmp/bt_strategy__7w8uq34.py",
     "start_date": "2024-01-01",
-    "end_date": "2024-06-30",
+    "end_date": "2024-01-10",
     "algorithm_id": null,
     "extras": null,
-    "runtime_seconds": 2.632751226425171,
+    "runtime_seconds": 3.9217429161071777,
     "initial_total_value": 1000000.0,
     "final_total_value": 1000000.0
   }

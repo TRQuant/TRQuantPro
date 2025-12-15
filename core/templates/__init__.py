@@ -1,59 +1,60 @@
-"""策略模板库"""
-from .strategy_templates import (
+# -*- coding: utf-8 -*-
+"""
+策略模板模块
+===========
+提供多种预定义策略模板，支持多平台导出
+"""
+
+# V2 版本（推荐）
+from core.templates.strategy_templates_v2 import (
+    StrategyTemplateV2,
+    StrategyFactory,
+    Platform,
+    StrategyCategory,
+    ParamSpec,
+    MomentumTemplateV2,
+    MeanReversionTemplateV2,
+    RotationTemplateV2,
+    create_strategy,
+    list_strategies,
+)
+
+# V1 版本（兼容）
+from core.templates.strategy_templates import (
     StrategyTemplate,
     MomentumTemplate,
     ValueTemplate,
     TrendTemplate,
     MultiFactorTemplate,
     get_template,
-    list_templates
 )
 
-from .advanced_templates import (
-    RotationTemplate,
-    PairTradingTemplate,
-    MeanReversionTemplate,
-    BreakoutTemplate,
-    get_advanced_template,
-    list_advanced_templates,
-    ADVANCED_TEMPLATES
+# 导出器
+from core.templates.strategy_exporter import (
+    StrategyExporter,
+    export_strategy,
 )
 
-# 基础模板名称映射
-BASIC_TEMPLATE_NAMES = ["momentum", "value", "trend", "multi_factor"]
-
-def list_all_templates():
-    """列出所有模板名称"""
-    return BASIC_TEMPLATE_NAMES + list_advanced_templates()
-
-def get_any_template(name: str):
-    """获取任意模板（基础或高级）"""
-    if name in BASIC_TEMPLATE_NAMES:
-        return get_template(name)
-    return get_advanced_template(name)
-
-def get_all_template_info():
-    """获取所有模板的详细信息"""
-    info = []
-    
-    # 基础模板
-    for name in BASIC_TEMPLATE_NAMES:
-        t = get_template(name)
-        if t:
-            info.append({
-                "name": name,
-                "description": getattr(t, "description", "基础策略"),
-                "type": "basic"
-            })
-    
-    # 高级模板
-    for name in list_advanced_templates():
-        t = get_advanced_template(name)
-        if t:
-            info.append({
-                "name": name,
-                "description": getattr(t, "description", "高级策略"),
-                "type": "advanced"
-            })
-    
-    return info
+__all__ = [
+    # V2 策略系统
+    "StrategyTemplateV2",
+    "StrategyFactory",
+    "Platform",
+    "StrategyCategory",
+    "ParamSpec",
+    "MomentumTemplateV2",
+    "MeanReversionTemplateV2",
+    "RotationTemplateV2",
+    "create_strategy",
+    "list_strategies",
+    # V1 兼容
+    "StrategyTemplate",
+    "MomentumTemplate",
+    "ValueTemplate",
+    "TrendTemplate",
+    "MultiFactorTemplate",
+    "get_template",
+    # 导出器
+    "StrategyExporter",
+    "export_strategy",
+]
