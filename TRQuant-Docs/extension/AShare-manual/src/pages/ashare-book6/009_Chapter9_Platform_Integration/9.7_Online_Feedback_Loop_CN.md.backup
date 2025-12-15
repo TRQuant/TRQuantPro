@@ -1,0 +1,1203 @@
+---
+title: "9.7 实盘反馈与在线再优化"
+description: "深入解析实盘反馈与在线再优化系统，包括实盘反馈机制、在线再优化流程、触发器机制、安全策略、反馈闭环设计等核心技术，为量化投资系统提供完整的实盘反馈和在线优化能力"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 🔄 9.7 实盘反馈与在线再优化
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的实盘反馈与在线再优化系统，包括实盘反馈机制、在线再优化流程、触发器机制、安全策略和反馈闭环设计。通过理解实盘反馈的完整机制，帮助开发者掌握如何实现策略的持续优化，形成策略生成→优化→回测→实盘→再优化的完整闭环。
+
+实盘反馈与在线再优化是策略从回测到实盘的关键闭环环节，负责监控实盘表现、触发再优化、生成优化候选策略，并确保安全上线。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-9-7-1')">
+    <h4>📊 9.7.1 实盘反馈机制</h4>
+    <p>实盘数据收集、性能监控、异常检测、数据回流</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-7-2')">
+    <h4>⚡ 9.7.2 触发器机制</h4>
+    <p>回测触发器、实盘触发器、数据触发器、触发条件</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-7-3')">
+    <h4>🔄 9.7.3 在线再优化流程</h4>
+    <p>轻量级响应、中等响应、严重响应、优化策略生成</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-7-4')">
+    <h4>🛡️ 9.7.4 安全策略</h4>
+    <p>上线门禁、dry_run模式、confirm_token、证据记录</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-7-5')">
+    <h4>🔁 9.7.5 反馈闭环设计</h4>
+    <p>完整闭环流程、数据流转、版本管理、回滚机制</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **实现实盘反馈**：掌握实盘数据收集、性能监控和异常检测
+- **设计触发器**：理解回测、实盘和数据触发器的设计
+- **实现在线优化**：掌握在线再优化流程和优化策略生成
+- **确保安全**：理解上线门禁、dry_run模式和证据记录机制
+- **设计闭环**：掌握反馈闭环的完整设计和实现
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤8之后 - 实盘反馈与在线再优化
+- **核心职责**：实盘监控、触发再优化、生成优化候选、安全上线
+- **服务对象**：实盘交易策略、策略优化系统
+
+### 技术栈
+
+- **监控系统**：实时监控、性能指标计算
+- **触发器系统**：条件判断、阈值管理
+- **优化引擎**：策略优化、参数调整
+- **安全系统**：dry_run模式、confirm_token、证据记录
+
+### 设计原则
+
+- **安全第一**：所有写操作默认dry_run，上线需要确认
+- **可追溯**：所有操作记录证据，支持回滚
+- **自动化**：触发器和响应动作自动化执行
+- **可控制**：支持手动干预和紧急停止
+
+<h2 id="section-9-7-1">📊 9.7.1 实盘反馈机制</h2>
+
+实盘反馈机制负责收集实盘交易数据、监控策略性能、检测异常情况。
+
+### 实盘数据收集器
+
+```python
+# core/live_feedback/data_collector.py
+from typing import Dict, List, Optional
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
+
+@dataclass
+class LiveTradeRecord:
+    """实盘交易记录"""
+    strategy_id: str
+    symbol: str
+    side: str  # "buy" or "sell"
+    quantity: int
+    price: float
+    fill_time: datetime
+    commission: float
+    stamp_tax: float
+
+@dataclass
+class LivePerformanceMetrics:
+    """实盘性能指标"""
+    strategy_id: str
+    date: datetime
+    daily_return: float
+    cumulative_return: float
+    sharpe_ratio: float
+    max_drawdown: float
+    win_rate: float
+    avg_profit: float
+    avg_loss: float
+    total_trades: int
+    slippage: float
+    tracking_error: float
+
+class LiveDataCollector:
+    """实盘数据收集器"""
+    
+    def __init__(
+        self,
+        trading_manager=None,
+        db_connection=None
+    ):
+        """
+        初始化数据收集器
+        
+        Args:
+            trading_manager: 交易管理器
+            db_connection: 数据库连接
+        """
+        self.trading_manager = trading_manager
+        self.db = db_connection
+    
+    def collect_trade_records(
+        self,
+        strategy_id: str,
+        start_date: datetime,
+        end_date: datetime
+    ) -> List[LiveTradeRecord]:
+        """
+        收集交易记录
+        
+        Args:
+            strategy_id: 策略ID
+            start_date: 开始日期
+            end_date: 结束日期
+        
+        Returns:
+            List[LiveTradeRecord]: 交易记录列表
+        """
+        if self.db:
+            rows = self.db.fetch_all(
+                """
+                SELECT * FROM trade_records 
+                WHERE strategy_id = %s 
+                AND fill_time >= %s 
+                AND fill_time <= %s
+                ORDER BY fill_time
+                """,
+                (strategy_id, start_date, end_date)
+            )
+            
+            records = []
+            for row in rows:
+                record = LiveTradeRecord(
+                    strategy_id=row['strategy_id'],
+                    symbol=row['symbol'],
+                    side=row['side'],
+                    quantity=row['quantity'],
+                    price=row['price'],
+                    fill_time=row['fill_time'],
+                    commission=row.get('commission', 0),
+                    stamp_tax=row.get('stamp_tax', 0)
+                )
+                records.append(record)
+            
+            return records
+        
+        return []
+    
+    def collect_performance_metrics(
+        self,
+        strategy_id: str,
+        date: datetime
+    ) -> Optional[LivePerformanceMetrics]:
+        """
+        收集性能指标
+        
+        Args:
+            strategy_id: 策略ID
+            date: 日期
+        
+        Returns:
+            Optional[LivePerformanceMetrics]: 性能指标
+        """
+        # 获取持仓和交易记录
+        positions = self.trading_manager.position_manager.get_positions(strategy_id)
+        trade_records = self.collect_trade_records(
+            strategy_id,
+            date - timedelta(days=1),
+            date
+        )
+        
+        # 计算性能指标
+        metrics = self._calculate_metrics(
+            strategy_id,
+            positions,
+            trade_records,
+            date
+        )
+        
+        # 保存到数据库
+        if metrics and self.db:
+            self._save_metrics(metrics)
+        
+        return metrics
+    
+    def _calculate_metrics(
+        self,
+        strategy_id: str,
+        positions: List,
+        trade_records: List[LiveTradeRecord],
+        date: datetime
+    ) -> LivePerformanceMetrics:
+        """计算性能指标"""
+        # 计算日收益率
+        daily_return = self._calculate_daily_return(positions, trade_records)
+        
+        # 计算累计收益率
+        cumulative_return = self._calculate_cumulative_return(strategy_id, date)
+        
+        # 计算夏普比率
+        sharpe_ratio = self._calculate_sharpe_ratio(strategy_id, date)
+        
+        # 计算最大回撤
+        max_drawdown = self._calculate_max_drawdown(strategy_id, date)
+        
+        # 计算胜率
+        win_rate = self._calculate_win_rate(trade_records)
+        
+        # 计算平均盈亏
+        avg_profit, avg_loss = self._calculate_avg_profit_loss(trade_records)
+        
+        # 计算滑点
+        slippage = self._calculate_slippage(trade_records)
+        
+        # 计算跟踪误差
+        tracking_error = self._calculate_tracking_error(strategy_id, date)
+        
+        return LivePerformanceMetrics(
+            strategy_id=strategy_id,
+            date=date,
+            daily_return=daily_return,
+            cumulative_return=cumulative_return,
+            sharpe_ratio=sharpe_ratio,
+            max_drawdown=max_drawdown,
+            win_rate=win_rate,
+            avg_profit=avg_profit,
+            avg_loss=avg_loss,
+            total_trades=len(trade_records),
+            slippage=slippage,
+            tracking_error=tracking_error
+        )
+    
+    def _save_metrics(self, metrics: LivePerformanceMetrics):
+        """保存性能指标到数据库"""
+        if self.db:
+            self.db.execute(
+                """
+                INSERT INTO live_performance_metrics 
+                (strategy_id, date, daily_return, cumulative_return, 
+                 sharpe_ratio, max_drawdown, win_rate, avg_profit, avg_loss, 
+                 total_trades, slippage, tracking_error)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (strategy_id, date) 
+                DO UPDATE SET 
+                    daily_return = EXCLUDED.daily_return,
+                    cumulative_return = EXCLUDED.cumulative_return,
+                    sharpe_ratio = EXCLUDED.sharpe_ratio,
+                    max_drawdown = EXCLUDED.max_drawdown,
+                    win_rate = EXCLUDED.win_rate,
+                    avg_profit = EXCLUDED.avg_profit,
+                    avg_loss = EXCLUDED.avg_loss,
+                    total_trades = EXCLUDED.total_trades,
+                    slippage = EXCLUDED.slippage,
+                    tracking_error = EXCLUDED.tracking_error
+                """,
+                (
+                    metrics.strategy_id,
+                    metrics.date,
+                    metrics.daily_return,
+                    metrics.cumulative_return,
+                    metrics.sharpe_ratio,
+                    metrics.max_drawdown,
+                    metrics.win_rate,
+                    metrics.avg_profit,
+                    metrics.avg_loss,
+                    metrics.total_trades,
+                    metrics.slippage,
+                    metrics.tracking_error
+                )
+            )
+```
+
+### 异常检测器
+
+```python
+# core/live_feedback/anomaly_detector.py
+from typing import Dict, List, Optional
+from dataclasses import dataclass
+from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
+
+@dataclass
+class AnomalyAlert:
+    """异常告警"""
+    strategy_id: str
+    alert_type: str  # "slippage", "tracking_error", "drawdown", "factor_exposure"
+    severity: str  # "low", "medium", "high", "critical"
+    message: str
+    timestamp: datetime
+    value: float
+    threshold: float
+
+class AnomalyDetector:
+    """异常检测器"""
+    
+    def __init__(
+        self,
+        data_collector,
+        thresholds: Dict[str, float]
+    ):
+        """
+        初始化异常检测器
+        
+        Args:
+            data_collector: 数据收集器
+            thresholds: 阈值配置
+        """
+        self.data_collector = data_collector
+        self.thresholds = thresholds
+    
+    def detect_anomalies(
+        self,
+        strategy_id: str,
+        date: datetime
+    ) -> List[AnomalyAlert]:
+        """
+        检测异常
+        
+        Args:
+            strategy_id: 策略ID
+            date: 日期
+        
+        Returns:
+            List[AnomalyAlert]: 异常告警列表
+        """
+        alerts = []
+        
+        # 获取性能指标
+        metrics = self.data_collector.collect_performance_metrics(strategy_id, date)
+        if not metrics:
+            return alerts
+        
+        # 检测滑点异常
+        slippage_alert = self._check_slippage(metrics)
+        if slippage_alert:
+            alerts.append(slippage_alert)
+        
+        # 检测跟踪误差异常
+        tracking_error_alert = self._check_tracking_error(metrics)
+        if tracking_error_alert:
+            alerts.append(tracking_error_alert)
+        
+        # 检测回撤异常
+        drawdown_alert = self._check_drawdown(metrics)
+        if drawdown_alert:
+            alerts.append(drawdown_alert)
+        
+        # 检测因子暴露异常
+        factor_exposure_alert = self._check_factor_exposure(strategy_id, date)
+        if factor_exposure_alert:
+            alerts.append(factor_exposure_alert)
+        
+        return alerts
+    
+    def _check_slippage(self, metrics: LivePerformanceMetrics) -> Optional[AnomalyAlert]:
+        """检查滑点异常"""
+        threshold = self.thresholds.get('slippage', 0.002)  # 0.2%
+        
+        if metrics.slippage > threshold:
+            return AnomalyAlert(
+                strategy_id=metrics.strategy_id,
+                alert_type="slippage",
+                severity="high" if metrics.slippage > threshold * 2 else "medium",
+                message=f"滑点异常: {metrics.slippage:.4f} > {threshold:.4f}",
+                timestamp=metrics.date,
+                value=metrics.slippage,
+                threshold=threshold
+            )
+        
+        return None
+    
+    def _check_tracking_error(self, metrics: LivePerformanceMetrics) -> Optional[AnomalyAlert]:
+        """检查跟踪误差异常"""
+        threshold = self.thresholds.get('tracking_error', 0.05)  # 5%
+        
+        if metrics.tracking_error > threshold:
+            return AnomalyAlert(
+                strategy_id=metrics.strategy_id,
+                alert_type="tracking_error",
+                severity="high" if metrics.tracking_error > threshold * 2 else "medium",
+                message=f"跟踪误差异常: {metrics.tracking_error:.4f} > {threshold:.4f}",
+                timestamp=metrics.date,
+                value=metrics.tracking_error,
+                threshold=threshold
+            )
+        
+        return None
+    
+    def _check_drawdown(self, metrics: LivePerformanceMetrics) -> Optional[AnomalyAlert]:
+        """检查回撤异常"""
+        threshold = self.thresholds.get('max_drawdown', 0.15)  # 15%
+        
+        if metrics.max_drawdown > threshold:
+            return AnomalyAlert(
+                strategy_id=metrics.strategy_id,
+                alert_type="drawdown",
+                severity="critical" if metrics.max_drawdown > threshold * 1.5 else "high",
+                message=f"回撤异常: {metrics.max_drawdown:.4f} > {threshold:.4f}",
+                timestamp=metrics.date,
+                value=metrics.max_drawdown,
+                threshold=threshold
+            )
+        
+        return None
+    
+    def _check_factor_exposure(
+        self,
+        strategy_id: str,
+        date: datetime
+    ) -> Optional[AnomalyAlert]:
+        """检查因子暴露异常"""
+        # 实现因子暴露检查逻辑
+        # 这里简化处理
+        return None
+```
+
+<h2 id="section-9-7-2">⚡ 9.7.2 触发器机制</h2>
+
+触发器机制负责监控性能指标，在满足条件时触发再优化。
+
+### 触发器管理器
+
+```python
+# core/live_feedback/trigger_manager.py
+from typing import Dict, List, Optional, Callable
+from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
+import logging
+
+logger = logging.getLogger(__name__)
+
+class TriggerType(Enum):
+    """触发器类型"""
+    BACKTEST = "backtest"      # 回测触发器
+    LIVE = "live"              # 实盘触发器
+    DATA = "data"               # 数据触发器
+
+@dataclass
+class TriggerCondition:
+    """触发条件"""
+    metric: str                 # 指标名称
+    operator: str               # 操作符: ">", "<", ">=", "<=", "=="
+    threshold: float            # 阈值
+    lookback_days: int = 1      # 回看天数
+
+@dataclass
+class Trigger:
+    """触发器"""
+    trigger_id: str
+    strategy_id: str
+    trigger_type: TriggerType
+    conditions: List[TriggerCondition]
+    enabled: bool = True
+    last_triggered: Optional[datetime] = None
+
+class TriggerManager:
+    """触发器管理器"""
+    
+    def __init__(
+        self,
+        data_collector,
+        anomaly_detector
+    ):
+        """
+        初始化触发器管理器
+        
+        Args:
+            data_collector: 数据收集器
+            anomaly_detector: 异常检测器
+        """
+        self.data_collector = data_collector
+        self.anomaly_detector = anomaly_detector
+        self.triggers: Dict[str, Trigger] = {}
+        self.callbacks: Dict[str, List[Callable]] = {}
+    
+    def register_trigger(
+        self,
+        trigger: Trigger,
+        callback: Callable
+    ):
+        """
+        注册触发器
+        
+        Args:
+            trigger: 触发器
+            callback: 回调函数
+        """
+        self.triggers[trigger.trigger_id] = trigger
+        
+        if trigger.trigger_id not in self.callbacks:
+            self.callbacks[trigger.trigger_id] = []
+        
+        self.callbacks[trigger.trigger_id].append(callback)
+    
+    def check_triggers(
+        self,
+        strategy_id: str,
+        date: datetime
+    ) -> List[Trigger]:
+        """
+        检查触发器
+        
+        Args:
+            strategy_id: 策略ID
+            date: 日期
+        
+        Returns:
+            List[Trigger]: 触发的触发器列表
+        """
+        triggered = []
+        
+        # 获取该策略的所有触发器
+        strategy_triggers = [
+            t for t in self.triggers.values()
+            if t.strategy_id == strategy_id and t.enabled
+        ]
+        
+        for trigger in strategy_triggers:
+            if self._check_trigger(trigger, date):
+                triggered.append(trigger)
+                trigger.last_triggered = date
+                
+                # 执行回调
+                if trigger.trigger_id in self.callbacks:
+                    for callback in self.callbacks[trigger.trigger_id]:
+                        try:
+                            callback(trigger, date)
+                        except Exception as e:
+                            logger.error(f"触发器回调执行失败: {e}", exc_info=True)
+        
+        return triggered
+    
+    def _check_trigger(
+        self,
+        trigger: Trigger,
+        date: datetime
+    ) -> bool:
+        """检查触发器是否满足条件"""
+        if trigger.trigger_type == TriggerType.BACKTEST:
+            return self._check_backtest_trigger(trigger, date)
+        elif trigger.trigger_type == TriggerType.LIVE:
+            return self._check_live_trigger(trigger, date)
+        elif trigger.trigger_type == TriggerType.DATA:
+            return self._check_data_trigger(trigger, date)
+        
+        return False
+    
+    def _check_backtest_trigger(
+        self,
+        trigger: Trigger,
+        date: datetime
+    ) -> bool:
+        """检查回测触发器"""
+        # 获取回测结果
+        # 这里简化处理，实际需要从回测系统获取
+        return False
+    
+    def _check_live_trigger(
+        self,
+        trigger: Trigger,
+        date: datetime
+    ) -> bool:
+        """检查实盘触发器"""
+        # 获取性能指标
+        metrics = self.data_collector.collect_performance_metrics(
+            trigger.strategy_id,
+            date
+        )
+        
+        if not metrics:
+            return False
+        
+        # 检查所有条件
+        for condition in trigger.conditions:
+            if not self._check_condition(condition, metrics):
+                return False
+        
+        return True
+    
+    def _check_data_trigger(
+        self,
+        trigger: Trigger,
+        date: datetime
+    ) -> bool:
+        """检查数据触发器"""
+        # 检测异常
+        anomalies = self.anomaly_detector.detect_anomalies(
+            trigger.strategy_id,
+            date
+        )
+        
+        # 检查是否有严重异常
+        critical_anomalies = [
+            a for a in anomalies
+            if a.severity == "critical"
+        ]
+        
+        return len(critical_anomalies) > 0
+    
+    def _check_condition(
+        self,
+        condition: TriggerCondition,
+        metrics: LivePerformanceMetrics
+    ) -> bool:
+        """检查单个条件"""
+        metric_value = getattr(metrics, condition.metric, None)
+        if metric_value is None:
+            return False
+        
+        operator = condition.operator
+        threshold = condition.threshold
+        
+        if operator == ">":
+            return metric_value > threshold
+        elif operator == "<":
+            return metric_value < threshold
+        elif operator == ">=":
+            return metric_value >= threshold
+        elif operator == "<=":
+            return metric_value <= threshold
+        elif operator == "==":
+            return abs(metric_value - threshold) < 1e-6
+        
+        return False
+```
+
+<h2 id="section-9-7-3">🔄 9.7.3 在线再优化流程</h2>
+
+在线再优化流程负责根据触发器结果，生成优化候选策略。
+
+### 优化引擎
+
+```python
+# core/live_feedback/optimizer.py
+from typing import Dict, List, Optional
+from dataclasses import dataclass
+from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
+
+class OptimizationMode(Enum):
+    """优化模式"""
+    LIGHT = "light"        # 轻量级：参数微调
+    MEDIUM = "medium"      # 中等：因子调整
+    HEAVY = "heavy"        # 严重：策略重构
+
+@dataclass
+class OptimizationResult:
+    """优化结果"""
+    strategy_id: str
+    optimized_strategy_id: str
+    mode: OptimizationMode
+    changes: Dict[str, any]
+    backtest_result: Optional[Dict] = None
+    recommendation: str = "keep"  # "keep", "upgrade", "downgrade"
+
+class OnlineOptimizer:
+    """在线优化引擎"""
+    
+    def __init__(
+        self,
+        strategy_generator,
+        backtest_engine,
+        mode: str = "dry_run"
+    ):
+        """
+        初始化优化引擎
+        
+        Args:
+            strategy_generator: 策略生成器
+            backtest_engine: 回测引擎
+            mode: 模式（"dry_run" 或 "execute"）
+        """
+        self.strategy_generator = strategy_generator
+        self.backtest_engine = backtest_engine
+        self.mode = mode
+    
+    def optimize_strategy(
+        self,
+        strategy_id: str,
+        trigger: Trigger,
+        mode: OptimizationMode = OptimizationMode.LIGHT
+    ) -> OptimizationResult:
+        """
+        优化策略
+        
+        Args:
+            strategy_id: 策略ID
+            trigger: 触发器
+            mode: 优化模式
+        
+        Returns:
+            OptimizationResult: 优化结果
+        """
+        logger.info(f"开始优化策略 {strategy_id}，模式: {mode.value}")
+        
+        if mode == OptimizationMode.LIGHT:
+            return self._light_optimization(strategy_id, trigger)
+        elif mode == OptimizationMode.MEDIUM:
+            return self._medium_optimization(strategy_id, trigger)
+        elif mode == OptimizationMode.HEAVY:
+            return self._heavy_optimization(strategy_id, trigger)
+        
+        raise ValueError(f"未知的优化模式: {mode}")
+    
+    def _light_optimization(
+        self,
+        strategy_id: str,
+        trigger: Trigger
+    ) -> OptimizationResult:
+        """轻量级优化：参数微调"""
+        # 获取当前策略
+        current_strategy = self._get_strategy(strategy_id)
+        
+        # 参数优化
+        optimized_params = self._optimize_parameters(current_strategy, trigger)
+        
+        # 生成优化后的策略
+        optimized_strategy = self._generate_optimized_strategy(
+            current_strategy,
+            optimized_params
+        )
+        
+        # 回测验证
+        backtest_result = self._backtest_strategy(optimized_strategy)
+        
+        return OptimizationResult(
+            strategy_id=strategy_id,
+            optimized_strategy_id=optimized_strategy['id'],
+            mode=OptimizationMode.LIGHT,
+            changes={'parameters': optimized_params},
+            backtest_result=backtest_result
+        )
+    
+    def _medium_optimization(
+        self,
+        strategy_id: str,
+        trigger: Trigger
+    ) -> OptimizationResult:
+        """中等优化：因子调整"""
+        # 获取当前策略
+        current_strategy = self._get_strategy(strategy_id)
+        
+        # 因子重新筛选
+        optimized_factors = self._reoptimize_factors(current_strategy, trigger)
+        
+        # 生成优化后的策略
+        optimized_strategy = self._generate_optimized_strategy(
+            current_strategy,
+            {'factors': optimized_factors}
+        )
+        
+        # 回测验证
+        backtest_result = self._backtest_strategy(optimized_strategy)
+        
+        return OptimizationResult(
+            strategy_id=strategy_id,
+            optimized_strategy_id=optimized_strategy['id'],
+            mode=OptimizationMode.MEDIUM,
+            changes={'factors': optimized_factors},
+            backtest_result=backtest_result
+        )
+    
+    def _heavy_optimization(
+        self,
+        strategy_id: str,
+        trigger: Trigger
+    ) -> OptimizationResult:
+        """严重优化：策略重构"""
+        # 策略降级/停用
+        # 切换到安全策略模板
+        safe_strategy = self._get_safe_strategy_template()
+        
+        return OptimizationResult(
+            strategy_id=strategy_id,
+            optimized_strategy_id=safe_strategy['id'],
+            mode=OptimizationMode.HEAVY,
+            changes={'strategy_replaced': True},
+            recommendation="downgrade"
+        )
+```
+
+<h2 id="section-9-7-4">🛡️ 9.7.4 安全策略</h2>
+
+安全策略确保所有写操作都经过验证和确认。
+
+### 上线门禁系统
+
+```python
+# core/live_feedback/safety_gate.py
+from typing import Dict, Optional
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+import hashlib
+import secrets
+import logging
+
+logger = logging.getLogger(__name__)
+
+@dataclass
+class ConfirmToken:
+    """确认令牌"""
+    token: str
+    tool_name: str
+    params_hash: str
+    trace_id: str
+    expires_at: datetime
+    created_at: datetime
+
+class SafetyGate:
+    """上线门禁系统"""
+    
+    def __init__(self, evidence_server=None):
+        """
+        初始化门禁系统
+        
+        Args:
+            evidence_server: 证据服务器
+        """
+        self.evidence_server = evidence_server
+        self.tokens: Dict[str, ConfirmToken] = {}
+    
+    def generate_confirm_token(
+        self,
+        tool_name: str,
+        params: Dict,
+        trace_id: str,
+        expires_in_minutes: int = 30
+    ) -> str:
+        """
+        生成确认令牌
+        
+        Args:
+            tool_name: 工具名称
+            params: 参数
+            trace_id: 追踪ID
+            expires_in_minutes: 过期时间（分钟）
+        
+        Returns:
+            str: 确认令牌
+        """
+        # 计算参数hash
+        params_str = str(sorted(params.items()))
+        params_hash = hashlib.sha256(params_str.encode()).hexdigest()
+        
+        # 生成令牌
+        token = secrets.token_urlsafe(32)
+        
+        # 创建令牌对象
+        now = datetime.now()
+        confirm_token = ConfirmToken(
+            token=token,
+            tool_name=tool_name,
+            params_hash=params_hash,
+            trace_id=trace_id,
+            expires_at=now + timedelta(minutes=expires_in_minutes),
+            created_at=now
+        )
+        
+        # 保存令牌
+        self.tokens[token] = confirm_token
+        
+        logger.info(f"生成确认令牌: {token[:8]}...")
+        
+        return token
+    
+    def validate_token(
+        self,
+        token: str,
+        tool_name: str,
+        params: Dict
+    ) -> bool:
+        """
+        验证令牌
+        
+        Args:
+            token: 确认令牌
+            tool_name: 工具名称
+            params: 参数
+        
+        Returns:
+            bool: 是否有效
+        """
+        if token not in self.tokens:
+            logger.warning(f"令牌不存在: {token[:8]}...")
+            return False
+        
+        confirm_token = self.tokens[token]
+        
+        # 检查过期
+        if datetime.now() > confirm_token.expires_at:
+            logger.warning(f"令牌已过期: {token[:8]}...")
+            del self.tokens[token]
+            return False
+        
+        # 检查工具名称
+        if confirm_token.tool_name != tool_name:
+            logger.warning(f"工具名称不匹配: {tool_name} != {confirm_token.tool_name}")
+            return False
+        
+        # 检查参数hash
+        params_str = str(sorted(params.items()))
+        params_hash = hashlib.sha256(params_str.encode()).hexdigest()
+        if confirm_token.params_hash != params_hash:
+            logger.warning(f"参数hash不匹配")
+            return False
+        
+        return True
+    
+    def record_evidence(
+        self,
+        operation: str,
+        operator: str,
+        reason: str,
+        scope: str,
+        rollback: str,
+        token: Optional[str] = None
+    ):
+        """
+        记录证据
+        
+        Args:
+            operation: 操作名称
+            operator: 操作人
+            reason: 原因
+            scope: 影响范围
+            rollback: 回滚方案
+            token: 确认令牌（可选）
+        """
+        evidence = {
+            'operation': operation,
+            'operator': operator,
+            'timestamp': datetime.now().isoformat(),
+            'reason': reason,
+            'scope': scope,
+            'rollback': rollback,
+            'token': token
+        }
+        
+        if self.evidence_server:
+            self.evidence_server.record(evidence)
+        
+        logger.info(f"记录证据: {operation}")
+```
+
+<h2 id="section-9-7-5">🔁 9.7.5 反馈闭环设计</h2>
+
+反馈闭环设计实现从实盘监控到策略优化的完整闭环。
+
+### 反馈闭环管理器
+
+```python
+# core/live_feedback/feedback_loop.py
+from typing import Dict, Optional
+from datetime import datetime
+import logging
+
+from core.live_feedback.data_collector import LiveDataCollector
+from core.live_feedback.anomaly_detector import AnomalyDetector
+from core.live_feedback.trigger_manager import TriggerManager
+from core.live_feedback.optimizer import OnlineOptimizer
+from core.live_feedback.safety_gate import SafetyGate
+
+logger = logging.getLogger(__name__)
+
+class FeedbackLoopManager:
+    """反馈闭环管理器"""
+    
+    def __init__(
+        self,
+        data_collector: LiveDataCollector,
+        anomaly_detector: AnomalyDetector,
+        trigger_manager: TriggerManager,
+        optimizer: OnlineOptimizer,
+        safety_gate: SafetyGate
+    ):
+        """
+        初始化反馈闭环管理器
+        
+        Args:
+            data_collector: 数据收集器
+            anomaly_detector: 异常检测器
+            trigger_manager: 触发器管理器
+            optimizer: 优化引擎
+            safety_gate: 安全门禁
+        """
+        self.data_collector = data_collector
+        self.anomaly_detector = anomaly_detector
+        self.trigger_manager = trigger_manager
+        self.optimizer = optimizer
+        self.safety_gate = safety_gate
+    
+    def run_feedback_loop(
+        self,
+        strategy_id: str,
+        date: datetime
+    ) -> Dict:
+        """
+        运行反馈闭环
+        
+        Args:
+            strategy_id: 策略ID
+            date: 日期
+        
+        Returns:
+            Dict: 反馈闭环结果
+        """
+        logger.info(f"运行反馈闭环: {strategy_id}, {date}")
+        
+        # 1. 收集实盘数据
+        metrics = self.data_collector.collect_performance_metrics(strategy_id, date)
+        if not metrics:
+            return {'success': False, 'error': '无法收集性能指标'}
+        
+        # 2. 检测异常
+        anomalies = self.anomaly_detector.detect_anomalies(strategy_id, date)
+        
+        # 3. 检查触发器
+        triggered = self.trigger_manager.check_triggers(strategy_id, date)
+        
+        if not triggered:
+            return {
+                'success': True,
+                'action': 'monitor',
+                'metrics': metrics,
+                'anomalies': [a.message for a in anomalies]
+            }
+        
+        # 4. 触发再优化
+        optimization_results = []
+        for trigger in triggered:
+            # 根据触发器类型选择优化模式
+            mode = self._determine_optimization_mode(trigger, anomalies)
+            
+            # 执行优化（dry_run模式）
+            result = self.optimizer.optimize_strategy(
+                strategy_id,
+                trigger,
+                mode
+            )
+            
+            optimization_results.append(result)
+        
+        return {
+            'success': True,
+            'action': 'optimize',
+            'metrics': metrics,
+            'anomalies': [a.message for a in anomalies],
+            'triggers': [t.trigger_id for t in triggered],
+            'optimization_results': [
+                {
+                    'optimized_strategy_id': r.optimized_strategy_id,
+                    'mode': r.mode.value,
+                    'recommendation': r.recommendation
+                }
+                for r in optimization_results
+            ]
+        }
+    
+    def deploy_optimized_strategy(
+        self,
+        strategy_id: str,
+        optimized_strategy_id: str,
+        confirm_token: str,
+        operator: str,
+        reason: str
+    ) -> bool:
+        """
+        部署优化后的策略
+        
+        Args:
+            strategy_id: 原策略ID
+            optimized_strategy_id: 优化后的策略ID
+            confirm_token: 确认令牌
+            operator: 操作人
+            reason: 原因
+        
+        Returns:
+            bool: 是否成功
+        """
+        # 验证令牌
+        if not self.safety_gate.validate_token(
+            confirm_token,
+            'deploy_strategy',
+            {'strategy_id': strategy_id, 'optimized_strategy_id': optimized_strategy_id}
+        ):
+            logger.error("确认令牌验证失败")
+            return False
+        
+        # 记录证据
+        self.safety_gate.record_evidence(
+            operation='deploy_strategy',
+            operator=operator,
+            reason=reason,
+            scope=f"策略 {strategy_id} -> {optimized_strategy_id}",
+            rollback=f"回退到策略 {strategy_id}",
+            token=confirm_token
+        )
+        
+        # 执行部署（实际实现需要调用部署系统）
+        logger.info(f"部署优化后的策略: {optimized_strategy_id}")
+        
+        return True
+    
+    def _determine_optimization_mode(self, trigger, anomalies):
+        """根据触发器和异常确定优化模式"""
+        # 如果有严重异常，使用严重模式
+        critical_anomalies = [a for a in anomalies if a.severity == "critical"]
+        if critical_anomalies:
+            return OptimizationMode.HEAVY
+        
+        # 如果触发器是数据触发器，使用中等模式
+        if trigger.trigger_type == TriggerType.DATA:
+            return OptimizationMode.MEDIUM
+        
+        # 默认使用轻量级模式
+        return OptimizationMode.LIGHT
+```
+
+## 🔗 相关章节
+
+- **第7章：策略开发**：了解策略开发和优化流程
+- **第8章：回测验证**：了解BulletTrade回测和策略验证
+- **9.6 实盘交易管理**：了解实盘交易管理
+- **第10章：开发指南**：了解反馈闭环系统的开发方法
+
+## 💡 关键要点
+
+1. **实盘反馈**：完整的实盘数据收集和性能监控
+2. **触发器机制**：灵活的触发器配置和条件判断
+3. **在线优化**：多层次的优化策略和模式选择
+4. **安全策略**：严格的上线门禁和证据记录
+5. **反馈闭环**：完整的从监控到优化的闭环流程
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了实盘反馈与在线再优化系统，包括实盘反馈机制、触发器机制、在线再优化流程、安全策略和反馈闭环设计。通过理解实盘反馈的完整机制，帮助开发者掌握如何实现策略的持续优化，形成策略生成→优化→回测→实盘→再优化的完整闭环。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了平台集成模块后，下一章将介绍开发指南，包括环境搭建、开发原则、开发工作流、工具链使用和最佳实践。通过理解开发指南的核心内容，帮助开发者掌握系统开发的具体方法和工具链使用。</p>
+  
+  <a href="/ashare-book6/010_Chapter10_Development_Guide/010_Chapter10_Development_Guide_CN" class="next-section">
+    继续学习：第10章：开发指南 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

@@ -1,0 +1,1276 @@
+---
+title: "2.2 数据质量"
+description: "深入解析数据质量检查机制，包括完整性检查、准确性验证、异常检测、数据清洗和质量报告生成"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# ✅ 2.2 数据质量
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的数据质量检查机制，包括完整性检查、准确性验证、异常检测和数据清洗。通过理解数据质量检查的三个维度、各种检测方法、自动清洗策略和质量报告生成，帮助开发者掌握数据质量保证的核心技术，确保后续分析使用的数据质量可靠。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-2-2-1')">
+    <h4>📊 2.2.1 完整性检查</h4>
+    <p>缺失值检查、时间序列连续性、字段完整性验证</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-2-2')">
+    <h4>✅ 2.2.2 准确性验证</h4>
+    <p>数据范围检查、业务逻辑验证、多源数据一致性</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-2-3')">
+    <h4>🔍 2.2.3 异常检测</h4>
+    <p>统计方法、机器学习方法、异常模式识别</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-2-4')">
+    <h4>🧹 2.2.4 数据清洗</h4>
+    <p>缺失值处理、异常值处理、数据标准化</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-2-5')">
+    <h4>📈 2.2.5 质量报告</h4>
+    <p>质量评分、质量报告生成、质量监控</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-2-6')">
+    <h4>🛠️ 2.2.6 MCP工具使用</h4>
+    <p>使用MCP工具研究数据质量方法、收集质量检查资料</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **掌握完整性检查**：理解缺失值检查、时间序列连续性检查的方法
+- **理解准确性验证**：掌握数据范围检查、业务逻辑验证的技术
+- **熟悉异常检测**：了解统计方法和机器学习方法在异常检测中的应用
+- **实现数据清洗**：掌握缺失值处理、异常值处理、数据标准化的方法
+- **生成质量报告**：理解质量评分体系和报告生成机制
+- **使用MCP工具**：掌握使用MCP工具进行数据质量相关研究
+
+<h2 id="section-2-2-1">📊 2.2.1 完整性检查</h2>
+
+数据完整性检查确保数据没有缺失，时间序列连续，所有必需字段都存在。
+
+### 检查维度
+
+<div class="key-points">
+  <div class="key-point">
+    <h4>🔍 缺失值检查</h4>
+    <p>检查数据中是否存在缺失值（NaN、None、空字符串等）</p>
+  </div>
+  <div class="key-point">
+    <h4>📅 时间序列连续性</h4>
+    <p>检查时间序列是否连续，是否存在缺失的交易日</p>
+  </div>
+  <div class="key-point">
+    <h4>📋 字段完整性</h4>
+    <p>检查所有必需字段是否存在，字段类型是否正确</p>
+  </div>
+  <div class="key-point">
+    <h4>📊 数据覆盖度</h4>
+    <p>检查数据覆盖的时间范围和股票范围是否完整</p>
+  </div>
+</div>
+
+### 缺失值检查
+
+缺失值检查是数据完整性检查的基础，识别数据中的缺失值：
+
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_check_completeness.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_completeness.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_completeness.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Any
+
+class DataQualityChecker:
+    """数据质量检查器"""
+    
+    def check_completeness(self, data: pd.DataFrame, 
+                          required_fields: List[str] = None) -> Dict[str, Any]:
+        """
+        检查数据完整性
+        
+        Args:
+            data: 待检查的数据
+            required_fields: 必需字段列表
+        
+        Returns:
+            完整性检查结果
+        """
+        result = {
+            "missing_values": 0,
+            "missing_fields": [],
+            "time_series_continuous": True,
+            "completeness_score": 0.0,
+            "details": {}
+        }
+        
+        # 1. 检查缺失值
+        missing_count = data.isnull().sum()
+        result["missing_values"] = int(missing_count.sum())
+        result["details"]["missing_by_field"] = missing_count.to_dict()
+        
+        # 2. 检查必需字段
+        if required_fields:
+            missing_fields = [f for f in required_fields if f not in data.columns]
+            result["missing_fields"] = missing_fields
+        
+        # 3. 检查时间序列连续性
+        if 'date' in data.columns or data.index.name == 'date':
+            result["time_series_continuous"] = self._check_time_series_continuity(data)
+        
+        # 4. 计算完整性得分
+        total_cells = data.shape[0] * data.shape[1]
+        if total_cells > 0:
+            result["completeness_score"] = 1.0 - (result["missing_values"] / total_cells)
+        
+        return result
+    
+    def _check_time_series_continuity(self, data: pd.DataFrame) -> bool:
+        """检查时间序列连续性"""
+        # 获取日期索引
+        if data.index.name == 'date' or 'date' in data.columns:
+            if data.index.name == 'date':
+                dates = pd.to_datetime(data.index)
+            else:
+                dates = pd.to_datetime(data['date'])
+            
+            # 生成完整的交易日序列
+            start_date = dates.min()
+            end_date = dates.max()
+            # 这里需要根据实际情况生成交易日序列
+            # 简化示例：检查是否有缺失的日期
+            date_range = pd.date_range(start=start_date, end=end_date, freq='D')
+            missing_dates = set(date_range) <CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_check_time_series_continuity.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->
+-->python
+def check_time_series_continuity(self, data: pd.DataFrame, 
+                                 trading_calendar: List[str] = None) -> Dict[str, Any]:
+    """
+    检查时间序列连续性
+    
+    Args:
+        data: 时间序列数据
+        trading_calendar: 交易日历（可选）
+    
+    Returns:
+        连续性检查结果
+    """
+    result = {
+        "is_continuous": True,
+        "missing_dates": [],
+        "duplicate_dates": [],
+        "continuity_score": 1.0
+    }
+    
+    # 获取日期
+    if data.index.name == 'date':
+        dates = pd.to_datetime(data.index)
+    elif 'date' in data.columns:
+        dates = pd.to_datetime(data['date'])
+    else:
+        return result
+    
+    # 检查重复日期
+    duplicate_dates = dates[dates.duplicated()].tolist()
+    result["duplicate_dates"] = [str(d) for d in duplicate_dates]
+    
+    # 检查缺失日期
+    if trading_calendar:
+        # 使用交易日历检查
+        expected_dates = pd.to_datetime(trading_calendar)
+        missing_dates = set(expected_dates) - set(dates)
+        result["missing_dates"] = [str(d) for d in sorted(missing_dates)]
+    else:
+        # 简单检查：检查是否有大的时间间隔
+        date_diff = dates.diff()
+        large_gaps = date_diff[date_diff > pd.Timedelta(days=3)]
+        if len(large_gaps) > 0:
+            result["is_continuous"] = False
+            result["missing_dates"] = [str(dates.iloc[i]) for i in large_gaps.index]
+    
+    # 计算连续性得分
+    if len(dates) > 0:
+        if trading_calendar:
+            expected_count = len(trading_calendar)
+            actual_count = len(dates)
+            result<CodeFromFile 
+  filePath="code<C<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_field_completeness.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def check_field_completeness(self, data: pd.DataFrame, 
+                             required_fields: List[str],
+                             field_types: Dict[str, type] = None) -> Dict[str, Any]:
+    """
+    检查字段完整性
+    
+    Args:
+        data: 待检查的数据
+        required_fields: 必需字段列表
+        field_types: 字段类型要求
+    
+    Returns:
+        字段完整性检查结果
+    """
+    result = {
+        "missing_fields": [],
+        "type_mismatches": [],
+        "completeness_score": 1.0
+    }
+    
+    # 检查必需字段
+    for field in required_fields:
+        if field not in data.columns:
+            result["missing_fields"].append(field)
+    
+    # 检查字段类型
+    if field_types:
+        for field, expected_type in field_types.items():
+            if field in data.columns:
+                actual_type = data[field].dtype
+                if not self._is_type_compatible(actual_type, expected_type):
+                    result["type_mismatches"].append({
+                        "field": field,
+                        "expected": str(expected_type),
+                        "actual": str(actual_type)
+                    })
+    
+    # 计算完整性得分
+    total_fields = len(required_fields)
+    if total_fields > 0:
+        missing_count = len(result["missing_fields"])
+        type_mismatch_count = len(result["type_mismatches"])
+        result["completeness_score"] = 1.0 - (missing_count + type_mismatch_count) / total_fields
+    
+    return result
+```
+--> type_mismatch_count = len(result["type_mismatches"])
+        result["completeness_score"] = 1.0 - (missing_count + type_mismatch_count) / total_fields
+    
+    return result
+```
+--> type_mismatch_count = len(result["type_mismatches"])
+        result["completeness_score"] = 1.0 - (missing_count + type_misma<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_validate_data_range.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def validate_data_range(self, data: pd.DataFrame, 
+                       range_rules: Dict[str, Dict[str, float]]) -> Dict[str, Any]:
+    """
+    验证数据范围
+    
+    Args:
+        data: 待验证的数据
+        range_rules: 范围规则，格式：{"field": {"min": 0, "max": 100}}
+    
+    Returns:
+        范围验证结果
+    """
+    result = {
+        "violations": [],
+        "violation_count": 0,
+        "accuracy_score": 1.0
+    }
+    
+    for field, rules in range_rules.items():
+        if field not in data.columns:
+            continue
+        
+        min_val = rules.get("min")
+        max_val = rules.get("max")
+        
+        # 检查最小值
+        if min_val is not None:
+            below_min = data[data[field] < min_val]
+            if len(below_min) > 0:
+                result["violations"].append({
+                    "field": field,
+                    "rule": f">= {min_val}",
+                    "violation_count": len(below_min),
+                    "violation_indices": below_min.index.tolist()
+                })
+        
+        # 检查最大值
+        if max_val is not None:
+            above_max = data[data[field] > max_val]
+            if len(above_max) > 0:
+                result["violations"].append({
+                    "field": field,
+                    "rule": f"<= {max_val}",
+                    "violation_count": len(above_max),
+                    "violation_indices": above_max.index.tolist()
+                })
+    
+    result["violation_count"] = len(result["violations"])
+    
+    # 计算准确性得分
+    total_rows = len(data)
+    if total_rows > 0:
+        violation_rows = len(set(
+            i<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_validate_business_logic.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->ount"] = len(result["violations"])
+    
+    # 计算准确性得分
+    total_rows = len(data)
+    if total_rows > 0:
+        violation_rows = len(set(
+            i<CodeFromFile 
+  filePath="code_l<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_validate_business_logic.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def validate_business_logic(self, data: pd.DataFrame, 
+                           rules: Dict[str, str]) -> Dict[str, Any]:
+    """
+    验证业务逻辑
+    
+    Args:
+        data: 待验证的数据
+        rules: 业务规则，格式：{"rule": "high >= low", "description": "最高价应大于等于最低价"}
+    
+    Returns:
+        业务逻辑验证结果
+    """
+    result = {
+        "violations": [],
+        "violation_count": 0,
+        "accuracy_score": 1.0
+    }
+    
+    for rule_expr, description in rules.items():
+        try:
+            # 使用eval评估规则表达式
+            # 注意：实际应用中应该使用更安全的方式
+            mask = data.eval(rule_expr)
+            violations = data[~mask]
+            
+            if len(violations) > 0:
+                result["violations"].append({
+                    "rule": rule_expr,
+                    "description": description,
+                    "violation_count": len(violations),
+                    "violation_<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_cross_source_consistency.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->安全的方式
+            mask = data.eval(rule_expr)
+            violations = data[~mask]
+            
+            if len(violations) > 0:
+                result["violations"].append({
+                    "rule": rule_expr,
+                    "description": description,
+                    "violation_count": len(violations),
+                    "violation_<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_check_cross_source_consistency.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def check_cross_source_consistency(self, data_sources: Dict[str, pd.DataFrame],
+                                   tolerance: float = 0.01) -> Dict[str, Any]:
+    """
+    检查多源数据一致性
+    
+    Args:
+        data_sources: 多个数据源的数据，格式：{"source1": data1, "source2": data2}
+        tolerance: 允许的差异容忍度
+    
+    Returns:
+        一致性检查结果
+    """
+    result = {
+        "inconsistent_fields": [],
+        "inconsistency_count": 0,
+        "consistency_score": 1.0
+    }
+    
+    if len(data_sources) < 2:
+        return result
+    
+    # 获取所有数据源的公共字段和公共索引
+    sources_list = list(data_sources.values())
+    common_fields = set(sources_list[0].columns)
+    for source_data in sources_list[1:]:
+        common_fields &= set(source_data.columns)
+    
+    common_index = set(sources_list[0].index)
+    for source_data in sources_list[1:]:
+        common_index &= set(source_data.index)
+    
+    # 比较每个字段
+    for field in common_fields:
+        field_data = {}
+        for source_name, source_data in data_sources.items():
+            field_data[source_name] = source_data.loc[list(common_index), field]
+        
+        # 计算差异
+        source_names = list(field_data.keys())
+        for i in range(len(source_names)):
+            for j in range(i + 1, len(source_names)):
+                source1 = source_names[i]
+                source2 = source_names[j]
+                data1 = field_data[source1]
+                data2 = field_data[source2]
+                
+                # 计算相对差异
+                diff = abs(data1 - data2) / (data1 + 1e-10)
+                inconsistent = diff > tolerance
+                
+                if inconsistent.any():
+                    inconsistent_indices = diff[inconsistent].index.tolist()
+                    result["inconsistent_fields"].append({
+                        "field": field,
+                        "source1": source1,
+                        "source2": source2,
+                        "inconsistent_count": len(inconsistent_indices),
+                        "inconsistent_indices": inconsistent_indices,
+                        "max_diff": float(diff.max())
+                    })
+    
+    result["inconsistency_count"] = len(result["inconsistent_fields"])
+    
+    # 计算一致性得分
+    total_comparisons = len(common_fields) * len(common_index) * (len(data_sources) - 1) / 2
+    if total_compariso<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_detect_anomalies_statistical.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+import numpy as np
+from scipy import stats
+
+def detect_anomalies_statistical(self, data: pd.DataFrame, 
+                                fields: List[str] = None,
+                                method: str = "zscore",
+                                threshold: float = 3.0) -> Dict[str, Any]:
+    """
+    使用统计方法检测异常值
+    
+    Args:
+        data: 待检测的数据
+        fields: 要检测的字段列表
+        method: 检测方法（zscore, iqr, 3sigma）
+        threshold: 阈值
+    
+    Returns:
+        异常检测结果
+    """
+    result = {
+        "anomalies": [],
+        "anomaly_count": 0,
+        "anomaly_indices": set(),
+        "method": method
+    }
+    
+    if fields is None:
+        fields = data.select_dtypes(include=[np.number]).columns.tolist()
+    
+    for field in fields:
+        if field not in data.columns:
+            continue
+        
+        values = data[field].dropna()
+        
+        if method == "zscore":
+            # Z-score方法
+            z_scores = np.abs(stats.zscore(values))
+            anomalies = values[z_scores > threshold]
+        
+        elif method == "iqr":
+            # IQR方法
+            Q1 = values.quantile(0.25)
+            Q3 = values.quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            anomalies = values[(values < lower_bound) | (values > upper_bound)]
+        
+        elif method == "3sigma":
+            # 3σ原则
+            mean = values.mean()
+            std = values.std()
+            anomalies = values[(values < mean - threshold * std) | 
+                              (values > mean + threshold * std)]
+        
+        if len(anomalies) > 0:
+            anomaly_indices = anomalies.index.tolist()
+            result["anomalies"].append({
+                "field": field,
+                "anomaly_count": len(anomalies),
+                "anomaly_indices": anomaly_indices,
+                "anomaly_values":<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_detect_anomalies_ml.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->           # 3σ原则
+            mean = values.mean()
+            std = values.std()
+            anomalies = values[(values < mean - threshold * std) | 
+                              (values > mean + threshold * std)]
+        
+        if len(anomalies) > 0:
+            anomaly_indices = anomalies.index.tolist()
+            result["anomalies"].append({
+                "field": field,
+                "anomaly_count": len(anomalies),
+                "anomaly_indices": anomaly_indices,
+                "anomaly_values":<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_detect_anomalies_ml.py"
+  language="pytho<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_clean_missing_values.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def clean_missing_values(self, data: pd.DataFrame,
+                       method: str = "forward_fill",
+                       **kwargs) -> pd.DataFrame:
+    """
+    处理缺失值
+    
+    Args:
+        data: 待清洗的数据
+        method: 处理方法（forward_fill, backward_fill, interpolate, drop, mean）
+        **kwargs: 方法特定参数
+    
+    Returns:
+        清洗后的数据
+    """
+    cleaned_data = data.copy()
+    
+    if method == "forward_fill":
+        # 前向填充
+        cleaned_data = cleaned_data.fillna(method='ffill')
+    
+    elif method == "backward_fill":
+        # 后向填充
+        cleaned_data = cleaned_data.fillna(method='bfill')
+    
+    elif method == "interpolate":
+        # 插值
+        method_type = kwargs.get("interpolation_method", "linear")
+        cleaned_data = cleaned_data.interpolate(method=method_type)
+    
+    elif method == "drop":
+        # 删除缺失值
+        cleaned_data = cleaned_data.dropna()
+    
+    elif method == "mean":
+        # 用均值填充
+        cleaned_data = cleaned_data.fillna(cleaned_data.mean())
+    
+    elif method == "median":
+        # 用中位数填充
+        cleaned_data = cleaned_data.fillna(cleaned_data.median())
+    
+    return cleaned_data
+```
+-->_fill, backward_fill, interpolate, drop, mean）
+        **kwargs: 方法特定参数
+    
+    Returns:
+        清洗后的数据
+    """
+    cleaned_data = data.copy()
+    
+    if method == "forward_fill":
+        # 前向填充
+        cleaned_data = cleaned_data.fillna(method='ffill')
+    
+    elif method == "backward_fill":
+        # 后向填充
+        cleaned_data = cleaned_data.fillna(method='bfill')
+    
+    elif method == "interpolate":
+        # 插值
+        method_type = kwargs.get("interpolation_method", "linear")
+        cleaned_data = cleaned_data.interpolate(method=method_type)
+    
+    elif method == "drop":
+        # 删除缺失值
+        cleaned_data = cleaned_data.dropna()
+    
+    elif method == "mean":
+        # 用均值填充
+        cleaned_data = cleaned_data.fillna(cleaned_data.mean())
+    
+    elif method == "median":
+        # 用中位数填充
+        cleaned_data = cleaned_data.fillna(cleaned_data.median())
+    
+    return cleaned_data
+```
+-->forward_fill, backward_fill, interpolate, drop, mean）
+        **kwargs: 方法特定参数
+    
+    Returns:
+        清洗后的数据
+    """
+    cleaned_data = data.copy()
+    
+    if method == "forward_fill":
+        # 前向填充
+        cleaned_data = cleaned_data.fillna(method='ffill')
+    
+    elif method == "backward_fill":
+        # 后向填充
+        cleaned_data = cleaned_data.fillna(method='bfill')
+    
+    elif method == "interpolate":<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_clean_anomalies.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def clean_anomalies(self, data: pd.DataFrame,
+                   anomaly_indices: List,
+                   method: str = "remove",
+                   **kwargs) -> pd.DataFrame:
+    """
+    处理异常值
+    
+    Args:
+        data: 待清洗的数据
+        anomaly_indices: 异常值索引列表
+        method: 处理方法（remove, replace, clip, mark）
+        **kwargs: 方法特定参数
+    
+    Returns:
+        清洗后的数据
+    """
+    cleaned_data = data.copy()
+    
+    if method == "remove":
+        # 删除异常值
+        cleaned_data = cleaned_data.drop(index=anomaly_indices)
+    
+    elif method == "replace":
+        # 替换异常值
+        replace_value = kwargs.get("replace_value", None)
+        if replace_value is None:
+            # 用中位数替换
+            for col in cleaned_data.columns:
+                if col in cleaned_data.select_dtypes(include=[np.number]).columns:
+                    median = cleaned_data[col].median()
+                    cleaned_data.loc[anomaly_indices, col] = median
+        else:
+            cleaned_data.loc[anomaly_indices] = replace_value
+    
+    elif method == "clip":
+        # 截断异常值
+        lower_bound = kwargs.get("lower_bound", None)
+        upper_bound = kwargs.get("upper_bound", None)
+        for col in cleaned_data.columns:
+            if col in cleaned_data.select_dtypes(include=[np.number]).columns:
+                if lower_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(lower=lower_bound)
+                if upper_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(upper=upper_bound)
+    
+    elif method<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_auto_clean.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->l in cleaned_data.select_dtypes(include=[np.number]).columns:
+                    median = cleaned_data[col].median()
+                    cleaned_data.loc[anomaly_indices, col] = median
+        else:
+            cleaned_data.loc[anomaly_indices] = replace_value
+    
+    elif method == "clip":
+        # 截断异常值
+        lower_bound = kwargs.get("lower_bound", None)
+        upper_bound = kwargs.get("upper_bound", None)
+        for col in cleaned_data.columns:
+            if col in cleaned_data.select_dtypes(include=[np.number]).columns:
+                if lower_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(lower=lower_bound)
+                if upper_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(upper=upper_bound)
+    
+    elif method<CodeFromFile 
+  filePath="code<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_auto_clean.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def auto_clean(self, data: pd.DataFrame,
+              completeness_threshold: float = 0.95,
+              accuracy_threshold: float = 0.99,
+              anomaly_method: str = "isolation_forest") -> pd.DataFrame:
+    """
+    自动清洗数据
+    
+    Args:
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_generate_quality_report.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->    
+    elif method == "clip":
+        # 截断异常值
+        lower_bound = kwargs.get("lower_bound", None)
+        upper_bound = kwargs.get("upper_bound", None)
+        for col in cleaned_data.columns:
+            if col in cleaned_data.select_dtypes(include=[np.number]).columns:
+                if lower_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(lower=lower_bound)
+                if upper_bound is not None:
+                    cleaned_data.loc[anomaly_indices, col] = cleaned_data.loc[anomaly_indices, col].clip(upper=upper_bound)
+    
+    elif method<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_auto_clean.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def auto_clean(self, data: pd.DataFrame,
+              completeness_threshold: float = 0.95,
+              accuracy_threshold: float = 0.99,
+              anomaly_method: str = "isolation_forest") -> pd.DataFrame:
+    """
+    自动清洗数据
+    
+    Args:
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_generate_quality_report.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def generate_quality_report(self, data: pd.DataFrame,
+                           required_fields: List[str] = None) -> Dict[str, Any]:
+    """
+    生成数据质量报告
+    
+    <CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_08.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_14.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->ess_result = self.check_completeness(data, required_fields)
+    report["dimension_scores"]["completeness"] = completeness_result["completeness_score"]
+    report["details"]["completeness"] = completeness_result
+    
+    # 2. 准确性验证
+    accuracy_result = self.validate_business_logic(
+        data,
+        rules={
+            "high >= low": "最高价应大于等于最低价",
+            "close >= low and close <= high": "收盘价应在最低价和最高价之间",
+            "volume >= 0": "成交量应大于等于0"
+        }
+    )
+    report["dimension_scores"]["accuracy"] = accuracy_result["accuracy_score"]
+    report["details"]["accuracy"] = accuracy_result
+    
+    # 3. 异常检测
+    anomaly_result = self.detect_anomalies(data, methods=["statistical", "isolation_forest"])
+    anomaly_rate = anomaly_result["anomaly_count"] / len(data) if len(data) > 0 else 0
+    report["dimension_scores"]["anomaly_free"] = 1.0 - anomaly_rate
+    report["details"]["anomalies"] = anomaly_result
+    
+    # 4. 计算综合得分
+    weights = {
+        "completeness": 0.4,
+        "accuracy": 0<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_08.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_14.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->completeness"] < 0.95:
+            report["recommendations"].append("数据完<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_monitor_data_quality.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def monitor_data_quality(self, data_source: str, symbol: str,
+                        start_date: str, end_date: str) -> Dict[str, Any]:
+    """
+    监控数据质量
+    
+    Args:
+        data_source: 数据源名称
+        symbol: 股票代码
+        start_date: 开始日期
+        end_date: 结束日期
+    
+    Returns:
+        质量监控结果
+    """
+    fr<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_11.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质量检查 异常检测 数据清洗",
+    scope="bo<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_11.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->ve_quality_report(d<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_13.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->    report["details"]["anomalies"] = anomaly_result
+    
+    # 4. 计算综合得分
+    weig<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_10.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 1. 收集学术论文
+data_collector.collect_academic(
+    database="arxiv",
+    query="data quality assessment financial time series",
+    max_results=10,
+    output_dir="data/collected/papers/data_quality"
+)
+
+# 2. 爬取技术文档
+data_col<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_monitor_data_quality.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->")
+        if report["dimension_scores"]["accuracy"] < 0.99:
+            report["recommendations"].appe<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_monitor_data_quality.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def monitor_data_quality(self, data_source: str, symbol: str,
+                        start_date: str, end_date: str) -> Dict[str, Any]:
+    """
+    监控数据质量
+    
+    Args:
+        data_source: 数据源名称
+        symbol: 股票代码
+        start_date: 开始日期
+        end_date: 结束日期
+    
+    Returns:
+        质量监控结果
+    """
+    from core.data_source import get_data_source_manager
+    
+    # 获取数据
+    ds_manager = get_data_source_manager()
+    data = ds_manager.get_data(symbol, start_date, end_date)
+    
+    # 生成质量报告
+    report = self.generate_quality_report(data)
+    
+    # 保存到数据库
+    self._save_quality_report(d<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_13.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/002_Chapter2_Data_Source/2.2/code_2_2_14.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 1. 收集学术论文
+data_collector.collect_academic(
+    database="arxiv",
+    query="data quality assessment financial time series",
+    max_results=10,
+    output_dir="data/collected/papers/data_quality"
+)
+
+# 2. 爬取技术文档
+data_col<CodeFromFile 
+  fil<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_monitor_data_quality.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+def monitor_data_quality(self, data_source: str, symbol: str,
+                        start_date: str, end_date: str) -> Dict[str, Any]:
+    """
+    监控数据质量
+    
+    Args:
+        data_source: 数据源名称
+        symbol: 股票代码
+        start_date: 开始日期
+        end_date: 结束日期
+    
+    Returns:
+        质量监控结果
+    """
+    from core.data_source import get_data_source_manager
+    
+    # 获取数据
+    ds_manager = get_data_source_manager()
+    data = ds_manager.get_data(symbol, start_date, end_date)
+    
+    # 生成质量报告
+    report = self.generate_quality_report(data)
+    
+    # 保存到数据库
+    self._save_quality_report(data_source, symbol, start_dat<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_13.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质量检查 异常检测 数据清洗",
+    scope="bo<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.2/code_2_2_14.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 1. 收集学术论文
+data_collector.collect_academic(
+    database="arxiv",
+    query="data quality assessment financial time series",
+    max_results=10,
+    output_dir="data/collected/papers/data_quality"
+)
+
+# 2. 爬取技术文档
+data_collector.crawl_web(
+    url="https://pandas.pydata.org/docs/user_guide/missing_data.html",
+    max_depth=1,
+    output_dir="data/collected/docs/pandas_missing_data"
+)
+```
+-->_11.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 1. 收集学术论文
+data_collector.collect_academic(
+    database="arxiv",
+    query="data quality assessment financial time series",
+    max_results=10,
+    output_dir="data/collected/papers/data_quality"
+)
+
+# 2. 爬取技术文档
+data_collector.crawl_web(
+    url="https://pandas.pydata.org/docs/user_guide/missing_data.html",
+    max_depth=1,
+    output_dir="data/collected/docs/pandas_missing_data"
+)
+```
+--># 5. 生成建议
+    if report["overall_score"] < 0.9:
+        if report["dimension_scores"]["completeness"] < 0.95:
+            report["recommendations"].append("数据完整性不足，建议补充缺失数据")
+        if report["dimension_scores"]["accuracy"] < 0.99:
+            report["recommendations"].append("数据准确性不足，建议检查数据源")
+        if report["dimension_scores"]["anomaly_free"] < 0.95:
+            report["recommendations"].append("检测到异常值，建议进行数据清洗")
+    
+    return report
+```
+
+### 质量监控
+
+系统支持数据质量监控，定期生成质量报告：
+
+```python
+def monitor_data_quality(self, data_source: str, symbol: str,
+                        start_date: str, end_date: str) -> Dict[str, Any]:
+    """
+    监控数据质量
+    
+    Args:
+        data_source: 数据源名称
+        symbol: 股票代码
+        start_date: 开始日期
+        end_date: 结束日期
+    
+    Returns:
+        质量监控结果
+    """
+    from core.data_source import get_data_source_manager
+    
+    # 获取数据
+    ds_manager = get_data_source_manager()
+    data = ds_manager.get_data(symbol, start_date, end_date)
+    
+    # 生成质量报告
+    report = self.generate_quality_report(data)
+    
+    # 保存到数据库
+    self._save_quality_report(data_source, symbol, start_date, end_date, report)
+    
+    return report
+```
+
+<h2 id="section-2-2-6">🛠️ 2.2.6 MCP工具使用</h2>
+
+在开发数据质量检查功能时，可以使用MCP工具进行深入研究和技术调研。
+
+### 查询数据质量相关文档
+
+使用`kb.query`查询数据质量相关的文档和代码：
+
+```python
+# 在Cursor中调用MCP工具
+# 查询数据质量检查相关文档
+results = kb.query(
+    query="数据质量检查 异常检测 数据清洗",
+    scope="both",  # manual + engineering
+    top_k=5
+)
+
+# 查询结果包含：
+# - 开发手册中的相关章节
+# - 代码库中的数据质量检查实现
+# - 异常检测算法的使用示例
+```
+
+### 收集数据质量研究资料
+
+使用`data_collector`收集数据质量相关的研究资料：
+
+```python
+# 1. 收集学术论文
+data_collector.collect_academic(
+    database="arxiv",
+    query="data quality assessment financial time series",
+    max_results=10,
+    output_dir="data/collected/papers/data_quality"
+)
+
+# 2. 爬取技术文档
+data_collector.crawl_web(
+    url="https://pandas.pydata.org/docs/user_guide/missing_data.html",
+    max_depth=1,
+    output_dir="data/collected/docs/pandas_missing_data"
+)
+```
+
+### 使用MCP工具进行研究
+
+当遇到数据质量相关问题时，遵循"不确定时，先研究再实现"的开发方法论：
+
+1. **查询知识库**：使用`kb.query`查找相关文档和代码
+2. **收集资料**：使用`data_collector`收集外部资料
+3. **分析问题**：结合收集的信息分析问题
+4. **实现方案**：基于研究结果实现解决方案
+
+详细方法请参考 **10.11 开发流程方法论** 章节。
+
+## 🔗 相关章节
+
+- **第二章 数据源模块**：了解数据源模块的整体设计
+- **2.1 数据源管理**：了解数据源管理机制
+- **第三章 市场分析**：了解如何使用高质量数据进行市场分析
+- **10.7 MCP Server开发指南**：掌握MCP工具开发方法
+- **10.11 开发流程方法论**：掌握使用MCP工具进行研究的方法
+
+## 💡 关键要点
+
+1. **完整性检查**：缺失值检查、时间序列连续性、字段完整性
+2. **准确性验证**：数据范围检查、业务逻辑验证、多源数据一致性
+3. **异常检测**：统计方法、机器学习方法、时间序列方法
+4. **数据清洗**：缺失值处理、异常值处理、数据标准化
+5. **质量报告**：多维度评分体系、质量监控、改进建议
+6. **MCP工具支持**：支持使用MCP工具进行数据质量相关研究
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了数据质量检查机制，包括数据完整性检查、准确性验证、异常检测与数据清洗方法。通过理解数据质量保证机制，帮助开发者确保后续步骤使用的数据质量，为构建高质量的数据获取系统奠定基础。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了数据质量检查后，下一节将介绍数据存储架构，包括分层/多存储（Polyglot Persistence）架构设计、PostgreSQL、ClickHouse/TimescaleDB、Redis等技术选型。通过理解数据存储架构，帮助开发者掌握数据存储的核心设计。</p>
+  
+  <a href="/ashare-book6/002_Chapter2_Data_Source/2.3_Data_Storage_Architecture_CN" class="next-section">
+    继续学习：2.3 数据存储架构 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12
+<!-- Code updated: 2025-12-14T01:34:18.753Z -->

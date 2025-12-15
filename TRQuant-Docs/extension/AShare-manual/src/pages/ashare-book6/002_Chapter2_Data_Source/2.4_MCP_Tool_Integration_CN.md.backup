@@ -1,0 +1,647 @@
+---
+title: "2.4 MCP工具集成"
+description: "深入解析数据源模块的MCP工具集成，包括知识库查询、数据收集工具等，提升开发效率"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-13"
+---
+
+# 🛠️ 2.4 MCP工具集成
+
+> **核心摘要：**
+> 
+> 本节系统介绍数据源模块与MCP工具的深度集成，支持通过MCP工具进行数据查询、数据收集和知识检索。通过理解知识库查询、数据收集工具的使用方法和MCP工具在研究中的应用，帮助开发者掌握如何使用MCP工具提升开发效率。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-2-4-1')">
+    <h4>🔍 2.4.1 知识库查询</h4>
+    <p>kb.query工具的使用方法和示例</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-4-2')">
+    <h4>📥 2.4.2 数据收集工具</h4>
+    <p>crawl_web、download_pdf、collect_academic等工具</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-4-3')">
+    <h4>🎯 2.4.3 研究流程</h4>
+    <p>使用MCP工具进行数据源研究的完整流程</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-2-4-4')">
+    <h4>💡 2.4.4 最佳实践</h4>
+    <p>MCP工具使用的最佳实践和注意事项</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **使用知识库查询**：掌握kb.query工具查询数据源相关文档和代码
+- **使用数据收集工具**：掌握crawl_web、download_pdf、collect_academic等工具
+- **掌握研究流程**：理解使用MCP工具进行数据源研究的完整流程
+- **应用最佳实践**：掌握MCP工具使用的最佳实践和注意事项
+
+<h2 id="section-2-4-1">🔍 2.4.1 知识库查询</h2>
+
+### kb.query工具
+
+`kb.query`是TRQuant系统的核心MCP工具，用于查询知识库中的文档和代码。
+
+### 基本用法
+
+在Cursor AI对话中，可以直接使用自然语言查询：
+
+```
+用户: 查询数据源管理相关的文档和代码
+
+AI: [调用 kb.query]
+    query: "数据源管理接口设计"
+    scope: "both"  # manual + engineering
+    top_k: 5
+```
+
+### 查询示例
+
+#### 示例1：查询数据源接口设计
+
+```
+用户: 如何设计数据源接口？请查询相关文档
+
+AI: 我来查询数据源接口设计相关的文档...
+[调用 kb.query]
+  query: "数据源接口设计 BaseDataSource"
+  scope: "both"
+  top_k: 10
+
+返回结果：
+- 开发手册：2.1 数据源管理 - 接口设计章节
+- 代码库：core/data_center.py - BaseDataSource类定义
+- 代码库：core/data_sources/jqdata.py - JQData实现示例
+```
+
+#### 示例2：查询数据质量检查方法
+
+```
+用户: 数据质量检查有哪些方法？请查询相关实现
+
+AI: 我来查询数据质量检查相关的文档和代码...
+[调用 kb.query]
+  query: "数据质量检查 完整性 准确性 异常检测"
+  scope: "both"
+  top_k: 8
+
+返回结果：
+- 开发手册：2.2 数据质量 - 完整性检查、准确性验证、异常检测
+- 代码库：core/data_quality.py - DataQualityChecker类
+- 代码库：core/data_quality/checkers.py - 各种检查器实现
+```
+
+#### 示例3：查询数据存储架构
+
+```
+用户: 数据源模块的数据存储架构是什么？
+
+AI: 我来查询数据存储架构相关的文档...
+[调用 kb.query]
+  query: "数据存储架构 PostgreSQL ClickHouse Redis"
+  scope: "both"
+  top_k: 5
+
+返回结果：
+- 开发手册：2.3 数据存储架构 - 完整架构设计
+- 开发手册：1.9 数据库架构设计 - 系统整体架构
+- 代码库：core/storage/ - 存储层实现
+```
+
+### 查询技巧
+
+<div class="key-points">
+  <div class="key-point">
+    <h4>🎯 精确关键词</h4>
+    <p>使用精确的关键词，如"BaseDataSource"、"数据质量检查"等</p>
+  </div>
+  <div class="key-point">
+    <h4>📚 组合查询</h4>
+    <p>组合多个关键词，如"数据源 接口 设计"</p>
+  </div>
+  <div class="key-point">
+    <h4>🔍 范围选择</h4>
+    <p>使用scope参数选择查询范围：manual（手册）、engineering（代码）、both（全部）</p>
+  </div>
+  <div class="key-point">
+    <h4>📊 结果数量</h4>
+    <p>使用top_k参数控制返回结果数量，通常5-10个结果足够</p>
+  </div>
+</div>
+
+<h2 id="section-2-4-2">📥 2.4.2 数据收集工具</h2>
+
+### data_collector工具集
+
+数据收集工具集提供多种数据收集能力，帮助开发者收集外部资料。
+
+### 1. 爬取网页内容（crawl_web）
+
+#### 基本用法
+
+```
+用户: 爬取JQData的API文档网站
+
+AI: [调用 data_collector.crawl_web]
+    url: "https://www.joinquant.com/help/api/help"
+    max_depth: 2
+    output_dir: "data/collected/jqdata_docs"
+```
+
+#### 使用示例
+
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/002_Chapter2_Data_Source/2.4/code_2_4_00.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_00.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_00.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_00.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 在Cursor中，AI会自动调用MCP工具
+# 用户请求：
+"请爬取JQData的API文档，保存到data/collected/jqdata_docs目录"
+
+# AI执行：
+data_collector.crawl_web(
+    url="https://www.joinquant.com/help/api/help",
+    max_depth=2,  # 爬取2层深度
+    output_dir="data/collected/jqdata_docs",
+    include_patterns=["*.html", "*.md"],  # 只保存HTML和Markdown文件
+    exclude_patterns=["*.js", "*.css"]  # 排除JS和CSS文件
+)
+```
+-->
+-->
+-->
+-->
+
+#### 适用场景
+
+- 收集数据源API文档
+- 收集数据源使用教程
+- 收集数据源更新日志
+
+### 2. 下载PDF文档（down<CodeFromFile 
+  <CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_01.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 用户请求：
+"请下载JQData使用手册PDF"
+
+# AI执行：
+data_collector.download_pdf(
+    url="https://www.joinquant.com/help/download/jqdata_manual.pdf",
+    output_dir="data/collected/manuals",
+    filename="jqdata_manual.pdf"  # 可选：指定文件名
+)
+```
+-->(
+    url="https://www.joinquant.com/help/download/jqdata_manual.pdf",
+    output_dir="data/collected/manuals",
+    filename="jqdata_manual<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_02.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 用户请求：
+"请收集关于金融数据源质量的学术论文"
+
+# AI执行：
+data_collector.collect_academic(
+    database="arxiv",  # 或 "ieee", "acm"
+    query="financial data source qua<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/002_Chapter2_Data_Source/2.4/code_2_4_03.py"
+  language="python"
+  showDesignPrinciples="tr<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_03.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
+)
+```
+-->!-- 原始代码（保留作为备份）：
+```
+-->pter2_Data_Source/2.4/002_Chapter2_Data_Source/2.4/code_2_4_03.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/002_Chapter2_Data_Source/2.4/code_2_4_04.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->pter2_Data_Source/2.4/002_Chapter2_Data_Source/2.4/code_2_4_03.py"
+  language=<CodeFromFile 
+  filePath="code_lib<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_04.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    m<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_04.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 用户请求：
+"请收集关于金融数据源质量的学术论文"
+
+# AI执行：
+data_collector.collect_academic(
+    database="arxiv",  # 或 "ieee", "acm"
+    query="financial data source quality assessment",
+    max_res<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_06.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```
+-->lePath="code_lib<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_05.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_06.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    m<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_07.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+# 用户请求：
+"请收集关于金融数据源质量的学术论文"
+
+# AI执行：
+data_collector.collect_academic(
+    database="arxiv",  # 或 "ieee", "acm"
+    query="financial data source quality assessment",
+    max_res<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_08.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collecto<CodeFromFile 
+  filePath="code_library/002_Chapter2_Data_Source/2.4/code_2_4_09.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
+)
+```
+-->ode_library/002_Chapter2_Data_Source/2.4/code_2_4_07.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
+)
+```
+-->ode_library/002_Chapter2_Data_Source/2.4/code_2_4_05.py"
+  language="python"
+  showDesignPrinciples="true"
+/>
+
+<!-- 原始代码（保留作为备份）：
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
+)
+```
+-->  output_dir="data/collected/social"
+)
+```
+-->put_dir: "data/collected/papers"
+```
+
+#### 使用示例
+
+```python
+# 用户请求：
+"请收集关于金融数据源质量的学术论文"
+
+# AI执行：
+data_collector.collect_academic(
+    database="arxiv",  # 或 "ieee", "acm"
+    query="financial data source quality assessment",
+    max_results=10,
+    output_dir="data/collected/papers",
+    format="pdf"  # 下载PDF格式
+)
+```
+
+#### 适用场景
+
+- 研究数据源技术
+- 研究数据质量方法
+- 研究数据存储架构
+
+### 4. 其他数据收集工具
+
+#### 收集新闻资讯
+
+```python
+data_collector.collect_news(
+    keywords=["JQData", "量化数据源"],
+    sources=["财经网", "证券时报"],
+    max_results=20,
+    output_dir="data/collected/news"
+)
+```
+
+#### 收集社交媒体信息
+
+```python
+data_collector.collect_social_media(
+    platform="weibo",  # 或 "twitter", "zhihu"
+    keywords=["JQData", "量化数据"],
+    max_results=50,
+    output_dir="data/collected/social"
+)
+```
+
+<h2 id="section-2-4-3">🎯 2.4.3 研究流程</h2>
+
+### 完整研究流程
+
+使用MCP工具进行数据源研究的完整流程：
+
+```
+1. 问题定义
+   ↓
+2. 知识库查询（kb.query）
+   ├─ 查询相关文档
+   ├─ 查询相关代码
+   └─ 获取使用示例
+   ↓
+3. 外部资料收集（data_collector）
+   ├─ 爬取API文档
+   ├─ 下载使用手册
+   └─ 收集学术论文
+   ↓
+4. 信息整理和分析
+   ├─ 整理查询结果
+   ├─ 分析收集的资料
+   └─ 提取关键信息
+   ↓
+5. 实现方案
+   ├─ 基于研究结果设计
+   ├─ 实现代码
+   └─ 测试验证
+```
+
+### 研究示例：实现新的数据源
+
+#### 步骤1：问题定义
+
+```
+用户: 我需要集成TuShare数据源，请帮我研究如何实现
+```
+
+#### 步骤2：知识库查询
+
+```
+AI: 我来查询数据源实现相关的文档和代码...
+[调用 kb.query]
+  query: "数据源实现 BaseDataSource 接口"
+  scope: "both"
+  top_k: 10
+
+返回结果：
+- 开发手册：2.1 数据源管理 - 接口设计
+- 代码库：core/data_sources/jqdata.py - JQData实现示例
+- 代码库：core/data_sources/akshare.py - AKShare实现示例
+```
+
+#### 步骤3：外部资料收集
+
+```
+AI: 我来收集TuShare相关的文档...
+[调用 data_collector.crawl_web]
+  url: "http://tushare.pro/"
+  max_depth: 2
+  output_dir: "data/collected/tushare_docs"
+
+[调用 data_collector.download_pdf]
+  url: "http://tushare.pro/static/pdf/tushare_api.pdf"
+  output_dir: "data/collected/manuals"
+```
+
+#### 步骤4：信息整理和分析
+
+```
+AI: 基于查询和收集的资料，我整理出以下关键信息：
+
+1. 接口设计：
+   - 需要继承BaseDataSource基类
+   - 实现connect、disconnect、health_check等方法
+   - 实现get_daily_data、get_minute_data等数据获取方法
+
+2. TuShare特点：
+   - 免费开源数据源
+   - 需要注册获取token
+   - API调用有频率限制
+   - 支持日线、分钟线、基本面数据
+
+3. 实现要点：
+   - 需要处理token认证
+   - 需要处理API频率限制
+   - 需要统一数据格式
+```
+
+#### 步骤5：实现方案
+
+```
+AI: 基于研究结果，我来实现TuShare数据源...
+
+[生成代码]
+class TuShareDataSource(BaseDataSource):
+    def __init__(self, token: str):
+        super().__init__("tushare")
+        self.token = token
+        self.api = None
+    
+    def connect(self) -> bool:
+        import tushare as ts
+        ts.set_token(self.token)
+        self.api = ts.pro_api()
+        self._connected = True
+        return True
+    
+    # ... 其他方法实现
+```
+
+<h2 id="section-2-4-4">💡 2.4.4 最佳实践</h2>
+
+### 查询最佳实践
+
+<div class="key-points">
+  <div class="key-point">
+    <h4>🎯 明确查询目标</h4>
+    <p>在查询前明确要查找的内容，使用精确的关键词</p>
+  </div>
+  <div class="key-point">
+    <h4>📚 组合使用工具</h4>
+    <p>结合kb.query和data_collector，获得更全面的信息</p>
+  </div>
+  <div class="key-point">
+    <h4>🔄 迭代查询</h4>
+    <p>根据初步结果，进一步细化查询，获得更精确的结果</p>
+  </div>
+  <div class="key-point">
+    <h4>💾 保存结果</h4>
+    <p>将查询和收集的结果保存，便于后续参考</p>
+  </div>
+</div>
+
+### 数据收集最佳实践
+
+1. **合理设置深度**：`max_depth`不要设置太大，通常2-3层足够
+2. **过滤文件类型**：使用`include_patterns`和`exclude_patterns`过滤文件
+3. **控制数量**：`max_results`不要设置太大，避免收集过多无用信息
+4. **组织输出目录**：按主题组织输出目录，便于后续查找
+
+### 注意事项
+
+<div class="tip-box">
+  <h4>⚠️ 注意事项</h4>
+  <ul>
+    <li><strong>遵守网站规则</strong>：爬取网页时遵守robots.txt和网站使用条款</li>
+    <li><strong>控制频率</strong>：避免过于频繁的请求，可能导致IP被封</li>
+    <li><strong>数据质量</strong>：收集的数据需要验证质量，不能直接使用</li>
+    <li><strong>版权问题</strong>：注意收集内容的版权，仅用于学习和研究</li>
+  </ul>
+</div>
+
+## 🔗 相关章节
+
+- **1.2 系统架构总览**：了解数据源模块在系统架构中的位置
+- **2.1 数据源管理**：详细了解数据源管理实现
+- **2.2 数据质量**：详细了解数据质量检查机制
+- **2.3 数据存储架构**：了解数据存储架构设计
+- **10.7 MCP Server开发指南**：掌握MCP工具开发方法
+- **10.11 开发流程方法论**：掌握使用MCP工具进行研究的方法
+
+## 💡 关键要点
+
+1. **知识库查询**：使用kb.query查询文档和代码，支持manual、engineering、both三种范围
+2. **数据收集工具**：使用crawl_web、download_pdf、collect_academic等工具收集外部资料
+3. **研究流程**：问题定义 → 知识库查询 → 外部资料收集 → 信息整理 → 实现方案
+4. **最佳实践**：明确查询目标、组合使用工具、迭代查询、保存结果
+
+---
+
+*最后更新: 2025-12-13*  
+*适用版本: v1.0.0+*
+<!-- Code updated: 2025-12-14T01:36:09.790Z -->

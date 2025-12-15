@@ -1,0 +1,1133 @@
+---
+title: "9.6 实盘交易管理"
+description: "深入解析实盘交易管理系统，包括策略部署、交易执行、风险监控、持仓管理等核心技术，为量化投资系统提供完整的实盘交易管理能力"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 💼 9.6 实盘交易管理
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的实盘交易管理系统，包括策略部署、交易执行、风险监控和持仓管理。通过理解实盘交易管理器的核心实现，帮助开发者掌握如何将经过BulletTrade回测验证的策略部署到实盘环境，实现自动化交易执行、实时风险监控和持仓管理，为构建专业级的实盘交易系统奠定基础。
+
+实盘交易管理是平台集成的核心环节，负责将验证通过的策略部署到实盘环境，实现自动化交易执行和实时监控。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-9-6-1')">
+    <h4>🚀 9.6.1 策略部署管理</h4>
+    <p>策略部署、版本管理、部署验证、回滚机制</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-6-2')">
+    <h4>💹 9.6.2 交易执行管理</h4>
+    <p>订单生成、订单执行、执行监控、异常处理</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-6-3')">
+    <h4>🛡️ 9.6.3 风险监控管理</h4>
+    <p>实时风控、风险指标监控、风控规则执行、告警机制</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-6-4')">
+    <h4>📊 9.6.4 持仓管理</h4>
+    <p>持仓查询、持仓同步、持仓分析、持仓调整</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-9-6-5')">
+    <h4>🔄 9.6.5 交易数据管理</h4>
+    <p>交易记录、数据存储、数据同步、数据查询</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **管理策略部署**：掌握策略部署、版本管理和回滚机制
+- **执行交易管理**：理解订单生成、执行监控和异常处理
+- **实现风险监控**：掌握实时风控、风险指标监控和告警机制
+- **管理持仓**：理解持仓查询、同步、分析和调整
+- **管理交易数据**：掌握交易记录存储、同步和查询
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤8 - 🚀 实盘交易（实盘交易管理）
+- **核心职责**：策略部署、交易执行、风险监控、持仓管理
+- **服务对象**：经过BulletTrade回测验证的策略
+
+### 技术栈
+
+- **交易平台**：PTrade/QMT（国金证券）
+- **数据存储**：PostgreSQL（交易记录、持仓数据）、Redis（实时状态）
+- **监控系统**：实时监控、告警系统
+- **数据同步**：实盘数据回流到韬睿系统
+
+### 与前后章节的衔接
+
+- **第8章**：接收经过BulletTrade回测验证的策略
+- **9.1/9.2**：使用PTrade/QMT平台进行策略部署和交易执行
+- **9.7**：实盘交易数据反馈给策略优化系统
+
+<h2 id="section-9-6-1">🚀 9.6.1 策略部署管理</h2>
+
+策略部署管理负责将经过BulletTrade回测验证的策略部署到实盘环境，包括版本管理、部署验证和回滚机制。
+
+### 策略部署器
+
+```python
+from dataclasses import dataclass
+from typing import Dict, Any, List, Optional
+from datetime import datetime
+from enum import Enum
+import json
+from pathlib import Path
+
+class DeploymentStatus(Enum):
+    """部署状态"""
+    PENDING = "pending"          # 待部署
+    DEPLOYING = "deploying"      # 部署中
+    DEPLOYED = "deployed"        # 已部署
+    FAILED = "failed"            # 部署失败
+    ROLLED_BACK = "rolled_back"  # 已回滚
+
+@dataclass
+class StrategyDeployment:
+    """策略部署信息"""
+    strategy_id: str
+    strategy_name: str
+    version: str
+    platform: str  # "ptrade" or "qmt"
+    deployment_time: datetime
+    status: DeploymentStatus
+    config: Dict[str, Any]
+    backtest_result: Optional[Dict[str, Any]] = None
+
+class LiveTradingManager:
+    """实盘交易管理器"""
+    
+    def __init__(
+        self,
+        ptrade_integration=None,
+        qmt_integration=None,
+        db_connection=None
+    ):
+        """
+        初始化实盘交易管理器
+        
+        Args:
+            ptrade_integration: PTrade集成对象
+            qmt_integration: QMT集成对象
+            db_connection: 数据库连接
+        """
+        self.ptrade = ptrade_integration
+        self.qmt = qmt_integration
+        self.db = db_connection
+        self.deployments: Dict[str, StrategyDeployment] = {}
+    
+    def deploy_strategy(
+        self,
+        strategy_id: str,
+        strategy_name: str,
+        strategy_code: str,
+        platform: str,
+        backtest_result: Dict[str, Any],
+        config: Dict[str, Any]
+    ) -> StrategyDeployment:
+        """
+        部署策略到实盘环境
+        
+        Args:
+            strategy_id: 策略ID
+            strategy_name: 策略名称
+            strategy_code: 策略代码（聚宽风格）
+            platform: 交易平台（"ptrade" or "qmt"）
+            backtest_result: BulletTrade回测结果
+            config: 部署配置
+        
+        Returns:
+            StrategyDeployment: 部署信息
+        """
+        # 1. 验证回测结果
+        if not self._validate_backtest_result(backtest_result):
+            raise ValueError("回测结果验证失败，不满足部署条件")
+        
+        # 2. 创建部署记录
+        deployment = StrategyDeployment(
+            strategy_id=strategy_id,
+            strategy_name=strategy_name,
+            version=config.get('version', '1.0.0'),
+            platform=platform,
+            deployment_time=datetime.now(),
+            status=DeploymentStatus.PENDING,
+            config=config,
+            backtest_result=backtest_result
+        )
+        
+        # 3. 根据平台选择部署器
+        if platform == "ptrade":
+            deployer = self.ptrade
+        elif platform == "qmt":
+            deployer = self.qmt
+        else:
+            raise ValueError(f"不支持的平台: {platform}")
+        
+        # 4. 执行部署
+        try:
+            deployment.status = DeploymentStatus.DEPLOYING
+            
+            # 转换策略代码（聚宽风格 → 平台格式）
+            platform_code = deployer.convert_strategy_code(strategy_code)
+            
+            # 上传策略到平台
+            upload_result = deployer.upload_strategy(
+                strategy_name=strategy_name,
+                strategy_code=platform_code,
+                config=config
+            )
+            
+            if upload_result.get('success'):
+                deployment.status = DeploymentStatus.DEPLOYED
+                # 保存部署记录到数据库
+                self._save_deployment(deployment)
+                self.deployments[strategy_id] = deployment
+                return deployment
+            else:
+                deployment.status = DeploymentStatus.FAILED
+                raise Exception(f"策略部署失败: {upload_result.get('error')}")
+                
+        except Exception as e:
+            deployment.status = DeploymentStatus.FAILED
+            self._save_deployment(deployment)
+            raise
+    
+    def _validate_backtest_result(
+        self,
+        backtest_result: Dict[str, Any]
+    ) -> bool:
+        """
+        验证回测结果是否满足部署条件
+        
+        Args:
+            backtest_result: BulletTrade回测结果
+        
+        Returns:
+            bool: 是否满足部署条件
+        """
+        # 检查必需指标
+        required_metrics = ['sharpe_ratio', 'max_drawdown', 'annual_return']
+        for metric in required_metrics:
+            if metric not in backtest_result:
+                return False
+        
+        # 检查性能阈值
+        sharpe = backtest_result.get('sharpe_ratio', 0)
+        max_dd = backtest_result.get('max_drawdown', 1.0)
+        annual_return = backtest_result.get('annual_return', 0)
+        
+        # 部署条件：夏普比率 > 1.0，最大回撤 < 20%，年化收益 > 5%
+        if sharpe > 1.0 and max_dd < 0.20 and annual_return > 0.05:
+            return True
+        
+        return False
+    
+    def rollback_strategy(
+        self,
+        strategy_id: str
+    ) -> bool:
+        """
+        回滚策略部署
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            bool: 回滚是否成功
+        """
+        if strategy_id not in self.deployments:
+            raise ValueError(f"策略 {strategy_id} 未部署")
+        
+        deployment = self.deployments[strategy_id]
+        
+        try:
+            # 根据平台选择部署器
+            if deployment.platform == "ptrade":
+                deployer = self.ptrade
+            elif deployment.platform == "qmt":
+                deployer = self.qmt
+            else:
+                raise ValueError(f"不支持的平台: {deployment.platform}")
+            
+            # 停止策略
+            deployer.stop_strategy(deployment.strategy_name)
+            
+            # 更新部署状态
+            deployment.status = DeploymentStatus.ROLLED_BACK
+            self._save_deployment(deployment)
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"策略回滚失败: {e}")
+            return False
+    
+    def _save_deployment(self, deployment: StrategyDeployment):
+        """保存部署记录到数据库"""
+        # 保存到PostgreSQL
+        if self.db:
+            self.db.execute(
+                """
+                INSERT INTO strategy_deployments 
+                (strategy_id, strategy_name, version, platform, 
+                 deployment_time, status, config, backtest_result)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (strategy_id) 
+                DO UPDATE SET 
+                    status = EXCLUDED.status,
+                    deployment_time = EXCLUDED.deployment_time
+                """,
+                (
+                    deployment.strategy_id,
+                    deployment.strategy_name,
+                    deployment.version,
+                    deployment.platform,
+                    deployment.deployment_time,
+                    deployment.status.value,
+                    json.dumps(deployment.config),
+                    json.dumps(deployment.backtest_result) if deployment.backtest_result else None
+                )
+            )
+```
+
+<h2 id="section-9-6-2">💹 9.6.2 交易执行管理</h2>
+
+交易执行管理负责订单生成、执行监控和异常处理。
+
+### 交易执行器
+
+```python
+from typing import List, Optional
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass
+class Order:
+    """订单信息"""
+    order_id: str
+    strategy_id: str
+    symbol: str
+    side: str  # "buy" or "sell"
+    quantity: int
+    price: float
+    order_type: str  # "market" or "limit"
+    status: str  # "pending", "submitted", "filled", "cancelled", "rejected"
+    submit_time: datetime
+    fill_time: Optional[datetime] = None
+    fill_price: Optional[float] = None
+    fill_quantity: Optional[int] = None
+
+class TradeExecutor:
+    """交易执行器"""
+    
+    def __init__(
+        self,
+        live_trading_manager: LiveTradingManager,
+        ptrade_trader=None,
+        qmt_trader=None
+    ):
+        """
+        初始化交易执行器
+        
+        Args:
+            live_trading_manager: 实盘交易管理器
+            ptrade_trader: PTrade交易接口
+            qmt_trader: QMT交易接口
+        """
+        self.manager = live_trading_manager
+        self.ptrade_trader = ptrade_trader
+        self.qmt_trader = qmt_trader
+        self.orders: Dict[str, Order] = {}
+    
+    def execute_order(
+        self,
+        strategy_id: str,
+        symbol: str,
+        side: str,
+        quantity: int,
+        price: float = None,
+        order_type: str = "limit"
+    ) -> Order:
+        """
+        执行订单
+        
+        Args:
+            strategy_id: 策略ID
+            symbol: 股票代码
+            side: 买卖方向（"buy" or "sell"）
+            quantity: 数量
+            price: 价格（限价单必需）
+            order_type: 订单类型（"market" or "limit"）
+        
+        Returns:
+            Order: 订单信息
+        """
+        # 1. 获取策略部署信息
+        if strategy_id not in self.manager.deployments:
+            raise ValueError(f"策略 {strategy_id} 未部署")
+        
+        deployment = self.manager.deployments[strategy_id]
+        
+        # 2. 创建订单
+        order = Order(
+            order_id=f"order_{datetime.now().timestamp()}",
+            strategy_id=strategy_id,
+            symbol=symbol,
+            side=side,
+            quantity=quantity,
+            price=price or 0.0,
+            order_type=order_type,
+            status="pending",
+            submit_time=datetime.now()
+        )
+        
+        # 3. 根据平台选择交易接口
+        if deployment.platform == "ptrade":
+            trader = self.ptrade_trader
+        elif deployment.platform == "qmt":
+            trader = self.qmt_trader
+        else:
+            raise ValueError(f"不支持的平台: {deployment.platform}")
+        
+        # 4. 提交订单
+        try:
+            order.status = "submitted"
+            result = trader.submit_order(
+                symbol=symbol,
+                side=side,
+                quantity=quantity,
+                price=price,
+                order_type=order_type
+            )
+            
+            if result.get('success'):
+                order.order_id = result.get('order_id', order.order_id)
+                # 保存订单到数据库
+                self._save_order(order)
+                self.orders[order.order_id] = order
+                return order
+            else:
+                order.status = "rejected"
+                raise Exception(f"订单提交失败: {result.get('error')}")
+                
+        except Exception as e:
+            order.status = "rejected"
+            self._save_order(order)
+            logger.error(f"订单执行失败: {e}")
+            raise
+    
+    def monitor_orders(
+        self,
+        strategy_id: Optional[str] = None
+    ) -> List[Order]:
+        """
+        监控订单状态
+        
+        Args:
+            strategy_id: 策略ID（可选，不提供则监控所有订单）
+        
+        Returns:
+            List[Order]: 订单列表
+        """
+        # 从数据库查询订单
+        if strategy_id:
+            orders = self._query_orders_by_strategy(strategy_id)
+        else:
+            orders = self._query_all_orders()
+        
+        # 更新订单状态
+        for order in orders:
+            self._update_order_status(order)
+        
+        return orders
+    
+    def _update_order_status(self, order: Order):
+        """更新订单状态"""
+        # 根据平台查询订单状态
+        deployment = self.manager.deployments.get(order.strategy_id)
+        if not deployment:
+            return
+        
+        if deployment.platform == "ptrade":
+            trader = self.ptrade_trader
+        elif deployment.platform == "qmt":
+            trader = self.qmt_trader
+        else:
+            return
+        
+        # 查询订单状态
+        order_status = trader.query_order(order.order_id)
+        
+        # 更新订单状态
+        if order_status:
+            order.status = order_status.get('status', order.status)
+            if order.status == "filled":
+                order.fill_time = datetime.now()
+                order.fill_price = order_status.get('fill_price')
+                order.fill_quantity = order_status.get('fill_quantity')
+            
+            # 保存更新
+            self._save_order(order)
+    
+    def _save_order(self, order: Order):
+        """保存订单到数据库"""
+        if self.manager.db:
+            self.manager.db.execute(
+                """
+                INSERT INTO orders 
+                (order_id, strategy_id, symbol, side, quantity, price, 
+                 order_type, status, submit_time, fill_time, fill_price, fill_quantity)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (order_id) 
+                DO UPDATE SET 
+                    status = EXCLUDED.status,
+                    fill_time = EXCLUDED.fill_time,
+                    fill_price = EXCLUDED.fill_price,
+                    fill_quantity = EXCLUDED.fill_quantity
+                """,
+                (
+                    order.order_id,
+                    order.strategy_id,
+                    order.symbol,
+                    order.side,
+                    order.quantity,
+                    order.price,
+                    order.order_type,
+                    order.status,
+                    order.submit_time,
+                    order.fill_time,
+                    order.fill_price,
+                    order.fill_quantity
+                )
+            )
+```
+
+<h2 id="section-9-6-3">🛡️ 9.6.3 风险监控管理</h2>
+
+风险监控管理负责实时风控、风险指标监控和告警机制。
+
+### 风险监控器
+
+```python
+from typing import Dict, List, Callable
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+
+@dataclass
+class RiskAlert:
+    """风险告警"""
+    alert_id: str
+    strategy_id: str
+    alert_type: str  # "drawdown", "loss", "position", "liquidity"
+    severity: str  # "low", "medium", "high", "critical"
+    message: str
+    timestamp: datetime
+    resolved: bool = False
+
+class RiskMonitor:
+    """风险监控器"""
+    
+    def __init__(
+        self,
+        live_trading_manager: LiveTradingManager,
+        risk_config: Dict[str, Any]
+    ):
+        """
+        初始化风险监控器
+        
+        Args:
+            live_trading_manager: 实盘交易管理器
+            risk_config: 风险配置
+        """
+        self.manager = live_trading_manager
+        self.config = risk_config
+        self.alerts: List[RiskAlert] = []
+        self.monitoring_interval = 60  # 监控间隔（秒）
+    
+    def monitor_risk(
+        self,
+        strategy_id: str
+    ) -> List[RiskAlert]:
+        """
+        监控策略风险
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            List[RiskAlert]: 风险告警列表
+        """
+        alerts = []
+        
+        # 1. 检查回撤风险
+        drawdown_alerts = self._check_drawdown_risk(strategy_id)
+        alerts.extend(drawdown_alerts)
+        
+        # 2. 检查亏损风险
+        loss_alerts = self._check_loss_risk(strategy_id)
+        alerts.extend(loss_alerts)
+        
+        # 3. 检查仓位风险
+        position_alerts = self._check_position_risk(strategy_id)
+        alerts.extend(position_alerts)
+        
+        # 4. 检查流动性风险
+        liquidity_alerts = self._check_liquidity_risk(strategy_id)
+        alerts.extend(liquidity_alerts)
+        
+        # 保存告警
+        for alert in alerts:
+            self._save_alert(alert)
+            self.alerts.append(alert)
+        
+        return alerts
+    
+    def _check_drawdown_risk(
+        self,
+        strategy_id: str
+    ) -> List[RiskAlert]:
+        """检查回撤风险"""
+        alerts = []
+        
+        # 获取策略实时表现
+        performance = self._get_strategy_performance(strategy_id)
+        if not performance:
+            return alerts
+        
+        current_drawdown = performance.get('current_drawdown', 0)
+        max_drawdown_limit = self.config.get('max_drawdown_limit', 0.15)
+        
+        if current_drawdown > max_drawdown_limit:
+            severity = "critical" if current_drawdown > max_drawdown_limit * 1.5 else "high"
+            alert = RiskAlert(
+                alert_id=f"alert_{datetime.now().timestamp()}",
+                strategy_id=strategy_id,
+                alert_type="drawdown",
+                severity=severity,
+                message=f"策略回撤超过限制: {current_drawdown:.2%} > {max_drawdown_limit:.2%}",
+                timestamp=datetime.now()
+            )
+            alerts.append(alert)
+        
+        return alerts
+    
+    def _check_loss_risk(
+        self,
+        strategy_id: str
+    ) -> List[RiskAlert]:
+        """检查亏损风险"""
+        alerts = []
+        
+        # 获取策略实时表现
+        performance = self._get_strategy_performance(strategy_id)
+        if not performance:
+            return alerts
+        
+        daily_loss = performance.get('daily_return', 0)
+        daily_loss_limit = self.config.get('daily_loss_limit', -0.05)
+        
+        if daily_loss < daily_loss_limit:
+            severity = "critical" if daily_loss < daily_loss_limit * 2 else "high"
+            alert = RiskAlert(
+                alert_id=f"alert_{datetime.now().timestamp()}",
+                strategy_id=strategy_id,
+                alert_type="loss",
+                severity=severity,
+                message=f"策略单日亏损超过限制: {daily_loss:.2%} < {daily_loss_limit:.2%}",
+                timestamp=datetime.now()
+            )
+            alerts.append(alert)
+        
+        return alerts
+    
+    def _check_position_risk(
+        self,
+        strategy_id: str
+    ) -> List[RiskAlert]:
+        """检查仓位风险"""
+        alerts = []
+        
+        # 获取持仓信息
+        positions = self._get_strategy_positions(strategy_id)
+        if not positions:
+            return alerts
+        
+        # 检查单票仓位
+        max_position_ratio = self.config.get('max_position_ratio', 0.1)
+        for position in positions:
+            position_ratio = position.get('position_ratio', 0)
+            if position_ratio > max_position_ratio:
+                alert = RiskAlert(
+                    alert_id=f"alert_{datetime.now().timestamp()}",
+                    strategy_id=strategy_id,
+                    alert_type="position",
+                    severity="medium",
+                    message=f"单票仓位超过限制: {position['symbol']} {position_ratio:.2%} > {max_position_ratio:.2%}",
+                    timestamp=datetime.now()
+                )
+                alerts.append(alert)
+        
+        return alerts
+    
+    def _check_liquidity_risk(
+        self,
+        strategy_id: str
+    ) -> List[RiskAlert]:
+        """检查流动性风险"""
+        alerts = []
+        
+        # 获取持仓信息
+        positions = self._get_strategy_positions(strategy_id)
+        if not positions:
+            return alerts
+        
+        # 检查持仓流动性
+        for position in positions:
+            symbol = position.get('symbol')
+            volume = position.get('volume', 0)
+            avg_volume = position.get('avg_volume', 0)
+            
+            # 如果持仓量超过平均成交量的50%，可能存在流动性风险
+            if avg_volume > 0 and volume > avg_volume * 0.5:
+                alert = RiskAlert(
+                    alert_id=f"alert_{datetime.now().timestamp()}",
+                    strategy_id=strategy_id,
+                    alert_type="liquidity",
+                    severity="low",
+                    message=f"持仓可能存在流动性风险: {symbol} 持仓量 {volume} > 平均成交量 {avg_volume} 的50%",
+                    timestamp=datetime.now()
+                )
+                alerts.append(alert)
+        
+        return alerts
+    
+    def _get_strategy_performance(
+        self,
+        strategy_id: str
+    ) -> Dict[str, Any]:
+        """获取策略实时表现"""
+        # 从数据库或实时数据源获取
+        # 这里简化实现
+        return {}
+    
+    def _get_strategy_positions(
+        self,
+        strategy_id: str
+    ) -> List[Dict[str, Any]]:
+        """获取策略持仓"""
+        # 从数据库或交易平台获取
+        # 这里简化实现
+        return []
+    
+    def _save_alert(self, alert: RiskAlert):
+        """保存告警到数据库"""
+        if self.manager.db:
+            self.manager.db.execute(
+                """
+                INSERT INTO risk_alerts 
+                (alert_id, strategy_id, alert_type, severity, message, timestamp, resolved)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    alert.alert_id,
+                    alert.strategy_id,
+                    alert.alert_type,
+                    alert.severity,
+                    alert.message,
+                    alert.timestamp,
+                    alert.resolved
+                )
+            )
+```
+
+<h2 id="section-9-6-4">📊 9.6.4 持仓管理</h2>
+
+持仓管理负责持仓查询、同步、分析和调整。
+
+### 持仓管理器
+
+```python
+from typing import List, Dict, Optional
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass
+class Position:
+    """持仓信息"""
+    strategy_id: str
+    symbol: str
+    quantity: int
+    avg_cost: float
+    current_price: float
+    market_value: float
+    profit_loss: float
+    profit_loss_ratio: float
+    update_time: datetime
+
+class PositionManager:
+    """持仓管理器"""
+    
+    def __init__(
+        self,
+        live_trading_manager: LiveTradingManager,
+        ptrade_data_provider=None,
+        qmt_data_provider=None
+    ):
+        """
+        初始化持仓管理器
+        
+        Args:
+            live_trading_manager: 实盘交易管理器
+            ptrade_data_provider: PTrade数据提供者
+            qmt_data_provider: QMT数据提供者
+        """
+        self.manager = live_trading_manager
+        self.ptrade_data = ptrade_data_provider
+        self.qmt_data = qmt_data_provider
+        self.positions: Dict[str, List[Position]] = {}
+    
+    def get_positions(
+        self,
+        strategy_id: str
+    ) -> List[Position]:
+        """
+        获取策略持仓
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            List[Position]: 持仓列表
+        """
+        # 1. 获取策略部署信息
+        if strategy_id not in self.manager.deployments:
+            raise ValueError(f"策略 {strategy_id} 未部署")
+        
+        deployment = self.manager.deployments[strategy_id]
+        
+        # 2. 根据平台获取持仓
+        if deployment.platform == "ptrade":
+            positions_data = self.ptrade_data.get_positions()
+        elif deployment.platform == "qmt":
+            positions_data = self.qmt_data.get_positions()
+        else:
+            raise ValueError(f"不支持的平台: {deployment.platform}")
+        
+        # 3. 转换为Position对象
+        positions = []
+        for pos_data in positions_data:
+            position = Position(
+                strategy_id=strategy_id,
+                symbol=pos_data.get('symbol'),
+                quantity=pos_data.get('quantity', 0),
+                avg_cost=pos_data.get('avg_cost', 0),
+                current_price=pos_data.get('current_price', 0),
+                market_value=pos_data.get('market_value', 0),
+                profit_loss=pos_data.get('profit_loss', 0),
+                profit_loss_ratio=pos_data.get('profit_loss_ratio', 0),
+                update_time=datetime.now()
+            )
+            positions.append(position)
+        
+        # 4. 保存持仓到数据库
+        self._save_positions(strategy_id, positions)
+        self.positions[strategy_id] = positions
+        
+        return positions
+    
+    def sync_positions(
+        self,
+        strategy_id: str
+    ) -> bool:
+        """
+        同步持仓（从交易平台同步到系统）
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            bool: 同步是否成功
+        """
+        try:
+            positions = self.get_positions(strategy_id)
+            # 同步成功
+            return True
+        except Exception as e:
+            logger.error(f"持仓同步失败: {e}")
+            return False
+    
+    def analyze_positions(
+        self,
+        strategy_id: str
+    ) -> Dict[str, Any]:
+        """
+        分析持仓
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            Dict: 持仓分析结果
+        """
+        positions = self.get_positions(strategy_id)
+        
+        if not positions:
+            return {
+                'total_positions': 0,
+                'total_market_value': 0,
+                'total_profit_loss': 0,
+                'total_profit_loss_ratio': 0
+            }
+        
+        total_market_value = sum(p.market_value for p in positions)
+        total_profit_loss = sum(p.profit_loss for p in positions)
+        total_cost = sum(p.avg_cost * p.quantity for p in positions)
+        total_profit_loss_ratio = total_profit_loss / total_cost if total_cost > 0 else 0
+        
+        return {
+            'total_positions': len(positions),
+            'total_market_value': total_market_value,
+            'total_profit_loss': total_profit_loss,
+            'total_profit_loss_ratio': total_profit_loss_ratio,
+            'positions_detail': [
+                {
+                    'symbol': p.symbol,
+                    'quantity': p.quantity,
+                    'market_value': p.market_value,
+                    'profit_loss': p.profit_loss,
+                    'profit_loss_ratio': p.profit_loss_ratio
+                }
+                for p in positions
+            ]
+        }
+    
+    def _save_positions(
+        self,
+        strategy_id: str,
+        positions: List[Position]
+    ):
+        """保存持仓到数据库"""
+        if self.manager.db:
+            # 删除旧持仓
+            self.manager.db.execute(
+                "DELETE FROM positions WHERE strategy_id = %s",
+                (strategy_id,)
+            )
+            
+            # 插入新持仓
+            for position in positions:
+                self.manager.db.execute(
+                    """
+                    INSERT INTO positions 
+                    (strategy_id, symbol, quantity, avg_cost, current_price, 
+                     market_value, profit_loss, profit_loss_ratio, update_time)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        position.strategy_id,
+                        position.symbol,
+                        position.quantity,
+                        position.avg_cost,
+                        position.current_price,
+                        position.market_value,
+                        position.profit_loss,
+                        position.profit_loss_ratio,
+                        position.update_time
+                    )
+                )
+```
+
+<h2 id="section-9-6-5">🔄 9.6.5 交易数据管理</h2>
+
+交易数据管理负责交易记录存储、同步和查询。
+
+### 交易数据管理器
+
+```python
+from typing import List, Dict, Optional
+from datetime import datetime, timedelta
+
+class TradingDataManager:
+    """交易数据管理器"""
+    
+    def __init__(
+        self,
+        live_trading_manager: LiveTradingManager,
+        db_connection=None
+    ):
+        """
+        初始化交易数据管理器
+        
+        Args:
+            live_trading_manager: 实盘交易管理器
+            db_connection: 数据库连接
+        """
+        self.manager = live_trading_manager
+        self.db = db_connection
+    
+    def save_trade_record(
+        self,
+        order: Order,
+        fill_data: Dict[str, Any]
+    ):
+        """
+        保存交易记录
+        
+        Args:
+            order: 订单信息
+            fill_data: 成交数据
+        """
+        if self.db:
+            self.db.execute(
+                """
+                INSERT INTO trade_records 
+                (order_id, strategy_id, symbol, side, quantity, price, 
+                 fill_price, fill_quantity, fill_time, commission, stamp_tax)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    order.order_id,
+                    order.strategy_id,
+                    order.symbol,
+                    order.side,
+                    order.quantity,
+                    order.price,
+                    fill_data.get('fill_price'),
+                    fill_data.get('fill_quantity'),
+                    fill_data.get('fill_time'),
+                    fill_data.get('commission', 0),
+                    fill_data.get('stamp_tax', 0)
+                )
+            )
+    
+    def query_trade_records(
+        self,
+        strategy_id: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        查询交易记录
+        
+        Args:
+            strategy_id: 策略ID（可选）
+            start_date: 开始日期（可选）
+            end_date: 结束日期（可选）
+        
+        Returns:
+            List[Dict]: 交易记录列表
+        """
+        query = "SELECT * FROM trade_records WHERE 1=1"
+        params = []
+        
+        if strategy_id:
+            query += " AND strategy_id = %s"
+            params.append(strategy_id)
+        
+        if start_date:
+            query += " AND fill_time >= %s"
+            params.append(start_date)
+        
+        if end_date:
+            query += " AND fill_time <= %s"
+            params.append(end_date)
+        
+        query += " ORDER BY fill_time DESC"
+        
+        if self.db:
+            return self.db.fetch_all(query, params)
+        
+        return []
+    
+    def sync_trading_data(
+        self,
+        strategy_id: str
+    ) -> bool:
+        """
+        同步交易数据（从交易平台同步到系统）
+        
+        Args:
+            strategy_id: 策略ID
+        
+        Returns:
+            bool: 同步是否成功
+        """
+        try:
+            # 获取策略部署信息
+            deployment = self.manager.deployments.get(strategy_id)
+            if not deployment:
+                return False
+            
+            # 根据平台同步数据
+            if deployment.platform == "ptrade":
+                # 从PTrade同步交易数据
+                pass
+            elif deployment.platform == "qmt":
+                # 从QMT同步交易数据
+                pass
+            
+            return True
+        except Exception as e:
+            logger.error(f"交易数据同步失败: {e}")
+            return False
+```
+
+## 🔗 相关章节
+
+- **第7章：策略开发**：了解策略开发和测试流程
+- **第8章：回测验证**：了解BulletTrade回测和策略验证
+- **9.1 PTrade集成**：了解PTrade平台集成
+- **9.2 QMT集成**：了解QMT平台集成
+- **9.7 实盘反馈与在线再优化**：了解实盘反馈机制
+
+## 💡 关键要点
+
+1. **策略部署**：确保策略经过BulletTrade回测验证后再部署
+2. **交易执行**：实现自动化交易执行和实时监控
+3. **风险监控**：实时监控风险，及时触发告警
+4. **持仓管理**：定期同步持仓，分析持仓情况
+5. **数据管理**：完整记录交易数据，支持数据查询和分析
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了实盘交易管理系统，包括策略部署管理、交易执行管理、风险监控管理、持仓管理和交易数据管理。通过理解实盘交易管理器的核心实现，帮助开发者掌握如何将经过BulletTrade回测验证的策略部署到实盘环境，实现自动化交易执行、实时风险监控和持仓管理。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了实盘交易管理后，下一节将介绍实盘反馈与在线再优化，包括实盘反馈机制、在线再优化流程和反馈闭环设计。通过理解实盘反馈的完整机制，帮助开发者掌握如何实现策略的持续优化。</p>
+  
+  <a href="/ashare-book6/009_Chapter9_Platform_Integration/9.7_Online_Feedback_Loop_CN" class="next-section">
+    继续学习：9.7 实盘反馈与在线再优化 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12
+

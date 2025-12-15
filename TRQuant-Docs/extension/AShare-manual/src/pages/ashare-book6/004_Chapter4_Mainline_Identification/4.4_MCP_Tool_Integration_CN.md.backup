@@ -1,0 +1,733 @@
+---
+title: "4.4 MCP工具集成"
+description: "深入解析投资主线识别模块的MCP工具集成，包括trquant_mainlines工具、知识库查询等工具的使用"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 🛠️ 4.4 MCP工具集成
+
+> **核心摘要：**
+> 
+> 本节系统介绍投资主线识别模块与MCP工具的深度集成，支持通过MCP工具进行投资主线查询、知识库查询和数据收集。通过理解TRQuant MCP工具、KB MCP Server工具和Data Collector工具的使用方法、参数说明、返回结果和应用场景，帮助开发者掌握如何使用MCP工具提升投资主线识别效率，实现AI增强的主线识别能力。
+
+投资主线识别模块与MCP工具深度集成，提供投资主线查询、知识库查询等功能。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-4-4-1')">
+    <h4>📊 4.4.1 trquant_mainlines工具</h4>
+    <p>获取投资主线的完整使用方法、参数说明、返回结果和应用场景</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-4-2')">
+    <h4>🔍 4.4.2 KB MCP Server工具</h4>
+    <p>kb.query知识库查询工具的使用方法和查询技巧</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-4-3')">
+    <h4>📥 4.4.3 Data Collector工具</h4>
+    <p>data_collector.crawl_web网页爬取工具的使用方法和数据收集</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-4-4')">
+    <h4>🔄 4.4.4 工具集成工作流</h4>
+    <p>MCP工具在投资主线识别中的完整工作流和最佳实践</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **使用trquant_mainlines工具**：掌握投资主线查询的完整方法和应用场景
+- **使用KB MCP工具**：掌握知识库查询方法和查询技巧
+- **使用Data Collector工具**：掌握数据收集方法和数据处理
+- **构建工具集成工作流**：理解MCP工具在投资主线识别中的完整应用流程
+
+## 📚 核心概念
+
+### MCP工具集成架构
+
+投资主线识别模块通过MCP（Model Context Protocol）协议与AI工具链深度集成：
+
+1. **TRQuant MCP Server**：提供投资主线识别相关的专业工具
+2. **KB MCP Server**：提供知识库查询能力
+3. **Data Collector MCP Server**：提供数据收集能力
+
+### 工具调用方式
+
+在Cursor中，MCP工具可以通过以下方式调用：
+
+1. **直接调用**：在AI对话中直接请求使用工具
+2. **命令调用**：通过命令面板执行相关命令
+3. **代码调用**：在Python代码中通过MCP客户端调用
+
+<h2 id="section-4-4-1">📊 4.4.1 trquant_mainlines工具</h2>
+
+`trquant_mainlines`是TRQuant MCP Server提供的核心工具，用于获取当前A股市场的投资主线。
+
+### 工具定义
+
+```python
+MCPTool(
+    name="trquant_mainlines",
+    description="获取当前A股市场的投资主线，包括主线名称、评分、相关行业和投资逻辑",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "top_n": {
+                "type": "integer",
+                "description": "返回前N条主线，默认10",
+                "default": 10
+            },
+            "time_horizon": {
+                "type": "string",
+                "enum": ["short", "medium", "long"],
+                "description": "投资周期：short(1-5天)、medium(1-4周)、long(1月+)",
+                "default": "short"
+            }
+        },
+        "required": []
+    }
+)
+```
+
+### 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| top_n | integer | 否 | 10 | 返回前N条主线，范围1-50 |
+| time_horizon | string | 否 | "short" | 投资周期：short(1-5天)/medium(1-4周)/long(1月+) |
+
+**time_horizon参数详解**：
+
+- `short`：1-5天，适合短线交易策略
+- `medium`：1-4周，适合中短线策略
+- `long`：1月+，适合中长期策略
+
+### 使用示例
+
+#### 在Cursor AI对话中使用
+
+```
+用户: 帮我获取当前市场的投资主线
+
+AI: 让我调用TRQuant工具获取投资主线...
+[调用 trquant_mainlines]
+```
+
+#### 在Python代码中使用
+
+```python
+from mcp import MCPClient
+
+# 初始化MCP客户端
+client = MCPClient(server_url="http://localhost:8000")
+
+# 获取短期投资主线
+short_mainlines = client.call_tool(
+    "trquant_mainlines",
+    {
+        "time_horizon": "short",
+        "top_n": 10
+    }
+)
+
+# 获取中期投资主线
+medium_mainlines = client.call_tool(
+    "trquant_mainlines",
+    {
+        "time_horizon": "medium",
+        "top_n": 20
+    }
+)
+
+# 获取长期投资主线
+long_mainlines = client.call_tool(
+    "trquant_mainlines",
+    {
+        "time_horizon": "long",
+        "top_n": 15
+    }
+)
+
+# 处理结果
+for mainline in short_mainlines:
+    if mainline['score'] >= 80:
+        print(f"高评分主线: {mainline['name']}")
+        print(f"评分: {mainline['score']}")
+        print(f"相关行业: {mainline['industries']}")
+        print(f"投资逻辑: {mainline['logic']}")
+        print(f"生命周期: {mainline['stage']}")
+        print(f"主线类型: {mainline['type']}")
+        print(f"推荐等级: {mainline['recommendation']}")
+        print(f"建议仓位: {mainline['position_suggestion']}")
+        print("-" * 60)
+```
+
+### 返回结果
+
+```python
+[
+    {
+        "name": "AI算力基础设施",
+        "score": 85,
+        "industries": ["半导体设备", "服务器", "光模块"],
+        "logic": "AI应用爆发带动算力需求，政策支持算力基础设施建设，相关公司业绩增长确定性强",
+        "stage": "growing",        # 生命周期阶段：emerging/growing/mature/declining
+        "type": "industry",        # 主线类型：policy/industry/event/cycle/theme
+        "recommendation": "strong_buy",  # 推荐等级：strong_buy/buy/hold/sell
+        "position_suggestion": 0.3,      # 建议仓位（0-1）
+        "score_details": {
+            "policy": 18,      # 政策支持度评分
+            "capital": 20,      # 资金认可度评分
+            "industry": 17,    # 产业景气度评分
+            "technical": 15,   # 技术形态度评分
+            "valuation": 10,   # 估值合理度评分
+            "foresight": 5     # 前瞻领先度评分
+        },
+        "key_stocks": [
+            {
+                "symbol": "000001.SZ",
+                "name": "股票名称",
+                "role": "领涨",
+                "return": 0.15
+            }
+        ],
+        "catalysts": [
+            {
+                "date": "2025-12-20",
+                "event": "政策发布",
+                "impact": "high"
+            }
+        ]
+    },
+    # ... 更多主线
+]
+```
+
+### 结果解读
+
+#### 主线评分
+
+- **评分范围**：0-100
+- **评分越高**，主线投资价值越大
+- **建议关注**：评分≥80的主线
+
+#### 生命周期阶段
+
+| 阶段 | 含义 | 特征 | 投资建议 |
+|------|------|------|----------|
+| emerging | 启动期 | 主线刚出现，评分较低 | 谨慎参与，小仓位试探 |
+| growing | 成长期 | 主线快速发展，评分上升 | 积极配置，加大仓位 |
+| mature | 成熟期 | 主线稳定发展，评分较高 | 稳定持有，适度减仓 |
+| declining | 衰退期 | 主线开始衰退，评分下降 | 及时退出，避免损失 |
+
+#### 主线类型
+
+- `policy`：政策驱动型
+- `industry`：产业趋势型
+- `event`：事件驱动型
+- `cycle`：周期轮动型
+- `theme`：主题概念型
+
+#### 推荐等级
+
+- `strong_buy`：强烈买入，建议仓位≥30%
+- `buy`：买入，建议仓位20-30%
+- `hold`：持有，建议仓位10-20%
+- `sell`：卖出，建议仓位<10%
+
+### 应用场景
+
+#### 1. 候选池构建
+
+```python
+# 获取高评分主线
+mainlines = client.call_tool(
+    "trquant_mainlines",
+    {"time_horizon": "medium", "top_n": 10}
+)
+
+# 根据主线构建候选池
+for mainline in mainlines:
+    if mainline['score'] >= 80:
+        # 高评分主线，用于候选池构建
+        candidate_pool = build_candidate_pool(
+            mainline=mainline,
+            industries=mainline['industries'],
+            key_stocks=mainline.get('key_stocks', [])
+        )
+```
+
+#### 2. 因子推荐
+
+```python
+# 根据主线类型推荐因子
+for mainline in mainlines:
+    if mainline['type'] == 'policy':
+        # 政策驱动型，推荐政策相关因子
+        factors = recommend_policy_factors(mainline)
+    elif mainline['type'] == 'industry':
+        # 产业趋势型，推荐产业相关因子
+        factors = recommend_industry_factors(mainline)
+```
+
+#### 3. 策略生成
+
+```python
+# 根据主线生成策略
+for mainline in mainlines:
+    if mainline['score'] >= 80 and mainline['stage'] == 'growing':
+        # 高评分成长期主线，生成策略
+        strategy = generate_strategy(
+            mainline=mainline,
+            position=mainline['position_suggestion'],
+            stop_loss=0.08,
+            take_profit=0.20
+        )
+```
+
+<h2 id="section-4-4-2">🔍 4.4.2 KB MCP Server工具</h2>
+
+KB MCP Server提供知识库查询能力，支持查询开发手册和工程代码库。
+
+### kb.query
+
+查询知识库，获取投资主线识别相关的文档和代码。
+
+#### 工具定义
+
+```python
+MCPTool(
+    name="kb.query",
+    description="查询知识库，获取相关文档和代码",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "查询关键词或问题"
+            },
+            "collection": {
+                "type": "string",
+                "enum": ["manual_kb", "engineering_kb", "both"],
+                "description": "查询范围：manual_kb（手册）/engineering_kb（代码库）/both（两者）",
+                "default": "both"
+            },
+            "top_k": {
+                "type": "integer",
+                "description": "返回前K个结果，默认5",
+                "default": 5
+            }
+        },
+        "required": ["query"]
+    }
+)
+```
+
+#### 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| query | string | 是 | - | 查询关键词或问题 |
+| collection | string | 否 | "both" | 查询范围：manual_kb/engineering_kb/both |
+| top_k | integer | 否 | 5 | 返回前K个结果，范围1-20 |
+
+#### 使用示例
+
+**查询主线识别相关文档**：
+
+```python
+# 查询主线识别相关的开发文档
+results = client.call_tool(
+    "kb.query",
+    {
+        "query": "投资主线识别 多维度评分 主线筛选算法",
+        "collection": "manual_kb",
+        "top_k": 5
+    }
+)
+
+# 处理结果
+for result in results:
+    print(f"文档: {result['title']}")
+    print(f"文件路径: {result['file_path']}")
+    print(f"相关性: {result['score']:.2f}")
+    print(f"内容片段: {result['snippet']}")
+    print("-" * 60)
+```
+
+**查询主线识别相关代码**：
+
+```python
+# 查询主线识别相关的代码实现
+results = client.call_tool(
+    "kb.query",
+    {
+        "query": "主线识别引擎 三层分析框架 主线发现流程",
+        "collection": "engineering_kb",
+        "top_k": 10
+    }
+)
+
+# 处理结果
+for result in results:
+    print(f"文件: {result['file_path']}")
+    print(f"函数: {result.get('function_name', 'N/A')}")
+    print(f"代码片段: {result['code_snippet']}")
+    print(f"相关性: {result['score']:.2f}")
+    print("-" * 60)
+```
+
+#### 返回结果
+
+```python
+[
+    {
+        "title": "4.3 主线识别引擎",
+        "file_path": "/ashare-book6/004_Chapter4_Mainline_Identification/4.3_Mainline_Engine_CN.md",
+        "snippet": "主线识别引擎是投资主线识别模块的核心组件，负责通过三层分析框架发现和识别投资主线...",
+        "score": 0.95,
+        "type": "document"
+    },
+    {
+        "file_path": "markets/ashare/mainline/engine.py",
+        "function_name": "discover_mainlines",
+        "code_snippet": "def discover_mainlines(self, include_emerging: bool = True, min_score: float = 60) -> List[Mainline]:\n    # 主线发现流程实现...",
+        "score": 0.88,
+        "type": "code"
+    },
+    # ... 更多结果
+]
+```
+
+#### 查询技巧
+
+1. **使用具体关键词**：使用具体的术语和概念，避免过于宽泛的查询
+   - ✅ 好：`主线识别引擎 三层分析框架`
+   - ❌ 差：`主线`
+
+2. **组合查询**：使用多个关键词组合查询，提高查询精度
+   - ✅ 好：`主线评分 六维度 因子评分`
+   - ❌ 差：`评分`
+
+3. **指定查询范围**：根据需求选择manual_kb或engineering_kb
+   - 查询开发文档：使用`manual_kb`
+   - 查询代码实现：使用`engineering_kb`
+   - 综合查询：使用`both`
+
+4. **调整top_k**：根据需求调整返回结果数量
+   - 快速查询：`top_k=3`
+   - 详细查询：`top_k=10`
+
+#### 应用场景
+
+1. **开发文档查询**：查询开发手册中的相关章节
+2. **代码实现查询**：查询代码库中的相关实现
+3. **最佳实践查询**：查询开发最佳实践和设计模式
+4. **问题解决**：查询问题解决方案和故障排除方法
+
+<h2 id="section-4-4-3">📥 4.4.3 Data Collector工具</h2>
+
+Data Collector MCP Server提供数据收集能力，支持网页爬取、PDF下载、学术论文收集等功能。
+
+### data_collector.crawl_web
+
+爬取网页内容，收集投资主线相关的研究资料。
+
+#### 工具定义
+
+```python
+MCPTool(
+    name="data_collector.crawl_web",
+    description="爬取网页内容，提取文本和链接",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "目标网页URL"
+            },
+            "extract_text": {
+                "type": "boolean",
+                "description": "是否提取文本内容，默认true",
+                "default": true
+            },
+            "max_depth": {
+                "type": "integer",
+                "description": "最大爬取深度，默认1",
+                "default": 1
+            },
+            "output_dir": {
+                "type": "string",
+                "description": "输出目录，默认data/collected",
+                "default": "data/collected"
+            }
+        },
+        "required": ["url"]
+    }
+)
+```
+
+#### 参数说明
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| url | string | 是 | - | 目标网页URL |
+| extract_text | boolean | 否 | true | 是否提取文本内容 |
+| max_depth | integer | 否 | 1 | 最大爬取深度，范围1-3 |
+| output_dir | string | 否 | "data/collected" | 输出目录路径 |
+
+#### 使用示例
+
+**爬取主线分析相关网页**：
+
+```python
+# 爬取主线分析相关网页
+result = client.call_tool(
+    "data_collector.crawl_web",
+    {
+        "url": "https://example.com/mainline-analysis",
+        "extract_text": True,
+        "max_depth": 2,
+        "output_dir": "data/collected/mainline_analysis"
+    }
+)
+
+# 处理结果
+print(f"爬取页面数: {result['pages_crawled']}")
+print(f"提取文本长度: {result['text_length']}")
+print(f"保存路径: {result['output_path']}")
+print(f"文件列表: {result['files']}")
+```
+
+#### 返回结果
+
+```python
+{
+    "pages_crawled": 5,
+    "text_length": 50000,
+    "output_path": "data/collected/mainline_analysis",
+    "files": [
+        "page_1.html",
+        "page_2.html",
+        "page_3.html"
+    ],
+    "timestamp": "2025-12-12T10:00:00"
+}
+```
+
+#### 应用场景
+
+1. **研究报告收集**：收集投资主线相关的研究报告
+2. **行业数据收集**：收集行业分析资料和数据
+3. **政策解读收集**：收集政策解读文档和分析
+4. **新闻资讯收集**：收集市场相关的新闻资讯
+
+<h2 id="section-4-4-4">🔄 4.4.4 工具集成工作流</h2>
+
+MCP工具在投资主线识别中的完整工作流和最佳实践。
+
+### 完整工作流示例
+
+**场景：分析当前市场并获取投资主线**
+
+```python
+# 1. 获取市场状态（使用trquant_market_status）
+market_status = client.call_tool(
+    "trquant_market_status",
+    {"universe": "CN_EQ"}
+)
+
+# 2. 根据市场状态选择投资周期
+if market_status["regime"] == "risk_on":
+    time_horizon = "short"  # 风险偏好上升，选择短期主线
+elif market_status["regime"] == "risk_off":
+    time_horizon = "long"  # 风险偏好下降，选择长期主线
+else:
+    time_horizon = "medium"  # 震荡市场，选择中期主线
+
+# 3. 获取投资主线
+mainlines = client.call_tool(
+    "trquant_mainlines",
+    {
+        "time_horizon": time_horizon,
+        "top_n": 10
+    }
+)
+
+# 4. 查询相关知识库
+knowledge = client.call_tool(
+    "kb.query",
+    {
+        "query": f"投资主线识别 {time_horizon} 策略",
+        "collection": "both",
+        "top_k": 5
+    }
+)
+
+# 5. 收集外部资料（如需要）
+if len(mainlines) < 5:
+    external_data = client.call_tool(
+        "data_collector.crawl_web",
+        {
+            "url": "https://example.com/mainline-analysis",
+            "extract_text": True
+        }
+    )
+
+# 6. 综合分析并生成投资建议
+investment_advice = generate_advice(
+    market_status=market_status,
+    mainlines=mainlines,
+    knowledge=knowledge
+)
+```
+
+### 最佳实践
+
+#### 1. 工具调用顺序
+
+**推荐顺序**：
+1. 先获取市场状态（`trquant_market_status`）
+2. 根据市场状态选择投资周期
+3. 获取投资主线（`trquant_mainlines`）
+4. 查询相关知识库（`kb.query`）
+5. 收集外部资料（如需要，`data_collector.crawl_web`）
+
+#### 2. 错误处理
+
+```python
+def safe_call_tool(tool_name: str, params: dict, max_retries: int = 3):
+    """安全调用MCP工具，带重试机制"""
+    for attempt in range(max_retries):
+        try:
+            result = client.call_tool(tool_name, params)
+            return result
+        except Exception as e:
+            logger.warning(f"工具调用失败 (尝试 {attempt + 1}/{max_retries}): {e}")
+            if attempt == max_retries - 1:
+                raise
+            time.sleep(1)  # 等待1秒后重试
+```
+
+#### 3. 结果缓存
+
+```python
+from functools import lru_cache
+from datetime import datetime, timedelta
+
+@lru_cache(maxsize=100)
+def get_cached_mainlines(time_horizon: str, top_n: int, cache_key: str):
+    """缓存主线查询结果（5分钟有效期）"""
+    # cache_key包含日期，确保每天更新
+    return client.call_tool(
+        "trquant_mainlines",
+        {"time_horizon": time_horizon, "top_n": top_n}
+    )
+```
+
+#### 4. 结果验证
+
+```python
+def validate_mainlines(mainlines: List[Dict]) -> List[Dict]:
+    """验证主线结果"""
+    validated = []
+    for mainline in mainlines:
+        # 验证必要字段
+        required_fields = ['name', 'score', 'industries', 'logic']
+        if all(field in mainline for field in required_fields):
+            # 验证评分范围
+            if 0 <= mainline['score'] <= 100:
+                validated.append(mainline)
+    return validated
+```
+
+### 工具组合使用
+
+#### 市场分析 + 主线识别
+
+```python
+# 获取市场状态
+market_status = client.call_tool("trquant_market_status", {"universe": "CN_EQ"})
+
+# 根据市场状态选择投资周期
+if market_status["regime"] == "risk_on":
+    time_horizon = "short"  # 短期主线
+elif market_status["regime"] == "risk_off":
+    time_horizon = "long"  # 长期主线
+else:
+    time_horizon = "medium"  # 中期主线
+
+# 获取投资主线
+mainlines = client.call_tool(
+    "trquant_mainlines",
+    {"time_horizon": time_horizon, "top_n": 10}
+)
+```
+
+#### 知识库查询 + 数据收集
+
+```python
+# 查询相关知识
+knowledge = client.call_tool(
+    "kb.query",
+    {"query": "投资主线识别 多维度评分", "collection": "both"}
+)
+
+# 如果知识库结果不足，收集外部资料
+if len(knowledge) < 3:
+    external_data = client.call_tool(
+        "data_collector.crawl_web",
+        {"url": "https://example.com/mainline-analysis"}
+    )
+```
+
+## 🔗 相关章节
+
+- **4.1 主线评分**：了解主线评分方法，理解`trquant_mainlines`工具返回的评分
+- **4.2 主线筛选**：了解主线筛选机制，理解如何使用筛选后的主线
+- **4.3 主线识别引擎**：了解主线识别引擎，理解主线发现流程
+- **第5章：候选池构建**：了解如何使用`trquant_mainlines`工具获取的主线构建候选池
+- **第10章：开发指南**：了解MCP工具的开发和使用方法
+
+## 💡 关键要点
+
+1. **trquant_mainlines工具**：提供投资主线查询功能，支持不同投资周期的主线获取
+2. **KB MCP工具**：提供知识库查询功能，支持主线识别相关研究和问题解决
+3. **Data Collector工具**：提供数据收集功能，支持外部资料获取和研究
+4. **工具集成工作流**：通过工具组合使用，构建完整的投资主线识别工作流
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了投资主线识别模块与MCP工具的深度集成，包括TRQuant MCP工具、KB MCP Server工具和Data Collector工具的使用方法、参数说明、返回结果和应用场景。通过理解MCP工具在投资主线识别中的应用，帮助开发者掌握如何使用MCP工具提升主线识别效率，实现AI增强的主线识别能力。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了投资主线识别模块后，下一章将介绍候选池构建模块，包括股票池管理、筛选规则引擎、股票评分系统和候选池构建器。通过理解候选池构建的核心实现，帮助开发者掌握如何构建可交易的股票候选池。</p>
+  
+  <a href="/ashare-book6/005_Chapter5_Candidate_Pool/005_Chapter5_Candidate_Pool_CN" class="next-section">
+    继续学习：第5章：候选池构建 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

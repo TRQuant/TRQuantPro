@@ -1,0 +1,183 @@
+---
+import { readFile } from "fs/promises";
+import path from "path";
+
+const { topic } = Astro.props;
+
+let data = {
+  title: "暂无数据",
+  date: "",
+  summary: "",
+  suggestion: "",
+  chartUrl: "",
+  sources: []
+};
+
+try {
+  const filePath = path.resolve("src/content/realtime", `${topic}.json`);
+  const content = await readFile(filePath, "utf-8");
+  data = JSON.parse(content);
+} catch (e) {
+  data.summary = "⚠️ 无法加载实时数据。";
+}
+---
+
+<div class="realtime-insight">
+  <div class="insight-header">
+    <h3 class="insight-title">📈 {data.title}（{data.date}）</h3>
+  </div>
+  
+  <div class="insight-content">
+    <p class="insight-summary">{data.summary}</p>
+
+    {data.chartUrl && (
+      <div class="insight-chart">
+        <img src={data.chartUrl} alt="宏观趋势图" class="chart-image" />
+      </div>
+    )}
+
+    {data.sources.length > 0 && (
+      <div class="insight-sources">
+        <h4 class="sources-title">📚 数据来源</h4>
+        <ul class="sources-list">
+          {data.sources.map(src => (
+            <li class="source-item">
+              <a href={src} target="_blank" rel="noopener noreferrer" class="source-link">
+                {src}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+
+  <div class="insight-suggestion">
+    <div class="suggestion-header">
+      <strong>💡 投资建议：</strong>
+    </div>
+    <div class="suggestion-content">
+      {data.suggestion}
+    </div>
+  </div>
+</div>
+
+<style>
+.realtime-insight {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+}
+
+.realtime-insight:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.insight-header {
+  margin-bottom: 1.5rem;
+}
+
+.insight-title {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.insight-content {
+  margin-bottom: 1.5rem;
+}
+
+.insight-summary {
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.insight-chart {
+  margin-bottom: 1.5rem;
+}
+
+.chart-image {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.insight-sources {
+  margin-bottom: 1.5rem;
+}
+
+.sources-title {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.sources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.source-item {
+  margin-bottom: 0.5rem;
+}
+
+.source-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
+.insight-suggestion {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.suggestion-header {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.suggestion-content {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .realtime-insight {
+    padding: 1.5rem;
+  }
+  
+  .insight-title {
+    font-size: 1.1rem;
+  }
+  
+  .insight-summary {
+    font-size: 0.95rem;
+  }
+  
+  .suggestion-content {
+    font-size: 0.9rem;
+  }
+}
+</style> 
+ 

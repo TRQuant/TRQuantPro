@@ -1,0 +1,491 @@
+/* ========== 🎨 统一设计系统 v2.0 ========== */
+/* 基于VS Code Dark主题的核心设计体系 */
+
+/* === 1. 基础网格系统 === */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.grid-auto-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.grid-auto-lg {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+  margin: 1.75rem 0;
+}
+
+/* === 2. 统一卡片系统 === */
+.card-base {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.card-base:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.card-base h4, .card-base h5 {
+  color: var(--primary-color);
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.card-base p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 3. 卡片变体系统 === */
+.card-primary {
+  border-color: var(--primary-color);
+  border-width: 2px;
+}
+
+.card-success {
+  border-left: 4px solid #16a34a;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.card-warning {
+  border-left: 4px solid #d97706;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.card-danger {
+  border-left: 4px solid #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.card-info {
+  border-left: 4px solid #2563eb;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+/* === 4. 章节概览系统 === */
+.chapter-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.overview-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.overview-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.overview-item h4 {
+  color: var(--primary-color);
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.overview-item p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 5. 核心要点系统 === */
+.key-points {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.key-point {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.key-point:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  border-color: var(--primary-color);
+}
+
+.key-point h4 {
+  color: var(--primary-color);
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.key-point p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* === 6. 统一应用到现有类 === */
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.component-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.component-card h4, .component-card h5 {
+  color: var(--primary-color);
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.component-card p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.strategy-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.strategy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.strategy-card h5 {
+  color: var(--primary-color);
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.strategy-card p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* === 7. 指标展示系统 === */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.metric-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.metric-item:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.metric-label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.metric-value {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.metric-desc {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* === 8. 流程步骤系统 === */
+.process-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.process-step {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.process-step:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--primary-color);
+}
+
+.process-step h4 {
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.process-step p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.process-arrow {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+/* === 9. 响应式设计系统 === */
+@media (max-width: 768px) {
+  .grid-auto, .grid-auto-sm, .grid-auto-lg {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .chapter-overview {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .key-points {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .component-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .strategy-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .process-flow {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .process-step {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .process-arrow {
+    transform: rotate(90deg);
+    margin: 0.5rem 0;
+  }
+  
+  .card-base, .component-card, .strategy-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .card-base, .component-card, .strategy-card {
+    padding: 1rem;
+  }
+  
+  .process-step {
+    padding: 1rem;
+  }
+  
+  .metric-item {
+    padding: 1rem;
+  }
+}
+
+/* === 10. 暗色主题适配 === */
+[data-theme="dark"] .card-success {
+  background: linear-gradient(135deg, #0f1f14 0%, #1a2e1a 100%);
+}
+
+[data-theme="dark"] .card-warning {
+  background: linear-gradient(135deg, #1f1611 0%, #2a1f0f 100%);
+}
+
+[data-theme="dark"] .card-danger {
+  background: linear-gradient(135deg, #1f1012 0%, #2a1214 100%);
+}
+
+[data-theme="dark"] .card-info {
+  background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+}
+
+/* === 11. 向后兼容性映射 === */
+.framework-flow { 
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.flow-step { 
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.flow-step:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--primary-color);
+}
+
+.flow-step h4 {
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.flow-step p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.flow-arrow { 
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+.overview-grid { 
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.key-points-cards { 
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+/* === 12. 实用工具类 === */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; } 

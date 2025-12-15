@@ -1,0 +1,1108 @@
+---
+title: "4.3 主线识别引擎"
+description: "详细介绍投资主线识别模块的主线识别引擎，包括三层分析框架、主线发现流程和生命周期管理"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 🏗️ 4.3 主线识别引擎
+
+> **核心摘要：**
+> 
+> 本节系统介绍投资主线识别模块的主线识别引擎，通过三层分析框架（宏观前瞻→中观验证→微观确认）发现和识别投资主线。通过理解主线发现流程、生命周期管理和主线类型分类，帮助开发者掌握如何构建智能化的投资主线识别系统。主线识别引擎不仅识别当下热点，更具备前瞻性，通过政策+资金+产业多维度综合判断，确保主线的前瞻性和可靠性。
+
+主线识别引擎是投资主线识别模块的核心组件，负责通过三层分析框架发现和识别投资主线。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-4-3-1')">
+    <h4>🌍 4.3.1 宏观前瞻分析</h4>
+    <p>政策周期分析、经济周期分析、产业趋势分析（6-12个月视角）</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-3-2')">
+    <h4>🔍 4.3.2 中观验证分析</h4>
+    <p>行业景气度分析、机构资金流向分析、催化剂日历（1-3个月视角）</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-3-3')">
+    <h4>📊 4.3.3 微观确认分析</h4>
+    <p>技术形态分析、龙头股表现分析、市场情绪分析（1-4周视角）</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-3-4')">
+    <h4>🔄 4.3.4 主线发现流程</h4>
+    <p>从宏观分析到主线生成的完整流程，包括分析、验证、生成、过滤、排序</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-3-5')">
+    <h4>📈 4.3.5 生命周期管理</h4>
+    <p>主线生命周期的四个阶段（启动期、成长期、成熟期、衰退期）和管理方法</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-4-3-6')">
+    <h4>🏷️ 4.3.6 主线类型分类</h4>
+    <p>政策驱动型、产业趋势型、事件驱动型、周期轮动型、主题概念型</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **理解三层分析框架**：掌握宏观前瞻、中观验证、微观确认的分析方法和实现细节
+- **掌握主线发现流程**：理解从宏观分析到主线生成的完整流程和代码实现
+- **熟悉生命周期管理**：理解主线生命周期的四个阶段和管理方法的实现
+- **实现主线识别引擎**：掌握如何基于三层分析框架实现完整的主线识别引擎
+
+## 📚 核心概念
+
+### 模块定位
+
+- **工作流位置**：步骤3 - 🔥 投资主线
+- **核心职责**：主线发现、主线识别、生命周期管理
+- **服务对象**：主线评分、主线筛选、后续步骤
+
+### 设计理念
+
+主线识别引擎的设计理念：
+
+1. **前瞻性**：不仅识别当下热点，更要具备前瞻性，提前发现投资机会
+2. **三层分析框架**：宏观前瞻→中观验证→微观确认，确保主线的前瞻性和可靠性
+3. **多维度综合判断**：政策+资金+产业多维度综合判断，避免单一维度偏差
+4. **可追溯性**：所有分析过程可追溯，数据来源透明，推理链完整
+
+<h2 id="section-4-3-1">🌍 4.3.1 宏观前瞻分析</h2>
+
+宏观前瞻分析采用6-12个月的时间视角，分析政策周期、经济周期、产业趋势，识别长期投资机会。
+
+### 分析维度
+
+#### 1. 政策周期分析
+
+分析政策出台频率、政策支持力度、政策持续性，识别政策驱动的投资主线。
+
+**分析方法**：
+
+```python
+def analyze_policy_cycle(self) -> Dict:
+    """
+    分析政策周期
+    
+    Returns:
+        {
+            "current_phase": "宽松/中性/紧缩",
+            "key_policies": [
+                {
+                    "name": "政策名称",
+                    "sector": "受益板块",
+                    "support_level": "支持力度",
+                    "timeline": "时间线"
+                }
+            ],
+            "benefited_sectors": ["受益板块列表"],
+            "policy_calendar": [
+                {
+                    "date": "日期",
+                    "event": "政策事件",
+                    "impact": "影响程度"
+                }
+            ]
+        }
+    """
+    # 1. 获取政策数据
+    policy_data = self.data_manager.fetch_data("macro_policy")
+    
+    # 2. 分析政策周期阶段
+    current_phase = self._determine_policy_cycle(policy_data)
+    
+    # 3. 提取重点政策方向
+    key_policies = self._extract_key_policies(policy_data)
+    
+    # 4. 识别受益板块
+    benefited_sectors = self._get_policy_benefited_sectors(policy_data)
+    
+    # 5. 构建政策日历
+    policy_calendar = self._build_policy_calendar(policy_data)
+    
+    return {
+        "current_phase": current_phase,
+        "key_policies": key_policies,
+        "benefited_sectors": benefited_sectors,
+        "policy_calendar": policy_calendar
+    }
+```
+
+**数据来源**：
+
+- 政策公告：政府网站、央行公告、部委文件
+- 政策解读：券商研报、专业媒体
+- 政策日历：重要会议、政策发布时间表
+
+#### 2. 经济周期分析
+
+分析GDP增速、CPI、PMI、货币政策等指标，判断经济周期阶段。
+
+**分析方法**：
+
+```python
+def analyze_economic_cycle(self) -> Dict:
+    """
+    分析经济周期
+    
+    Returns:
+        {
+            "current_phase": "复苏/过热/滞胀/衰退",
+            "leading_indicators": {
+                "gdp_growth": GDP增速,
+                "cpi": CPI,
+                "pmi": PMI,
+                "monetary_policy": "货币政策"
+            },
+            "sector_rotation": {
+                "recommended_sectors": ["推荐板块"],
+                "avoid_sectors": ["回避板块"]
+            }
+        }
+    """
+    # 1. 获取经济数据
+    economic_data = self.data_manager.fetch_data("macro_economic")
+    
+    # 2. 判断经济周期阶段
+    current_phase = self._determine_economic_cycle(economic_data)
+    
+    # 3. 提取领先指标
+    leading_indicators = self._extract_leading_indicators(economic_data)
+    
+    # 4. 生成板块轮动建议
+    sector_rotation = self._generate_sector_rotation(current_phase)
+    
+    return {
+        "current_phase": current_phase,
+        "leading_indicators": leading_indicators,
+        "sector_rotation": sector_rotation
+    }
+```
+
+**经济周期阶段判断**：
+
+| 阶段 | GDP增速 | CPI | PMI | 特征 | 推荐板块 |
+|------|---------|-----|-----|------|----------|
+| 复苏 | 上升 | 低 | >50 | 经济复苏，政策宽松 | 成长股、周期股 |
+| 过热 | 高 | 上升 | >52 | 经济过热，通胀上升 | 资源股、消费股 |
+| 滞胀 | 下降 | 高 | <50 | 经济停滞，通胀高 | 防御股、必需消费 |
+| 衰退 | 下降 | 下降 | <48 | 经济衰退，通缩 | 债券、防御股 |
+
+#### 3. 产业趋势分析
+
+分析全球产业趋势，识别新兴产业、传统产业升级、产业融合等机会。
+
+**分析方法**：
+
+```python
+def analyze_industry_trends(self) -> List[Dict]:
+    """
+    分析全球产业趋势
+    
+    Returns:
+        [
+            {
+                "trend_name": "趋势名称",
+                "maturity": "成熟度（early/mid/late）",
+                "local_opportunities": [
+                    {
+                        "sector": "板块",
+                        "stocks": ["股票列表"],
+                        "investment_logic": "投资逻辑"
+                    }
+                ],
+                "global_trend": "全球趋势描述"
+            }
+        ]
+    """
+    # 1. 获取产业趋势数据
+    trend_data = self.data_manager.fetch_data("industry_trends")
+    
+    # 2. 分析全球产业趋势
+    global_trends = self._analyze_global_trends(trend_data)
+    
+    # 3. 识别本地市场机会
+    local_opportunities = self._identify_local_opportunities(global_trends)
+    
+    return local_opportunities
+```
+
+**产业趋势类型**：
+
+1. **新兴产业**：AI、新能源、生物医药等
+2. **传统产业升级**：制造业升级、服务业升级等
+3. **产业融合**：互联网+、金融科技等
+
+<h2 id="section-4-3-2">🔍 4.3.2 中观验证分析</h2>
+
+中观验证分析采用1-3个月的时间视角，验证行业景气、资金流向、催化剂，确认投资机会的可行性。
+
+### 分析维度
+
+#### 1. 行业景气度分析
+
+分析行业营收增长、利润增长、订单积压、产能利用率等指标，评估行业景气度。
+
+**分析方法**：
+
+```python
+def analyze_sector_prosperity(self, sector: str) -> Dict:
+    """
+    分析行业景气度
+    
+    Args:
+        sector: 行业名称
+    
+    Returns:
+        {
+            "prosperity_index": 景气指数（0-100）,
+            "trend": "上升/下降/平稳",
+            "key_indicators": {
+                "revenue_growth": 营收增长,
+                "profit_growth": 利润增长,
+                "order_backlog": 订单积压,
+                "capacity_utilization": 产能利用率
+            }
+        }
+    """
+    # 1. 获取行业数据
+    sector_data = self.data_manager.fetch_data("industry_performance", sector=sector)
+    
+    # 2. 计算景气指数
+    prosperity_index = self._calculate_prosperity_index(sector_data)
+    
+    # 3. 判断趋势方向
+    trend = self._determine_trend(sector_data)
+    
+    # 4. 提取关键指标
+    key_indicators = self._extract_key_indicators(sector_data)
+    
+    return {
+        "prosperity_index": prosperity_index,
+        "trend": trend,
+        "key_indicators": key_indicators
+    }
+```
+
+**景气度评分标准**：
+
+| 景气指数 | 评级 | 特征 | 投资建议 |
+|---------|------|------|----------|
+| 80-100 | 高景气 | 营收和利润双增长，订单饱满 | 积极配置 |
+| 60-80 | 中高景气 | 营收或利润增长，订单稳定 | 适度配置 |
+| 40-60 | 中景气 | 营收和利润平稳 | 谨慎配置 |
+| 20-40 | 低景气 | 营收或利润下降 | 回避 |
+| 0-20 | 极低景气 | 营收和利润双降 | 坚决回避 |
+
+#### 2. 机构资金流向分析
+
+分析北向资金、主力资金、机构持仓、两融余额等资金流向，验证资金认可度。
+
+**分析方法**：
+
+```python
+def analyze_institutional_flow(self) -> Dict:
+    """
+    分析机构资金流向
+    
+    Returns:
+        {
+            "net_inflow_sectors": [
+                {
+                    "sector": "板块",
+                    "net_inflow": 净流入金额（亿元）,
+                    "inflow_trend": "流入趋势"
+                }
+            ],
+            "net_outflow_sectors": [
+                {
+                    "sector": "板块",
+                    "net_outflow": 净流出金额（亿元）,
+                    "outflow_trend": "流出趋势"
+                }
+            ],
+            "institution_positions": {
+                "sector": {
+                    "position_change": 持仓变化,
+                    "position_trend": "持仓趋势"
+                }
+            }
+        }
+    """
+    # 1. 获取板块资金流向
+    flow_data = self.data_manager.fetch_data("industry_flow")
+    
+    # 2. 获取北向资金偏好
+    northbound_data = self.data_manager.fetch_data("industry_northbound")
+    
+    # 3. 获取两融数据
+    margin_data = self.data_manager.fetch_data("industry_margin")
+    
+    # 4. 综合分析资金流向
+    capital_consensus = self._get_capital_consensus(
+        flow_data, northbound_data, margin_data
+    )
+    
+    return capital_consensus
+```
+
+**资金流向数据来源**：
+
+- **板块资金流向**：AKShare `stock_fund_flow_industry`、`stock_fund_flow_concept`
+- **北向资金**：AKShare `stock_hsgt_fund_flow_summary_em`
+- **两融数据**：AKShare `stock_margin_underlying_info_szse`
+- **机构持仓**：基金季报、Wind、JQData
+
+#### 3. 催化剂日历
+
+获取未来1-3个月的政策发布、业绩发布、事件驱动、技术突破等催化剂。
+
+**分析方法**：
+
+```python
+def get_catalyst_calendar(self, days: int = 90) -> List[Catalyst]:
+    """
+    获取催化剂日历
+    
+    Args:
+        days: 未来天数，默认90天
+    
+    Returns:
+        [
+            {
+                "date": "日期",
+                "type": "政策/业绩/事件/技术",
+                "sector": "相关板块",
+                "description": "事件描述",
+                "impact": "影响程度（high/medium/low）"
+            }
+        ]
+    """
+    # 1. 获取政策日历
+    policy_calendar = self._get_policy_calendar(days)
+    
+    # 2. 获取业绩发布日历
+    earnings_calendar = self._get_earnings_calendar(days)
+    
+    # 3. 获取事件驱动日历
+    event_calendar = self._get_event_calendar(days)
+    
+    # 4. 合并并排序
+    catalysts = self._merge_and_sort_catalysts(
+        policy_calendar, earnings_calendar, event_calendar
+    )
+    
+    return catalysts
+```
+
+<h2 id="section-4-3-3">📊 4.3.3 微观确认分析</h2>
+
+微观确认分析采用1-4周的时间视角，确认技术形态、龙头表现、市场情绪，把握最佳入场时机。
+
+### 分析维度
+
+#### 1. 技术形态分析
+
+分析板块技术形态，包括趋势强度、均线排列、量价配合、突破信号等。
+
+**分析方法**：
+
+```python
+def analyze_sector_technicals(self, sector: str) -> Dict:
+    """
+    分析板块技术形态
+    
+    Args:
+        sector: 板块名称
+    
+    Returns:
+        {
+            "pattern": "突破/蓄势/调整",
+            "strength": 强度（0-1）,
+            "support_resistance": {
+                "support": 支撑位,
+                "resistance": 阻力位
+            },
+            "indicators": {
+                "ma_trend": "均线趋势",
+                "volume_trend": "量能趋势",
+                "rsi": RSI值,
+                "macd": MACD状态
+            }
+        }
+    """
+    # 1. 获取板块指数数据
+    index_data = self.data_manager.fetch_data("sector_index", sector=sector)
+    
+    # 2. 分析技术形态
+    pattern = self._analyze_pattern(index_data)
+    
+    # 3. 计算趋势强度
+    strength = self._calculate_strength(index_data)
+    
+    # 4. 识别支撑阻力位
+    support_resistance = self._identify_support_resistance(index_data)
+    
+    # 5. 计算技术指标
+    indicators = self._calculate_indicators(index_data)
+    
+    return {
+        "pattern": pattern,
+        "strength": strength,
+        "support_resistance": support_resistance,
+        "indicators": indicators
+    }
+```
+
+#### 2. 龙头股表现分析
+
+分析龙头股涨幅、龙头股成交量、龙头股技术形态，评估主线强度。
+
+**分析方法**：
+
+```python
+def analyze_leader_stocks(self, sector: str) -> List[Dict]:
+    """
+    分析龙头股表现
+    
+    Args:
+        sector: 板块名称
+    
+    Returns:
+        [
+            {
+                "symbol": "股票代码",
+                "name": "股票名称",
+                "role": "领涨/跟涨/滞涨",
+                "score": 龙头得分（0-100）,
+                "performance": {
+                    "return": 收益率,
+                    "volume": 成交量变化,
+                    "technical": "技术形态"
+                }
+            }
+        ]
+    """
+    # 1. 获取板块成分股
+    stocks = self.data_manager.fetch_data("sector_stocks", sector=sector)
+    
+    # 2. 分析龙头股表现
+    leaders = []
+    for stock in stocks:
+        stock_data = self.data_manager.fetch_data("stock_data", symbol=stock)
+        leader_score = self._calculate_leader_score(stock_data)
+        role = self._determine_role(stock_data)
+        
+        leaders.append({
+            "symbol": stock,
+            "name": stock_data["name"],
+            "role": role,
+            "score": leader_score,
+            "performance": {
+                "return": stock_data["return"],
+                "volume": stock_data["volume_change"],
+                "technical": stock_data["technical_pattern"]
+            }
+        })
+    
+    # 3. 按得分排序
+    leaders.sort(key=lambda x: x["score"], reverse=True)
+    
+    return leaders
+```
+
+#### 3. 市场情绪分析
+
+分析市场热度、资金情绪、投资者情绪，评估市场情绪状态。
+
+**分析方法**：
+
+```python
+def analyze_market_sentiment(self) -> Dict:
+    """
+    分析市场情绪
+    
+    Returns:
+        {
+            "sentiment_index": 情绪指数（0-100）,
+            "fear_greed": "恐惧/贪婪",
+            "indicators": {
+                "limit_up_count": 涨停股数量,
+                "limit_down_count": 跌停股数量,
+                "turnover_rate": 换手率,
+                "volatility": 波动率
+            }
+        }
+    """
+    # 1. 获取市场情绪数据
+    sentiment_data = self.data_manager.fetch_data("market_sentiment")
+    
+    # 2. 计算情绪指数
+    sentiment_index = self._calculate_sentiment_index(sentiment_data)
+    
+    # 3. 判断恐惧/贪婪
+    fear_greed = self._determine_fear_greed(sentiment_index)
+    
+    # 4. 提取情绪指标
+    indicators = self._extract_sentiment_indicators(sentiment_data)
+    
+    return {
+        "sentiment_index": sentiment_index,
+        "fear_greed": fear_greed,
+        "indicators": indicators
+    }
+```
+
+<h2 id="section-4-3-4">🔄 4.3.4 主线发现流程</h2>
+
+主线发现流程是从宏观分析到主线生成的完整流程，包括分析、验证、生成、过滤、排序五个步骤。
+
+### 完整流程实现
+
+```python
+from core.base_mainline import BaseMainlineEngine, Mainline, MainlineStage
+from typing import List, Dict, Any
+
+class AShareMainlineEngine(BaseMainlineEngine):
+    """A股主线识别引擎实现"""
+    
+    def discover_mainlines(
+        self, 
+        include_emerging: bool = True, 
+        min_score: float = 60
+    ) -> List[Mainline]:
+        """
+        发现投资主线
+        
+        Args:
+            include_emerging: 是否包含启动期主线
+            min_score: 最低得分阈值
+        
+        Returns:
+            主线列表
+        """
+        # Step 1: 宏观前瞻分析
+        macro_data = self._analyze_macro()
+        
+        # Step 2: 中观验证分析
+        capital_data = self._analyze_capital()
+        industry_data = self._analyze_industry()
+        catalyst_calendar = self.get_catalyst_calendar(days=90)
+        
+        # Step 3: 微观确认分析
+        technical_data = self._analyze_technical()
+        sentiment_data = self.analyze_market_sentiment()
+        
+        # Step 4: 综合生成主线
+        mainlines = self._generate_mainlines(
+            macro_data=macro_data,
+            capital_data=capital_data,
+            industry_data=industry_data,
+            technical_data=technical_data,
+            sentiment_data=sentiment_data,
+            catalyst_calendar=catalyst_calendar
+        )
+        
+        # Step 5: 过滤主线
+        if not include_emerging:
+            mainlines = [
+                m for m in mainlines 
+                if m.stage != MainlineStage.EMERGING
+            ]
+        
+        mainlines = [
+            m for m in mainlines 
+            if m.score.total_score >= min_score
+        ]
+        
+        # Step 6: 排序
+        mainlines.sort(
+            key=lambda m: m.score.total_score, 
+            reverse=True
+        )
+        
+        return mainlines
+    
+    def _generate_mainlines(
+        self,
+        macro_data: Dict,
+        capital_data: Dict,
+        industry_data: Dict,
+        technical_data: Dict,
+        sentiment_data: Dict,
+        catalyst_calendar: List
+    ) -> List[Mainline]:
+        """
+        综合生成主线
+        
+        基于三层分析结果，综合生成投资主线
+        """
+        mainlines = []
+        
+        # 1. 从宏观前瞻中提取主线方向
+        policy_mainlines = self._extract_policy_mainlines(macro_data)
+        industry_mainlines = self._extract_industry_mainlines(industry_data)
+        
+        # 2. 用中观验证过滤主线
+        validated_mainlines = self._validate_mainlines(
+            policy_mainlines + industry_mainlines,
+            capital_data,
+            catalyst_calendar
+        )
+        
+        # 3. 用微观确认优化主线
+        confirmed_mainlines = self._confirm_mainlines(
+            validated_mainlines,
+            technical_data,
+            sentiment_data
+        )
+        
+        # 4. 为主线评分
+        for mainline in confirmed_mainlines:
+            score = self.scoring_model.score_mainline(mainline)
+            mainline.score = score
+            mainlines.append(mainline)
+        
+        return mainlines
+```
+
+### 流程步骤详解
+
+#### Step 1: 宏观前瞻分析
+
+- **输入**：政策数据、经济数据、产业趋势数据
+- **输出**：政策周期、经济周期、产业趋势分析结果
+- **耗时**：约500-1000ms
+
+#### Step 2: 中观验证分析
+
+- **输入**：行业数据、资金流向数据、催化剂日历
+- **输出**：行业景气度、资金流向、催化剂分析结果
+- **耗时**：约800-1500ms
+
+#### Step 3: 微观确认分析
+
+- **输入**：技术数据、龙头股数据、市场情绪数据
+- **输出**：技术形态、龙头表现、市场情绪分析结果
+- **耗时**：约600-1200ms
+
+#### Step 4: 综合生成主线
+
+- **输入**：三层分析结果
+- **输出**：候选主线列表
+- **耗时**：约1000-2000ms
+
+#### Step 5: 过滤主线
+
+- **过滤条件**：
+  - 生命周期阶段过滤（可选）
+  - 最低评分阈值过滤
+- **输出**：过滤后的主线列表
+
+#### Step 6: 排序
+
+- **排序规则**：按综合评分降序排列
+- **输出**：排序后的主线列表
+
+### 完整分析流程示例
+
+```python
+# 初始化引擎
+engine = AShareMainlineEngine()
+
+# 运行完整分析
+result = engine.run_full_analysis()
+
+# 查看发现的主线
+for mainline in result["mainlines"]:
+    print(f"主线: {mainline.name}")
+    print(f"评分: {mainline.score.total_score:.1f}")
+    print(f"阶段: {mainline.stage.value}")
+    print(f"类型: {mainline.type.value}")
+    print(f"相关行业: {mainline.industries}")
+    print("-" * 60)
+
+# 查看数据溯源
+for trace in result["data_traces"]:
+    print(f"数据源: {trace.source_name} ({trace.provider})")
+
+# 查看分析步骤
+for step in result["analysis_steps"]:
+    print(f"步骤: {step.step_name} - {step.method} ({step.duration}ms)")
+```
+
+<h2 id="section-4-3-5">📈 4.3.5 生命周期管理</h2>
+
+主线生命周期分为四个阶段：启动期、成长期、成熟期、衰退期。生命周期管理确保主线状态的及时更新和准确判断。
+
+### 生命周期阶段定义
+
+```python
+from enum import Enum
+
+class MainlineStage(Enum):
+    """主线生命周期阶段"""
+    
+    EMERGING = "emerging"    # 启动期 - 政策信号出现，机构开始布局
+    GROWING = "growing"      # 成长期 - 资金持续流入，业绩开始兑现
+    MATURE = "mature"        # 成熟期 - 共识形成，估值较高
+    DECLINING = "declining"  # 衰退期 - 资金撤离，预期下修
+```
+
+### 阶段特征
+
+| 阶段 | 评分范围 | 市场表现 | 资金流向 | 投资建议 |
+|------|---------|----------|----------|----------|
+| 启动期 | 40-60 | 少数股票上涨 | 机构开始布局 | 谨慎参与，小仓位试探 |
+| 成长期 | 60-80 | 板块整体上涨 | 资金持续流入 | 积极配置，加大仓位 |
+| 成熟期 | 80-90 | 板块稳定上涨 | 资金稳定流入 | 稳定持有，适度减仓 |
+| 衰退期 | <60 | 板块开始下跌 | 资金开始撤离 | 及时退出，避免损失 |
+
+### 生命周期更新方法
+
+```python
+def update_mainline_lifecycle(mainline: Mainline) -> Mainline:
+    """
+    更新主线生命周期
+    
+    Args:
+        mainline: 主线对象
+    
+    Returns:
+        更新后的主线对象
+    """
+    # 1. 计算评分趋势
+    score_trend = mainline.score.get_trend()  # 近20日评分变化率
+    
+    # 2. 计算市场表现
+    market_performance = mainline.get_market_performance()  # 近20日收益率
+    
+    # 3. 计算资金流向趋势
+    capital_trend = mainline.get_capital_trend()  # 近20日资金流入趋势
+    
+    # 4. 判断生命周期阶段
+    if score_trend > 0.1 and market_performance > 0.05 and capital_trend > 0:
+        # 评分上升、市场表现良好、资金流入，进入成长期
+        if mainline.stage == MainlineStage.EMERGING:
+            mainline.stage = MainlineStage.GROWING
+    elif score_trend < -0.1 or market_performance < -0.05 or capital_trend < -0.1:
+        # 评分下降或市场表现不佳或资金流出，进入衰退期
+        if mainline.stage in [MainlineStage.GROWING, MainlineStage.MATURE]:
+            mainline.stage = MainlineStage.DECLINING
+    elif mainline.stage == MainlineStage.GROWING and score_trend < 0.05:
+        # 成长期但评分增长放缓，进入成熟期
+        mainline.stage = MainlineStage.MATURE
+    
+    # 5. 更新生命周期时间戳
+    mainline.lifecycle_updated_at = datetime.now()
+    
+    return mainline
+```
+
+### 生命周期监控
+
+```python
+def monitor_mainline_lifecycle(mainlines: List[Mainline]) -> Dict:
+    """
+    监控主线生命周期
+    
+    Args:
+        mainlines: 主线列表
+    
+    Returns:
+        生命周期统计
+    """
+    stage_count = {
+        MainlineStage.EMERGING: 0,
+        MainlineStage.GROWING: 0,
+        MainlineStage.MATURE: 0,
+        MainlineStage.DECLINING: 0
+    }
+    
+    for mainline in mainlines:
+        stage_count[mainline.stage] += 1
+    
+    return {
+        "total": len(mainlines),
+        "by_stage": {
+            stage.value: count 
+            for stage, count in stage_count.items()
+        },
+        "recommendations": {
+            "focus": stage_count[MainlineStage.GROWING],  # 重点关注成长期
+            "monitor": stage_count[MainlineStage.MATURE],  # 监控成熟期
+            "exit": stage_count[MainlineStage.DECLINING]   # 退出衰退期
+        }
+    }
+```
+
+<h2 id="section-4-3-6">🏷️ 4.3.6 主线类型分类</h2>
+
+主线识别引擎支持以下主线类型：政策驱动型、产业趋势型、事件驱动型、周期轮动型、主题概念型。
+
+### 主线类型定义
+
+```python
+from enum import Enum
+
+class MainlineType(Enum):
+    """主线类型"""
+    
+    POLICY = "policy"        # 政策驱动型
+    INDUSTRY = "industry"    # 产业趋势型
+    EVENT = "event"          # 事件驱动型
+    CYCLE = "cycle"          # 周期轮动型
+    THEME = "theme"          # 主题概念型
+```
+
+### 类型特征
+
+#### 1. 政策驱动型（Policy）
+
+**特征**：
+- 政策支持力度强
+- 政策落地进度快
+- 政策持续性高
+
+**识别方法**：
+```python
+def identify_policy_mainline(policy_data: Dict) -> bool:
+    """识别政策驱动型主线"""
+    # 1. 政策提及频率
+    mention_frequency = policy_data.get("mention_frequency", 0)
+    
+    # 2. 政策支持力度
+    support_level = policy_data.get("support_level", 0)
+    
+    # 3. 政策落地进度
+    implementation_progress = policy_data.get("implementation_progress", 0)
+    
+    # 判断标准
+    if mention_frequency > 5 and support_level > 0.7 and implementation_progress > 0.5:
+        return True
+    
+    return False
+```
+
+**典型主线**：
+- 新基建
+- 碳中和
+- 数字经济
+
+#### 2. 产业趋势型（Industry）
+
+**特征**：
+- 产业升级趋势明显
+- 产业融合加速
+- 新兴产业快速发展
+
+**识别方法**：
+```python
+def identify_industry_mainline(industry_data: Dict) -> bool:
+    """识别产业趋势型主线"""
+    # 1. 产业升级趋势
+    upgrade_trend = industry_data.get("upgrade_trend", 0)
+    
+    # 2. 产业融合程度
+    integration_level = industry_data.get("integration_level", 0)
+    
+    # 3. 新兴产业占比
+    new_industry_ratio = industry_data.get("new_industry_ratio", 0)
+    
+    # 判断标准
+    if upgrade_trend > 0.6 or integration_level > 0.5 or new_industry_ratio > 0.3:
+        return True
+    
+    return False
+```
+
+**典型主线**：
+- AI算力基础设施
+- 新能源产业链
+- 生物医药创新
+
+#### 3. 事件驱动型（Event）
+
+**特征**：
+- 突发事件影响大
+- 重大事件催化强
+- 周期性事件规律明显
+
+**识别方法**：
+```python
+def identify_event_mainline(event_data: Dict) -> bool:
+    """识别事件驱动型主线"""
+    # 1. 事件影响程度
+    impact_level = event_data.get("impact_level", 0)
+    
+    # 2. 事件催化强度
+    catalyst_strength = event_data.get("catalyst_strength", 0)
+    
+    # 3. 事件持续性
+    duration = event_data.get("duration", 0)
+    
+    # 判断标准
+    if impact_level > 0.7 and catalyst_strength > 0.6 and duration > 7:
+        return True
+    
+    return False
+```
+
+**典型主线**：
+- 重大技术突破
+- 重大政策发布
+- 重大业绩发布
+
+#### 4. 周期轮动型（Cycle）
+
+**特征**：
+- 经济周期驱动
+- 行业周期明显
+- 风格轮动规律
+
+**识别方法**：
+```python
+def identify_cycle_mainline(cycle_data: Dict) -> bool:
+    """识别周期轮动型主线"""
+    # 1. 经济周期位置
+    economic_cycle_position = cycle_data.get("economic_cycle_position", 0)
+    
+    # 2. 行业周期位置
+    industry_cycle_position = cycle_data.get("industry_cycle_position", 0)
+    
+    # 3. 风格轮动强度
+    style_rotation_strength = cycle_data.get("style_rotation_strength", 0)
+    
+    # 判断标准
+    if (economic_cycle_position > 0.6 or 
+        industry_cycle_position > 0.6 or 
+        style_rotation_strength > 0.5):
+        return True
+    
+    return False
+```
+
+**典型主线**：
+- 经济复苏周期
+- 行业景气周期
+- 风格轮动周期
+
+#### 5. 主题概念型（Theme）
+
+**特征**：
+- 主题投资热度高
+- 概念炒作明显
+- 热点主题轮动
+
+**识别方法**：
+```python
+def identify_theme_mainline(theme_data: Dict) -> bool:
+    """识别主题概念型主线"""
+    # 1. 主题热度
+    theme_heat = theme_data.get("theme_heat", 0)
+    
+    # 2. 概念炒作强度
+    concept_speculation = theme_data.get("concept_speculation", 0)
+    
+    # 3. 热点轮动速度
+    hot_rotation_speed = theme_data.get("hot_rotation_speed", 0)
+    
+    # 判断标准
+    if theme_heat > 0.7 or concept_speculation > 0.6 or hot_rotation_speed > 0.5:
+        return True
+    
+    return False
+```
+
+**典型主线**：
+- 元宇宙
+- ChatGPT
+- 人形机器人
+
+### 类型识别流程
+
+```python
+def classify_mainline_type(mainline: Mainline) -> MainlineType:
+    """
+    分类主线类型
+    
+    Args:
+        mainline: 主线对象
+    
+    Returns:
+        主线类型
+    """
+    # 1. 检查政策驱动特征
+    if identify_policy_mainline(mainline.policy_data):
+        return MainlineType.POLICY
+    
+    # 2. 检查产业趋势特征
+    if identify_industry_mainline(mainline.industry_data):
+        return MainlineType.INDUSTRY
+    
+    # 3. 检查事件驱动特征
+    if identify_event_mainline(mainline.event_data):
+        return MainlineType.EVENT
+    
+    # 4. 检查周期轮动特征
+    if identify_cycle_mainline(mainline.cycle_data):
+        return MainlineType.CYCLE
+    
+    # 5. 检查主题概念特征
+    if identify_theme_mainline(mainline.theme_data):
+        return MainlineType.THEME
+    
+    # 默认返回产业趋势型
+    return MainlineType.INDUSTRY
+```
+
+## 🔗 相关章节
+
+- **4.1 主线评分**：了解主线评分方法，为引擎发现的主线提供评分
+- **4.2 主线筛选**：了解主线筛选机制，对引擎发现的主线进行筛选
+- **第3章：市场分析**：了解市场分析结果，为宏观前瞻提供基础
+- **第5章：候选池构建**：了解如何使用识别的主线构建候选池
+- **第10章：开发指南**：了解主线识别引擎的开发规范
+
+## 💡 关键要点
+
+1. **三层分析框架**：宏观前瞻→中观验证→微观确认，确保主线的前瞻性和可靠性
+2. **主线发现流程**：从宏观分析到主线生成的完整流程，包括分析、验证、生成、过滤、排序
+3. **生命周期管理**：主线生命周期的四个阶段（启动期、成长期、成熟期、衰退期）和管理方法
+4. **主线类型分类**：支持政策驱动型、产业趋势型、事件驱动型、周期轮动型、主题概念型
+5. **数据可追溯性**：所有分析过程可追溯，数据来源透明，推理链完整
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了投资主线识别模块的主线识别引擎，通过三层分析框架（宏观前瞻→中观验证→微观确认）发现和识别投资主线。通过理解主线发现流程、生命周期管理和主线类型分类，帮助开发者掌握如何构建智能化的投资主线识别系统。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了主线识别引擎后，下一节将介绍MCP工具集成，包括trquant_mainlines工具、知识库查询等。通过理解MCP工具在投资主线识别中的应用，帮助开发者掌握如何使用MCP工具提升主线识别效率。</p>
+  
+  <a href="/ashare-book6/004_Chapter4_Mainline_Identification/4.4_MCP_Tool_Integration_CN" class="next-section">
+    继续学习：4.4 MCP工具集成 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

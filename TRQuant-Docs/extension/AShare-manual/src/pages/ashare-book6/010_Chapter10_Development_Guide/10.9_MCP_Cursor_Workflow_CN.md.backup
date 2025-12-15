@@ -1,0 +1,636 @@
+---
+title: "10.9 MCP × Cursor × 工具链联用规范"
+description: "深入解析TRQuant MCP、Cursor和工具链的协同使用方法，包括统一工作模式、模块开发流程、Cursor配置、工作流设计等核心技术，为高效开发提供完整的开发指导"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# 🔗 10.9 MCP × Cursor × 工具链联用规范
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant MCP、Cursor和工具链的协同使用方法，包括统一工作模式、模块开发流程、Cursor配置、工作流设计等核心技术。通过理解工具链联用规范，帮助开发者掌握MCP、Cursor和工具链的协同使用方法，实现高效、稳定、可维护的开发流程。
+
+TRQuant系统通过MCP服务器、Cursor IDE和工具链的协同工作，实现智能化的开发辅助。本节详细说明如何在开发过程中使用这些工具进行高效协作。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-10-9-1')">
+    <h4>📐 10.9.1 统一工作模式</h4>
+    <p>三条铁律、信息入口、安全写入协议、Artifact化</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-10-9-2')">
+    <h4>🔄 10.9.2 模块开发流程</h4>
+    <p>因子库开发、策略开发、回测优化、平台集成</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-10-9-3')">
+    <h4>⚙️ 10.9.3 Cursor配置</h4>
+    <p>MCP配置、工作区设置、Python解释器、终端配置</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-10-9-4')">
+    <h4>🔧 10.9.4 工作流设计</h4>
+    <p>工作流编排、步骤定义、错误处理、结果验证</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-10-9-5')">
+    <h4>✅ 10.9.5 最佳实践</h4>
+    <p>稳定高效、易维护、可追溯、可复现</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **理解统一工作模式**：掌握三条铁律和标准工作流程
+- **执行模块开发流程**：掌握因子库、策略、回测等模块的开发流程
+- **配置Cursor环境**：掌握MCP配置和工作区设置
+- **设计工作流**：掌握工作流编排和步骤定义方法
+- **应用最佳实践**：掌握高效、稳定、可维护的开发方法
+
+## 📚 核心概念
+
+### 三条铁律
+
+- **铁律A**：所有信息入口先MCP
+- **铁律B**：所有写操作走"安全写入协议"
+- **铁律C**：所有大输出artifact化
+
+### 工具链组成
+
+- **MCP服务器**：提供工具和资源访问
+- **Cursor IDE**：开发环境和AI助手
+- **工作流编排器**：统一编排开发流程
+
+### 安全写入协议
+
+标准流程：`dry_run` → `confirm_token` → `execute` → `evidence.record` → `git commit/tag` → `report.compare`
+
+<h2 id="section-10-9-1">📐 10.9.1 统一工作模式</h2>
+
+统一工作模式定义了TRQuant开发的标准流程，确保所有开发者遵循相同的规范。
+
+### 铁律A：所有信息入口先MCP
+
+所有信息查询优先使用MCP服务器，避免直接访问文件系统或数据库。
+
+#### 信息查询工具
+
+```python
+# 查文档
+docs_server.query(query="策略开发流程")
+
+# 查代码
+code_server.search(pattern="class FactorManager")
+
+# 查知识
+kb.query(query="因子计算", scope="manual", top_k=10)
+
+# 查策略
+strategy_kb.query(query="多因子策略", top_k=5)
+
+# 查规范
+spec_server.validate(spec_type="chapter", content=content)
+
+# 查历史
+evidence_server.query(trace_id="xxx", action="factor.create")
+
+# 查任务
+task_server.list(status="running")
+```
+
+#### 使用示例
+
+```python
+# ❌ 错误方式：直接读取文件
+with open("docs/strategy_guide.md", "r") as f:
+    content = f.read()
+
+# ✅ 正确方式：使用MCP工具
+result = docs_server.query(query="策略开发流程")
+content = result["content"]
+```
+
+### 铁律B：所有写操作走"安全写入协议"
+
+所有写操作必须遵循安全写入协议，确保可追溯、可回滚。
+
+#### 安全写入流程
+
+```python
+# 1. Dry Run（预演）
+result = factor.create(
+    name="momentum_20d",
+    formula="...",
+    dry_run=True
+)
+confirm_token = result["confirm_token"]
+
+# 2. Execute（执行）
+result = factor.create(
+    name="momentum_20d",
+    formula="...",
+    execute=True,
+    confirm_token=confirm_token
+)
+
+# 3. Evidence Record（记录证据）
+evidence.record(
+    action="factor.create",
+    trace_id=result["trace_id"],
+    purpose="新增动量因子",
+    impact="影响因子库和策略生成",
+    rollback="删除因子或回退版本",
+    report_url=result["report_url"]
+)
+
+# 4. Git Commit/Tag（版本化）
+git.commit(
+    message=f"feat: 新增因子 momentum_20d [trace_id: {result['trace_id']}]"
+)
+git.tag(f"factor-momentum_20d-v{result['version']}")
+
+# 5. Report Compare（对比报告）
+report.compare(
+    baseline="factor-momentum_20d-v1.0",
+    current="factor-momentum_20d-v1.1",
+    metrics=["ic", "ir", "sharpe"]
+)
+```
+
+### 铁律C：所有大输出artifact化
+
+输出超过阈值的内容必须生成artifact pointer，避免在终端或聊天中粘贴大段内容。
+
+#### Artifact生成
+
+```python
+# 定义阈值
+ARTIFACT_THRESHOLD = 1000  # 字符数
+
+def generate_artifact(content: str, artifact_type: str) -> str:
+    """生成artifact pointer"""
+    if len(content) > ARTIFACT_THRESHOLD:
+        artifact_id = artifact.create(
+            content=content,
+            type=artifact_type,
+            metadata={"timestamp": datetime.now().isoformat()}
+        )
+        return f"artifact://{artifact_id}"
+    return content
+
+# 使用示例
+strategy_code = generate_strategy(...)
+if len(strategy_code) > ARTIFACT_THRESHOLD:
+    artifact_id = generate_artifact(strategy_code, "strategy")
+    print(f"策略代码已生成: {artifact_id}")
+else:
+    print(strategy_code)
+```
+
+<h2 id="section-10-9-2">🔄 10.9.2 模块开发流程</h2>
+
+模块开发流程定义了不同模块的标准开发步骤。
+
+### 因子库开发流程
+
+**目标**：新增/修改因子 → 验证 → 回测对比 → 产出报告 → 版本化
+
+**步骤（MCP + Cursor 联用）**：
+
+```python
+# 1. 定位入口类/接口
+code_result = code_server.search(pattern="class FactorManager")
+factor_manager_path = code_result["file_path"]
+
+# 2. 查模块设计文档
+docs_result = docs_server.query(query="因子库设计 接口约定 命名规范")
+design_doc = docs_result["content"]
+
+# 3. 校验文档结构
+spec_result = spec_server.validate(
+    spec_type="chapter",
+    content=chapter_content
+)
+
+# 4. 新增因子（Dry Run）
+factor_result = factor.create(
+    name="momentum_20d",
+    formula="close / close.shift(20) - 1",
+    category="momentum",
+    dry_run=True
+)
+confirm_token = factor_result["confirm_token"]
+
+# 5. 执行创建（Execute）
+factor_result = factor.create(
+    name="momentum_20d",
+    formula="close / close.shift(20) - 1",
+    category="momentum",
+    execute=True,
+    confirm_token=confirm_token,
+    evidence=True
+)
+
+# 6. 回测验证
+backtest_result = workflow.run(
+    workflow_type="backtest",
+    factors=["momentum_20d"],
+    start_date="2024-01-01",
+    end_date="2024-12-31"
+)
+artifact_id = backtest_result["artifact_id"]
+
+# 7. 生成对比报告
+report_result = report.generate(
+    baseline="factor-momentum_20d-v1.0",
+    current="factor-momentum_20d-v1.1",
+    metrics=["ic", "ir", "sharpe", "max_drawdown"]
+)
+compare_report = report_result["report_url"]
+
+# 8. 记录证据
+evidence.record(
+    action="factor.create",
+    trace_id=factor_result["trace_id"],
+    purpose="新增20日动量因子",
+    impact="影响因子库和策略生成",
+    rollback="删除因子或回退版本",
+    report_url=compare_report,
+    artifact_id=artifact_id
+)
+
+# 9. Git提交和标签
+git.commit(
+    message=f"feat: 新增因子 momentum_20d [trace_id: {factor_result['trace_id']}]"
+)
+git.tag(f"factor-momentum_20d-v{factor_result['version']}")
+```
+
+**验收标准**：
+
+- ✅ 能复现（固定数据集/seed）
+- ✅ 有对比报告（report.compare）
+- ✅ 有证据链（evidence）
+- ✅ 有版本标识（tag）
+- ✅ 有trace_id（可观测性）
+
+### 策略开发流程
+
+**目标**：生成策略 → 回测验证 → 优化对比 → 产出定版策略
+
+**步骤**：
+
+```python
+# 1. 检索相关研究卡
+strategy_kb_result = strategy_kb.query(
+    query="多因子策略 动量成长",
+    top_k=5
+)
+
+# 2. 生成候选策略
+strategy_result = workflow.strategy.generate_candidate(
+    factors=["momentum_20d", "ROE_ttm", "revenue_growth"],
+    style="momentum_growth",
+    platform="ptrade"
+)
+strategy_code = strategy_result["code"]
+
+# 3. 回测验证
+backtest_result = workflow.run(
+    workflow_type="backtest",
+    strategy_code=strategy_code,
+    start_date="2024-01-01",
+    end_date="2024-12-31"
+)
+
+# 4. 策略优化
+optimizer_result = optimizer.run(
+    strategy_code=strategy_code,
+    parameters=["max_position", "stop_loss", "take_profit"],
+    method="grid_search"
+)
+
+# 5. 对比报告
+report_result = report.compare(
+    baseline="strategy-v1.0",
+    current="strategy-v1.1",
+    metrics=["total_return", "sharpe_ratio", "max_drawdown"]
+)
+
+# 6. 记录证据
+evidence.record(
+    action="strategy.generate",
+    trace_id=strategy_result["trace_id"],
+    purpose="生成多因子动量成长策略",
+    impact="影响策略库和实盘交易",
+    rollback="回退策略版本",
+    report_url=report_result["report_url"]
+)
+
+# 7. 版本化
+git.tag(f"strategy-multifactor-momentum-growth-v{strategy_result['version']}")
+```
+
+### 回测与优化流程
+
+**步骤**：
+
+```python
+# 1. 批量回测（Walk-Forward）
+backtest_results = workflow.run(
+    workflow_type="backtest",
+    mode="walk_forward",
+    window_size=252,  # 一年
+    step_size=63,     # 一个季度
+    start_date="2020-01-01",
+    end_date="2024-12-31"
+)
+
+# 2. 参数优化
+optimizer_result = optimizer.run(
+    strategy_code=strategy_code,
+    parameters=["max_position", "stop_loss", "take_profit"],
+    method="bayesian_optimization",
+    n_trials=100
+)
+
+# 3. 数据质量门禁
+quality_result = quality.validate(
+    data_source="jqdata",
+    data_type="ohlcv",
+    start_date="2024-01-01",
+    end_date="2024-12-31"
+)
+
+# 4. 对比报告
+report_result = report.compare(
+    baseline="backtest-batch-1",
+    current="backtest-batch-2",
+    metrics=["total_return", "sharpe_ratio", "max_drawdown", "win_rate"]
+)
+
+# 5. 任务记录
+task_result = task_server.create(
+    task_type="backtest_batch",
+    batch_id="backtest-2024-12-12",
+    status="completed",
+    progress=100,
+    results=backtest_results
+)
+```
+
+<h2 id="section-10-9-3">⚙️ 10.9.3 Cursor配置</h2>
+
+Cursor配置包括MCP服务器配置、工作区设置、Python解释器等。
+
+### MCP配置
+
+在 `.cursor/mcp.json` 中配置MCP服务器：
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/taotao/dev/QuantTest/TRQuant"
+      ]
+    },
+    "trquant-business": {
+      "command": "python",
+      "args": [
+        "extension/python/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+      },
+      "cwd": "${workspaceFolder}"
+    },
+    "trquant-kb": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "${workspaceFolder}/mcp_servers/kb_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+      },
+      "cwd": "${workspaceFolder}"
+    },
+    "data-collector": {
+      "command": "extension/venv/bin/python",
+      "args": [
+        "${workspaceFolder}/mcp_servers/data_collector_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+      },
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
+```
+
+### 工作区设置
+
+#### Python解释器
+
+```json
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/extension/venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "python.terminal.activateEnvInCurrentTerminal": true
+}
+```
+
+#### 终端配置
+
+```json
+{
+  "terminal.integrated.env.linux": {
+    "PYTHONPATH": "${workspaceFolder}/extension:${workspaceFolder}"
+  },
+  "terminal.integrated.shell.linux": "/usr/bin/zsh",
+  "terminal.integrated.shellArgs.linux": ["-l"]
+}
+```
+
+### 统一venv路径
+
+```bash
+# 统一虚拟环境路径
+TRQuant/extension/venv
+
+# 激活虚拟环境
+source extension/venv/bin/activate
+```
+
+<h2 id="section-10-9-4">🔧 10.9.4 工作流设计</h2>
+
+工作流设计包括工作流编排、步骤定义、错误处理等。
+
+### 工作流编排器
+
+```python
+# core/workflow_orchestrator.py
+class WorkflowOrchestrator:
+    """工作流编排器"""
+    
+    def __init__(self):
+        self.db = None
+        self._init_db()
+        self._results = {}
+    
+    def run_full_workflow(self) -> FullWorkflowResult:
+        """运行完整工作流"""
+        steps = []
+        
+        # 步骤1: 数据源检测
+        result = self.check_data_sources()
+        steps.append(result)
+        if not result.success:
+            return FullWorkflowResult(success=False, steps=steps)
+        
+        # 步骤2: 市场分析
+        result = self.analyze_market()
+        steps.append(result)
+        
+        # 步骤3: 主线识别
+        result = self.identify_mainlines()
+        steps.append(result)
+        
+        # 步骤4: 候选池构建
+        result = self.build_candidate_pool()
+        steps.append(result)
+        
+        # 步骤5: 策略生成
+        result = self.generate_strategy()
+        steps.append(result)
+        
+        return FullWorkflowResult(success=True, steps=steps)
+```
+
+### 步骤定义
+
+```python
+@dataclass
+class WorkflowResult:
+    """工作流步骤结果"""
+    step_name: str
+    success: bool
+    summary: str
+    details: Dict[str, Any] = field(default_factory=dict)
+    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    error: Optional[str] = None
+```
+
+### 错误处理
+
+```python
+def run_step(self, step_func, step_name: str) -> WorkflowResult:
+    """运行工作流步骤"""
+    try:
+        result = step_func()
+        return WorkflowResult(
+            step_name=step_name,
+            success=True,
+            summary=f"{step_name}完成",
+            details=result
+        )
+    except Exception as e:
+        logger.error(f"{step_name}失败: {e}", exc_info=True)
+        return WorkflowResult(
+            step_name=step_name,
+            success=False,
+            summary=f"{step_name}失败",
+            error=str(e)
+        )
+```
+
+<h2 id="section-10-9-5">✅ 10.9.5 最佳实践</h2>
+
+最佳实践确保开发流程稳定、高效、易维护。
+
+### 稳定、高效、易维护
+
+#### 稳定
+
+- **统一工具链协议**：每个模块都按同一套"工具链协议"走，不靠个人经验
+- **标准化流程**：所有操作遵循标准流程，减少人为错误
+- **自动化验证**：每个步骤都有自动化验证机制
+
+#### 高效
+
+- **充分利用MCP工具链**：避免重复工作，优先使用MCP工具
+- **批量操作**：支持批量回测、批量优化等操作
+- **并行处理**：支持并行执行多个任务
+
+#### 易维护
+
+- **可追溯**：所有操作都有trace_id和evidence记录
+- **可复现**：使用固定数据集和seed，确保结果可复现
+- **可审计**：完整的操作日志和证据链
+
+### 关键原则
+
+1. **信息入口先MCP**：优先使用MCP服务器查询信息
+2. **写操作走安全协议**：dry_run → confirm_token → execute → evidence
+3. **大输出artifact化**：避免终端/聊天粘贴大段内容
+4. **引用强制**：所有章节必须包含引用（来自kb.query或strategy_kb.query）
+5. **版本绑定**：所有代码示例带版本指纹
+
+### 新成员入门流程
+
+1. **打开repo** → 选择interpreter → 启动MCP servers
+2. **跑一个workflow dry_run** → 生成一个report
+3. **查看开发手册**：`docs/开发手册开发流程_工具使用指南.md`
+
+## 🔗 相关章节
+
+- **10.7 MCP服务器开发指南**：了解MCP服务器开发方法
+- **10.3 开发工作流**：了解开发流程
+- **第7章：策略开发**：了解策略开发流程
+
+## 💡 关键要点
+
+1. **统一工作模式**：三条铁律确保开发流程标准化
+2. **模块开发流程**：不同模块有标准化的开发步骤
+3. **Cursor配置**：统一的MCP配置和工作区设置
+4. **工作流设计**：工作流编排和步骤定义方法
+5. **最佳实践**：稳定、高效、易维护的开发方法
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了MCP × Cursor × 工具链联用规范，包括统一工作模式、模块开发流程、Cursor配置、工作流设计、最佳实践等核心技术。通过理解工具链联用规范，帮助开发者掌握MCP、Cursor和工具链的协同使用方法。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了工具链联用规范后，下一节将介绍RAG知识库开发指南，包括知识库架构、文档处理、向量化、检索优化等。通过理解RAG知识库开发方法，帮助开发者掌握知识库的构建和维护技巧。</p>
+  
+  <a href="/ashare-book6/010_Chapter10_Development_Guide/10.10_RAG_KB_Development_Guide_CN" class="next-section">
+    继续学习：10.10 RAG知识库开发指南 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

@@ -1,0 +1,408 @@
+---
+title: "11.1 快速开始"
+description: "深入解析TRQuant系统快速开始指南，包括系统安装、环境配置、首次使用、基本操作等，帮助用户快速上手系统"
+lang: "zh-CN"
+layout: "/src/layouts/HandbookLayout.astro"
+currentBook: "ashare-book6"
+updateDate: "2025-12-12"
+---
+
+# ⚡ 11.1 快速开始
+
+> **核心摘要：**
+> 
+> 本节系统介绍TRQuant系统的快速开始指南，包括系统安装、环境配置、首次使用、基本操作等。通过理解快速开始流程，帮助用户快速上手系统，为高效使用系统奠定基础。
+
+TRQuant是一个完整的量化投资系统，支持从数据获取到策略生成到实盘交易的完整流程。本节将帮助您快速上手系统。
+
+## 📋 章节概览
+
+<script>
+function scrollToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
+</script>
+
+<div class="section-overview">
+  <div class="section-item" onclick="scrollToSection('section-11-1-1')">
+    <h4>📦 11.1.1 系统安装</h4>
+    <p>环境要求、安装步骤、依赖安装、配置验证</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-11-1-2')">
+    <h4>🚀 11.1.2 启动系统</h4>
+    <p>桌面系统启动、Cursor扩展使用、命令行工具</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-11-1-3')">
+    <h4>🎯 11.1.3 首次使用</h4>
+    <p>界面介绍、基本操作、功能导航、设置配置</p>
+  </div>
+  <div class="section-item" onclick="scrollToSection('section-11-1-4')">
+    <h4>📋 11.1.4 基本操作</h4>
+    <p>数据源配置、市场分析、策略生成、回测执行</p>
+  </div>
+</div>
+
+## 🎯 学习目标
+
+通过本节学习，您将能够：
+
+- **完成系统安装**：掌握系统安装和环境配置方法
+- **启动系统**：掌握桌面系统、Cursor扩展、命令行工具的启动方法
+- **首次使用**：理解界面布局和基本操作流程
+- **执行基本操作**：掌握数据源配置、市场分析、策略生成等基本操作
+
+## 📚 核心概念
+
+### 系统组成
+
+- **桌面系统GUI**：PyQt6图形界面，完整工作流操作
+- **Cursor扩展**：IDE集成工作台，代码级操作
+- **命令行工具**：脚本化操作，自动化流程
+
+### 使用方式
+
+- **GUI模式**：图形界面操作，适合交互式使用
+- **IDE模式**：Cursor扩展，适合代码开发和调试
+- **CLI模式**：命令行工具，适合自动化脚本
+
+<h2 id="section-11-1-1">📦 11.1.1 系统安装</h2>
+
+系统安装包括环境准备、依赖安装、配置验证等步骤。
+
+### 环境要求
+
+- **Python**：3.11+
+- **操作系统**：Linux / macOS / Windows
+- **内存**：建议8GB+
+- **磁盘空间**：建议10GB+
+
+### 安装步骤
+
+#### 1. 克隆仓库
+
+```bash
+git clone https://github.com/trquant/TRQuant.git
+cd TRQuant
+```
+
+#### 2. 创建虚拟环境
+
+```bash
+# 创建虚拟环境
+python3 -m venv extension/venv
+
+# 激活虚拟环境
+source extension/venv/bin/activate  # Linux/macOS
+# 或
+extension\venv\Scripts\activate  # Windows
+```
+
+#### 3. 安装依赖
+
+```bash
+# 安装Python依赖
+pip install -r requirements.txt
+
+# 安装扩展依赖（如需要）
+cd extension
+npm install
+```
+
+#### 4. 配置环境变量
+
+```bash
+# 创建.env文件
+cp .env.example .env
+
+# 编辑.env文件，配置数据源等
+# JQDATA_USERNAME=your_username
+# JQDATA_PASSWORD=your_password
+```
+
+### 配置验证
+
+```bash
+# 验证Python环境
+python --version  # 应该显示 3.11+
+
+# 验证依赖安装
+python -c "import PyQt6; print('PyQt6安装成功')"
+python -c "import pandas; print('pandas安装成功')"
+
+# 验证数据源连接（如已配置）
+python -c "from core.data_source import DataSourceManager; print('数据源模块正常')"
+```
+
+<h2 id="section-11-1-2">🚀 11.1.2 启动系统</h2>
+
+系统支持三种启动方式：桌面系统GUI、Cursor扩展、命令行工具。
+
+### 桌面系统启动
+
+#### 方法1：直接启动
+
+```bash
+# 激活虚拟环境
+source extension/venv/bin/activate
+
+# 启动GUI
+python TRQuant.py
+```
+
+#### 方法2：使用启动脚本
+
+```bash
+# Linux/macOS
+./start_gui.sh
+
+# Windows
+start_gui.bat
+```
+
+#### 方法3：双击启动（Linux桌面）
+
+1. 复制 `TRQuant.desktop` 到桌面
+2. 双击图标启动
+
+### Cursor扩展使用
+
+#### 1. 安装扩展
+
+1. 打开Cursor IDE
+2. 按 `Ctrl+Shift+X` 打开扩展市场
+3. 搜索 "TRQuant"
+4. 点击安装
+
+#### 2. 配置MCP服务器
+
+在 `.cursor/mcp.json` 中配置MCP服务器（参考10.7节）。
+
+#### 3. 打开工作台
+
+1. 在Cursor中打开TRQuant项目
+2. 按 `Ctrl+Shift+P` 打开命令面板
+3. 输入 "TRQuant: 打开工作台"
+4. 选择命令打开工作台
+
+### 命令行工具
+
+```bash
+# 运行完整工作流
+python -m core.workflow_orchestrator
+
+# 运行单个步骤
+python -m core.trend_analyzer  # 市场分析
+python -m core.mainline_engine  # 主线识别
+```
+
+<h2 id="section-11-1-3">🎯 11.1.3 首次使用</h2>
+
+首次使用包括界面介绍、基本操作、功能导航等。
+
+### 界面介绍
+
+#### 主界面布局
+
+```
+┌─────────────────────────────────────────┐
+│          TRQuant 韬睿量化                │
+│  ┌──────────────┬────────────────────┐  │
+│  │   Sidebar    │   Content Area     │  │
+│  │  (导航栏)    │   (内容区)         │  │
+│  │              │                    │  │
+│  │  🏠 首页     │  ┌──────────────┐  │  │
+│  │  📊 数据源   │  │  工作流面板   │  │  │
+│  │  📈 市场分析 │  │              │  │  │
+│  │  🔥 主线识别 │  │  - 步骤1-8   │  │  │
+│  │  📦 候选池   │  │  - 进度显示   │  │  │
+│  │  📊 因子库   │  │  - 结果展示   │  │  │
+│  │  🛠️ 策略开发 │  └──────────────┘  │  │
+│  │  ⚡ 回测     │                    │  │
+│  │  💹 交易     │                    │  │
+│  └──────────────┴────────────────────┘  │
+└─────────────────────────────────────────┘
+```
+
+#### 功能模块
+
+- **首页**：系统概览、快速入口、状态监控
+- **数据源**：数据源管理、数据质量检查
+- **市场分析**：市场趋势分析、市场状态判断
+- **主线识别**：投资主线识别、主线评分
+- **候选池**：候选股票池构建、股票筛选
+- **因子库**：因子管理、因子计算、因子优化
+- **策略开发**：策略生成、策略编辑、策略测试
+- **回测**：策略回测、回测分析、结果导出
+- **交易**：实盘交易、订单管理、风险控制
+
+### 基本操作
+
+#### 1. 查看系统状态
+
+在首页查看系统状态卡片：
+- 数据源连接状态
+- 市场分析结果
+- 工作流执行状态
+
+#### 2. 配置数据源
+
+1. 点击侧边栏"数据源"
+2. 点击"添加数据源"
+3. 选择数据源类型（JQData/AKShare/Wind）
+4. 输入配置信息
+5. 点击"测试连接"验证
+6. 点击"保存"
+
+#### 3. 执行市场分析
+
+1. 点击侧边栏"市场分析"
+2. 点击"开始分析"
+3. 等待分析完成
+4. 查看分析结果
+
+<h2 id="section-11-1-4">📋 11.1.4 基本操作</h2>
+
+基本操作包括数据源配置、市场分析、策略生成、回测执行等。
+
+### 数据源配置
+
+#### 配置JQData
+
+```python
+# 在GUI中配置
+1. 打开"数据源"面板
+2. 点击"添加数据源"
+3. 选择"JQData"
+4. 输入用户名和密码
+5. 点击"测试连接"
+6. 点击"保存"
+
+# 或在.env文件中配置
+JQDATA_USERNAME=your_username
+JQDATA_PASSWORD=your_password
+```
+
+#### 配置AKShare
+
+```python
+# AKShare无需配置，直接使用
+1. 打开"数据源"面板
+2. 点击"添加数据源"
+3. 选择"AKShare"
+4. 点击"保存"
+```
+
+### 市场分析
+
+#### 执行市场分析
+
+```python
+# 在GUI中执行
+1. 打开"市场分析"面板
+2. 点击"开始分析"
+3. 等待分析完成
+4. 查看分析结果：
+   - 市场Regime（risk_on/risk_off/neutral）
+   - 指数趋势
+   - 风格轮动
+```
+
+#### 查看分析结果
+
+分析结果包括：
+- **市场状态**：risk_on（风险偏好上升）、risk_off（风险偏好下降）、neutral（中性）
+- **指数趋势**：主要指数的Z-score和趋势方向
+- **风格轮动**：价值、成长、动量等风格的评分
+
+### 策略生成
+
+#### 使用策略生成器
+
+```python
+# 在GUI中生成策略
+1. 打开"策略开发"面板
+2. 点击"策略生成器"
+3. 选择策略风格：
+   - 多因子（multi_factor）
+   - 动量成长（momentum_growth）
+   - 价值（value）
+   - 市场中性（market_neutral）
+4. 选择因子列表
+5. 设置风险参数：
+   - 最大仓位（max_position）
+   - 止损线（stop_loss）
+   - 止盈线（take_profit）
+6. 选择目标平台（PTrade/QMT）
+7. 点击"生成策略"
+8. 查看生成的策略代码
+```
+
+### 回测执行
+
+#### 执行策略回测
+
+```python
+# 在GUI中执行回测
+1. 打开"回测"面板
+2. 选择策略文件
+3. 设置回测参数：
+   - 开始日期
+   - 结束日期
+   - 初始资金
+   - 手续费率
+4. 点击"开始回测"
+5. 等待回测完成
+6. 查看回测结果：
+   - 总收益率
+   - 夏普比率
+   - 最大回撤
+   - 胜率
+   - 回测曲线
+```
+
+#### 查看回测结果
+
+回测结果包括：
+- **收益指标**：总收益率、年化收益率、超额收益
+- **风险指标**：最大回撤、波动率、下行波动率
+- **风险调整收益**：夏普比率、索提诺比率、卡玛比率
+- **交易统计**：交易次数、胜率、平均盈亏比
+
+## 🔗 相关章节
+
+- **10.1 环境搭建**：了解详细的安装和配置方法
+- **11.2 GUI指南**：了解GUI界面的详细操作
+- **11.3 工作流指南**：了解8步骤工作流的使用方法
+
+## 💡 关键要点
+
+1. **系统安装**：按照环境要求完成安装和配置
+2. **启动系统**：支持GUI、Cursor扩展、命令行三种方式
+3. **首次使用**：理解界面布局和基本操作流程
+4. **基本操作**：掌握数据源配置、市场分析、策略生成、回测执行
+
+## 🔮 总结与展望
+
+<div class="summary-outlook">
+  <h3>本节回顾</h3>
+  <p>本节系统介绍了快速开始指南，包括系统安装、环境配置、首次使用、基本操作等。通过理解快速开始流程，帮助用户快速上手系统。</p>
+  
+  <h3>下节预告</h3>
+  <p>掌握了快速开始后，下一节将介绍GUI指南，详细说明GUI界面操作、功能模块使用、操作流程等。通过理解GUI操作，帮助用户掌握图形界面的使用方法。</p>
+  
+  <a href="/ashare-book6/011_Chapter11_User_Manual/11.2_GUI_Guide_CN" class="next-section">
+    继续学习：11.2 GUI指南 →
+  </a>
+</div>
+
+> **适用版本**: v1.0.0+  
+> **最后更新**: 2025-12-12

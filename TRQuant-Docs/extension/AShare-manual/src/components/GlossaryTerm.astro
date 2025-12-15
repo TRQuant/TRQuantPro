@@ -1,0 +1,289 @@
+---
+// GlossaryTerm.astro - 金融术语悬浮提示组件
+interface Props {
+  term: string;
+  showIcon?: boolean;
+  className?: string;
+}
+
+const { term, showIcon = true, className = '' } = Astro.props;
+
+// 导入术语数据
+import { getGlossaryTerm } from '../utils/finance-glossary.js';
+
+// 获取术语信息
+const termInfo = await getGlossaryTerm(term);
+---
+
+<span 
+  class={`glossary-term ${className}`}
+  data-term={term}
+  data-tooltip={termInfo ? JSON.stringify(termInfo) : ''}
+  title={termInfo?.description || term}
+>
+  {showIcon && termInfo && (
+    <span class="glossary-icon" aria-label="术语解释">ℹ️</span>
+  )}
+  <slot>{term}</slot>
+</span>
+
+<style>
+  .glossary-term {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--primary-color);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: help;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+    padding: 0.1rem 0.2rem;
+  }
+
+  .glossary-term:hover {
+    background-color: rgba(79, 70, 229, 0.1);
+    text-decoration-style: solid;
+  }
+
+  .glossary-icon {
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+
+  .glossary-term:hover .glossary-icon {
+    opacity: 1;
+  }
+
+  /* 暗色模式适配 */
+  [data-theme="dark"] .glossary-term {
+    color: #60a5fa;
+  }
+
+  [data-theme="dark"] .glossary-term:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .glossary-term {
+      padding: 0.2rem 0.3rem;
+    }
+    
+    .glossary-icon {
+      font-size: 0.9em;
+    }
+  }
+
+  /* 无障碍访问 */
+  .glossary-term:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  /* 打印样式 */
+  @media print {
+    .glossary-term {
+      color: inherit;
+      text-decoration: none;
+    }
+    
+    .glossary-icon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // 客户端交互逻辑
+  document.addEventListener('DOMContentLoaded', function() {
+    let currentTooltip: HTMLElement | null = null;
+    
+    // 创建工具提示元素
+    function createTooltip(content: any) {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'glossary-tooltip';
+      tooltip.innerHTML = `
+        <div class="tooltip-header">
+          <strong>${content.term}</strong>
+          ${content.fullName ? `<span class="full-name">(${content.fullName})</span>` : ''}
+        </div>
+        <div class="tooltip-content">
+          <p>${content.description}</p>
+          ${content.example ? `<div class="example"><strong>示例：</strong>${content.example}</div>` : ''}
+          ${content.category ? `<div class="category"><strong>分类：</strong>${content.category}</div>` : ''}
+        </div>
+      `;
+      return tooltip;
+    }
+    
+    // 显示工具提示
+    function showTooltip(element: HTMLElement, content: any) {
+      // 隐藏当前工具提示
+      hideTooltip();
+      
+      const tooltip = createTooltip(content);
+      document.body.appendChild(tooltip);
+      
+      // 定位工具提示
+      const rect = element.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      
+      let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+      let top = rect.bottom + 8;
+      
+      // 确保工具提示不超出视窗
+      if (left < 10) left = 10;
+      if (left + tooltipRect.width > window.innerWidth - 10) {
+        left = window.innerWidth - tooltipRect.width - 10;
+      }
+      if (top + tooltipRect.height > window.innerHeight - 10) {
+        top = rect.top - tooltipRect.height - 8;
+      }
+      
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+      
+      currentTooltip = tooltip;
+      
+      // 添加显示动画
+      setTimeout(() => {
+        tooltip.classList.add('show');
+      }, 10);
+    }
+    
+    // 隐藏工具提示
+    function hideTooltip() {
+      if (currentTooltip) {
+        currentTooltip.classList.remove('show');
+        setTimeout(() => {
+          if (currentTooltip && currentTooltip.parentNode) {
+            currentTooltip.parentNode.removeChild(currentTooltip);
+          }
+          currentTooltip = null;
+        }, 200);
+      }
+    }
+    
+    // 绑定事件监听器
+    document.addEventListener('mouseover', function(e) {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('glossary-term')) {
+        const termData = target.getAttribute('data-tooltip');
+        if (termData) {
+          try {
+            const content = JSON.parse(termData);
+            showTooltip(target, content);
+          } catch (error) {
+            console.error('Error parsing tooltip data:', error);
+          }
+        }
+      }
+    });
+    
+    document.addEventListener('mouseout', function(e) {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('glossary-term')) {
+        hideTooltip();
+      }
+    });
+    
+    // 点击外部隐藏工具提示
+    document.addEventListener('click', function(e) {
+      const target = e.target as HTMLElement;
+      if (!target.classList.contains('glossary-term') && !target.closest('.glossary-tooltip')) {
+        hideTooltip();
+      }
+    });
+    
+    // 键盘导航支持
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        hideTooltip();
+      }
+    });
+  });
+</script>
+
+<style>
+  /* 工具提示样式 */
+  .glossary-tooltip {
+    position: fixed;
+    z-index: 1000;
+    max-width: 300px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  
+  .glossary-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .tooltip-header {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .tooltip-header strong {
+    color: var(--primary-color);
+    font-size: 1rem;
+  }
+  
+  .full-name {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+  }
+  
+  .tooltip-content p {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+  }
+  
+  .example, .category {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+  }
+  
+  .example strong, .category strong {
+    color: var(--primary-color);
+  }
+  
+  /* 暗色模式适配 */
+  [data-theme="dark"] .glossary-tooltip {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 移动端适配 */
+  @media (max-width: 768px) {
+    .glossary-tooltip {
+      max-width: 280px;
+      font-size: 0.85rem;
+      padding: 0.8rem;
+    }
+  }
+  
+  /* 打印样式 */
+  @media print {
+    .glossary-tooltip {
+      display: none;
+    }
+  }
+</style> 
+ 

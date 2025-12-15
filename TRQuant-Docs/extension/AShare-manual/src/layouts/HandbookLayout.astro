@@ -1,0 +1,445 @@
+---
+import Layout from './Layout.astro';
+import GlossaryTerm from '../components/GlossaryTerm.astro';
+
+export interface Props {
+  title: string;
+  book: 'theory' | 'macro' | 'stocks' | 'technical' | 'quantitative';
+  chapter?: string;
+  lang?: string;
+  alt?: string;
+  description?: string;
+  updateDate?: string;
+}
+
+const { 
+  title, 
+  book, 
+  chapter = '', 
+  lang = 'zh-CN', 
+  alt = '',
+  description = '',
+  updateDate = new Date().toISOString().split('T')[0]
+} = Astro.props;
+---
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="美股投资实操手册 - 完整知识体系" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+  <title>{title}</title>
+  <script type="text/javascript">
+    window.MathJax = window.MathJax || {};
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        packages: ['base', 'ams', 'noerrors', 'noundefined']
+      },
+      chtml: {
+        scale: 1.0,
+        minScale: 0.5,
+        matchFontHeight: true,
+        displayAlign: 'center',
+        displayIndent: '0',
+        fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
+      },
+      options: {
+        renderActions: {
+          addMenu: [],
+          checkLoading: []
+        },
+        enableMenu: false,
+        menuOptions: {
+          settings: {
+            texHints: true,
+            semantics: false,
+            renderer: 'CHTML'
+          }
+        }
+      },
+      startup: {
+        pageReady: () => {
+          return MathJax.startup.defaultPageReady().then(() => {
+            console.log('MathJax is loaded and ready');
+          });
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  
+  <!-- MathJax样式优化 -->
+  <style>
+    /* MathJax公式样式优化 */
+    .MathJax {
+      font-size: 1.1em !important;
+      line-height: 1.4 !important;
+    }
+    
+    /* 显示公式样式 */
+    .MathJax_Display {
+      margin: 1.5em 0 !important;
+      text-align: center !important;
+    }
+    
+    /* 内联公式样式 */
+    .MathJax_Display .MathJax {
+      text-align: left !important;
+    }
+    
+    /* 公式字体优化 */
+    .MathJax .MathJax_MathML {
+      font-family: 'Times New Roman', serif !important;
+    }
+    
+    /* 暗色主题下的公式样式 */
+    [data-theme="dark"] .MathJax {
+      color: #e5e7eb !important;
+    }
+    
+    /* status-label中的公式样式 */
+    .status-label .MathJax {
+      font-size: 0.9em !important;
+      margin: 0.2em 0 !important;
+    }
+    
+    /* 确保公式在卡片中正确显示 */
+    .status-card .MathJax_Display {
+      margin: 0.5em 0 !important;
+    }
+    
+    /* 公式容器样式 */
+    .formula-display {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    
+    [data-theme="dark"] .formula-display {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+  </style>
+  <!-- KaTeX样式已移除，如需MathJax前端渲染可在此引入MathJax CDN -->
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <link rel="stylesheet" href="/src/styles/enhanced-flowchart.css" />
+  
+  <!-- 完美主义级别的Checkbox样式修复 -->
+  <style>
+    /* 🎯 终极解决方案：完全移除所有checkbox列表的项目符号 */
+    .checklist-list,
+    .checklist-section ul,
+    .checklist-section ol {
+      list-style-type: none !important;
+      list-style: none !important;
+      list-style-image: none !important;
+      padding-left: 0 !important;
+      margin-left: 0 !important;
+    }
+    
+    .checklist-list li,
+    .checklist-section ul li,
+    .checklist-section ol li {
+      list-style-type: none !important;
+      list-style: none !important;
+      list-style-image: none !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 0.5rem !important;
+      padding: 0.25rem 0 !important;
+      margin-bottom: 0.5rem !important;
+      line-height: 1.5 !important;
+      position: relative;
+    }
+    
+    .checklist-list li::before,
+    .checklist-section ul li::before,
+    .checklist-section ol li::before,
+    .checklist-list li::marker,
+    .checklist-section ul li::marker,
+    .checklist-section ol li::marker {
+      content: none !important;
+      display: none !important;
+      visibility: hidden !important;
+    }
+    
+    /* 确保checkbox输入框正确对齐 */
+    .checklist-list li input[type="checkbox"],
+    .checklist-section input[type="checkbox"] {
+      margin: 0 !important;
+      margin-top: 0.1rem !important;
+      flex-shrink: 0 !important;
+    }
+  </style>
+
+  <!-- 🎨 Status-Cards背景色修复 - 避免纯白背景 -->
+  <style>
+    .status-card.green {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+      border-left: 4px solid #16a34a !important;
+    }
+
+    .status-card.yellow {
+      background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%) !important;
+      border-left: 4px solid #d97706 !important;
+    }
+
+    .status-card.red {
+      background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%) !important;
+      border-left: 4px solid #dc2626 !important;
+    }
+
+    .status-card.blue {
+      background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%) !important;
+      border-left: 4px solid #2563eb !important;
+    }
+
+    .status-card.purple {
+      background: linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%) !important;
+      border-left: 4px solid #9333ea !important;
+    }
+
+    .status-card.gray {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+      border-left: 4px solid #6b7280 !important;
+    }
+
+    .status-card.orange {
+      background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%) !important;
+      border-left: 4px solid #ea580c !important;
+    }
+
+    /* 暗色主题下的红色卡片修复 */
+    [data-theme="dark"] .status-card.red {
+      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%) !important;
+      color: #fee2e2 !important;
+    }
+
+    /* 确保所有status-card都有合适的文字颜色 */
+    .status-card.green .status-content {
+      color: #166534 !important;
+    }
+
+    .status-card.yellow .status-content {
+      color: #92400e !important;
+    }
+
+    .status-card.red .status-content {
+      color: #dc2626 !important;
+    }
+
+    .status-card.blue .status-content {
+      color: #1e40af !important;
+    }
+
+    .status-card.purple .status-content {
+      color: #6b21a8 !important;
+    }
+
+    .status-card.gray .status-content {
+      color: #4b5563 !important;
+    }
+
+    .status-card.orange .status-content {
+      color: #c2410c !important;
+    }
+
+    /* 🔧 橙色status-label修复 - 确保白色文字和橙色背景 */
+    .status-card.orange .status-label {
+      background: #ea580c !important;
+      background-color: #ea580c !important;
+      color: white !important;
+      color: #ffffff !important;
+      font-weight: 500 !important;
+      padding: 0.25rem 0.75rem !important;
+      border-radius: 16px !important;
+      font-size: 0.8rem !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+
+    /* 确保橙色卡片标题颜色正确 */
+    .status-card.orange .status-header h4 {
+      color: #c2410c !important;
+    }
+
+    /* 额外的选择器确保样式生效 */
+    div.status-card.orange div.status-header div.status-label {
+      background: #ea580c !important;
+      color: white !important;
+    }
+  </style>
+
+  <!-- 🌙 Orange暗色模式定义 - 补充components.css中缺失的定义 -->
+  <style>
+    /* Orange暗色模式背景 */
+    [data-theme="dark"] .status-card.orange {
+      background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%);
+      color: #fed7aa;
+    }
+
+    /* Orange暗色模式标题颜色 */
+    [data-theme="dark"] .status-card.orange .status-header h4 {
+      color: #fb923c;
+    }
+
+    /* Orange暗色模式内容颜色 */
+    [data-theme="dark"] .status-card.orange .status-content {
+      color: #fed7aa;
+    }
+  </style>
+</head>
+
+<Layout 
+  title={title} 
+  currentBook={book} 
+  currentChapter={chapter}
+  lang={lang}
+  alt={alt}
+>
+  <slot />
+  <GlossaryTerm term="" />
+</Layout>
+
+<style>
+  /* 引用组件样式 */
+  @import '/src/styles/components.css';
+  @import '/src/styles/alignment-fix.css';
+  
+  /* 页面特定样式 */
+  .handbook-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* 确保VS Code主题优先级 */
+  [data-theme="dark"] pre,
+  [data-theme="dark"] code {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #3e3e3e !important;
+  }
+</style>
+
+<script>
+  // 智能状态卡片布局检测
+  function initSmartStatusCards() {
+    // 等待DOM加载完成
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSmartStatusCards);
+      return;
+    }
+
+    const statusCardsContainers = document.querySelectorAll('.status-cards');
+    
+    statusCardsContainers.forEach(container => {
+      const cards = container.querySelectorAll('.status-card');
+      const cardCount = cards.length;
+      
+      // 处理单张卡片的内容分析
+      if (cardCount === 1) {
+        analyzeSingleCard(cards[0]);
+        return;
+      }
+      
+      // 只处理3张或4张卡片的容器
+      if (cardCount !== 3 && cardCount !== 4) return;
+      
+      let shouldUseCompactLayout = true;
+      let totalContentLength = 0;
+      
+      cards.forEach(card => {
+        const title = card.querySelector('.status-header h4');
+        const content = card.querySelector('.status-content');
+        const labels = card.querySelectorAll('.status-label');
+        
+        // 检测内容长度
+        const titleLength = title ? (title.textContent || '').trim().length : 0;
+        const contentLength = content ? (content.textContent || '').trim().length : 0;
+        const labelCount = labels.length;
+        
+        totalContentLength += titleLength + contentLength;
+        
+        // 判断是否需要使用标准布局（非紧凑）
+        const titleThreshold = cardCount === 3 ? 30 : 25;  // 3张卡片允许稍长标题
+        const contentThreshold = cardCount === 3 ? 120 : 100;  // 3张卡片允许稍多内容
+        
+        if (titleLength > titleThreshold || contentLength > contentThreshold || labelCount > 1) {
+          shouldUseCompactLayout = false;
+        }
+      });
+      
+      // 如果平均每张卡片内容超过阈值，也使用标准布局
+      const avgContentThreshold = cardCount === 3 ? 50 : 40;
+      if (totalContentLength / cardCount > avgContentThreshold) {
+        shouldUseCompactLayout = false;
+      }
+      
+      // 清除所有布局类
+      container.classList.remove('compact-3', 'compact-4', 'compact-layout', 'grid-layout');
+      
+      // 应用相应的布局类
+      if (shouldUseCompactLayout) {
+        if (cardCount === 3) {
+          container.classList.add('compact-3');
+        } else if (cardCount === 4) {
+          container.classList.add('compact-4');
+        }
+      } else {
+        // 内容较多时，3张卡片使用默认auto-fit，4张卡片使用grid-layout
+        if (cardCount === 4) {
+          container.classList.add('grid-layout');
+        }
+        // 3张卡片不添加特殊类，使用默认的auto-fit布局
+      }
+    });
+  }
+
+  // 分析单张卡片是否需要拆分为多个小卡片
+  function analyzeSingleCard(card) {
+    // 跳过已经是multi-card的卡片
+    if (card.classList.contains('multi-card')) return;
+    
+    const content = card.querySelector('.status-content');
+    if (!content) return;
+    
+    const contentText = (content.textContent || '').trim();
+    const contentLength = contentText.length;
+    
+    // 检测是否有明显的分段结构
+    const paragraphs = content.querySelectorAll('p');
+    const lists = content.querySelectorAll('ul, ol');
+    const strongElements = content.querySelectorAll('strong');
+    
+    // 判断是否需要拆分的条件
+    const shouldSplit = (
+      contentLength > 300 ||  // 内容超过300字符
+      paragraphs.length > 3 ||  // 超过3个段落
+      lists.length > 1 ||  // 超过1个列表
+      strongElements.length > 2  // 超过2个强调元素
+    );
+    
+    if (shouldSplit) {
+      // 添加建议拆分的标记类
+      card.classList.add('suggest-multi-card');
+      
+      // 可以在这里添加一个提示或自动转换逻辑
+      console.log('建议将此卡片拆分为多个小卡片:', card);
+    }
+  }
+
+  // 初始化
+  initSmartStatusCards();
+  
+  // 监听主题切换，重新计算布局
+  document.addEventListener('themeChange', initSmartStatusCards);
+</script>

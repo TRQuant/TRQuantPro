@@ -1,0 +1,327 @@
+---
+import Layout from '/src/layouts/HandbookLayout.astro';
+import { getAllPages } from '/src/utils/getAllPages';
+
+const pages = await getAllPages();
+const currentPage = pages.find(p => p.path === '/book3/302_Chapter2/');
+
+const chapterData = {
+  title: "第2章 公司业务分析与行业格局",
+  description: "深入分析Broadcom的业务模式、行业地位和竞争优势",
+  learningObjectives: [
+    "掌握半导体行业分析框架",
+    "理解Broadcom的业务模式和价值链",
+    "分析行业竞争格局和发展趋势",
+    "识别公司的核心竞争优势"
+  ],
+  coreConcepts: [
+    "业务模式分析",
+    "行业价值链",
+    "竞争格局分析", 
+    "技术发展趋势",
+    "市场地位评估"
+  ],
+  analysisTools: [
+    "波特五力模型",
+    "SWOT分析",
+    "价值链分析",
+    "技术路线图",
+    "市场份额分析"
+  ],
+  sections: [
+    {
+      title: "2.1 业务模式分析与价值链",
+      description: "深入分析Broadcom的业务模式、收入结构和价值链定位",
+      path: "/book3/302_Chapter2/2.1_Business_Model_Analysis_CN"
+    },
+    {
+      title: "2.2 行业趋势与竞争格局",
+      description: "分析半导体行业发展趋势、竞争格局和Broadcom的市场地位",
+      path: "/book3/302_Chapter2/2.2_Industry_Trends_Competition_CN"
+    },
+    {
+      title: "2.3 核心竞争优势分析",
+      description: "识别和评估Broadcom的核心竞争优势和护城河",
+      path: "/book3/302_Chapter2/2.3_Core_Competitive_Advantages_CN"
+    }
+  ]
+};
+---
+
+<Layout title={chapterData.title} description={chapterData.description}>
+  <div class="chapter-container">
+    <div class="chapter-header">
+      <h1>{chapterData.title}</h1>
+      <p class="chapter-description">{chapterData.description}</p>
+    </div>
+
+    <div class="learning-objectives">
+      <h2>📚 学习目标</h2>
+      <div class="objectives-grid">
+        {chapterData.learningObjectives.map((objective, index) => (
+          <div class="objective-card">
+            <div class="objective-number">{index + 1}</div>
+            <p>{objective}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="core-concepts">
+      <h2>🎯 核心概念</h2>
+      <div class="concepts-grid">
+        {chapterData.coreConcepts.map(concept => (
+          <div class="concept-card">
+            <span>{concept}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="analysis-tools">
+      <h2>🛠️ 分析工具</h2>
+      <div class="tools-grid">
+        {chapterData.analysisTools.map(tool => (
+          <div class="tool-card">
+            <span>{tool}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="chapter-sections">
+      <h2>📖 章节内容</h2>
+      <div class="sections-grid">
+        {chapterData.sections.map((section, index) => (
+          <a href={section.path} class="section-card">
+            <div class="section-number">{index + 1}</div>
+            <div class="section-content">
+              <h3>{section.title}</h3>
+              <p>{section.description}</p>
+            </div>
+            <div class="section-arrow">→</div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="chapter-navigation">
+      <a href="/book3/301_Chapter1/" class="nav-button prev">
+        ← 第1章 投资研究全流程介绍
+      </a>
+      <a href="/book3/303_Chapter3/" class="nav-button next">
+        第3章 财务分析与估值模型 →
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .chapter-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .chapter-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .chapter-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
+
+  .chapter-description {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .learning-objectives,
+  .core-concepts,
+  .analysis-tools,
+  .chapter-sections {
+    margin-bottom: 3rem;
+  }
+
+  .learning-objectives h2,
+  .core-concepts h2,
+  .analysis-tools h2,
+  .chapter-sections h2 {
+    font-size: 1.8rem;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+  }
+
+  .objectives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .objective-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: transform 0.2s ease;
+  }
+
+  .objective-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .objective-number {
+    background: var(--color-primary);
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .concepts-grid,
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .concept-card,
+  .tool-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .concept-card:hover,
+  .tool-card:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .section-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+  }
+
+  .section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primary);
+  }
+
+  .section-number {
+    background: var(--color-primary);
+    color: white;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .section-content {
+    flex: 1;
+  }
+
+  .section-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .section-content p {
+    margin: 0;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+  }
+
+  .section-arrow {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .nav-button {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+  }
+
+  .nav-button:hover {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .chapter-container {
+      padding: 1rem;
+    }
+
+    .chapter-header h1 {
+      font-size: 2rem;
+    }
+
+    .objectives-grid,
+    .sections-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .concepts-grid,
+    .tools-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .chapter-navigation {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style> 

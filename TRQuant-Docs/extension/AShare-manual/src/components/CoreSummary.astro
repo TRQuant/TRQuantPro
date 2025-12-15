@@ -1,0 +1,40 @@
+---
+interface Props {
+  content: string;
+}
+
+const { content } = Astro.props;
+---
+
+<div class="core-summary">
+    <strong>核心摘要：</strong>
+    <blockquote>
+        <p>{content}</p>
+    </blockquote>
+</div>
+
+<style>
+.core-summary {
+    margin: 2rem 0;
+}
+
+.core-summary strong {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.core-summary blockquote {
+    background: var(--card-bg);
+    border-left: 4px solid var(--primary-color);
+    margin: 1rem 0;
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.core-summary blockquote p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+}
+</style> 

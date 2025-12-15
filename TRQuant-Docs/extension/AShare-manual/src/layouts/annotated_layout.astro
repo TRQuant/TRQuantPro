@@ -1,0 +1,127 @@
+---
+// 组件属性定义与默认值设置
+export interface Props {
+  title: string;                // 页面标题
+  lang?: string;                // 页面语言，默认为中文
+  alt?: string;                 // 中英文切换链接
+  currentBook?: string;         // 当前书籍标识（如 "theory"）
+  currentChapter?: string;      // 当前章节路径
+  prevLink?: string;            // 上一页链接
+  prevText?: string;            // 上一页按钮文字
+  nextLink?: string;            // 下一页链接
+  nextText?: string;            // 下一页按钮文字
+}
+
+// 解构 Astro.props 并设置默认值
+const {
+  title,
+  lang = 'zh-CN',
+  alt = '',
+  currentBook = 'theory',
+  currentChapter = '',
+  prevLink = '/',
+  prevText = '← 返回',
+  nextLink = '',
+  nextText = '下一页 →'
+} = Astro.props;
+
+// 判断是否为英文页面（语言设置或URL前缀判断）
+const isEn = lang === 'en' || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en/'));
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="美股投资实操手册 - 完整知识体系" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title> <!-- 动态标题 -->
+  </head>
+  <body>
+    <div class="container">
+      <!-- 顶部导航栏 -->
+      <header class="top-nav" id="topNav">
+        
+        
+        <div class="nav-left">
+          <!-- 切换侧边栏按钮 -->
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏"></button>
+        </div>
+        <div class="nav-right">
+          <!-- 下一页链接按钮 -->
+          {nextLink && <a href={nextLink} class="page-nav-btn next-btn" title={nextText}>{nextText}</a>}
+          <!-- 上一页链接按钮 -->
+          {prevLink && <a href={prevLink} class="page-nav-btn prev-btn" title={prevText}>{prevText}</a>}
+          <!-- 专注阅读模式按钮 -->
+          <button id="toggleReadingMode" class="reading-btn" title="专注阅读模式">📖</button>
+          <!-- 主题切换按钮 -->
+          <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+            <span class="theme-icon">🌙</span>
+          </button>📚
+          <!-- 字体大小调节按钮 -->
+          <button id="decreaseFont" class="font-btn" title="缩小字体">A-</button>
+          <button id="increaseFont" class="font-btn" title="放大字体">A+</button>
+          <!-- 中英文切换按钮 -->
+          <a class="lang-btn" id="langSwitchEn" href={alt} title="English">EN</a>
+          <a class="lang-btn" id="langSwitchCn" href={alt} title="中文">CN</a>
+        </div>
+      </header>
+
+      <!-- 阅读进度条（专注模式启用） -->
+      <div class="reading-progress" id="readingProgress" style="display: none;">
+        <div class="reading-progress-bar" id="readingProgressBar"></div>
+      </div>
+
+      <!-- 侧边栏 -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2 id="sidebarTitle">📈 美股投资实操手册</h2>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+          <!-- 后续由 JS 动态插入章节导航 -->
+        </nav>
+      </aside>
+
+      <!-- 主内容插槽区域 -->
+      <main class="main-content" id="mainContent">
+        <slot />
+      </main>
+
+      <!-- 左下角浮动导航按钮区 -->
+      <div class="left-nav" id="leftNav">
+        <!-- 返回首页按钮 -->
+        <a href="/" class="nav-btn home-btn" title="返回首页">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-text">返回首页</span>
+        </a>
+        <!-- 返回目录按钮 -->
+        <a href="#" class="nav-btn toc-btn" id="tocBtn" title="返回目录">
+          <span class="nav-icon">📚</span>
+          <span class="nav-text">返回目录</span>
+        </a>
+        <!-- 浏览器后退按钮 -->
+        <button class="nav-btn back-btn" id="backBtn" title="上一页">
+          <span class="nav-icon">←</span>
+          <span class="nav-text">上一页</span>
+        </button>
+      </div>
+
+      <!-- 章节翻页按钮区域（仅特定页面显示） -->
+      <div class="chapter-nav" id="chapterNav" style="display: none;">
+        <button class="chapter-btn prev-chapter" id="prevChapter" disabled>
+          <span class="chapter-icon">←</span>
+          <span class="chapter-text">上一章</span>
+        </button>
+        <button class="chapter-btn next-chapter" id="nextChapter">
+          <span class="chapter-text">下一章</span>
+          <span class="chapter-icon">→</span>
+        </button>
+      </div>
+
+      <!-- 回到顶部按钮 -->
+      <button id="backToTop" class="back-to-top" aria-label="回到顶部" style="display: none;">↑</button>
+    </div>
+  </body>
+</html>

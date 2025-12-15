@@ -1,0 +1,978 @@
+---
+// PDF导出按钮组件，支持多种导出选项
+---
+
+<div class="pdf-export-dropdown">
+  <button id="pdfExportBtn" class="pdf-export-btn" title="导出PDF">
+    📄 PDF
+    <span class="pdf-dropdown-arrow">▼</span>
+  </button>
+  
+  <div id="pdfExportMenu" class="pdf-export-menu">
+    <div class="pdf-export-option" data-type="current-page">
+      <div class="pdf-option-icon">📄</div>
+      <div class="pdf-option-content">
+        <div class="pdf-option-title">当前页面</div>
+        <div class="pdf-option-desc">导出当前页面内容</div>
+      </div>
+    </div>
+    
+    <div class="pdf-export-option" data-type="current-chapter">
+      <div class="pdf-option-icon">📑</div>
+      <div class="pdf-option-content">
+        <div class="pdf-option-title">当前章节</div>
+        <div class="pdf-option-desc">导出整个章节内容</div>
+      </div>
+    </div>
+    
+    <div class="pdf-export-option" data-type="full-book">
+      <div class="pdf-option-icon">📚</div>
+      <div class="pdf-option-content">
+        <div class="pdf-option-title">完整手册</div>
+        <div class="pdf-option-desc">导出整册手册</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 移除 pdfExporter 依赖，后续批量导出将改由服务器脚本完成
+  
+  class PDFExportController {
+    constructor() {
+      this.init();
+    }
+    
+    init() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.bindEvents());
+      } else {
+        this.bindEvents();
+      }
+    }
+    
+    bindEvents() {
+      const exportBtn = document.getElementById('pdfExportBtn') as HTMLButtonElement;
+      const exportMenu = document.getElementById('pdfExportMenu') as HTMLElement;
+      const exportOptions = document.querySelectorAll('.pdf-export-option') as NodeListOf<HTMLElement>;
+      
+      if (!exportBtn || !exportMenu) {
+        console.error('PDF导出按钮或菜单未找到');
+        return;
+      }
+      
+      // 点击按钮显示/隐藏菜单
+      exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleMenu();
+      });
+      
+      // 点击选项执行导出
+      exportOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const exportType = option.dataset.type;
+          if (exportType) {
+            this.handleExport(exportType);
+            this.hideMenu();
+          }
+        });
+      });
+      
+      // 点击外部关闭菜单
+      document.addEventListener('click', () => {
+        this.hideMenu();
+      });
+      
+      // 阻止菜单内部点击事件冒泡
+      exportMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+    
+    toggleMenu() {
+      const exportMenu = document.getElementById('pdfExportMenu') as HTMLElement;
+      const exportBtn = document.getElementById('pdfExportBtn') as HTMLElement;
+      
+      if (exportMenu && exportBtn) {
+        if (exportMenu.classList.contains('active')) {
+          this.hideMenu();
+        } else {
+          this.showMenu();
+        }
+      }
+    }
+    
+    showMenu() {
+      const exportMenu = document.getElementById('pdfExportMenu') as HTMLElement;
+      const exportBtn = document.getElementById('pdfExportBtn') as HTMLElement;
+      
+      if (exportMenu && exportBtn) {
+        exportMenu.classList.add('active');
+        exportBtn.classList.add('active');
+      }
+    }
+    
+    hideMenu() {
+      const exportMenu = document.getElementById('pdfExportMenu') as HTMLElement;
+      const exportBtn = document.getElementById('pdfExportBtn') as HTMLElement;
+      
+      if (exportMenu && exportBtn) {
+        exportMenu.classList.remove('active');
+        exportBtn.classList.remove('active');
+      }
+    }
+    
+    // 智能文件名生成函数
+    generatePDFFileName(): string {
+      const currentPath = window.location.pathname;
+      const pageTitle = document.title;
+      
+      // 解析URL路径，提取手册、章节、小节信息
+      const pathParts = currentPath.split('/').filter(part => part.length > 0);
+      
+      let handbook = '1';  // 默认手册1
+      let chapter = '1';   // 默认章节1
+      let section = '1';   // 默认小节1
+      let keyword = 'content'; // 默认关键词
+      
+      // 解析URL路径
+      if (pathParts.length > 0) {
+        // 检查是否包含book信息
+        const bookMatch = pathParts.find(part => part.startsWith('book'));
+        if (bookMatch) {
+          handbook = bookMatch.replace('book', '');
+        }
+        
+        // 检查章节信息
+        const chapterMatch = pathParts.find(part => part.match(/^\d{3}_Chapter\d+/));
+        if (chapterMatch) {
+          const chapterNum = chapterMatch.match(/Chapter(\d+)/);
+          if (chapterNum) {
+            chapter = chapterNum[1];
+          }
+        }
+        
+        // 检查小节信息
+        const sectionMatch = pathParts.find(part => part.match(/^\d+\.\d+_/));
+        if (sectionMatch) {
+          const sectionNum = sectionMatch.match(/^(\d+)\.(\d+)_/);
+          if (sectionNum) {
+            section = sectionNum[2];
+          }
+        }
+      }
+      
+      // 从页面标题或URL中提取关键词
+      keyword = this.extractKeyword(pageTitle, currentPath);
+      
+      // 生成文件名：手册-章-节-关键词
+      const fileName = `${handbook}-${chapter}-${section}-${keyword}`;
+      
+      console.log('Generated PDF filename:', fileName);
+      return fileName;
+    }
+    
+    // 提取关键词
+    extractKeyword(title: string, path: string): string {
+      // 预定义的关键词映射
+      const keywordMap: { [key: string]: string } = {
+        'Self_Awareness': 'wisdom',
+        'Understanding_the_World': 'world',
+        'Investment_Psychology': 'psychology',
+        'Historical_Patterns': 'history',
+        'Multibagger_Stocks': 'multibagger',
+        'Track_Selection': 'track',
+        'Industry_Trends': 'industry',
+        'Stock_Screening': 'screening',
+        'Trading_Strategies': 'trading',
+        'Execution': 'execution',
+        'Tools_and_Platforms': 'tools',
+        'Data_Analysis': 'analysis',
+        'Case_Review': 'case',
+        'Personal_Investment': 'personal',
+        'Practical_Implementation': 'practical',
+        'Market_Trend_Analysis': 'trend',
+        'Economic_Cycles': 'cycles',
+        'Monetary_Policy': 'monetary',
+        'Fiscal_Policy': 'fiscal',
+        'Global_Markets': 'global',
+        'Economic_Indicators': 'indicators',
+        'Forecasting_Models': 'forecast',
+        'Risk_Management': 'risk',
+        'Asset_Allocation': 'allocation',
+        'Market_Timing': 'timing',
+        'Quantitative_Analysis': 'quant'
+      };
+      
+      // 从路径中匹配关键词
+      for (const [key, value] of Object.entries(keywordMap)) {
+        if (path.includes(key)) {
+          return value;
+        }
+      }
+      
+      // 从标题中提取关键词
+      if (title.includes('认知') || title.includes('智慧') || title.includes('Self') || title.includes('Awareness')) {
+        return 'wisdom';
+      } else if (title.includes('世界') || title.includes('World') || title.includes('Understanding')) {
+        return 'world';
+      } else if (title.includes('心理') || title.includes('Psychology')) {
+        return 'psychology';
+      } else if (title.includes('风险') || title.includes('Risk')) {
+        return 'risk';
+      } else if (title.includes('历史') || title.includes('History') || title.includes('Historical')) {
+        return 'history';
+      } else if (title.includes('筛选') || title.includes('Screening')) {
+        return 'screening';
+      } else if (title.includes('交易') || title.includes('Trading')) {
+        return 'trading';
+      } else if (title.includes('工具') || title.includes('Tools')) {
+        return 'tools';
+      } else if (title.includes('案例') || title.includes('Case')) {
+        return 'case';
+      } else if (title.includes('实践') || title.includes('Practice')) {
+        return 'practice';
+      }
+      
+      // 如果没有匹配到，使用通用关键词
+      return 'content';
+    }
+    
+    async handleExport(exportType: string) {
+      const exportBtn = document.getElementById('pdfExportBtn') as HTMLButtonElement;
+      if (!exportBtn) return;
+      
+      // 记录原始 HTML 以便完整恢复（包含箭头 span）
+      const originalHTML = exportBtn.innerHTML;
+      
+      try {
+        // 若导出整章/整册时才显示加载状态
+        if (exportType !== 'current-page') {
+          exportBtn.innerHTML = '导出中...';
+          exportBtn.disabled = true;
+        }
+        
+        switch (exportType) {
+          case 'current-page': {
+            await this.generatePdfFromCurrentPage();
+            break;
+          }
+          case 'current-chapter':
+          case 'full-book':
+            alert('整章 / 整册 PDF 导出功能正在开发中，敬请期待！');
+            break;
+          default:
+            throw new Error('未知的导出类型');
+        }
+        
+      } catch (error) {
+        console.error('PDF导出失败:', error);
+        const errorMessage = error instanceof Error ? error.message : 'PDF导出失败，请重试';
+        this.showErrorMessage(errorMessage);
+      } finally {
+        // 恢复按钮状态
+        exportBtn.innerHTML = originalHTML;
+        exportBtn.disabled = false;
+      }
+    }
+    
+    async generatePdfFromCurrentPage() {
+      // 生成智能文件名
+      const fileName = this.generatePDFFileName();
+      
+      // 修改页面标题以影响默认文件名
+      const originalTitle = document.title;
+      document.title = fileName;
+      
+      // 立即优化页面样式用于打印
+      this.optimizePageForPrint();
+      
+      // 最小化等待时间 - 只等待关键样式应用
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // 使用浏览器原生打印API
+      window.print();
+      
+      // 立即恢复原始标题和样式
+      document.title = originalTitle;
+      this.restoreOriginalStyles();
+    }
+    
+    optimizePageForPrint() {
+      const printStyle = document.createElement('style');
+      printStyle.id = 'pdf-export-print-style';
+      printStyle.textContent = `
+        @media print {
+          /* 快速隐藏所有装饰性和交互性元素 */
+          nav, .navbar, .sidebar, .pdf-export-dropdown, .theme-toggle,
+          .back-to-top, .search-box, .print-hide, header, footer,
+          .header, .footer, button, input, select, textarea,
+          .interactive, .tooltip, .modal, .dropdown, .menu,
+          .breadcrumb, .pagination, .toc-sidebar, .share-buttons,
+          .reading-time, .mobile-menu-toggle { 
+            display: none !important; 
+          }
+          
+          /* 完全移除所有emoji、图标和装饰性元素 */
+          .emoji, .icon, .card-icon, .decorative-image, .background-image,
+          h1::before, h2::before, h3::before, h4::before, h5::before, h6::before,
+          *::before, *::after { 
+            display: none !important; 
+            content: none !important; 
+          }
+          
+          /* 极简化所有样式 - 性能优化 */
+          * {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-radius: 0 !important;
+            outline: none !important;
+            filter: none !important;
+            transform: none !important;
+            transition: none !important;
+            animation: none !important;
+          }
+          
+          /* 基础页面设置 */
+          html, body {
+            background: white !important;
+            color: black !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 11pt !important;
+            line-height: 1.3 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          /* 主要内容区域 */
+          main, .main-content, .content {
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          /* 完全去除所有装饰性容器的边框和背景 */
+          .chapter-overview, .overview-item, .overview-card, .card, .card-green,
+          .wisdom-section, .science-section, .practice-section, .key-points,
+          .core-summary, .key-metrics, .container, .wrapper, .section {
+            display: block !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            margin: 0.1em 0 !important;
+            padding: 0 !important;
+          }
+          
+          /* 将网格布局转换为简单的块级布局 */
+          .overview-grid, .chapters-grid, .content-grid {
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          /* 标题样式 - 极简无装饰 */
+          h1, h2, h3, h4, h5, h6 {
+            color: black !important;
+            font-weight: bold !important;
+            text-align: left !important;
+            margin: 0.2em 0 0.1em 0 !important;
+            padding: 0 !important;
+          }
+          
+          h1 { font-size: 16pt !important; }
+          h2 { font-size: 14pt !important; }
+          h3 { font-size: 12pt !important; }
+          h4 { font-size: 11pt !important; }
+          h5, h6 { font-size: 10pt !important; }
+          
+          /* 段落和文本 - 紧凑布局 */
+          p { margin: 0.1em 0 !important; text-align: left !important; }
+          
+          /* 列表 - 极简样式 */
+          ul, ol { margin: 0.1em 0 !important; padding-left: 1em !important; }
+          li { margin: 0.05em 0 !important; }
+          
+          /* 强调文本 */
+          strong, b { font-weight: bold !important; color: black !important; }
+          em, i { font-style: italic !important; color: black !important; }
+          
+          /* 链接 */
+          a { color: black !important; text-decoration: none !important; }
+          
+          /* 引用块 - 极简 */
+          blockquote {
+            margin: 0.1em 0 !important;
+            padding-left: 0.5em !important;
+            border-left: 1px solid black !important;
+            font-style: italic !important;
+          }
+          
+          /* 代码块 - 极简 */
+          pre, code {
+            font-family: monospace !important;
+            font-size: 9pt !important;
+            background: #f5f5f5 !important;
+            padding: 0.1em !important;
+            margin: 0.1em 0 !important;
+            border: 1px solid #ccc !important;
+          }
+          
+          /* 表格 - 极简 */
+          table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin: 0.2em 0 !important;
+            font-size: 9pt !important;
+          }
+          
+          th, td {
+            border: 1px solid black !important;
+            padding: 0.1em !important;
+            text-align: left !important;
+          }
+          
+          th { background: #f0f0f0 !important; font-weight: bold !important; }
+          
+          /* 图片 */
+          img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            margin: 0.1em 0 !important;
+          }
+          
+          /* 性能优化 */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+        }
+      `;
+      document.head.appendChild(printStyle);
+    }
+    
+    restoreOriginalStyles() {
+      const printStyle = document.getElementById('pdf-export-print-style');
+      if (printStyle) {
+        printStyle.remove();
+      }
+    }
+    
+    showErrorMessage(message: string) {
+      const errorElement = document.createElement('div');
+      errorElement.className = 'pdf-export-error';
+      errorElement.innerHTML = `
+        <div class="pdf-error-content">
+          <div class="pdf-error-icon">❌</div>
+          <div class="pdf-error-text">${message}</div>
+          <button class="pdf-error-close">关闭</button>
+        </div>
+      `;
+      
+      // 添加关闭按钮事件监听器
+      const closeButton = errorElement.querySelector('.pdf-error-close');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          errorElement.remove();
+        });
+      }
+      
+      document.body.appendChild(errorElement);
+      
+      setTimeout(() => {
+        if (errorElement.parentNode) {
+          errorElement.remove();
+        }
+      }, 5000);
+    }
+  }
+  
+  // 初始化PDF导出控制器
+  new PDFExportController();
+</script>
+
+<style>
+  .pdf-export-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .pdf-export-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 80px;
+  }
+  
+  .pdf-export-btn:hover,
+  .pdf-export-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .pdf-export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .pdf-dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .pdf-export-btn.active .pdf-dropdown-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .pdf-export-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 220px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+  }
+  
+  .pdf-export-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .pdf-export-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .pdf-export-option:last-child {
+    border-bottom: none;
+  }
+  
+  .pdf-export-option:hover {
+    background: var(--bg-primary);
+  }
+  
+  .pdf-option-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  
+  .pdf-option-content {
+    flex: 1;
+  }
+  
+  .pdf-option-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  
+  .pdf-option-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.2;
+  }
+  
+  /* 错误提示样式 */
+  .pdf-export-error {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border: 1px solid #ef4444;
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    animation: pdf-slide-in 0.3s ease;
+    max-width: 350px;
+  }
+  
+  .pdf-error-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .pdf-error-icon {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+  
+  .pdf-error-text {
+    flex: 1;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .pdf-error-close {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .pdf-error-close:hover {
+    background: #dc2626;
+  }
+  
+  @keyframes pdf-slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* 暗色主题适配 */
+  [data-theme="dark"] .pdf-export-btn {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+  
+  [data-theme="dark"] .pdf-export-btn:hover,
+  [data-theme="dark"] .pdf-export-btn.active {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  [data-theme="dark"] .pdf-export-menu {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-theme="dark"] .pdf-export-option:hover {
+    background: var(--bg-primary);
+  }
+  
+  [data-theme="dark"] .pdf-export-error {
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .pdf-export-menu {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 280px;
+    }
+    
+    .pdf-export-menu.active {
+      transform: translate(-50%, -50%);
+    }
+    
+    .pdf-export-error {
+      left: 10px;
+      right: 10px;
+      max-width: none;
+    }
+  }
+            margin: 0.1em 0 !important;
+          }
+          
+          /* 性能优化 */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+        }
+      `;
+      document.head.appendChild(printStyle);
+    }
+    
+    restoreOriginalStyles() {
+      const printStyle = document.getElementById('pdf-export-print-style');
+      if (printStyle) {
+        printStyle.remove();
+      }
+    }
+    
+    showErrorMessage(message: string) {
+      const errorElement = document.createElement('div');
+      errorElement.className = 'pdf-export-error';
+      errorElement.innerHTML = `
+        <div class="pdf-error-content">
+          <div class="pdf-error-icon">❌</div>
+          <div class="pdf-error-text">${message}</div>
+          <button class="pdf-error-close">关闭</button>
+        </div>
+      `;
+      
+      // 添加关闭按钮事件监听器
+      const closeButton = errorElement.querySelector('.pdf-error-close');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          errorElement.remove();
+        });
+      }
+      
+      document.body.appendChild(errorElement);
+      
+      setTimeout(() => {
+        if (errorElement.parentNode) {
+          errorElement.remove();
+        }
+      }, 5000);
+    }
+  }
+  
+  // 初始化PDF导出控制器
+  new PDFExportController();
+</script>
+
+<style>
+  .pdf-export-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .pdf-export-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 80px;
+  }
+  
+  .pdf-export-btn:hover,
+  .pdf-export-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .pdf-export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .pdf-dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .pdf-export-btn.active .pdf-dropdown-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .pdf-export-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 220px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+  }
+  
+  .pdf-export-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .pdf-export-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .pdf-export-option:last-child {
+    border-bottom: none;
+  }
+  
+  .pdf-export-option:hover {
+    background: var(--bg-primary);
+  }
+  
+  .pdf-option-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  
+  .pdf-option-content {
+    flex: 1;
+  }
+  
+  .pdf-option-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  
+  .pdf-option-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.2;
+  }
+  
+  /* 错误提示样式 */
+  .pdf-export-error {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border: 1px solid #ef4444;
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    animation: pdf-slide-in 0.3s ease;
+    max-width: 350px;
+  }
+  
+  .pdf-error-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .pdf-error-icon {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+  
+  .pdf-error-text {
+    flex: 1;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .pdf-error-close {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .pdf-error-close:hover {
+    background: #dc2626;
+  }
+  
+  @keyframes pdf-slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* 暗色主题适配 */
+  [data-theme="dark"] .pdf-export-btn {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+  
+  [data-theme="dark"] .pdf-export-btn:hover,
+  [data-theme="dark"] .pdf-export-btn.active {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  [data-theme="dark"] .pdf-export-menu {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  [data-theme="dark"] .pdf-export-option:hover {
+    background: var(--bg-primary);
+  }
+  
+  [data-theme="dark"] .pdf-export-error {
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .pdf-export-menu {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 280px;
+    }
+    
+    .pdf-export-menu.active {
+      transform: translate(-50%, -50%);
+    }
+    
+    .pdf-export-error {
+      left: 10px;
+      right: 10px;
+      max-width: none;
+    }
+  }
+  }</style> 

@@ -1,0 +1,176 @@
+---
+/**
+ * 日期选择器组件
+ * 功能：允许用户选择查看历史新闻
+ */
+---
+
+<div class="date-selector">
+  <div class="date-selector-label">
+    <span>📅</span>
+    <span>选择日期</span>
+  </div>
+  <input 
+    type="date" 
+    id="newsDatePicker" 
+    class="date-input"
+    max={new Date().toISOString().split('T')[0]}
+  />
+  <button id="loadDateNews" class="load-btn">查看新闻</button>
+  <button id="loadTodayNews" class="today-btn">今日新闻</button>
+</div>
+
+<style>
+  .date-selector {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+  }
+
+  .date-selector-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 1.05em;
+  }
+
+  .date-input {
+    padding: 10px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1em;
+    font-family: inherit;
+    color: #2d3748;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .date-input:hover {
+    border-color: #667eea;
+  }
+
+  .date-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .load-btn, .today-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .load-btn {
+    background: #667eea;
+    color: white;
+  }
+
+  .load-btn:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  .today-btn {
+    background: #f0fdf4;
+    color: #166534;
+    border: 2px solid #10b981;
+  }
+
+  .today-btn:hover {
+    background: #10b981;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .date-selector {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .date-input, .load-btn, .today-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // 初始化日期选择器
+  const dateInput = document.getElementById('newsDatePicker') as HTMLInputElement;
+  const loadBtn = document.getElementById('loadDateNews');
+  const todayBtn = document.getElementById('loadTodayNews');
+
+  // 设置默认日期为今天
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  // 加载指定日期的新闻
+  loadBtn?.addEventListener('click', () => {
+    const selectedDate = dateInput?.value;
+    if (selectedDate) {
+      const formattedDate = selectedDate.replace(/-/g, '');
+      // 显示加载状态
+      loadBtn.textContent = '加载中...';
+      loadBtn.disabled = true;
+      
+      // 跳转到指定日期
+      window.location.href = `/news?date=${formattedDate}`;
+    }
+  });
+
+  // 加载今日新闻
+  todayBtn?.addEventListener('click', () => {
+    // 显示加载状态
+    todayBtn.textContent = '加载中...';
+    todayBtn.disabled = true;
+    
+    // 跳转到今日新闻
+    window.location.href = '/news';
+  });
+
+  // 回车键加载
+  dateInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      loadBtn?.click();
+    }
+  });
+
+  // 监听URL变化，更新日期选择器
+  const updateDateFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateParam = urlParams.get('date');
+    
+    if (dateParam && dateInput) {
+      // 将YYYYMMDD格式转换为YYYY-MM-DD
+      const formattedDate = `${dateParam.slice(0, 4)}-${dateParam.slice(4, 6)}-${dateParam.slice(6, 8)}`;
+      dateInput.value = formattedDate;
+    } else if (dateInput) {
+      // 如果没有日期参数，设置为今天
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+  };
+
+  // 页面加载时更新日期选择器
+  updateDateFromURL();
+
+  // 监听浏览器前进后退
+  window.addEventListener('popstate', updateDateFromURL);
+</script>
+

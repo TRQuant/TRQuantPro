@@ -1,0 +1,366 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="金融术语API测试">
+  <div class="container">
+    <h1>金融术语API测试</h1>
+    
+    <div class="test-panel">
+      <h2>API功能测试</h2>
+      
+      <div class="test-controls">
+        <input type="text" id="termInput" placeholder="输入金融术语" value="Bitcoin">
+        <button onclick="testSingleTerm()">测试单个术语</button>
+        <button onclick="testBatchTerms()">批量测试</button>
+        <button onclick="testCache()">查看缓存</button>
+      </div>
+      
+      <div id="results" class="results-panel">
+        <p>点击按钮开始测试...</p>
+      </div>
+    </div>
+
+    <div class="glossary-demo">
+      <h2>悬浮提示演示</h2>
+      <p>
+        测试以下术语的悬浮提示功能：
+        <span class="glossary-term" data-term="Bitcoin" data-definition='{"term":"Bitcoin","fullName":"Bitcoin","description":"第一个去中心化加密货币，由中本聪在2009年创建","category":"加密货币","example":"比特币总供应量2100万枚，通过挖矿产生"}' title="第一个去中心化加密货币，由中本聪在2009年创建">Bitcoin</span>、
+        <span class="glossary-term" data-term="NASDAQ" data-definition='{"term":"NASDAQ","fullName":"NASDAQ","description":"纳斯达克证券交易所，主要交易科技股","category":"交易所","example":"苹果、微软、谷歌等科技巨头在纳斯达克上市"}' title="纳斯达克证券交易所，主要交易科技股">NASDAQ</span>、
+        <span class="glossary-term" data-term="PE" data-definition='{"term":"PE","fullName":"Price-to-Earnings Ratio","description":"市盈率，股价与每股收益的比率，衡量股票估值水平","category":"估值指标","example":"PE = 股价 / 每股收益，通常15-25倍为合理区间"}' title="市盈率，股价与每股收益的比率，衡量股票估值水平">PE</span>
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .test-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .test-controls {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .test-controls input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .test-controls button {
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .test-controls button:hover {
+    background: var(--primary-dark);
+  }
+
+  .results-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+    min-height: 100px;
+    font-family: monospace;
+    white-space: pre-wrap;
+  }
+
+  .glossary-demo {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .glossary-term {
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: help;
+    border-bottom: 1px dotted var(--primary-color);
+    transition: all 0.2s ease;
+  }
+
+  .glossary-term:hover {
+    background: var(--primary-color);
+    color: white;
+    border-bottom-color: transparent;
+  }
+
+  .tooltip {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .tooltip-header {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .tooltip-category {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tooltip-description {
+    margin-bottom: 0.5rem;
+  }
+
+  .tooltip-example {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .test-controls {
+      flex-direction: column;
+    }
+    
+    .test-controls input,
+    .test-controls button {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // 金融术语API测试功能
+  let currentTooltip = null; // 全局变量跟踪当前显示的提示框
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化工具提示
+    initTooltips();
+    
+    // 绑定测试函数到全局
+    window.testSingleTerm = testSingleTerm;
+    window.testBatchTerms = testBatchTerms;
+    window.testCache = testCache;
+  });
+
+  // 初始化工具提示
+  function initTooltips() {
+    const glossaryTerms = document.querySelectorAll('.glossary-term');
+    
+    glossaryTerms.forEach(term => {
+      term.addEventListener('mouseenter', showTooltip);
+      term.addEventListener('mouseleave', hideTooltip);
+    });
+  }
+
+  // 显示工具提示
+  function showTooltip(event) {
+    const term = event.target;
+    const definition = term.getAttribute('data-definition');
+    
+    if (!definition) return;
+
+    // 如果已有提示框，先移除
+    if (currentTooltip) {
+      currentTooltip.remove();
+      currentTooltip = null;
+    }
+
+    try {
+      const data = JSON.parse(definition);
+      
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.innerHTML = `
+        <div class="tooltip-header">${data.fullName || data.term}</div>
+        <div class="tooltip-category">${data.category}</div>
+        <div class="tooltip-description">${data.description}</div>
+        ${data.example ? `<div class="tooltip-example">示例：${data.example}</div>` : ''}
+      `;
+
+      const rect = term.getBoundingClientRect();
+      tooltip.style.left = rect.left + 'px';
+      tooltip.style.top = (rect.bottom + 10) + 'px';
+
+      document.body.appendChild(tooltip);
+      currentTooltip = tooltip;
+
+      // 调整位置避免超出视窗
+      setTimeout(() => {
+        const tooltipRect = tooltip.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        if (tooltipRect.right > viewportWidth) {
+          tooltip.style.left = (viewportWidth - tooltipRect.width - 10) + 'px';
+        }
+
+        if (tooltipRect.bottom > viewportHeight) {
+          tooltip.style.top = (rect.top - tooltipRect.height - 10) + 'px';
+        }
+      }, 0);
+
+    } catch (error) {
+      console.warn('Failed to parse tooltip data:', error);
+    }
+  }
+
+  // 隐藏工具提示
+  function hideTooltip(event) {
+    // 延迟移除，避免鼠标移动到提示框时立即消失
+    setTimeout(() => {
+      if (currentTooltip && !currentTooltip.matches(':hover')) {
+        currentTooltip.remove();
+        currentTooltip = null;
+      }
+    }, 100);
+  }
+
+  // 测试单个术语
+  async function testSingleTerm() {
+    const term = document.getElementById('termInput').value.trim();
+    if (!term) {
+      updateResults('请输入要测试的术语');
+      return;
+    }
+
+    updateResults(`正在测试术语: ${term}...`);
+    
+    try {
+      // 模拟API调用
+      const result = await simulateAPICall(term);
+      updateResults(`✅ 测试完成\n\n术语: ${result.term}\n全名: ${result.fullName}\n分类: ${result.category}\n描述: ${result.description}\n示例: ${result.example}`);
+    } catch (error) {
+      updateResults(`❌ 测试失败: ${error.message}`);
+    }
+  }
+
+  // 批量测试
+  async function testBatchTerms() {
+    const terms = ['Bitcoin', 'NASDAQ', 'PE', 'ROE', 'ETF'];
+    updateResults(`正在批量测试 ${terms.length} 个术语...`);
+    
+    try {
+      const results = [];
+      for (const term of terms) {
+        const result = await simulateAPICall(term);
+        results.push(`${term}: ${result.source || 'local'}`);
+      }
+      updateResults(`✅ 批量测试完成\n\n${results.join('\n')}`);
+    } catch (error) {
+      updateResults(`❌ 批量测试失败: ${error.message}`);
+    }
+  }
+
+  // 测试缓存
+  function testCache() {
+    const stats = {
+      total: 15,
+      valid: 12,
+      expired: 3,
+      sources: {
+        local: 8,
+        wikipedia: 4,
+        investopedia: 3
+      }
+    };
+    
+    updateResults(`💾 缓存统计\n\n总缓存项: ${stats.total}\n有效缓存: ${stats.valid}\n过期缓存: ${stats.expired}\n来源分布:\n${Object.entries(stats.sources).map(([k, v]) => `  ${k}: ${v}`).join('\n')}`);
+  }
+
+  // 模拟API调用
+  async function simulateAPICall(term) {
+    // 模拟网络延迟
+    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
+    
+    const mockData = {
+      'Bitcoin': {
+        term: 'Bitcoin',
+        fullName: 'Bitcoin',
+        description: '第一个去中心化加密货币，由中本聪在2009年创建',
+        category: '加密货币',
+        example: '比特币总供应量2100万枚，通过挖矿产生',
+        source: 'wikipedia'
+      },
+      'NASDAQ': {
+        term: 'NASDAQ',
+        fullName: 'NASDAQ',
+        description: '纳斯达克证券交易所，主要交易科技股',
+        category: '交易所',
+        example: '苹果、微软、谷歌等科技巨头在纳斯达克上市',
+        source: 'wikipedia'
+      },
+      'PE': {
+        term: 'PE',
+        fullName: 'Price-to-Earnings Ratio',
+        description: '市盈率，股价与每股收益的比率，衡量股票估值水平',
+        category: '估值指标',
+        example: 'PE = 股价 / 每股收益，通常15-25倍为合理区间',
+        source: 'local'
+      },
+      'ROE': {
+        term: 'ROE',
+        fullName: 'Return on Equity',
+        description: '净资产收益率，衡量公司利用股东投资创造利润的效率',
+        category: '财务指标',
+        example: 'ROE = 净利润 / 股东权益，通常>15%为优秀',
+        source: 'local'
+      },
+      'ETF': {
+        term: 'ETF',
+        fullName: 'Exchange-Traded Fund',
+        description: '交易所交易基金，跟踪特定指数或资产',
+        category: '投资产品',
+        example: 'SPY跟踪标普500指数，QQQ跟踪纳斯达克100',
+        source: 'local'
+      }
+    };
+    
+    const result = mockData[term];
+    if (!result) {
+      throw new Error(`未找到术语 "${term}" 的定义`);
+    }
+    
+    return result;
+  }
+
+  // 更新结果显示
+  function updateResults(message) {
+    document.getElementById('results').textContent = message;
+  }
+</script> 
+ 
