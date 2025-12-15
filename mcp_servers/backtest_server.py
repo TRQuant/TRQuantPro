@@ -138,7 +138,7 @@ TOOLS = [
                 "end_date": {"type": "string"},
                 "param_grid": {
                     "type": "object",
-                    "description": "参数网格，如{"MAX_STOCKS": [5,8,10], "STOP_LOSS": [-0.05,-0.08]}"
+                    "description": "参数网格，如 MAX_STOCKS=[5,8,10], STOP_LOSS=[-0.05,-0.08]"
                 },
                 "target_metric": {"type": "string", "default": "sharpe_ratio"},
                 "method": {"type": "string", "default": "grid", "description": "grid/random"}

@@ -91,7 +91,7 @@ TOOLS = [
                 "strategy": {"type": "string", "description": "策略类型"},
                 "param_space": {
                     "type": "object",
-                    "description": "参数空间定义，如{"mom_short": {"type": "int", "low": 3, "high": 10}}"
+                    "description": "参数空间定义，如{{"mom_short": {{"type": "int", "low": 3, "high": 10}}}}"
                 },
                 "start_date": {"type": "string"},
                 "end_date": {"type": "string"},

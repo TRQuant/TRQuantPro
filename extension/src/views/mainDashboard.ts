@@ -3,13 +3,13 @@
  * ==========================
  * 
  * 韬睿量化核心入口 - 完整投资流程系统
- * 区别于QuantConnect纯回测，这是8步骤投资工作流
+ * 区别于QuantConnect纯回测，这是9步骤投资工作流（不包括实盘）
  * 
  * 功能模块：
  * - 市场状态概览
  * - 投资主线TOP5
  * - 推荐因子展示
- * - 8步骤工作流快捷入口
+ * - 9步骤工作流快捷入口
  * - 最近项目/回测列表
  */
 
@@ -196,19 +196,16 @@ export class MainDashboard {
             5: { id: 'factor', name: '因子构建' },
             6: { id: 'strategy', name: '策略生成' },
             7: { id: 'backtest', name: '回测验证' },
-            8: { id: 'trading', name: '实盘交易' }
+            8: { id: 'optimization', name: '策略优化' },
+            9: { id: 'report', name: '报告生成' }
         };
         
         const stepInfo = stepMap[step];
         if (!stepInfo) return;
         
-        // 步骤7和8打开专门的配置页面
+        // 步骤7打开回测配置页面
         if (step === 7) {
             vscode.commands.executeCommand('trquant.openBacktestConfig');
-            return;
-        }
-        if (step === 8) {
-            vscode.commands.executeCommand('trquant.openTrading');
             return;
         }
         
@@ -222,8 +219,15 @@ export class MainDashboard {
         });
         
         try {
-            // 2. 调用Python后端执行步骤
-            const result = await this._client.callBridge<any>('run_workflow_step', { step_id: stepInfo.id });
+            // 2. 通过MCP server调用workflow.run_step执行步骤
+            const result = await this._client.callBridge<any>('call_mcp_tool', {
+                tool_name: 'workflow.run_step',
+                arguments: {
+                    workflow_id: 'default_workflow', // TODO: 从上下文获取或创建
+                    step_index: step - 1, // step是1-9，step_index是0-8
+                    step_args: {}
+                }
+            });
             
             // 3. 解析结果 - bridge返回: {ok, summary, data}
             const response = result as any;  // 扩展类型
@@ -357,14 +361,15 @@ export class MainDashboard {
         logger.info('=== 一键执行完整投资工作流 ===', MODULE);
         
         const steps = [
-            { id: 'step1', name: '📡 信息获取', action: 'check_data_sources' },
-            { id: 'step2', name: '📈 市场趋势', action: 'analyze_market_trend' },
-            { id: 'step3', name: '🔥 投资主线', action: 'identify_mainlines' },
-            { id: 'step4', name: '📦 候选池构建', action: 'build_candidate_pool' },
-            { id: 'step5', name: '📊 因子推荐', action: 'recommend_factors' },
-            { id: 'step6', name: '🛠️ 策略生成', action: 'generate_strategy' },
-            { id: 'step7', name: '🔄 回测验证', action: 'run_backtest' },
-            { id: 'step8', name: '🚀 交易检查', action: 'check_broker' }
+            { id: 'step1', name: '📡 信息获取', step_id: 'data_source', step_index: 0 },
+            { id: 'step2', name: '📈 市场趋势', step_id: 'market_trend', step_index: 1 },
+            { id: 'step3', name: '🔥 投资主线', step_id: 'mainline', step_index: 2 },
+            { id: 'step4', name: '📦 候选池构建', step_id: 'candidate_pool', step_index: 3 },
+            { id: 'step5', name: '📊 因子构建', step_id: 'factor', step_index: 4 },
+            { id: 'step6', name: '🛠️ 策略生成', step_id: 'strategy', step_index: 5 },
+            { id: 'step7', name: '🔄 回测验证', step_id: 'backtest', step_index: 6 },
+            { id: 'step8', name: '⚙️ 策略优化', step_id: 'optimization', step_index: 7 },
+            { id: 'step9', name: '📄 报告生成', step_id: 'report', step_index: 8 }
         ];
         
         // 显示进度
@@ -402,9 +407,14 @@ export class MainDashboard {
                         }
                     });
                     
-                    // 调用后端
-                    const response = await this._client.callBridge('run_workflow_step', {
-                        step_id: step.action
+                    // 通过MCP server调用workflow.run_step
+                    const response = await this._client.callBridge('call_mcp_tool', {
+                        tool_name: 'workflow.run_step',
+                        arguments: {
+                            workflow_id: 'default_workflow', // TODO: 从上下文获取或创建
+                            step_index: step.step_index,
+                            step_args: {}
+                        }
                     });
                     
                     if (response.ok) {
@@ -1724,10 +1734,10 @@ export class MainDashboard {
             </div>
         </div>
         
-        <!-- 8步骤工作流 -->
+        <!-- 9步骤工作流 -->
         <div class="workflow-section">
             <div class="section-header">
-                <div class="section-title">📋 8步骤投资工作流</div>
+                <div class="section-title">📋 9步骤投资工作流（不包括实盘）</div>
                 <button class="run-all-btn" onclick="vscode.postMessage({command: 'runFullWorkflow'})">
                     ▶️ 一键执行全部
                 </button>
@@ -1778,9 +1788,15 @@ export class MainDashboard {
                     </div>
                     <div class="workflow-step" id="step-8" onclick="runStep(8)">
                         <div class="step-number">8</div>
-                        <div class="step-icon">🚀</div>
-                        <div class="step-name">实盘交易</div>
+                        <div class="step-icon">⚙️</div>
+                        <div class="step-name">策略优化</div>
                         <div class="step-status" id="status-8">▶️</div>
+                    </div>
+                    <div class="workflow-step" id="step-9" onclick="runStep(9)">
+                        <div class="step-number">9</div>
+                        <div class="step-icon">📄</div>
+                        <div class="step-name">报告生成</div>
+                        <div class="step-status" id="status-9">▶️</div>
                     </div>
                 </div>
                 

@@ -53,16 +53,20 @@ class WorkflowState:
 class WorkflowStateManager:
     """工作流状态管理器"""
     
-    WORKFLOW_8STEPS = [
-        {"id": "market_analysis", "name": "市场分析"},
-        {"id": "mainline_identification", "name": "主线识别"},
-        {"id": "candidate_pool", "name": "候选池构建"},
-        {"id": "factor_screening", "name": "因子筛选"},
-        {"id": "strategy_generation", "name": "策略生成"},
-        {"id": "backtest", "name": "回测验证"},
-        {"id": "optimization", "name": "策略优化"},
-        {"id": "execution", "name": "执行交易"},
+    WORKFLOW_9STEPS = [
+        {"id": "data_source", "name": "信息获取", "mcp_tool": "data_source.check"},
+        {"id": "market_trend", "name": "市场趋势", "mcp_tool": "market.status"},
+        {"id": "mainline", "name": "投资主线", "mcp_tool": "market.mainlines"},
+        {"id": "candidate_pool", "name": "候选池构建", "mcp_tool": "data_source.candidate_pool"},
+        {"id": "factor", "name": "因子构建", "mcp_tool": "factor.recommend"},
+        {"id": "strategy", "name": "策略生成", "mcp_tool": "strategy_template.generate"},
+        {"id": "backtest", "name": "回测验证", "mcp_tool": "backtest.bullettrade"},
+        {"id": "optimization", "name": "策略优化", "mcp_tool": "optimizer.optuna"},
+        {"id": "report", "name": "报告生成", "mcp_tool": "report.generate"},
     ]
+    
+    # 保持向后兼容
+    WORKFLOW_8STEPS = WORKFLOW_9STEPS[:8]
     
     def __init__(self, storage_dir: Optional[Path] = None):
         self.storage_dir = storage_dir or Path(__file__).parent.parent.parent / "data" / "workflow_states"
@@ -77,13 +81,13 @@ class WorkflowStateManager:
             self._mongo_db = client.get_database("trquant")
         except: pass
     
-    def create_workflow(self, name: str = "8步骤工作流") -> WorkflowState:
+    def create_workflow(self, name: str = "9步骤工作流") -> WorkflowState:
         import uuid
         workflow = WorkflowState(
             workflow_id=str(uuid.uuid4())[:8],
             name=name,
-            total_steps=8,
-            steps=[{"id": s["id"], "name": s["name"], "status": "pending"} for s in self.WORKFLOW_8STEPS],
+            total_steps=9,
+            steps=[{"id": s["id"], "name": s["name"], "status": "pending", "mcp_tool": s.get("mcp_tool")} for s in self.WORKFLOW_9STEPS],
             created_at=datetime.now().isoformat()
         )
         self._save(workflow)
