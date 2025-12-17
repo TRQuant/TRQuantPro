@@ -9,6 +9,8 @@ import { StrategyGeneratorPanel } from './strategyGeneratorPanel';
 import { BacktestPanel } from './backtestPanel';
 import { OptimizerPanel } from './optimizerPanel';
 import { ReportPanel } from './reportPanel';
+import { MonitoringPanel } from './monitoringPanel';
+import { ResultManagerPanel } from './resultManagerPanel';
 import { TRQuantClient } from '../services/trquantClient';
 
 /**
@@ -48,16 +50,22 @@ export function registerPanels(
 
     // 报告生成 (需要 client 参数)
     context.subscriptions.push(
-        vscode.commands.registerCommand('trquant.openReportPanel', () => {
-            ReportPanel.createOrShow(context.extensionUri, client);
+        vscode.commands.registerCommand('trquant.openReportPanel', (options?: { result?: any }) => {
+            ReportPanel.createOrShow(context.extensionUri, client, options);
+        })
+    );
+
+    // 监控面板 (新增)
+    context.subscriptions.push(
+        vscode.commands.registerCommand('trquant.openMonitoringPanel', () => {
+            MonitoringPanel.createOrShow(context.extensionUri, client);
+        })
+    );
+
+    // 结果管理面板 (新增)
+    context.subscriptions.push(
+        vscode.commands.registerCommand('trquant.openResultManager', () => {
+            ResultManagerPanel.createOrShow(context.extensionUri, client);
         })
     );
 }
-
-export {
-    WorkflowPanel,
-    StrategyGeneratorPanel,
-    BacktestPanel,
-    OptimizerPanel,
-    ReportPanel
-};

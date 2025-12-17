@@ -163,6 +163,18 @@
         "command": "trquant.compareBacktests",
         "title": "TRQuant: 对比回测结果",
         "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openMonitoringPanel",
+        "title": "TRQuant: 系统监控",
+        "category": "TRQuant",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "trquant.openResultManager",
+        "title": "TRQuant: 回测结果管理",
+        "category": "TRQuant",
+        "icon": "$(list-flat)"
       }
     ],
     "snippets": [

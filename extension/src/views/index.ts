@@ -9,4 +9,6 @@ export { StrategyGeneratorPanel } from './strategyGeneratorPanel';
 export { BacktestPanel } from './backtestPanel';
 export { OptimizerPanel } from './optimizerPanel';
 export { ReportPanel } from './reportPanel';
+export { MonitoringPanel } from './monitoringPanel';
+export { ResultManagerPanel } from './resultManagerPanel';
 export { registerPanels } from './registerPanels';
