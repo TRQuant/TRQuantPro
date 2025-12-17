@@ -23,6 +23,14 @@ import logging
 import sys
 import asyncio
 from pathlib import Path
+
+# 导入工作流存储
+try:
+    from utils.workflow_storage import WorkflowStorage
+    STORAGE_AVAILABLE = True
+except ImportError:
+    STORAGE_AVAILABLE = False
+    WorkflowStorage = None
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 import uuid
@@ -158,6 +166,45 @@ class WorkflowSession:
 
 _workflows: Dict[str, WorkflowSession] = {}
 
+# 初始化工作流存储
+_storage_path = Path(__file__).parent.parent / "data" / "workflows"
+_workflow_storage = WorkflowStorage(_storage_path) if STORAGE_AVAILABLE else None
+
+
+
+
+def _save_workflow(workflow_id: str):
+    """保存工作流状态到持久化存储"""
+    if _workflow_storage and workflow_id in _workflows:
+        try:
+            _workflow_storage.save_workflow_status(workflow_id, _workflows[workflow_id].to_dict())
+        except Exception as e:
+            logger.warning(f"保存工作流状态失败: {workflow_id}, 错误: {e}")
+
+def _load_workflows():
+    """从持久化存储加载工作流"""
+    if not _workflow_storage:
+        return
+    try:
+        saved_workflows = _workflow_storage.list_workflows(limit=100)
+        for wf_data in saved_workflows:
+            wf_id = wf_data.get("workflow_id")
+            if wf_id and wf_id not in _workflows:
+                # 恢复工作流会话
+                session = WorkflowSession(wf_id, wf_data.get("name", "恢复的工作流"))
+                session.status = wf_data.get("status", "created")
+                session.current_step = wf_data.get("current_step", 0)
+                session.context = wf_data.get("context", {})
+                session.steps = wf_data.get("steps", session.steps)
+                session.created_at = wf_data.get("created_at", session.created_at)
+                session.updated_at = wf_data.get("updated_at", session.updated_at)
+                _workflows[wf_id] = session
+        logger.info(f"从存储恢复了 {len(saved_workflows)} 个工作流")
+    except Exception as e:
+        logger.warning(f"加载工作流失败: {e}")
+
+# 启动时加载已保存的工作流
+_load_workflows()
 
 # ==================== 步骤执行器（调用真实MCP服务器） ====================
 
@@ -412,7 +459,10 @@ if MCP_AVAILABLE:
         Tool(name="workflow9.status", description="获取工作流状态", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
         Tool(name="workflow9.run_step", description="执行指定步骤", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}, "step_id": {"type": "string"}, "args": {"type": "object"}}, "required": ["workflow_id", "step_id"]}),
         Tool(name="workflow9.run_all", description="一键执行所有9个步骤", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
-        Tool(name="workflow9.get_context", description="获取工作流上下文", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]})
+        Tool(name="workflow9.get_context", description="获取工作流上下文", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
+        Tool(name="workflow9.list", description="列出所有保存的工作流", inputSchema={"type": "object", "properties": {"limit": {"type": "integer", "default": 20}, "status": {"type": "string"}}}),
+        Tool(name="workflow9.restore", description="从存储恢复工作流", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
+        Tool(name="workflow9.delete", description="删除保存的工作流", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]})
     ]
     
     @server.list_tools()
@@ -439,6 +489,7 @@ async def _handle_tool(name: str, args: Dict) -> Dict:
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
         session = WorkflowSession(workflow_id, args.get("name", "9步投资工作流"))
         _workflows[workflow_id] = session
+        _save_workflow(workflow_id)  # 持久化保存
         return {"success": True, "workflow_id": workflow_id, "total_steps": len(WORKFLOW_9STEPS)}
     
     elif name == "workflow9.status":
@@ -507,6 +558,45 @@ async def _handle_tool(name: str, args: Dict) -> Dict:
         if workflow_id not in _workflows:
             return {"success": False, "error": f"工作流不存在: {workflow_id}"}
         return {"success": True, "context": _workflows[workflow_id].context}
+    
+
+    elif name == "workflow9.list":
+        limit = args.get("limit", 20)
+        status_filter = args.get("status")
+        if _workflow_storage:
+            workflows = _workflow_storage.list_workflows(limit=limit, status_filter=status_filter)
+            return {"success": True, "workflows": workflows, "total": len(workflows)}
+        else:
+            workflows = [w.to_dict() for w in _workflows.values()]
+            return {"success": True, "workflows": workflows[:limit], "total": len(workflows)}
+    
+    elif name == "workflow9.restore":
+        workflow_id = args.get("workflow_id")
+        if workflow_id in _workflows:
+            return {"success": True, "workflow_id": workflow_id, "message": "工作流已在内存中"}
+        if _workflow_storage:
+            wf_data = _workflow_storage.load_workflow_status(workflow_id)
+            if wf_data:
+                session = WorkflowSession(workflow_id, wf_data.get("name", "恢复的工作流"))
+                session.status = wf_data.get("status", "created")
+                session.current_step = wf_data.get("current_step", 0)
+                session.context = wf_data.get("context", {})
+                session.steps = wf_data.get("steps", session.steps)
+                _workflows[workflow_id] = session
+                return {"success": True, "workflow_id": workflow_id, **session.to_dict()}
+            return {"success": False, "error": f"工作流不存在: {workflow_id}"}
+        return {"success": False, "error": "存储不可用"}
+    
+    elif name == "workflow9.delete":
+        workflow_id = args.get("workflow_id")
+        deleted = False
+        if workflow_id in _workflows:
+            del _workflows[workflow_id]
+            deleted = True
+        if _workflow_storage:
+            _workflow_storage.delete_workflow(workflow_id)
+            deleted = True
+        return {"success": deleted, "workflow_id": workflow_id}
     
     return {"success": False, "error": f"未知工具: {name}"}
 
