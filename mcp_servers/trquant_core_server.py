@@ -36,6 +36,9 @@ sys.path.insert(0, str(TRQUANT_ROOT / "mcp_servers"))
 # 导入MCP缓存模块
 try:
     from utils.performance import MCPCache, get_cache
+    from utils.redis_cache import get_redis_cache, RedisCache
+    _redis_cache = get_redis_cache()
+    REDIS_AVAILABLE = _redis_cache.available
     MCP_CACHE_AVAILABLE = True
     _cache_market_status = MCPCache(max_size=100, default_ttl=300)    # 5分钟
     _cache_mainlines = MCPCache(max_size=50, default_ttl=1800)        # 30分钟
@@ -45,6 +48,8 @@ except ImportError:
     _cache_market_status = None
     _cache_mainlines = None
     _cache_factors = None
+    _redis_cache = None
+    REDIS_AVAILABLE = False
 
 # 配置日志
 logging.basicConfig(
@@ -424,10 +429,23 @@ class MarketHandler:
     async def status(args: Dict) -> Dict:
         """获取市场状态（缓存5分钟）"""
         # 检查缓存
+        # L1: 内存缓存
         if _cache_market_status:
             cached = _cache_market_status.get("market.status", args)
             if cached:
-                cached["_cached"] = True
+                cached["_cached"] = "memory"
+                return cached
+        
+        # L2: Redis缓存
+        if REDIS_AVAILABLE and _redis_cache:
+            import hashlib, json
+            cache_key = hashlib.md5(json.dumps(args, sort_keys=True).encode()).hexdigest()[:12]
+            cached = _redis_cache.get("market_status", cache_key)
+            if cached:
+                cached["_cached"] = "redis"
+                # 回填L1缓存
+                if _cache_market_status:
+                    _cache_market_status.set("market.status", args, cached, ttl=300)
                 return cached
         
         try:
@@ -436,8 +454,15 @@ class MarketHandler:
             response = success_response(result, "market.status")
             
             # 存入缓存
-            if _cache_market_status and response.get("success"):
-                _cache_market_status.set("market.status", args, response, ttl=300)
+            if response.get("success"):
+                # L1: 内存缓存
+                if _cache_market_status:
+                    _cache_market_status.set("market.status", args, response, ttl=300)
+                # L2: Redis缓存
+                if REDIS_AVAILABLE and _redis_cache:
+                    import hashlib, json
+                    cache_key = hashlib.md5(json.dumps(args, sort_keys=True).encode()).hexdigest()[:12]
+                    _redis_cache.set("market_status", cache_key, response, ttl=300)
             
             return response
         except Exception as e:
