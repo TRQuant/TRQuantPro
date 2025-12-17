@@ -33,6 +33,19 @@ TRQUANT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(TRQUANT_ROOT))
 sys.path.insert(0, str(TRQUANT_ROOT / "mcp_servers"))
 
+# 导入MCP缓存模块
+try:
+    from utils.performance import MCPCache, get_cache
+    MCP_CACHE_AVAILABLE = True
+    _cache_market_status = MCPCache(max_size=100, default_ttl=300)    # 5分钟
+    _cache_mainlines = MCPCache(max_size=50, default_ttl=1800)        # 30分钟
+    _cache_factors = MCPCache(max_size=100, default_ttl=3600)         # 1小时
+except ImportError:
+    MCP_CACHE_AVAILABLE = False
+    _cache_market_status = None
+    _cache_mainlines = None
+    _cache_factors = None
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
@@ -409,10 +422,24 @@ class MarketHandler:
     
     @staticmethod
     async def status(args: Dict) -> Dict:
+        """获取市场状态（缓存5分钟）"""
+        # 检查缓存
+        if _cache_market_status:
+            cached = _cache_market_status.get("market.status", args)
+            if cached:
+                cached["_cached"] = True
+                return cached
+        
         try:
             from market_server_v2 import _handle_status
             result = await _handle_status(args)
-            return success_response(result, "market.status")
+            response = success_response(result, "market.status")
+            
+            # 存入缓存
+            if _cache_market_status and response.get("success"):
+                _cache_market_status.set("market.status", args, response, ttl=300)
+            
+            return response
         except Exception as e:
             return error_response(str(e), "MARKET_ERROR", "market.status")
     
@@ -427,10 +454,22 @@ class MarketHandler:
     
     @staticmethod
     async def mainlines(args: Dict) -> Dict:
+        """获取投资主线（缓存30分钟）"""
+        if _cache_mainlines:
+            cached = _cache_mainlines.get("market.mainlines", args)
+            if cached:
+                cached["_cached"] = True
+                return cached
+        
         try:
             from market_server_v2 import _handle_mainlines
             result = await _handle_mainlines(args)
-            return success_response(result, "market.mainlines")
+            response = success_response(result, "market.mainlines")
+            
+            if _cache_mainlines and response.get("success"):
+                _cache_mainlines.set("market.mainlines", args, response, ttl=1800)
+            
+            return response
         except Exception as e:
             return error_response(str(e), "MARKET_ERROR", "market.mainlines")
     
@@ -668,6 +707,40 @@ class OptimizerHandler:
         }, "optimizer.best_params")
 
 
+
+
+class CacheHandler:
+    """缓存管理处理器"""
+    
+    @staticmethod
+    async def stats(args: Dict) -> Dict:
+        """获取缓存统计"""
+        stats = {"available": MCP_CACHE_AVAILABLE, "caches": {}}
+        if _cache_market_status:
+            stats["caches"]["market_status"] = _cache_market_status.get_stats()
+        if _cache_mainlines:
+            stats["caches"]["mainlines"] = _cache_mainlines.get_stats()
+        if _cache_factors:
+            stats["caches"]["factors"] = _cache_factors.get_stats()
+        return success_response(stats, "cache.stats")
+    
+    @staticmethod
+    async def clear(args: Dict) -> Dict:
+        """清空缓存"""
+        cache_name = args.get("cache_name", "all")
+        cleared = 0
+        if cache_name in ("all", "market_status") and _cache_market_status:
+            _cache_market_status.clear()
+            cleared += 1
+        if cache_name in ("all", "mainlines") and _cache_mainlines:
+            _cache_mainlines.clear()
+            cleared += 1
+        if cache_name in ("all", "factors") and _cache_factors:
+            _cache_factors.clear()
+            cleared += 1
+        return success_response({"cleared": cleared, "cache_name": cache_name}, "cache.clear")
+
+
 # ============================================================
 # 工具路由
 # ============================================================
@@ -705,6 +778,10 @@ TOOL_HANDLERS = {
     "optimizer.grid_search": OptimizerHandler.grid_search,
     "optimizer.optuna": OptimizerHandler.optuna,
     "optimizer.best_params": OptimizerHandler.best_params,
+    
+    # Cache
+    "cache.stats": CacheHandler.stats,
+    "cache.clear": CacheHandler.clear,
 }
 
 
