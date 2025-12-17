@@ -4,12 +4,14 @@ from .state_manager import WorkflowStateManager, WorkflowState, WorkflowStatus, 
 # 别名支持（兼容性）
 StateManager = WorkflowStateManager
 
+# 增强型编排器（已合并到 workflow_orchestrator.py）
+from core.workflow_orchestrator import EnhancedWorkflowOrchestrator, create_workflow
 
-# 增强型编排器
-from .enhanced_orchestrator import (
-    EnhancedWorkflowOrchestrator,
-    WorkflowConfig,
-    WorkflowStep,
-    WorkflowStepStatus,
-    create_workflow,
-)
+# 可选导入（如果类存在）
+try:
+    from core.workflow_orchestrator import WorkflowConfig, WorkflowStep, WorkflowStepStatus
+except ImportError:
+    # 这些类可能不存在，不影响主要功能
+    WorkflowConfig = None
+    WorkflowStep = None
+    WorkflowStepStatus = None

@@ -1,14 +1,12 @@
 /**
- * TRQuant 视图模块
- * =================
- * 
- * 导出所有WebView面板
+ * 面板视图模块统一导出
+ * 清理后的结构化版本
  */
 
+export { WorkflowPanel } from './workflowPanel';
+export { MainDashboard } from './mainDashboard';
+export { StrategyGeneratorPanel } from './strategyGeneratorPanel';
 export { BacktestPanel } from './backtestPanel';
+export { OptimizerPanel } from './optimizerPanel';
 export { ReportPanel } from './reportPanel';
-export { StrategyManagerPanel } from './strategyManagerPanel';
-
-// 如果其他面板存在也导出
-// export { WorkbenchPanel } from './workbenchPanel';
-// export { KnowledgeBasePanel } from './knowledgeBasePanel';
+export { registerPanels } from './registerPanels';

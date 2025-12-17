@@ -18,7 +18,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TRQuantClient } from '../services/trquantClient';
 import { logger } from '../utils/logger';
-import { showQuantConnectStyleReport, BacktestResultData } from './quantconnectStylePanel';
 import { MarketStatus, Mainline, Factor } from '../types';
 
 const MODULE = 'MainDashboard';
@@ -28,6 +27,7 @@ export class MainDashboard {
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
     private readonly _client: TRQuantClient;
+    private readonly _extensionPath: string;
     private _disposables: vscode.Disposable[] = [];
     
     // 缓存数据
@@ -38,11 +38,13 @@ export class MainDashboard {
     private constructor(
         panel: vscode.WebviewPanel,
         extensionUri: vscode.Uri,
-        client: TRQuantClient
+        client: TRQuantClient,
+        extensionPath: string
     ) {
         this._panel = panel;
         this._extensionUri = extensionUri;
         this._client = client;
+        this._extensionPath = extensionPath;
 
         this._panel.webview.onDidReceiveMessage(
             message => this.handleMessage(message),
@@ -59,13 +61,21 @@ export class MainDashboard {
 
     public static createOrShow(
         extensionUri: vscode.Uri,
-        client: TRQuantClient
+        client: TRQuantClient,
+        extensionPath?: string
     ): MainDashboard {
         const column = vscode.ViewColumn.One;
 
         if (MainDashboard.currentPanel) {
             MainDashboard.currentPanel._panel.reveal(column);
             return MainDashboard.currentPanel;
+        }
+
+        // 如果没有提供extensionPath，尝试从extensionUri推断
+        let extPath = extensionPath;
+        if (!extPath) {
+            const extension = vscode.extensions.getExtension('trquant.trquant-cursor-extension');
+            extPath = extension?.extensionPath || extensionUri.fsPath;
         }
 
         const panel = vscode.window.createWebviewPanel(
@@ -79,7 +89,7 @@ export class MainDashboard {
             }
         );
 
-        MainDashboard.currentPanel = new MainDashboard(panel, extensionUri, client);
+        MainDashboard.currentPanel = new MainDashboard(panel, extensionUri, client, extPath);
         return MainDashboard.currentPanel;
     }
 

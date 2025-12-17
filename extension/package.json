@@ -31,6 +31,38 @@
   "contributes": {
     "commands": [
       {
+        "command": "trquant.openWorkflowPanel",
+        "title": "TRQuant: 韬睿量化投资流程",
+        "category": "TRQuant",
+        "icon": "$(workflow)"
+      },
+      {
+        "command": "trquant.openDashboard",
+        "title": "TRQuant: 量化工作台",
+        "category": "TRQuant",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "trquant.openStrategyGenerator",
+        "title": "TRQuant: 策略生成器",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openBacktestPanel",
+        "title": "TRQuant: 回测面板",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openOptimizerPanel",
+        "title": "TRQuant: 策略优化器",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openReportPanel",
+        "title": "TRQuant: 报告生成",
+        "category": "TRQuant"
+      },
+      {
         "command": "trquant.getMarketStatus",
         "title": "TRQuant: 获取市场状态",
         "category": "TRQuant"
@@ -61,48 +93,35 @@
         "category": "TRQuant"
       },
       {
-        "command": "trquant.showPanel",
-        "title": "TRQuant: 打开控制面板",
-        "category": "TRQuant"
-      },
-      {
-        "command": "trquant.showDashboard",
-        "title": "TRQuant: 打开主界面",
-        "category": "TRQuant",
-        "icon": "$(home)"
-      },
-      {
-        "command": "trquant.openDashboard",
-        "title": "TRQuant: 量化工作台",
-        "category": "TRQuant",
-        "icon": "$(dashboard)"
-      },
-      {
-        "command": "trquant.showWelcome",
-        "title": "TRQuant: 显示欢迎页面",
-        "category": "TRQuant"
-      },
-      {
         "command": "trquant.createProject",
         "title": "TRQuant: 新建量化项目",
         "category": "TRQuant"
       },
       {
         "command": "trquant.refreshProject",
-        "title": "刷新项目",
+        "title": "TRQuant: 刷新项目",
+        "category": "TRQuant",
         "icon": "$(refresh)"
       },
       {
+        "command": "trquant.runBacktest",
+        "title": "TRQuant: 运行回测",
+        "category": "TRQuant"
+      },
+      {
         "command": "trquant.runStrategyBacktest",
-        "title": "运行回测"
+        "title": "TRQuant: 运行策略回测",
+        "category": "TRQuant"
       },
       {
         "command": "trquant.openInEditor",
-        "title": "在编辑器中打开"
+        "title": "TRQuant: 在编辑器中打开",
+        "category": "TRQuant"
       },
       {
         "command": "trquant.deleteFile",
-        "title": "删除文件"
+        "title": "TRQuant: 删除文件",
+        "category": "TRQuant"
       },
       {
         "command": "trquant.editProjectConfig",
@@ -125,23 +144,20 @@
         "category": "TRQuant"
       },
       {
-        "command": "trquant.runBacktest",
-        "title": "TRQuant: 运行回测",
-        "category": "TRQuant",
-        "icon": "$(play)"
-      },
-      {
         "command": "trquant.refreshBacktestHistory",
-        "title": "刷新回测历史",
+        "title": "TRQuant: 刷新回测历史",
+        "category": "TRQuant",
         "icon": "$(refresh)"
       },
       {
         "command": "trquant.viewBacktestResult",
-        "title": "查看回测结果"
+        "title": "TRQuant: 查看回测结果",
+        "category": "TRQuant"
       },
       {
         "command": "trquant.clearBacktestHistory",
-        "title": "清除回测历史"
+        "title": "TRQuant: 清除回测历史",
+        "category": "TRQuant"
       },
       {
         "command": "trquant.compareBacktests",
@@ -192,58 +208,20 @@
     "views": {
       "trquant-sidebar": [
         {
-          "id": "trquant-project",
-          "name": "📁 项目资源"
-        },
-        {
-          "id": "trquant-backtest-history",
-          "name": "🧪 回测历史"
+          "id": "trquant-workflow",
+          "name": "🐉 韬睿量化投资流程",
+          "when": "true"
         }
       ]
     },
     "menus": {
-      "view/item/context": [
-        {
-          "command": "trquant.runStrategyBacktest",
-          "when": "view == trquant-project && viewItem == strategy",
-          "group": "1_run"
-        },
-        {
-          "command": "trquant.openInEditor",
-          "when": "view == trquant-project",
-          "group": "2_open"
-        },
-        {
-          "command": "trquant.deleteFile",
-          "when": "view == trquant-project && viewItem != root && viewItem != folder",
-          "group": "3_delete"
-        }
-      ],
+      "view/item/context": [],
       "view/title": [
         {
-          "command": "trquant.refreshProject",
-          "when": "view == trquant-project",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.createProject",
-          "when": "view == trquant-project",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.refreshBacktestHistory",
-          "when": "view == trquant-backtest-history",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.compareBacktests",
-          "when": "view == trquant-backtest-history",
-          "group": "navigation"
-        },
-        {
-          "command": "trquant.runBacktest",
-          "when": "view == trquant-backtest-history",
-          "group": "navigation"
+          "command": "trquant.openWorkflowPanel",
+          "when": "view == trquant-workflow",
+          "group": "navigation",
+          "icon": "$(workflow)"
         }
       ]
     }
@@ -270,4 +248,3 @@
     "axios": "^1.6.0"
   }
 }
-

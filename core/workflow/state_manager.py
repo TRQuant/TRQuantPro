@@ -65,9 +65,6 @@ class WorkflowStateManager:
         {"id": "report", "name": "报告生成", "mcp_tool": "report.generate"},
     ]
     
-    # 保持向后兼容
-    WORKFLOW_8STEPS = WORKFLOW_9STEPS[:8]
-    
     def __init__(self, storage_dir: Optional[Path] = None):
         self.storage_dir = storage_dir or Path(__file__).parent.parent.parent / "data" / "workflow_states"
         self.storage_dir.mkdir(parents=True, exist_ok=True)

@@ -8,7 +8,22 @@
 import logging
 import json
 from typing import Dict, List, Any, Optional
-from mcp.server.models import InitializationOptions
+import sys
+from pathlib import Path
+
+# 添加项目路径
+TRQUANT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(TRQUANT_ROOT))
+
+# 导入官方MCP SDK
+try:
+    from mcp.server.models import InitializationOptions
+    MCP_SDK_AVAILABLE = True
+except ImportError as e:
+    import sys
+    print(f'官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}', file=sys.stderr)
+    sys.exit(1)
+
 from mcp.server import Server
 from mcp.types import Tool, TextContent
 import mcp.server.stdio
@@ -323,6 +338,77 @@ async def _handle_quick_backtest(args: Dict) -> Dict:
     }
 
 
+
+
+async def _handle_jqdata_backtest(args: Dict) -> Dict:
+    """使用聚宽数据的快速回测（推荐）"""
+    import sys
+    import time
+    sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
+    
+    start_time = time.time()
+    
+    try:
+        from core.backtest.fast_backtest_engine import quick_backtest
+        from core.data.jqdata_provider import JQDataProvider
+        
+        # 获取股票池
+        securities = args.get("securities")
+        if not securities:
+            provider = JQDataProvider()
+            all_stocks = provider.get_index_stocks(index_code="000300.XSHG")
+            max_stocks = args.get("max_positions", 10) * 3
+            securities = all_stocks[:max_stocks] if all_stocks else None
+        
+        if not securities:
+            return {"success": False, "error": "无法获取股票池"}
+        
+        # 使用快速回测引擎（use_mock=False使用真实数据）
+        result = quick_backtest(
+            securities=securities,
+            start_date=args["start_date"],
+            end_date=args["end_date"],
+            strategy=args.get("strategy", "momentum"),
+            use_mock=False,  # 使用聚宽真实数据
+            max_stocks=args.get("max_positions", 10)
+        )
+        
+        duration = time.time() - start_time
+        
+        return {
+            "success": True,
+            "data_source": "聚宽(JQData)",
+            "strategy": args.get("strategy", "momentum"),
+            "period": f"{args['start_date']} ~ {args['end_date']}",
+            "stock_count": len(securities),
+            "metrics": {
+                "total_return": result.total_return,
+                "annual_return": result.annual_return,
+                "sharpe_ratio": result.sharpe_ratio,
+                "max_drawdown": result.max_drawdown,
+                "win_rate": result.win_rate,
+                "total_trades": result.total_trades
+            },
+            "formatted_metrics": {
+                "total_return": f"{result.total_return*100:.2f}%",
+                "annual_return": f"{result.annual_return*100:.2f}%",
+                "sharpe_ratio": f"{result.sharpe_ratio:.2f}",
+                "max_drawdown": f"{result.max_drawdown*100:.2f}%",
+                "win_rate": f"{result.win_rate*100:.1f}%"
+            },
+            "duration": f"{duration:.2f}秒"
+        }
+        
+    except Exception as e:
+        import traceback
+        return {
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
+
 async def _handle_compare(args: Dict) -> Dict:
     """策略对比"""
     import sys
@@ -618,13 +704,198 @@ async def main():
         await server.run(
             read_stream,
             write_stream,
-            InitializationOptions(
-                server_name="backtest-server",
-                server_version="2.0.0"
-            )
+            server.create_initialization_options()
         )
 
 
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+
+
+# ==================== BulletTrade 处理函数 ====================
+
+async def _handle_bullettrade(args: Dict) -> Dict:
+    """BulletTrade单策略回测"""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    
+    try:
+        from core.bullettrade import BulletTradeEngine, BTConfig
+        
+        config = BTConfig(
+            start_date=args["start_date"],
+            end_date=args["end_date"],
+            initial_capital=args.get("initial_capital", 1000000),
+            commission_rate=args.get("commission_rate", 0.0003),
+            stamp_tax_rate=args.get("stamp_tax_rate", 0.001),
+            slippage=args.get("slippage", 0.001),
+            benchmark=args.get("benchmark", "000300.XSHG"),
+            data_provider=args.get("data_provider", "jqdata")
+        )
+        
+        engine = BulletTradeEngine(config)
+        
+        strategy_path = args.get("strategy_path")
+        strategy_code = args.get("strategy_code")
+        
+        if not strategy_path and not strategy_code:
+            return {"error": "必须提供 strategy_path 或 strategy_code"}
+        
+        result = engine.run_backtest(
+            strategy_path=strategy_path,
+            strategy_code=strategy_code,
+            output_dir=args.get("output_dir", "backtest_results/bullettrade")
+        )
+        
+        # 保存到数据库
+        if args.get("save_to_db", True) and result.success:
+            try:
+                from pymongo import MongoClient
+                client = MongoClient("localhost", 27017, serverSelectionTimeoutMS=5000)
+                db = client["trquant"]
+                doc = result.to_dict()
+                doc["strategy_path"] = strategy_path or "code_string"
+                doc["engine"] = "bullettrade"
+                db.backtest_results.insert_one(doc)
+                logger.info("BulletTrade回测结果已保存到MongoDB")
+            except Exception as e:
+                logger.warning(f"保存到数据库失败: {e}")
+        
+        return {
+            "success": result.success,
+            "message": result.message if hasattr(result, 'message') else "回测完成",
+            "metrics": result.get_metrics() if hasattr(result, 'get_metrics') else result.metrics,
+            "report_path": result.report_path if hasattr(result, 'report_path') else None,
+        }
+    except ImportError as e:
+        logger.warning(f"BulletTrade模块导入失败: {e}")
+        return {"error": f"BulletTrade模块不可用: {e}"}
+    except Exception as e:
+        logger.error(f"BulletTrade回测失败: {e}", exc_info=True)
+        return {"error": str(e)}
+
+
+async def _handle_bullettrade_batch(args: Dict) -> Dict:
+    """BulletTrade批量回测"""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    
+    try:
+        from core.bullettrade import BulletTradeEngine, BTConfig
+        
+        config = BTConfig(
+            start_date=args["start_date"],
+            end_date=args["end_date"],
+            initial_capital=args.get("initial_capital", 1000000),
+            data_provider=args.get("data_provider", "jqdata")
+        )
+        
+        engine = BulletTradeEngine(config)
+        strategies = args.get("strategies", [])
+        
+        if not strategies:
+            return {"error": "必须提供strategies列表"}
+        
+        results = []
+        for i, strategy in enumerate(strategies):
+            try:
+                result = engine.run_backtest(
+                    strategy_path=strategy.get("path"),
+                    strategy_code=strategy.get("code"),
+                    output_dir=f"backtest_results/bullettrade_batch/{i}"
+                )
+                if result.success:
+                    metrics = result.get_metrics() if hasattr(result, 'get_metrics') else result.metrics
+                    results.append({
+                        "strategy": strategy.get("name", f"strategy_{i}"),
+                        "total_return": f"{metrics.get('total_return', 0):.2f}%",
+                        "sharpe_ratio": f"{metrics.get('sharpe_ratio', 0):.2f}",
+                        "max_drawdown": f"{metrics.get('max_drawdown', 0):.2f}%",
+                    })
+            except Exception as e:
+                results.append({
+                    "strategy": strategy.get("name", f"strategy_{i}"),
+                    "error": str(e)
+                })
+        
+        return {"success": True, "total": len(strategies), "results": results}
+    except ImportError as e:
+        return {"error": f"BulletTrade模块不可用: {e}"}
+    except Exception as e:
+        logger.error(f"BulletTrade批量回测失败: {e}", exc_info=True)
+        return {"error": str(e)}
+
+
+async def _handle_bullettrade_optimize(args: Dict) -> Dict:
+    """BulletTrade参数优化"""
+    import sys
+    from pathlib import Path
+    import itertools
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    
+    try:
+        from core.bullettrade import BulletTradeEngine, BTConfig
+        
+        config = BTConfig(
+            start_date=args["start_date"],
+            end_date=args["end_date"],
+            initial_capital=args.get("initial_capital", 1000000),
+            data_provider=args.get("data_provider", "jqdata")
+        )
+        
+        engine = BulletTradeEngine(config)
+        
+        param_grid = args.get("param_grid", {})
+        strategy_path = args.get("strategy_path")
+        target_metric = args.get("target_metric", "sharpe_ratio")
+        
+        if not param_grid:
+            return {"error": "必须提供param_grid参数网格"}
+        if not strategy_path:
+            return {"error": "必须提供strategy_path"}
+        
+        # 生成参数组合
+        keys = list(param_grid.keys())
+        values = list(param_grid.values())
+        combinations = list(itertools.product(*values))[:30]  # 限制最多30组
+        
+        best_result = None
+        best_params = {}
+        best_score = float('-inf')
+        
+        results = []
+        for combo in combinations:
+            params = dict(zip(keys, combo))
+            try:
+                result = engine.run_backtest(
+                    strategy_path=strategy_path,
+                    params=params
+                )
+                if result.success:
+                    metrics = result.get_metrics() if hasattr(result, 'get_metrics') else result.metrics
+                    score = metrics.get(target_metric, 0)
+                    results.append({"params": params, "score": score})
+                    
+                    if score > best_score:
+                        best_score = score
+                        best_params = params
+                        best_result = result
+            except Exception as e:
+                logger.warning(f"参数组合{params}回测失败: {e}")
+        
+        return {
+            "success": True,
+            "best_params": best_params,
+            "best_score": best_score,
+            "target_metric": target_metric,
+            "total_combinations": len(combinations),
+            "all_results": results[:10]  # 返回前10个结果
+        }
+    except ImportError as e:
+        return {"error": f"BulletTrade模块不可用: {e}"}
+    except Exception as e:
+        logger.error(f"BulletTrade参数优化失败: {e}", exc_info=True)
+        return {"error": str(e)}

@@ -21,8 +21,11 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from enum import Enum
 from pathlib import Path
 import pandas as pd
+import threading
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +71,6 @@ class WorkflowOrchestrator:
         self._results = {}
         self._state_manager = None
         self._current_workflow_id = None
-        self._init_state_manager()
 
     def _init_db(self):
         """初始化MongoDB连接"""
@@ -1287,3 +1289,48 @@ def get_workflow_orchestrator() -> WorkflowOrchestrator:
     if _orchestrator is None:
         _orchestrator = WorkflowOrchestrator()
     return _orchestrator
+
+
+@dataclass
+
+
+# ============================================================
+# 增强型工作流编排器（合并自 enhanced_orchestrator.py）
+# ============================================================
+class WorkflowStepStatus(Enum):
+    """步骤状态"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+@dataclass
+
+
+class WorkflowStepStatus(Enum):
+    """步骤状态"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+class EnhancedWorkflowOrchestrator:
+    """增强型工作流编排器"""
+
+def create_workflow(
+    name: str = "默认工作流",
+    start_date: str = "",
+    end_date: str = "",
+    **kwargs
+) -> EnhancedWorkflowOrchestrator:
+    """创建工作流"""
+    config = WorkflowConfig(
+        name=name,
+        start_date=start_date,
+        end_date=end_date,
+        **kwargs
+    )
+    return EnhancedWorkflowOrchestrator(config)

@@ -34,21 +34,21 @@ import { runBacktest } from './commands/runBacktest';
 
 // 视图
 import { MarketPanel } from './views/marketPanel';
-import { DashboardPanel } from './views/dashboardPanel';
-import { WelcomePanel } from './views/welcomePanel';
-import { registerProjectExplorer } from './views/projectExplorer';
-import { registerBacktestReportCommands } from './views/backtestReportPanel';
 import { MainDashboard, registerMainDashboard } from './views/mainDashboard';
 import { StrategyManagerPanel } from './views/strategyManagerPanel';
 
 // 提供者
 import { registerStrategyCompletionProvider } from './providers/strategyCompletionProvider';
+import { registerWorkflowProvider } from './providers/workflowProvider';
 import { registerStrategyDiagnosticProvider } from './providers/strategyDiagnosticProvider';
 
 // 工具
 import { logger, LogLevel } from './utils/logger';
 import { config, ConfigManager } from './utils/config';
 import { ErrorHandler } from './utils/errors';
+
+// V2 面板 (9步工作流MCP集成)
+import { registerPanels } from './views/registerPanels';
 
 const MODULE = 'Extension';
 
@@ -80,8 +80,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         // 注册命令
         registerCommands(context);
 
+        // 注册V2面板 (9步工作流MCP集成)
+        registerPanels(context, client);
+
+        // 注册工作流视图提供者
+        registerWorkflowProvider(context);
         // 注册项目资源管理器
-        registerProjectExplorer(context);
 
         // 注册配置管理命令
         registerConfigCommands(context);
@@ -90,7 +94,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         registerBacktestManager(context, client);
 
         // 注册回测报告命令
-        registerBacktestReportCommands(context);
 
         // 注册策略代码补全提供者
         registerStrategyCompletionProvider(context);
@@ -114,7 +117,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
         // 自动打开主控制台 GUI
         setTimeout(() => {
-            MainDashboard.createOrShow(context.extensionUri, client);
+            MainDashboard.createOrShow(context.extensionUri, client, context.extensionPath);
         }, 500);
 
     } catch (error) {
@@ -189,19 +192,17 @@ function registerCommands(context: vscode.ExtensionContext): void {
         {
             id: 'trquant.showDashboard',
             handler: async () => {
-                DashboardPanel.createOrShow(context.extensionUri, client);
             }
         },
         {
             id: 'trquant.openDashboard',
             handler: async () => {
-                MainDashboard.createOrShow(context.extensionUri, client);
+                MainDashboard.createOrShow(context.extensionUri, client, context.extensionPath);
             }
         },
         {
             id: 'trquant.showWelcome',
             handler: async () => {
-                WelcomePanel.createOrShow(context.extensionUri, client);
             }
         },
         {
@@ -210,7 +211,6 @@ function registerCommands(context: vscode.ExtensionContext): void {
                 logger.show();
             }
         },
-        {
         {
             id: 'trquant.refreshStatus',
             handler: async () => {
@@ -223,12 +223,12 @@ function registerCommands(context: vscode.ExtensionContext): void {
             handler: async () => {
                 StrategyManagerPanel.createOrShow(context.extensionUri);
             }
-        },
-        {
-            id: 'trquant.showStrategyManager',
-            handler: async () => {
-                StrategyManagerPanel.createOrShow(context.extensionUri);
-            }
+        }
+    ];
+
+    // 注册所有命令
+    for (const { id, handler } of commands) {
+        const disposable = vscode.commands.registerCommand(id, async () => {
             await ErrorHandler.wrap(handler, id);
         });
         context.subscriptions.push(disposable);

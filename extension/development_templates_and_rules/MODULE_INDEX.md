@@ -59,7 +59,7 @@
   - `mainDashboard.ts` - 主工作台（8步骤工作流入口）
   - `backtestConfigPanel.ts` - 回测配置面板
   - `backtestReportPanel.ts` - 回测报告展示
-  - `strategyOptimizerPanel.ts` - 策略优化器面板
+  - `optimizerPanel.ts` - 策略优化器面板
   - `marketTrendPanel.ts` - 市场趋势分析面板
   - `mainlinePanel.ts` - 投资主线面板
   - `factorPanel.ts` - 因子构建面板

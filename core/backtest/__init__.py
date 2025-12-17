@@ -53,14 +53,47 @@ from core.backtest.event_engine import (
     PositionData,
 )
 
-# 批量回测
-from core.backtest.batch_backtest_manager import BatchBacktestManager
+# 批量回测 (新版)
+from core.backtest.batch_backtest import (
+    BatchBacktestManager,
+    ParameterGrid,
+    GridSearchConfig,
+    BatchBacktestResult as NewBatchBacktestResult,
+    BatchBacktestSummary,
+    grid_search,
+    batch_backtest,
+)
+
+# 批量回测 (旧版，兼容)
+from core.backtest.batch_backtest_manager import (
+    BatchBacktestManager as LegacyBatchBacktestManager,
+    StrategyConfig,
+    BatchBacktestResult as LegacyBatchBacktestResult,
+)
 
 # 信号转换
 from core.backtest.signal_converter import convert_strategy_to_signals
 
 # 策略比较
 from core.backtest.strategy_comparator import StrategyComparator
+
+# 结果分析器
+from core.backtest.result_analyzer import (
+    BacktestResultAnalyzer,
+    analyze_backtest_result,
+)
+
+# 任务管理器
+from core.backtest.task_manager import (
+    BacktestTaskManager,
+    BacktestTask,
+    TaskStatus,
+    TaskPriority,
+    get_task_manager,
+    submit_backtest,
+    get_task_status,
+    query_backtest_history,
+)
 
 __all__ = [
     # 统一管理器

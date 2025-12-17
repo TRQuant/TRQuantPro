@@ -11,27 +11,16 @@
       },
       "description": "TRQuant业务服务器 - 市场状态、投资主线、因子推荐、策略生成"
     },
-    "trquant-task-optimizer": {
+    "trquant-unified-utils": {
       "command": "python3",
       "args": [
-        "mcp_servers/task_optimizer_server.py"
+        "mcp_servers/unified_utils_server.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",
         "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
       },
-      "description": "任务优化器 - 任务复杂度分析、上下文缓存、工作流优化"
-    },
-    "trquant-spec": {
-      "command": "python3",
-      "args": [
-        "mcp_servers/spec_server.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
-      },
-      "description": "规范服务器 - 规范列表、验证、生成"
+      "description": "统一工具服务器 - 合并了 code, lint, spec, engineering, docs, schema, secrets, evidence, adr, data_collector, data_quality, strategy_kb, strategy_optimizer, task_optimizer, platform_api 等15个小服务器的功能"
     },
     "trquant-kb": {
       "command": "python3",
@@ -54,17 +43,6 @@
         "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
       },
       "description": "回测服务器 - 回测运行、结果分析"
-    },
-    "trquant-data-quality": {
-      "command": "python3",
-      "args": [
-        "mcp_servers/data_quality_server.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
-      },
-      "description": "数据质量服务器 - 数据检查、验证、报告"
     },
     "trquant-strategy-template": {
       "command": "python3",

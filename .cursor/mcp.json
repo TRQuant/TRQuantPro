@@ -8,17 +8,18 @@
         "/home/taotao/dev/QuantTest/TRQuant"
       ]
     },
-    "trquant": {
+    "trquant-core": {
       "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
       "args": [
-        "/home/taotao/dev/QuantTest/TRQuant/extension/python/mcp_server.py"
+        "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/trquant_core_server.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant",
+        "PYTHONPATH": "/home/taotao/dev/QuantTest/TRQuant:/home/taotao/dev/QuantTest/TRQuant/mcp_servers"
       }
     },
-    "trquant-workflow9": {
+    "trquant-workflow": {
       "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
       "args": [
         "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/workflow_9steps_server.py"
@@ -29,7 +30,7 @@
         "PYTHONPATH": "/home/taotao/dev/QuantTest/TRQuant:/home/taotao/dev/QuantTest/TRQuant/mcp_servers"
       }
     },
-    "trquant-project-manager": {
+    "trquant-project": {
       "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
       "args": [
         "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/project_manager_server.py"
@@ -40,36 +41,6 @@
         "PYTHONPATH": "/home/taotao/dev/QuantTest/TRQuant:/home/taotao/dev/QuantTest/TRQuant/mcp_servers"
       }
     },
-    "trquant-dev-task": {
-      "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
-      "args": [
-        "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/dev_task_server.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
-      }
-    },
-    "trquant-dev-unified": {
-      "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
-      "args": [
-        "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/unified_utils_server.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
-      }
-    },
-    "trquant-dev-test": {
-      "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
-      "args": [
-        "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/test_server.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
-      }
-    },
     "trquant-trading": {
       "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
       "args": [
@@ -77,7 +48,19 @@
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",
-        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant",
+        "PYTHONPATH": "/home/taotao/dev/QuantTest/TRQuant:/home/taotao/dev/QuantTest/TRQuant/mcp_servers"
+      }
+    },
+    "trquant-dev": {
+      "command": "/home/taotao/dev/QuantTest/TRQuant/venv/bin/python",
+      "args": [
+        "/home/taotao/dev/QuantTest/TRQuant/mcp_servers/test_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant",
+        "PYTHONPATH": "/home/taotao/dev/QuantTest/TRQuant:/home/taotao/dev/QuantTest/TRQuant/mcp_servers"
       }
     }
   }

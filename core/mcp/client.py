@@ -33,6 +33,7 @@ import logging
 import json
 import subprocess
 import sys
+import os
 import asyncio
 import uuid
 from pathlib import Path
@@ -112,7 +113,15 @@ class MCPClient:
         "optimizer.grid_search": "optimizer-server",
         "optimizer.sensitivity": "optimizer-server",
         
-        # workflow_server
+        # workflow_9steps_server
+        "workflow9.get_steps": "workflow_9steps_server",
+        "workflow9.create": "workflow_9steps_server",
+        "workflow9.status": "workflow_9steps_server",
+        "workflow9.run_step": "workflow_9steps_server",
+        "workflow9.run_all": "workflow_9steps_server",
+        "workflow9.get_context": "workflow_9steps_server",
+        
+        # workflow_server (legacy)
         "workflow.run_step": "workflow-server",
         "workflow.status": "workflow-server",
         "workflow.resume": "workflow-server",
@@ -135,17 +144,25 @@ class MCPClient:
         "report.list": "report-server",
     }
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root: Optional[Path] = None, python_path: Optional[str] = None):
         """
         初始化MCP客户端
         
         Args:
             project_root: 项目根目录
+            python_path: Python解释器路径（可选，默认使用sys.executable）
         """
         if project_root is None:
             project_root = Path(__file__).parent.parent.parent
         self.project_root = project_root
         self.mcp_servers_dir = project_root / "mcp_servers"
+        
+        # Python解释器路径
+        # 优先使用传入的路径，否则尝试查找工作区venv，最后使用sys.executable
+        if python_path:
+            self.python_path = python_path
+        else:
+            self.python_path = self._find_python_path()
         
         # 线程池用于异步调用
         self._executor = ThreadPoolExecutor(max_workers=4)
@@ -158,7 +175,39 @@ class MCPClient:
         self._cache: Dict[str, MCPResult] = {}
         self._cache_ttl = 300  # 5分钟缓存
         
-        logger.info(f"MCPClient初始化完成: {self.project_root}")
+        logger.info(f"MCPClient初始化完成: {self.project_root}, Python: {self.python_path}")
+    
+    def _find_python_path(self) -> str:
+        """查找Python解释器路径，优先使用工作区venv"""
+        import platform
+        
+        # 1. 检查工作区路径下的 extension/venv
+        venv_path = self.project_root / "extension" / "venv"
+        if platform.system() == "Windows":
+            python_exe = venv_path / "Scripts" / "python.exe"
+        else:
+            python_exe = venv_path / "bin" / "python"
+        
+        if python_exe.exists():
+            logger.info(f"找到工作区venv: {python_exe}")
+            return str(python_exe)
+        
+        # 2. 检查环境变量TRQUANT_ROOT下的venv
+        trquant_root = os.environ.get("TRQUANT_ROOT")
+        if trquant_root:
+            trquant_venv = Path(trquant_root) / "extension" / "venv"
+            if platform.system() == "Windows":
+                python_exe = trquant_venv / "Scripts" / "python.exe"
+            else:
+                python_exe = trquant_venv / "bin" / "python"
+            
+            if python_exe.exists():
+                logger.info(f"找到TRQUANT_ROOT venv: {python_exe}")
+                return str(python_exe)
+        
+        # 3. 回退到sys.executable
+        logger.info(f"使用系统Python: {sys.executable}")
+        return sys.executable
     
     def call(self, 
              tool_name: str, 
@@ -500,11 +549,35 @@ class MCPClient:
         else:
             return {"success": False, "error": f"未知的回测类型: {tool_name}"}
     
+
+    def _call_workflow9_direct(self, tool_name: str, arguments: Dict[str, Any]) -> Dict:
+        """直接调用workflow9服务器（避免subprocess问题）"""
+        import sys
+        import asyncio
+        
+        # 确保路径正确
+        sys.path.insert(0, str(self.project_root))
+        sys.path.insert(0, str(self.mcp_servers_dir))
+        
+        from workflow_9steps_server import _handle_tool
+        
+        # 运行异步函数
+        loop = asyncio.new_event_loop()
+        try:
+            result = loop.run_until_complete(_handle_tool(tool_name, arguments))
+            return result
+        finally:
+            loop.close()
+    
     def _call_mcp_server(self,
                          tool_name: str,
                          arguments: Dict[str, Any],
                          timeout: float = 60.0) -> Dict:
         """通过subprocess调用MCP服务器"""
+        
+        # workflow9.* 工具使用直接调用方式
+        if tool_name.startswith("workflow9."):
+            return self._call_workflow9_direct(tool_name, arguments)
         
         # 确定服务器文件
         server_name = self.TOOL_SERVER_MAP.get(tool_name)
@@ -532,7 +605,7 @@ class MCPClient:
         # 调用服务器
         try:
             result = subprocess.run(
-                [sys.executable, str(server_file)],
+                [self.python_path, str(server_file)],
                 input=json.dumps(request),
                 capture_output=True,
                 text=True,

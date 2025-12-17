@@ -1,14 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-报告MCP服务器（标准化版本）
-===========================
-生成回测报告、策略分析报告
+报告MCP服务器（增强版）
+=======================
+T1.9.1 报告生成系统 MCP 接口
+
+工具：
+- report.generate: 生成回测报告
+- report.compare: 生成策略对比报告
+- report.diagnosis: 生成策略诊断报告
+- report.list: 列出已生成的报告
+- report.get: 获取报告详情
+- report.delete: 删除报告
 """
 
 import logging
 import json
 from typing import Dict, List, Any
-from mcp.server.models import InitializationOptions
+import sys
+from pathlib import Path
+
+# 添加项目路径
+TRQUANT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(TRQUANT_ROOT))
+
+# 导入官方MCP SDK
+try:
+    from mcp.server.models import InitializationOptions
+    MCP_SDK_AVAILABLE = True
+except ImportError as e:
+    import sys
+    print(f'官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}', file=sys.stderr)
+    sys.exit(1)
+
 from mcp.server import Server
 from mcp.types import Tool, TextContent
 import mcp.server.stdio
@@ -20,19 +43,24 @@ server = Server("report-server")
 TOOLS = [
     Tool(
         name="report.generate",
-        description="生成回测报告",
+        description="生成回测报告（支持 HTML/PDF/Markdown/JSON 格式）",
         inputSchema={
             "type": "object",
             "properties": {
                 "metrics": {
                     "type": "object",
-                    "description": "回测指标，包含total_return, sharpe_ratio等"
+                    "description": "回测指标，包含 total_return, sharpe_ratio, max_drawdown 等"
+                },
+                "strategy_name": {"type": "string", "description": "策略名称"},
+                "format": {
+                    "type": "string", 
+                    "enum": ["html", "pdf", "md", "json"],
+                    "default": "html",
+                    "description": "报告格式"
                 },
                 "title": {"type": "string", "description": "报告标题"},
-                "daily_returns": {
-                    "type": "array",
-                    "description": "每日收益率序列（可选）"
-                }
+                "include_charts": {"type": "boolean", "default": True},
+                "theme": {"type": "string", "enum": ["dark", "light"], "default": "dark"}
             },
             "required": ["metrics"]
         }
@@ -45,11 +73,27 @@ TOOLS = [
             "properties": {
                 "strategies": {
                     "type": "array",
-                    "description": "策略回测结果列表"
+                    "description": "策略结果列表，每个包含 name, total_return, sharpe_ratio 等"
                 },
-                "title": {"type": "string"}
+                "title": {"type": "string", "default": "策略对比报告"},
+                "format": {"type": "string", "enum": ["html", "md"], "default": "html"}
             },
             "required": ["strategies"]
+        }
+    ),
+    Tool(
+        name="report.diagnosis",
+        description="生成策略诊断报告（分析优劣势并给出建议）",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "metrics": {
+                    "type": "object",
+                    "description": "回测指标"
+                },
+                "strategy_name": {"type": "string", "description": "策略名称"}
+            },
+            "required": ["metrics"]
         }
     ),
     Tool(
@@ -58,17 +102,44 @@ TOOLS = [
         inputSchema={
             "type": "object",
             "properties": {
-                "limit": {"type": "integer", "default": 10}
+                "report_type": {
+                    "type": "string",
+                    "enum": ["backtest", "comparison", "diagnosis", "factor", "risk"],
+                    "description": "报告类型筛选"
+                },
+                "limit": {"type": "integer", "default": 20}
             }
         }
     ),
     Tool(
-        name="report.summary",
-        description="生成策略摘要",
+        name="report.get",
+        description="获取报告详情",
         inputSchema={
             "type": "object",
             "properties": {
-                "strategy": {"type": "string"},
+                "report_id": {"type": "string", "description": "报告ID"}
+            },
+            "required": ["report_id"]
+        }
+    ),
+    Tool(
+        name="report.delete",
+        description="删除报告",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "report_id": {"type": "string", "description": "报告ID"}
+            },
+            "required": ["report_id"]
+        }
+    ),
+    Tool(
+        name="report.summary",
+        description="快速生成策略摘要（Markdown 格式）",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "strategy": {"type": "string", "description": "策略类型 momentum/mean_reversion"},
                 "start_date": {"type": "string"},
                 "end_date": {"type": "string"}
             },
@@ -90,8 +161,14 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             result = await _handle_generate(arguments)
         elif name == "report.compare":
             result = await _handle_compare(arguments)
+        elif name == "report.diagnosis":
+            result = await _handle_diagnosis(arguments)
         elif name == "report.list":
             result = await _handle_list(arguments)
+        elif name == "report.get":
+            result = await _handle_get(arguments)
+        elif name == "report.delete":
+            result = await _handle_delete(arguments)
         elif name == "report.summary":
             result = await _handle_summary(arguments)
         else:
@@ -99,122 +176,152 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         
         return [TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
     except Exception as e:
+        logger.exception(f"工具调用失败: {name}")
         return [TextContent(type="text", text=json.dumps({"error": str(e)}, ensure_ascii=False))]
 
 
 async def _handle_generate(args: Dict) -> Dict:
+    """生成报告"""
     import sys
     sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
     
-    from core.visualization import generate_html_report
+    from core.reporting import generate_report, ReportConfig
     
     metrics = args["metrics"]
-    title = args.get("title", "回测报告")
-    daily_returns = args.get("daily_returns")
+    strategy_name = args.get("strategy_name", "策略")
+    format_type = args.get("format", "html")
+    title = args.get("title", f"{strategy_name} - 回测报告")
     
-    filepath = generate_html_report(metrics, daily_returns, title)
+    # 构建结果对象
+    result = {"metrics": metrics}
     
-    return {
-        "success": True,
-        "filepath": filepath,
-        "title": title,
-        "metrics": {
-            k: f"{v*100:.2f}%" if isinstance(v, float) and abs(v) < 10 else v
-            for k, v in metrics.items()
-        }
-    }
+    output = generate_report(
+        result=result,
+        report_type="backtest",
+        format=format_type,
+        strategy_name=strategy_name,
+        title=title,
+        theme=args.get("theme", "dark"),
+        include_charts=args.get("include_charts", True)
+    )
+    
+    return output
 
 
 async def _handle_compare(args: Dict) -> Dict:
+    """生成对比报告"""
     import sys
     sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
     
-    from pathlib import Path
-    from datetime import datetime
+    from core.reporting import get_report_manager, ReportConfig, ReportType, ReportFormat
+    
+    manager = get_report_manager()
     
     strategies = args["strategies"]
     title = args.get("title", "策略对比报告")
+    format_type = args.get("format", "html")
     
-    # 生成对比报告HTML
-    html = f"""<!DOCTYPE html>
-<html>
-<head>
-    <title>{title}</title>
-    <style>
-        body {{ font-family: Arial; background: #1a1a2e; color: #eee; padding: 20px; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-        th, td {{ border: 1px solid #333; padding: 10px; text-align: center; }}
-        th {{ background: #16213e; }}
-        .positive {{ color: #00ff88; }}
-        .negative {{ color: #ff4444; }}
-    </style>
-</head>
-<body>
-    <h1>{title}</h1>
-    <p>生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-    <table>
-        <tr>
-            <th>策略</th>
-            <th>总收益</th>
-            <th>夏普比率</th>
-            <th>最大回撤</th>
-            <th>胜率</th>
-        </tr>
-"""
-    
+    # 转换策略数据
+    results = {}
     for s in strategies:
-        ret_class = "positive" if s.get("return", 0) > 0 else "negative"
-        html += f"""
-        <tr>
-            <td>{s.get('name', 'N/A')}</td>
-            <td class="{ret_class}">{s.get('return', 'N/A')}</td>
-            <td>{s.get('sharpe', 'N/A')}</td>
-            <td class="negative">{s.get('drawdown', 'N/A')}</td>
-            <td>{s.get('win_rate', 'N/A')}</td>
-        </tr>
-"""
+        name = s.get("name", "未命名")
+        results[name] = {"metrics": s}
     
-    html += """
-    </table>
-</body>
-</html>
-"""
+    config = ReportConfig(
+        report_type=ReportType.COMPARISON,
+        format=ReportFormat(format_type),
+        title=title
+    )
     
-    # 保存
-    report_dir = Path(__file__).parent.parent / "reports"
-    report_dir.mkdir(exist_ok=True)
-    filepath = report_dir / f"compare_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
-    filepath.write_text(html, encoding="utf-8")
+    file_path, metadata = manager.generate_comparison_report(results, config)
     
     return {
         "success": True,
-        "filepath": str(filepath),
+        "report_id": metadata.report_id,
+        "file_path": file_path,
         "strategies_count": len(strategies)
     }
 
 
-async def _handle_list(args: Dict) -> Dict:
-    from pathlib import Path
+async def _handle_diagnosis(args: Dict) -> Dict:
+    """生成诊断报告"""
+    import sys
+    sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
     
-    report_dir = Path(__file__).parent.parent / "reports"
-    limit = args.get("limit", 10)
+    from core.reporting import get_report_manager, ReportConfig, ReportType
     
-    if not report_dir.exists():
-        return {"success": True, "reports": [], "count": 0}
+    manager = get_report_manager()
     
-    reports = sorted(report_dir.glob("*.html"), key=lambda x: x.stat().st_mtime, reverse=True)
+    metrics = args["metrics"]
+    strategy_name = args.get("strategy_name", "策略")
+    
+    result = {"metrics": metrics}
+    
+    file_path, metadata = manager.generate_diagnosis_report(
+        result, strategy_name
+    )
     
     return {
         "success": True,
-        "count": len(reports),
-        "reports": [
-            {"name": r.name, "path": str(r)}
-            for r in reports[:limit]
-        ]
+        "report_id": metadata.report_id,
+        "file_path": file_path,
+        "diagnosis_score": metadata.summary.get("diagnosis_score", 0)
+    }
+
+
+async def _handle_list(args: Dict) -> Dict:
+    """列出报告"""
+    import sys
+    sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
+    
+    from core.reporting import list_reports
+    
+    report_type = args.get("report_type")
+    limit = args.get("limit", 20)
+    
+    return list_reports(report_type, limit)
+
+
+async def _handle_get(args: Dict) -> Dict:
+    """获取报告详情"""
+    import sys
+    sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
+    
+    from core.reporting import get_report
+    
+    report_id = args["report_id"]
+    
+    result = get_report(report_id)
+    
+    # 不返回完整内容，太大
+    if "content" in result:
+        result["content_length"] = len(result["content"]) if result["content"] else 0
+        del result["content"]
+    
+    return result
+
+
+async def _handle_delete(args: Dict) -> Dict:
+    """删除报告"""
+    import sys
+    sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
+    
+    from core.reporting import get_report_manager
+    
+    manager = get_report_manager()
+    report_id = args["report_id"]
+    
+    success = manager.delete_report(report_id)
+    
+    return {
+        "success": success,
+        "report_id": report_id,
+        "message": "报告已删除" if success else "报告不存在"
     }
 
 
 async def _handle_summary(args: Dict) -> Dict:
+    """快速生成策略摘要"""
     import sys
     sys.path.insert(0, str(__file__).rsplit("/mcp_servers", 1)[0])
     
@@ -232,33 +339,49 @@ async def _handle_summary(args: Dict) -> Dict:
         use_mock=True
     )
     
-    summary = f"""
-## {args['strategy']} 策略摘要
+    # 评级
+    if result.sharpe_ratio > 1.5:
+        rating = "⭐⭐⭐⭐⭐ 优秀"
+    elif result.sharpe_ratio > 1.0:
+        rating = "⭐⭐⭐⭐ 良好"
+    elif result.sharpe_ratio > 0.5:
+        rating = "⭐⭐⭐ 一般"
+    elif result.sharpe_ratio > 0:
+        rating = "⭐⭐ 较弱"
+    else:
+        rating = "⭐ 需改进"
+    
+    summary = f"""## {args['strategy']} 策略摘要
 
 **回测期间**: {args['start_date']} ~ {args['end_date']}
 
 ### 绩效指标
-- 总收益率: {result.total_return*100:.2f}%
-- 年化收益: {result.annual_return*100:.2f}%
-- 夏普比率: {result.sharpe_ratio:.2f}
-- 最大回撤: {result.max_drawdown*100:.2f}%
-- 胜率: {result.win_rate*100:.1f}%
-- 交易次数: {result.total_trades}
+| 指标 | 数值 |
+|------|------|
+| 总收益率 | {result.total_return*100:.2f}% |
+| 年化收益 | {result.annual_return*100:.2f}% |
+| 夏普比率 | {result.sharpe_ratio:.2f} |
+| 最大回撤 | {result.max_drawdown*100:.2f}% |
+| 胜率 | {result.win_rate*100:.1f}% |
+| 交易次数 | {result.total_trades} |
 
-### 评价
+### 综合评价
+**评级**: {rating}
+
 """
     
-    if result.sharpe_ratio > 1.5:
-        summary += "- 风险调整收益优秀\n"
-    elif result.sharpe_ratio > 0.5:
-        summary += "- 风险调整收益一般\n"
+    if result.sharpe_ratio > 1.0 and abs(result.max_drawdown) < 0.15:
+        summary += "✅ 策略风险收益比良好，可以考虑进一步优化后实盘\n"
+    elif result.total_return > 0:
+        summary += "⚠️ 策略盈利但需关注风险控制\n"
     else:
-        summary += "- 需要进一步优化\n"
+        summary += "❌ 策略需要优化，建议调整参数或选股逻辑\n"
     
     return {
         "success": True,
         "strategy": args["strategy"],
         "summary": summary,
+        "rating": rating,
         "metrics": {
             "total_return": result.total_return,
             "sharpe_ratio": result.sharpe_ratio,
@@ -272,10 +395,7 @@ async def main():
         await server.run(
             read_stream,
             write_stream,
-            InitializationOptions(
-                server_name="report-server",
-                server_version="2.0.0"
-            )
+            server.create_initialization_options()
         )
 
 

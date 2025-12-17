@@ -8,7 +8,22 @@
 import logging
 import json
 from typing import Dict, List, Any
-from mcp.server.models import InitializationOptions
+import sys
+from pathlib import Path
+
+# 添加项目路径
+TRQUANT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(TRQUANT_ROOT))
+
+# 导入官方MCP SDK
+try:
+    from mcp.server.models import InitializationOptions
+    MCP_SDK_AVAILABLE = True
+except ImportError as e:
+    import sys
+    print(f'官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}', file=sys.stderr)
+    sys.exit(1)
+
 from mcp.server import Server
 from mcp.types import Tool, TextContent
 import mcp.server.stdio
@@ -91,7 +106,7 @@ TOOLS = [
                 "strategy": {"type": "string", "description": "策略类型"},
                 "param_space": {
                     "type": "object",
-                    "description": "参数空间定义，如{{"mom_short": {{"type": "int", "low": 3, "high": 10}}}}"
+                    "description": "参数空间定义，如{\"mom_short\": {\"type\": \"int\", \"low\": 3, \"high\": 10}}"
                 },
                 "start_date": {"type": "string"},
                 "end_date": {"type": "string"},
@@ -100,7 +115,7 @@ TOOLS = [
                 "target_metric": {"type": "string", "default": "sharpe_ratio"},
                 "constraints": {
                     "type": "object",
-                    "description": "约束条件，如{"max_drawdown": [-1.0, -0.2]}"
+                    "description": "约束条件，如{\"max_drawdown\": [-1.0, -0.2]}"
                 }
             },
             "required": ["strategy", "param_space", "start_date", "end_date"]
@@ -361,10 +376,7 @@ async def main():
         await server.run(
             read_stream,
             write_stream,
-            InitializationOptions(
-                server_name="optimizer-server",
-                server_version="2.0.0"
-            )
+            server.create_initialization_options()
         )
 
 

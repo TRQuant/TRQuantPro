@@ -9,7 +9,22 @@ import logging
 import json
 from typing import Dict, List, Any
 from pathlib import Path
-from mcp.server.models import InitializationOptions
+import sys
+from pathlib import Path
+
+# 添加项目路径
+TRQUANT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(TRQUANT_ROOT))
+
+# 导入官方MCP SDK
+try:
+    from mcp.server.models import InitializationOptions
+    MCP_SDK_AVAILABLE = True
+except ImportError as e:
+    import sys
+    print(f'官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}', file=sys.stderr)
+    sys.exit(1)
+
 from mcp.server import Server
 from mcp.types import Tool, TextContent
 import mcp.server.stdio
@@ -232,10 +247,7 @@ async def main():
         await server.run(
             read_stream,
             write_stream,
-            InitializationOptions(
-                server_name="config-server",
-                server_version="2.0.0"
-            )
+            server.create_initialization_options()
         )
 
 

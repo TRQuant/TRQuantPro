@@ -121,6 +121,43 @@ TOOLS = [
                 "detail_level": {"type": "string", "description": "详细程度: basic/full", "default": "basic"}
             }
         }
+    ),
+    # 🆕 多角度综合验证
+    Tool(
+        name="market.comprehensive",
+        description="多角度综合验证市场状态（技术面+资金面+情绪面+五维评分）",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "index": {"type": "string", "description": "参考指数", "default": "000300.XSHG"},
+                "verification_level": {"type": "string", "description": "验证级别: quick/standard/deep", "default": "standard"}
+            }
+        }
+    ),
+    # 🆕 AKShare东方财富概念板块
+    Tool(
+        name="market.eastmoney_concepts",
+        description="获取东方财富概念板块实时数据（AKShare数据源）",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "top_n": {"type": "integer", "default": 20},
+                "sort_by": {"type": "string", "description": "排序: change/volume/turnover", "default": "change"}
+            }
+        }
+    ),
+    # 🆕 五维评分
+    Tool(
+        name="market.five_dimension_score",
+        description="对指定主线进行五维评分详细分析",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "theme_name": {"type": "string", "description": "主线名称，如'AI算力'"},
+                "include_leaders": {"type": "boolean", "description": "包含龙头股分析", "default": True}
+            },
+            "required": ["theme_name"]
+        }
     )
 ]
 
@@ -159,6 +196,12 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             result = await _handle_macro(arguments)
         elif name == "market.risk":
             result = await _handle_risk(arguments)
+        elif name == "market.comprehensive":
+            result = await _handle_comprehensive(arguments)
+        elif name == "market.eastmoney_concepts":
+            result = await _handle_eastmoney_concepts(arguments)
+        elif name == "market.five_dimension_score":
+            result = await _handle_five_dimension_score(arguments)
         else:
             result = {"error": f"未知工具: {name}"}
         
@@ -700,3 +743,214 @@ async def main():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+# ==================== 🆕 多角度验证函数 ====================
+
+async def _handle_comprehensive(args):
+    """
+    多角度综合验证市场状态
+    整合：技术面、资金面、情绪面、板块表现
+    """
+    from datetime import datetime
+    
+    index = args.get("index", "000300.XSHG")
+    verification_level = args.get("verification_level", "standard")
+    
+    result = {
+        "success": True,
+        "analysis_time": datetime.now().isoformat(),
+        "verification_level": verification_level,
+        "dimensions": {},
+        "cross_validation": {},
+        "confidence": 0,
+        "conclusion": ""
+    }
+    
+    scores = []
+    signals = []
+    
+    # 技术面分析
+    try:
+        from core.trend_analyzer import TrendAnalyzer
+        analyzer = TrendAnalyzer()
+        trend_result = analyzer.analyze_market(index_code=index)
+        
+        tech_score = trend_result.composite_score
+        tech_signal = "看多" if tech_score > 20 else ("看空" if tech_score < -20 else "中性")
+        
+        result["dimensions"]["technical"] = {
+            "source": "TrendAnalyzer",
+            "score": tech_score,
+            "signal": tech_signal,
+            "phase": trend_result.market_phase
+        }
+        scores.append(("技术面", tech_score, tech_signal))
+        signals.append(tech_signal)
+    except Exception as e:
+        result["dimensions"]["technical"] = {"error": str(e)}
+    
+    # 板块热度（AKShare东方财富）
+    if verification_level in ["standard", "deep"]:
+        try:
+            import akshare as ak
+            df_concept = ak.stock_board_concept_name_em()
+            if df_concept is not None and not df_concept.empty:
+                up_count = len(df_concept[df_concept["涨跌幅"] > 0])
+                down_count = len(df_concept[df_concept["涨跌幅"] < 0])
+                total = len(df_concept)
+                
+                sector_score = (up_count - down_count) / total * 100 if total > 0 else 0
+                sector_signal = "看多" if sector_score > 20 else ("看空" if sector_score < -20 else "中性")
+                
+                result["dimensions"]["sectors_akshare"] = {
+                    "source": "AKShare(东方财富)",
+                    "up_count": up_count,
+                    "down_count": down_count,
+                    "score": round(sector_score, 1),
+                    "signal": sector_signal
+                }
+                scores.append(("板块热度", sector_score, sector_signal))
+                signals.append(sector_signal)
+        except Exception as e:
+            result["dimensions"]["sectors_akshare"] = {"error": str(e)}
+    
+    # 交叉验证
+    if len(signals) >= 2:
+        bullish = signals.count("看多")
+        bearish = signals.count("看空")
+        neutral = signals.count("中性")
+        
+        max_agreement = max(bullish, bearish, neutral)
+        consistency = max_agreement / len(signals)
+        
+        if bullish > bearish and bullish > neutral:
+            overall = "看多"
+            confidence = "高" if consistency > 0.8 else ("中" if consistency > 0.6 else "低")
+        elif bearish > bullish and bearish > neutral:
+            overall = "看空"
+            confidence = "高" if consistency > 0.8 else ("中" if consistency > 0.6 else "低")
+        else:
+            overall = "中性"
+            confidence = "中"
+        
+        result["cross_validation"] = {
+            "bullish_count": bullish,
+            "bearish_count": bearish,
+            "neutral_count": neutral,
+            "consistency": round(consistency * 100, 1)
+        }
+        result["confidence"] = confidence
+        result["conclusion"] = f"综合{len(signals)}个维度分析，{overall}信号，置信度{confidence}"
+        result["overall_signal"] = overall
+    
+    return result
+
+
+async def _handle_eastmoney_concepts(args):
+    """获取东方财富概念板块实时数据（AKShare数据源）"""
+    top_n = args.get("top_n", 20)
+    sort_by = args.get("sort_by", "change")
+    
+    try:
+        import akshare as ak
+        df = ak.stock_board_concept_name_em()
+        
+        if df is None or df.empty:
+            return {"success": False, "error": "无法获取东方财富概念板块数据"}
+        
+        sort_map = {"change": "涨跌幅", "volume": "成交量", "turnover": "成交额"}
+        sort_col = sort_map.get(sort_by, "涨跌幅")
+        
+        if sort_col in df.columns:
+            df_sorted = df.sort_values(sort_col, ascending=False)
+        else:
+            df_sorted = df.sort_values("涨跌幅", ascending=False)
+        
+        top_concepts = []
+        for _, row in df_sorted.head(top_n).iterrows():
+            concept = {
+                "name": row.get("板块名称", ""),
+                "change_pct": row.get("涨跌幅", 0),
+                "leader_stock": row.get("领涨股票", ""),
+                "leader_change": row.get("领涨股票-涨跌幅", 0)
+            }
+            top_concepts.append(concept)
+        
+        up_count = len(df[df["涨跌幅"] > 0])
+        down_count = len(df[df["涨跌幅"] < 0])
+        avg_change = df["涨跌幅"].mean()
+        hot_themes = df_sorted.head(5)["板块名称"].tolist()
+        
+        return {
+            "success": True,
+            "data_source": "AKShare(东方财富)",
+            "total_concepts": len(df),
+            "statistics": {
+                "up_count": up_count,
+                "down_count": down_count,
+                "avg_change": round(avg_change, 2),
+                "market_breadth": round(up_count / len(df) * 100, 1) if len(df) > 0 else 0
+            },
+            "hot_themes": hot_themes,
+            "top_concepts": top_concepts
+        }
+        
+    except ImportError:
+        return {"success": False, "error": "AKShare未安装"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+async def _handle_five_dimension_score(args):
+    """对指定主线进行五维评分详细分析"""
+    theme_name = args.get("theme_name")
+    
+    if not theme_name:
+        return {"success": False, "error": "请提供主线名称(theme_name)"}
+    
+    try:
+        from core.five_dimension_scorer import FiveDimensionScorer
+        
+        scorer = FiveDimensionScorer()
+        score_result = scorer.score(theme_name)
+        
+        if score_result:
+            return {
+                "success": True,
+                "theme_name": theme_name,
+                "total_score": score_result.total_score,
+                "dimensions": {
+                    "fundamental": score_result.fundamental.score if score_result.fundamental else 0,
+                    "technical": score_result.technical.score if score_result.technical else 0,
+                    "capital": score_result.capital.score if score_result.capital else 0,
+                    "news": score_result.news.score if score_result.news else 0,
+                    "position": score_result.position.score if score_result.position else 0
+                },
+                "radar_data": score_result.get_radar_data()
+            }
+        else:
+            return {"success": False, "error": f"未找到主线'{theme_name}'的评分数据"}
+            
+    except Exception as e:
+        # 使用AKShare获取简化版评分
+        try:
+            import akshare as ak
+            df = ak.stock_board_concept_name_em()
+            if df is not None and not df.empty:
+                theme_row = df[df["板块名称"].str.contains(theme_name[:4], na=False)]
+                if not theme_row.empty:
+                    row = theme_row.iloc[0]
+                    change = float(row.get("涨跌幅", 0))
+                    tech_score = min(20, max(0, 10 + change))
+                    
+                    return {
+                        "success": True,
+                        "theme_name": theme_name,
+                        "source": "AKShare(简化版)",
+                        "total_score": tech_score * 5,
+                        "dimensions": {"technical": tech_score},
+                        "note": "完整五维评分需要更多数据源支持"
+                    }
+        except:
+            pass
+        
+        return {"success": False, "error": str(e)}

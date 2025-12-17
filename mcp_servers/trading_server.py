@@ -59,7 +59,7 @@ from mcp_servers.utils.error_handler import wrap_exception_response
 try:
     from bridge_common.ptrade_bridge import PTradeBridge
     PTRADE_BRIDGE_AVAILABLE = True
-except ImportError as e:
+except (ImportError, SyntaxError) as e:
     logger.warning(f"PTradeBridge不可用: {e}")
     PTRADE_BRIDGE_AVAILABLE = False
     PTradeBridge = None
@@ -67,7 +67,7 @@ except ImportError as e:
 try:
     from bridge_common.qmt_bridge import QMTBridge
     QMT_BRIDGE_AVAILABLE = True
-except ImportError as e:
+except (ImportError, SyntaxError) as e:
     logger.warning(f"QMTBridge不可用: {e}")
     QMT_BRIDGE_AVAILABLE = False
     QMTBridge = None
