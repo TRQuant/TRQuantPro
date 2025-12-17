@@ -44,6 +44,15 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
     handlers=[logging.StreamHandler(sys.stderr)]
 )
+
+# 导入系统注册表
+try:
+    from utils.system_registry import get_registry, ModuleStatus
+    REGISTRY_AVAILABLE = True
+except ImportError:
+    REGISTRY_AVAILABLE = False
+    get_registry = None
+
 logger = logging.getLogger('ProjectManagerServer')
 
 # 导入官方MCP SDK
@@ -637,6 +646,137 @@ def risk_add(
     
     return {"success": True, "risk": risk, "message": f"风险已记录: {risk['id']}"}
 
+
+
+# ==================== 系统状态管理 ====================
+
+def module_register(
+    module_id: str,
+    name: str,
+    version: str = "1.0",
+    status: str = "active",
+    mcp_server: str = None,
+    tools: List[str] = None,
+    dependencies: List[str] = None,
+    notes: str = "",
+    project: str = "trquant"
+) -> Dict:
+    """注册模块"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    module = registry.register_module(
+        module_id=module_id,
+        name=name,
+        version=version,
+        status=status,
+        mcp_server=mcp_server,
+        tools=tools,
+        dependencies=dependencies,
+        notes=notes
+    )
+    return {"success": True, "module": module}
+
+def module_update(module_id: str, project: str = "trquant", **kwargs) -> Dict:
+    """更新模块状态"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    module = registry.update_module(module_id, **kwargs)
+    if module:
+        return {"success": True, "module": module}
+    return {"success": False, "error": f"模块不存在: {module_id}"}
+
+def module_list(status: str = None, project: str = "trquant") -> Dict:
+    """列出所有模块"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    modules = registry.list_modules(status=status)
+    return {"success": True, "modules": modules, "count": len(modules)}
+
+def module_get(module_id: str, project: str = "trquant") -> Dict:
+    """获取模块详情"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    module = registry.get_module(module_id)
+    if module:
+        return {"success": True, "module": module}
+    return {"success": False, "error": f"模块不存在: {module_id}"}
+
+def module_dependencies(module_id: str, project: str = "trquant") -> Dict:
+    """检查模块依赖"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    result = registry.check_dependencies(module_id)
+    return {"success": True, **result}
+
+def system_status(project: str = "trquant") -> Dict:
+    """获取当前系统状态"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    status = registry.get_current_status()
+    return {"success": True, **status}
+
+def system_snapshot(description: str = "", project: str = "trquant") -> Dict:
+    """创建系统状态快照"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    snapshot = registry.create_snapshot(description)
+    return {"success": True, "snapshot": snapshot}
+
+def system_snapshots(limit: int = 10, project: str = "trquant") -> Dict:
+    """列出系统快照"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    snapshots = registry.list_snapshots(limit)
+    return {"success": True, "snapshots": snapshots, "count": len(snapshots)}
+
+def change_record(
+    module: str,
+    action: str,
+    description: str,
+    files_changed: List[str] = None,
+    git_commit: str = None,
+    project: str = "trquant"
+) -> Dict:
+    """记录开发变更"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    change = registry.record_change(
+        module=module,
+        action=action,
+        description=description,
+        files_changed=files_changed,
+        git_commit=git_commit
+    )
+    return {"success": True, "change": change}
+
+def change_list(module: str = None, limit: int = 20, project: str = "trquant") -> Dict:
+    """列出变更记录"""
+    if not REGISTRY_AVAILABLE:
+        return {"success": False, "error": "系统注册表不可用"}
+    
+    registry = get_registry()
+    changes = registry.list_changes(module=module, limit=limit)
+    return {"success": True, "changes": changes, "count": len(changes)}
+
+
 def risk_assess(project: str = "trquant") -> Dict[str, Any]:
     """评估项目风险"""
     data = _load_data(project, "risks")
@@ -972,7 +1112,19 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             
             # 风险评估
             "risk.add": lambda a: risk_add(**a),
-            "risk.assess": lambda a: risk_assess(a.get("project", "trquant"))
+            "risk.assess": lambda a: risk_assess(a.get("project", "trquant")),
+            
+            # 系统状态管理
+            "module.register": lambda a: module_register(**a),
+            "module.update": lambda a: module_update(**a),
+            "module.list": lambda a: module_list(**a),
+            "module.get": lambda a: module_get(**a),
+            "module.dependencies": lambda a: module_dependencies(**a),
+            "system.status": lambda a: system_status(**a),
+            "system.snapshot": lambda a: system_snapshot(**a),
+            "system.snapshots": lambda a: system_snapshots(**a),
+            "change.record": lambda a: change_record(**a),
+            "change.list": lambda a: change_list(**a)
         }
         
         if name in handlers:
