@@ -60,7 +60,7 @@ class JQDataSource(DataSource):
             self.jq = jq
             
             if username and password:
-                jq.auth(username, password)
+                jq.JQDataClient.enable_auth_prompt = False; jq.auth(username, password)
             
             # 验证连接
             count = jq.get_query_count()
