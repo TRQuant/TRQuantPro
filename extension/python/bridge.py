@@ -377,6 +377,81 @@ def clear_workflow_context_action(params: dict) -> dict:
 
 
 # 动作分发
+
+def get_backtest_results(params: dict) -> dict:
+    """从MongoDB获取回测结果列表"""
+    try:
+        from pymongo import MongoClient
+        client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=3000)
+        db = client["trquant"]
+        
+        results = []
+        
+        for doc in db["backtest_results"].find().sort("created_at", -1).limit(50):
+            results.append({
+                "id": str(doc.get("_id", "")),
+                "name": doc.get("name", doc.get("strategy_name", "未命名")),
+                "strategy": doc.get("strategy", doc.get("strategy_type", "未知")),
+                "startDate": doc.get("start_date", ""),
+                "endDate": doc.get("end_date", ""),
+                "totalReturn": doc.get("total_return", doc.get("metrics", {}).get("total_return", 0)),
+                "sharpeRatio": doc.get("sharpe_ratio", doc.get("metrics", {}).get("sharpe_ratio", 0)),
+                "maxDrawdown": doc.get("max_drawdown", doc.get("metrics", {}).get("max_drawdown", 0)),
+                "winRate": doc.get("win_rate", doc.get("metrics", {}).get("win_rate", 0)),
+                "createdAt": str(doc.get("created_at", "")),
+                "source": "mongodb"
+            })
+        
+        for doc in db["real_backtest_results"].find().sort("timestamp", -1).limit(20):
+            results.append({
+                "id": str(doc.get("_id", "")),
+                "name": doc.get("name", "实盘回测"),
+                "strategy": doc.get("strategy", "实盘策略"),
+                "startDate": doc.get("start_date", ""),
+                "endDate": doc.get("end_date", ""),
+                "totalReturn": doc.get("total_return", 0),
+                "sharpeRatio": doc.get("sharpe_ratio", 0),
+                "maxDrawdown": doc.get("max_drawdown", 0),
+                "winRate": doc.get("win_rate", 0),
+                "createdAt": str(doc.get("timestamp", "")),
+                "source": "real_backtest"
+            })
+        
+        client.close()
+        return {'ok': True, 'data': {'results': results, 'count': len(results)}}
+        
+    except Exception as e:
+        return {'ok': False, 'error': f'获取回测结果失败: {str(e)}'}
+
+
+def delete_backtest_result(params: dict) -> dict:
+    """删除回测结果"""
+    try:
+        from pymongo import MongoClient
+        from bson import ObjectId
+        
+        result_id = params.get("id")
+        if not result_id:
+            return {'ok': False, 'error': '缺少结果ID'}
+        
+        client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=3000)
+        db = client["trquant"]
+        
+        deleted = db["backtest_results"].delete_one({"_id": ObjectId(result_id)})
+        if deleted.deleted_count == 0:
+            deleted = db["real_backtest_results"].delete_one({"_id": ObjectId(result_id)})
+        
+        client.close()
+        
+        if deleted.deleted_count > 0:
+            return {'ok': True, 'data': {'message': '删除成功'}}
+        else:
+            return {'ok': False, 'error': '未找到该记录'}
+            
+    except Exception as e:
+        return {'ok': False, 'error': f'删除失败: {str(e)}'}
+
+
 ACTIONS = {
     'get_market_status': get_market_status,
     'get_mainlines': get_mainlines,
@@ -389,7 +464,9 @@ ACTIONS = {
     'call_mcp_tool': call_mcp_tool,
     'run_workflow_step': run_workflow_step_action,
     'get_workflow_context': get_workflow_context_action,
-    'clear_workflow_context': clear_workflow_context_action
+    'clear_workflow_context': clear_workflow_context_action,
+    'get_backtest_results': get_backtest_results,
+    'delete_backtest_result': delete_backtest_result
 }
 
 
