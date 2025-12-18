@@ -50,6 +50,7 @@ except ImportError:
 
 # 导入工程化落地件
 from mcp_servers.utils.envelope import wrap_success_response, wrap_error_response, extract_trace_id_from_request
+from mcp_servers.utils.mcp_integration_helper import process_mcp_tool_call
 from mcp_servers.utils.schema import base_args_schema, merge_schema
 from mcp_servers.utils.artifacts import create_artifact_if_needed
 from mcp_servers.utils.error_handler import wrap_exception_response
@@ -58,7 +59,7 @@ from mcp_servers.utils.error_handler import wrap_exception_response
 try:
     from bridge_common.ptrade_bridge import PTradeBridge
     PTRADE_BRIDGE_AVAILABLE = True
-except ImportError as e:
+except (ImportError, SyntaxError) as e:
     logger.warning(f"PTradeBridge不可用: {e}")
     PTRADE_BRIDGE_AVAILABLE = False
     PTradeBridge = None
@@ -66,7 +67,7 @@ except ImportError as e:
 try:
     from bridge_common.qmt_bridge import QMTBridge
     QMT_BRIDGE_AVAILABLE = True
-except ImportError as e:
+except (ImportError, SyntaxError) as e:
     logger.warning(f"QMTBridge不可用: {e}")
     QMT_BRIDGE_AVAILABLE = False
     QMTBridge = None
@@ -260,6 +261,18 @@ async def list_tools() -> List[Tool]:
         )
     ]
 
+
+
+def _adapt_mcp_result_to_text_content(result: Dict[str, Any]) -> List[TextContent]:
+    """将process_mcp_tool_call的结果转换为List[TextContent]格式"""
+    if isinstance(result, dict) and "content" in result:
+        text_content = []
+        for item in result.get("content", []):
+            if item.get("type") == "text":
+                text_content.append(TextContent(type="text", text=item.get("text", "")))
+        return text_content if text_content else [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
+    else:
+        return [TextContent(type="text", text=json.dumps(result, ensure_ascii=False))]
 
 @server.call_tool()
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:

@@ -56,7 +56,7 @@
   - 优化建议生成
 
 ### 8. 策略优化器面板 ✅ (NEW)
-- [x] `StrategyOptimizerPanel` - 完整的优化器UI
+- [x] `OptimizerPanel` - 完整的优化器UI
   - 策略分析Tab：评分、建议
   - 参数优化Tab：参数配置、优化执行、历史记录
   - 版本管理Tab：保存、加载、对比版本
@@ -173,10 +173,10 @@ console.log('稳健性评分:', wfResult.robustnessMetrics.robustnessScore);
 ### 使用策略优化器面板
 
 ```typescript
-import { StrategyOptimizerPanel } from './views/strategyOptimizerPanel';
+import { OptimizerPanel } from './views/optimizerPanel';
 
 // 打开优化器面板
-StrategyOptimizerPanel.createOrShow(context.extensionUri, strategyCode, fileName);
+OptimizerPanel.createOrShow(context.extensionUri, strategyCode, fileName);
 ```
 
 ## 🔧 集成建议
@@ -190,7 +190,7 @@ StrategyOptimizerPanel.createOrShow(context.extensionUri, strategyCode, fileName
    - 连接Python回测服务或本地回测引擎
 
 3. **UI集成**
-   - 已实现完整的`strategyOptimizerPanel.ts`优化界面
+   - 已实现完整的`optimizerPanel.ts`优化界面
    - 支持参数配置、优化执行、版本管理
 
 4. **数据持久化**

@@ -1,0 +1,47 @@
+TRQuant 工作区超大文件警告清单
+==============================
+
+警告: 以下文件超过 1000 行，应避免使用 Composer 处理
+
+超大文件（>10000行）:
+--------------------
+⚠️ core/broker/base.py (94,078 行) - 绝对禁止用 Composer
+⚠️ core/broker/broker_factory.py (76,858 行) - 绝对禁止用 Composer
+⚠️ core/ptrade_integration.py (15,013 行) - 绝对禁止用 Composer
+
+大文件（>1000行）:
+-----------------
+⚠️ core/workflow_orchestrator.py (1,289 行)
+⚠️ core/trend_analyzer.py (1,103 行)
+⚠️ gui/widgets/market_trend_panel.py (3,150 行)
+⚠️ gui/widgets/mainline_panel.py (2,269 行)
+⚠️ gui/widgets/factor_filter_tab.py (1,055 行)
+⚠️ gui/widgets/factor_recommend_tab.py (1,038 行)
+
+处理建议
+--------
+对于超大文件（>10000行）:
+- ❌ 绝对禁止使用 Composer
+- ✅ 使用 Chat + 手动保存
+- ✅ 考虑拆分文件
+
+对于大文件（>1000行）:
+- ⚠️ 谨慎使用 Composer（仅小改 <20行）
+- ✅ 大改使用 Chat + 手动保存
+- ✅ 建议拆分文件
+
+文件拆分建议
+-----------
+1. core/broker/base.py
+   - 按功能模块拆分
+   - 每个模块 < 1000 行
+
+2. core/broker/broker_factory.py
+   - 按工厂类型拆分
+   - 每个工厂 < 1000 行
+
+3. core/ptrade_integration.py
+   - 按功能模块拆分
+   - 每个模块 < 1000 行
+
+创建时间: 2025-12-15

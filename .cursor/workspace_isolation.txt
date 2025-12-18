@@ -1,0 +1,45 @@
+TRQuant 工作区物理隔离说明
+==========================
+
+工作区划分
+----------
+1. TRQuant（代码开发）
+   路径: /home/taotao/dev/QuantTest/TRQuant/
+   用途: 核心代码开发
+   Composer: 可用（只做小改 <50行）
+
+2. TRQuant-Docs（文档维护）
+   路径: /home/taotao/dev/QuantTest/TRQuant-Docs/
+   用途: 文档创建和维护
+   Composer: 禁用（只用 Chat）
+
+3. TRQuant-Scripts（脚本生成）
+   路径: /home/taotao/dev/QuantTest/TRQuant-Scripts/
+   用途: 生成型脚本
+   Composer: 仅小改（<20行）
+
+迁移内容
+--------
+已迁移到 TRQuant-Docs:
+- docs/ 目录（所有文档）
+- extension/AShare-manual/ 目录（A股手册）
+
+已迁移到 TRQuant-Scripts:
+- scripts/ 目录（所有脚本）
+- tools/data_collector/ 目录（数据收集脚本）
+
+主工作区保留:
+- core/ 目录（核心代码）
+- mcp_servers/ 目录（MCP 服务器）
+- gui/ 目录（GUI 代码）
+- extension/ 目录（VS Code 扩展，排除 AShare-manual）
+- 其他核心代码文件
+
+使用规则
+--------
+1. 代码开发：在 TRQuant 工作区使用 Composer 做小改
+2. 文档维护：在 TRQuant-Docs 工作区使用 Chat 生成文档
+3. 脚本生成：在 TRQuant-Scripts 工作区使用 Chat 生成脚本
+
+创建时间: 2025-12-15
+目的: 解决 Composer 性能问题，提高工作效率

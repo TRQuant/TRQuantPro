@@ -19,6 +19,7 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as os from 'os';
+import * as fs from 'fs';
 
 import { logger } from '../utils/logger';
 import { config, ConfigManager } from '../utils/config';
@@ -212,14 +213,33 @@ export class TRQuantClient {
 
             const request: BridgeRequest = { action, params };
             const requestStr = JSON.stringify(request);
-
             logger.debug(`执行Python: ${pythonPath}`, this.MODULE, { bridgePath });
 
+            // 验证Python路径是否存在（仅在非Windows系统上）
+            if (os.platform() !== 'win32' && !fs.existsSync(pythonPath)) {
+                logger.error(`Python解释器路径不存在: ${pythonPath}`, this.MODULE);
+                reject(new TRQuantError(
+                    ErrorCode.PYTHON_NOT_FOUND,
+                    `Python解释器未找到: ${pythonPath}`,
+                    { pythonPath, bridgePath }
+                ));
+                return;
+            }
+
+            // TRQUANT_ROOT应该指向项目根目录，而不是extension目录
+            let trquantRoot = path.dirname(this.extensionPath);
+            if (this.extensionPath.endsWith("extension") || this.extensionPath.endsWith("extension/")) {
+                trquantRoot = path.dirname(this.extensionPath);
+            } else {
+                // 如果extensionPath是安装目录，尝试从环境变量获取
+                trquantRoot = process.env.TRQUANT_ROOT || trquantRoot;
+            }
+            
             // 设置环境变量
             const env = {
                 ...process.env,
                 PYTHONIOENCODING: 'utf-8',
-                TRQUANT_ROOT: path.dirname(this.extensionPath),
+                TRQUANT_ROOT: trquantRoot,
                 PYTHONPATH: path.join(this.extensionPath, 'python')
             };
 

@@ -19,3 +19,9 @@ __all__ = [
     'MainlinePanel',
 ]
 
+
+# 新增面板
+from .backtest_progress_panel import BacktestProgressPanel, BacktestWorker
+from .backtest_result_panel import BacktestResultPanel, MetricCard, SimpleChart
+from .strategy_manager_panel import StrategyManagerPanel, StrategyConfigDialog
+from .report_viewer_panel import ReportViewerPanel, ReportCard

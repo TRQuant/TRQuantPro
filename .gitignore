@@ -63,3 +63,8 @@ config/broker_config.json
 *.vsix
 trquant-*.vsix
 extension/*.vsix
+node_modules
+node_modules
+
+# TRQuant项目数据
+.trquant/

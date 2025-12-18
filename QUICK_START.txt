@@ -1,0 +1,67 @@
+TRQuant 工作区快速开始指南
+==========================
+
+5分钟快速上手
+------------
+
+步骤1: 选择工作区
+-----------------
+根据任务类型选择：
+- 代码开发 → TRQuant/
+- 文档维护 → TRQuant-Docs/
+- 脚本生成 → TRQuant-Scripts/
+
+步骤2: 打开工作区
+-----------------
+方法1: 使用脚本
+  cd /home/taotao/dev/QuantTest
+  ./switch_workspace.sh
+
+方法2: 在 Cursor 中
+  File -> Open Folder -> 选择工作区路径
+
+步骤3: 开始工作
+---------------
+代码开发:
+  1. 使用 Composer 分析代码
+  2. 小改（<50行）用 Composer
+  3. 大改（>50行）用 Chat + 手动保存
+
+文档维护:
+  1. 使用 Chat 生成文档
+  2. 手动创建/覆盖文件
+  3. 保存文件
+
+脚本生成:
+  1. 使用 Chat 生成脚本
+  2. 手动创建/覆盖文件
+  3. 保存文件
+
+步骤4: 保存和提交
+-----------------
+1. 保存文件
+2. Git 提交
+3. 推送到远程
+
+常用命令
+--------
+切换工作区:
+  ./switch_workspace.sh
+
+查看工作区状态:
+  cat QUICK_REFERENCE.txt
+
+查看最佳实践:
+  cat BEST_PRACTICES.txt
+
+查看测试报告:
+  cat WORKSPACE_ISOLATION_TEST_REPORT.txt
+
+注意事项
+--------
+1. 保持工作区隔离
+2. 根据任务选择正确工作区
+3. Composer 只做小改
+4. 生成型内容用 Chat + 手动保存
+
+创建时间: 2025-12-15

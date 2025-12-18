@@ -1,24 +1,68 @@
 {
   "mcpServers": {
+    "trquant": {
+      "command": "python3",
+      "args": [
+        "extension/python/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "TRQuant业务服务器 - 市场状态、投资主线、因子推荐、策略生成"
+    },
+    "trquant-unified-utils": {
+      "command": "python3",
+      "args": [
+        "mcp_servers/unified_utils_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "统一工具服务器 - 合并了 code, lint, spec, engineering, docs, schema, secrets, evidence, adr, data_collector, data_quality, strategy_kb, strategy_optimizer, task_optimizer, platform_api 等15个小服务器的功能"
+    },
+    "trquant-kb": {
+      "command": "python3",
+      "args": [
+        "mcp_servers/kb_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "知识库服务器 - 知识搜索、添加、管理"
+    },
+    "trquant-backtest": {
+      "command": "python3",
+      "args": [
+        "mcp_servers/backtest_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "回测服务器 - 回测运行、结果分析"
+    },
+    "trquant-strategy-template": {
+      "command": "python3",
+      "args": [
+        "mcp_servers/strategy_template_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/dev/QuantTest/TRQuant"
+      },
+      "description": "策略模板服务器 - 模板列表、生成、验证"
+    },
     "filesystem": {
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "/home/taotao/dev/QuantTest/TRQuant"
-      ]
-    },
-    "trquant-spec": {
-      "command": "python",
-      "args": [
-        "mcp_servers/spec_server.py"
-      ]
-    },
-    "trquant-business": {
-      "command": "python",
-      "args": [
-        "extension/python/mcp_server.py"
-      ]
+      ],
+      "description": "文件系统服务器 - 文件读写操作"
     }
   }
 }

@@ -1,81 +1,130 @@
 /**
- * 工作流面板 - 复用桌面系统代码
+ * 9步骤投资工作流面板
+ * ====================
  * 
- * 与桌面系统 gui/widgets/integrated_workflow_panel.py 保持一致
- * 通过Python Bridge调用 core/workflow_orchestrator.py
+ * 完整的9步投资工作流面板
+ * - 正确的Python解释器路径 (extension/venv)
+ * - 统一的MCP服务器调用 (workflow9.*)
+ * - 优化的结果可视化
  * 
- * 功能：
- * - 6步骤工作流（数据源、市场趋势、投资主线、候选池、因子、策略）
- * - 单步执行和全部执行
- * - 实时显示执行结果
+ * 步骤：信息获取 → 市场趋势 → 投资主线 → 候选池构建 → 因子构建 → 策略生成 → 回测验证 → 策略优化 → 报告生成
  */
 
 import * as vscode from 'vscode';
-import { TRQuantClient } from '../services/trquantClient';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as cp from 'child_process';
 import { logger } from '../utils/logger';
+import { ConfigManager } from '../utils/config';
 
 const MODULE = 'WorkflowPanel';
 
-// 工作流步骤定义（与桌面系统一致）
-const WORKFLOW_STEPS = [
-    { id: 'data_source', name: '信息获取', icon: '📡', color: '#58a6ff' },
-    { id: 'market_trend', name: '市场趋势', icon: '📈', color: '#667eea' },
-    { id: 'mainline', name: '投资主线', icon: '🔥', color: '#F59E0B' },
-    { id: 'candidate_pool', name: '候选池构建', icon: '📦', color: '#a371f7' },
-    { id: 'factor', name: '因子构建', icon: '🧮', color: '#3fb950' },
-    { id: 'strategy', name: '策略生成', icon: '💻', color: '#d29922' },
+// ==================== 类型定义 ====================
+
+interface WorkflowStep {
+    id: string;
+    name: string;
+    icon: string;
+    color: string;
+    description: string;
+    status: 'pending' | 'running' | 'completed' | 'failed';
+    result?: unknown;
+    duration?: number;
+}
+
+interface WorkflowState {
+    workflowId: string | null;
+    steps: WorkflowStep[];
+    context: Record<string, unknown>;
+    isRunning: boolean;
+}
+
+// 9步工作流定义
+const WORKFLOW_9STEPS: Omit<WorkflowStep, 'status' | 'result'>[] = [
+    { id: 'data_source', name: '信息获取', icon: '📡', color: '#58a6ff', description: '检查数据源连接状态' },
+    { id: 'market_trend', name: '市场趋势', icon: '📈', color: '#667eea', description: '分析市场状态和风格轮动' },
+    { id: 'mainline', name: '投资主线', icon: '🔥', color: '#F59E0B', description: '识别热点主线和板块' },
+    { id: 'candidate_pool', name: '候选池构建', icon: '📦', color: '#a371f7', description: '构建候选股票池' },
+    { id: 'factor', name: '因子构建', icon: '🧮', color: '#3fb950', description: '推荐量化因子组合' },
+    { id: 'strategy', name: '策略生成', icon: '💻', color: '#d29922', description: '生成策略代码' },
+    { id: 'backtest', name: '回测验证', icon: '🔄', color: '#1E3A5F', description: '执行策略回测' },
+    { id: 'optimization', name: '策略优化', icon: '⚙️', color: '#7C3AED', description: '参数优化' },
+    { id: 'report', name: '报告生成', icon: '📄', color: '#EC4899', description: '生成研究报告' }
 ];
+
+// ==================== 主面板类 ====================
 
 export class WorkflowPanel {
     public static currentPanel: WorkflowPanel | undefined;
+    
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
-    private readonly _client: TRQuantClient;
+    private readonly _extensionPath: string;
     private _disposables: vscode.Disposable[] = [];
-    private _currentStep: string | null = null;
-    private _isRunning = false;
+    
+    // 工作流状态
+    private _state: WorkflowState = {
+        workflowId: null,
+        steps: WORKFLOW_9STEPS.map(s => ({ ...s, status: 'pending' as const })),
+        context: {},
+        isRunning: false
+    };
 
     private constructor(
         panel: vscode.WebviewPanel,
         extensionUri: vscode.Uri,
-        client: TRQuantClient
+        extensionPath: string
     ) {
         this._panel = panel;
         this._extensionUri = extensionUri;
-        this._client = client;
+        this._extensionPath = extensionPath;
 
         this._panel.webview.html = this._getHtmlContent();
-
-        // 监听面板关闭
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-
-        // 监听消息
         this._panel.webview.onDidReceiveMessage(
             message => this._handleMessage(message),
             null,
             this._disposables
         );
+        
+        logger.info('WorkflowPanel 创建完成', MODULE);
     }
 
-    public static createOrShow(
-        extensionUri: vscode.Uri,
-        client: TRQuantClient
-    ): WorkflowPanel {
-        console.log('[WorkflowPanel] createOrShow 被调用');
-        logger.info('创建工作流面板', MODULE);
-        
+    /**
+     * 创建或显示面板
+     */
+    public static createOrShow(extensionUri: vscode.Uri, extensionPath?: string): WorkflowPanel {
         const column = vscode.ViewColumn.One;
 
         if (WorkflowPanel.currentPanel) {
-            console.log('[WorkflowPanel] 面板已存在，显示现有面板');
             WorkflowPanel.currentPanel._panel.reveal(column);
             return WorkflowPanel.currentPanel;
         }
 
-        console.log('[WorkflowPanel] 创建新的工作流面板');
+        // 确定扩展路径
+        let extPath = extensionPath;
+        if (!extPath) {
+            // 尝试从工作区获取
+            const workspaceFolders = vscode.workspace.workspaceFolders;
+            if (workspaceFolders && workspaceFolders.length > 0) {
+                const wsPath = workspaceFolders[0].uri.fsPath;
+                const potentialExtPath = path.join(wsPath, 'extension');
+                if (fs.existsSync(potentialExtPath)) {
+                    extPath = potentialExtPath;
+                }
+            }
+            
+            // 回退到extensionUri
+            if (!extPath) {
+                extPath = extensionUri.fsPath;
+            }
+        }
+
+        logger.info(`创建WorkflowPanel, extensionPath: ${extPath}`, MODULE);
+
         const panel = vscode.window.createWebviewPanel(
-            'trquantWorkflow',
-            '🔄 集成工作流程',
+            'trquantWorkflowV3',
+            '🐉 韬睿量化 - 9步投资工作流',
             column,
             {
                 enableScripts: true,
@@ -84,9 +133,7 @@ export class WorkflowPanel {
             }
         );
 
-        WorkflowPanel.currentPanel = new WorkflowPanel(panel, extensionUri, client);
-        console.log('[WorkflowPanel] 工作流面板创建成功');
-        logger.info('工作流面板创建成功', MODULE);
+        WorkflowPanel.currentPanel = new WorkflowPanel(panel, extensionUri, extPath);
         return WorkflowPanel.currentPanel;
     }
 
@@ -99,201 +146,449 @@ export class WorkflowPanel {
         }
     }
 
+    // ==================== Python路径解析 ====================
+
+    /**
+     * 获取正确的Python解释器路径
+     * 使用ConfigManager统一管理，确保与整个扩展一致
+     */
+    private _getPythonPath(): string {
+        const configManager = ConfigManager.getInstance();
+        const pythonPath = configManager.getPythonPath(this._extensionPath);
+        logger.debug(`获取Python路径: ${pythonPath}`, MODULE);
+        return pythonPath;
+    }
+
+    /**
+     * 获取项目根目录
+     */
+    private _getProjectRoot(): string {
+        // 0. 硬编码的TRQuant项目路径（最可靠）
+        const hardcodedRoot = '/home/taotao/dev/QuantTest/TRQuant';
+        if (fs.existsSync(hardcodedRoot)) {
+            return hardcodedRoot;
+        }
+        
+        // 1. 工作区路径
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        if (workspaceFolders && workspaceFolders.length > 0) {
+            return workspaceFolders[0].uri.fsPath;
+        }
+        
+        // 2. 从extensionPath推断
+        if (this._extensionPath.endsWith('extension')) {
+            return path.dirname(this._extensionPath);
+        }
+        
+        // 3. 环境变量
+        return process.env.TRQUANT_ROOT || this._extensionPath;
+    }
+
+    // ==================== MCP调用 ====================
+
+    /**
+     * 调用9步工作流MCP服务器
+     */
+    private async _callMCP(toolName: string, args: Record<string, unknown>): Promise<unknown> {
+        const pythonPath = this._getPythonPath();
+        const projectRoot = this._getProjectRoot();
+        const serverPath = path.join(projectRoot, 'mcp_servers', 'workflow_9steps_server.py');
+        
+        logger.info(`调用MCP: ${toolName}`, MODULE, { pythonPath, serverPath });
+        
+        // 检查服务器文件是否存在
+        if (!fs.existsSync(serverPath)) {
+            throw new Error(`MCP服务器文件不存在: ${serverPath}`);
+        }
+        
+        // 通过bridge.py调用
+        const bridgePath = path.join(projectRoot, 'extension', 'python', 'bridge.py');
+        
+        return new Promise((resolve, reject) => {
+            const request = {
+                action: 'call_mcp_tool',
+                params: {
+                    tool_name: toolName,
+                    arguments: args,
+                    trace_id: `wf3_${Date.now()}`
+                }
+            };
+            
+            const env = {
+                ...process.env,
+                PYTHONIOENCODING: 'utf-8',
+                TRQUANT_ROOT: projectRoot,
+                PYTHONPATH: [
+                    path.join(projectRoot, 'extension', 'python'),
+                    path.join(projectRoot, 'mcp_servers'),
+                    projectRoot
+                ].join(path.delimiter)
+            };
+            
+            const proc = cp.spawn(pythonPath, [bridgePath], {
+                cwd: projectRoot,
+                env,
+                stdio: ['pipe', 'pipe', 'pipe']
+            });
+            
+            let stdout = '';
+            let stderr = '';
+            
+            // 写入请求
+            proc.stdin.write(JSON.stringify(request));
+            proc.stdin.end();
+            
+            proc.stdout.on('data', (data) => { stdout += data.toString(); });
+            proc.stderr.on('data', (data) => { stderr += data.toString(); });
+            
+            proc.on('close', (code) => {
+                if (code !== 0) {
+                    logger.error(`MCP调用失败: ${stderr}`, MODULE);
+                    reject(new Error(stderr || `进程退出码: ${code}`));
+                    return;
+                }
+                
+                try {
+                    const result = JSON.parse(stdout.trim());
+                    if (result.ok) {
+                        resolve(result.data);
+                    } else {
+                        reject(new Error(result.error || '调用失败'));
+                    }
+                } catch (e) {
+                    // 尝试解析最后一行
+                    const lines = stdout.trim().split('\n');
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        try {
+                            const parsed = JSON.parse(lines[i]);
+                            if (parsed.ok) {
+                                resolve(parsed.data);
+                                return;
+                            }
+                        } catch {}
+                    }
+                    reject(new Error(`解析响应失败: ${stdout.slice(0, 200)}`));
+                }
+            });
+            
+            // 发送请求
+            proc.stdin.write(JSON.stringify(request));
+            proc.stdin.end();
+            
+            // 超时
+            setTimeout(() => {
+                proc.kill();
+                reject(new Error('MCP调用超时 (60s)'));
+            }, 60000);
+        });
+    }
+
+    /**
+     * 直接执行步骤（不通过MCP服务器，直接调用Python脚本）
+     */
+    private async _executeStepDirect(stepId: string, args: Record<string, unknown>): Promise<unknown> {
+        const pythonPath = this._getPythonPath();
+        const projectRoot = this._getProjectRoot();
+        const bridgePath = path.join(projectRoot, 'extension', 'python', 'bridge.py');
+        
+        logger.info(`直接执行步骤: ${stepId}`, MODULE, { pythonPath });
+        
+        return new Promise((resolve, reject) => {
+            const request = {
+                action: 'run_workflow_step',
+                params: {
+                    step_id: stepId,
+                    args: args
+                }
+            };
+            
+            const env = {
+                ...process.env,
+                PYTHONIOENCODING: 'utf-8',
+                TRQUANT_ROOT: projectRoot,
+                PYTHONPATH: [
+                    path.join(projectRoot, 'extension', 'python'),
+                    path.join(projectRoot, 'mcp_servers'),
+                    projectRoot
+                ].join(path.delimiter)
+            };
+            
+            const proc = cp.spawn(pythonPath, [bridgePath], {
+                cwd: projectRoot,
+                env,
+                stdio: ['pipe', 'pipe', 'pipe']
+            });
+            
+            let stdout = '';
+            let stderr = '';
+            
+            // 写入请求
+            proc.stdin.write(JSON.stringify(request));
+            proc.stdin.end();
+            
+            proc.stdout.on('data', (data) => { stdout += data.toString(); });
+            proc.stderr.on('data', (data) => { stderr += data.toString(); });
+            
+            proc.on('close', (code) => {
+                if (code !== 0) {
+                    logger.error(`步骤执行失败: ${stderr}`, MODULE);
+                    reject(new Error(stderr || `进程退出码: ${code}`));
+                    return;
+                }
+                
+                try {
+                    const response = JSON.parse(stdout.trim());
+                    if (response.ok) {
+                        resolve(response.data);
+                    } else {
+                        reject(new Error(response.error || '步骤执行失败'));
+                    }
+                } catch (e) {
+                    logger.error(`解析失败: ${stdout.slice(0, 500)}`, MODULE);
+                    reject(new Error(`解析失败: ${e}`));
+                }
+            });
+            
+            // 超时
+            setTimeout(() => {
+                proc.kill();
+                reject(new Error('执行超时 (60s)'));
+            }, 60000);
+        });
+    }
+
     // ==================== 消息处理 ====================
 
     private async _handleMessage(message: any): Promise<void> {
-        logger.info(`[WorkflowPanel] 收到消息: ${message.command}`, MODULE);
+        logger.info(`收到消息: ${message.command}`, MODULE);
 
         switch (message.command) {
+            case 'init':
+                await this._initWorkflow();
+                break;
             case 'runStep':
-                await this._runStep(message.stepId);
+                await this._runStep(message.stepId, message.args);
                 break;
             case 'runAll':
-                await this._runAll();
+                await this._runAllSteps();
                 break;
-            case 'cancel':
-                this._isRunning = false;
-                this._postMessage({ command: 'cancelled' });
+            case 'reset':
+                this._resetWorkflow();
+                break;
+            case 'openReport':
+                this._openReport(message.filePath);
                 break;
         }
     }
 
-    // ==================== 工作流执行 ====================
+    /**
+     * 初始化工作流
+     */
+    private async _initWorkflow(): Promise<void> {
+        try {
+            // 通过MCP server创建工作流
+            const result = await this._callMCP('workflow9.create', {
+                name: '9步投资工作流'
+            }) as { success: boolean; workflow_id?: string; error?: string };
+            
+            if (result.success && result.workflow_id) {
+                this._state.workflowId = result.workflow_id;
+            } else {
+                // 如果MCP调用失败，使用本地生成ID
+                this._state.workflowId = `wf_${Date.now().toString(36)}`;
+                logger.warn(`MCP创建工作流失败，使用本地ID: ${this._state.workflowId}`, MODULE);
+            }
+            
+            this._state.context = {};
+            this._state.steps = WORKFLOW_9STEPS.map(s => ({ ...s, status: 'pending' as const }));
+            
+            this._postMessage({
+                command: 'initialized',
+                workflowId: this._state.workflowId,
+                steps: this._state.steps,
+                pythonPath: this._getPythonPath()
+            });
+            
+            logger.info(`工作流初始化: ${this._state.workflowId}`, MODULE);
+        } catch (error: any) {
+            logger.error(`初始化失败: ${error.message}`, MODULE);
+            // 即使MCP失败，也使用本地ID继续
+            this._state.workflowId = `wf_${Date.now().toString(36)}`;
+            this._state.steps = WORKFLOW_9STEPS.map(s => ({ ...s, status: 'pending' as const }));
+            this._postMessage({
+                command: 'initialized',
+                workflowId: this._state.workflowId,
+                steps: this._state.steps,
+                pythonPath: this._getPythonPath()
+            });
+        }
+    }
 
     /**
      * 执行单个步骤
-     * 复用桌面系统 core/workflow_orchestrator.py
      */
-    private async _runStep(stepId: string): Promise<void> {
-        if (this._isRunning) {
-            vscode.window.showWarningMessage('工作流正在执行中，请等待完成');
+    private async _runStep(stepId: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this._state.isRunning) {
+            vscode.window.showWarningMessage('工作流正在执行中');
             return;
         }
 
-        this._isRunning = true;
-        this._currentStep = stepId;
+        const stepIndex = this._state.steps.findIndex(s => s.id === stepId);
+        if (stepIndex === -1) {
+            vscode.window.showErrorMessage(`未知步骤: ${stepId}`);
+            return;
+        }
 
-        // 更新UI状态
-        this._postMessage({
-            command: 'stepStarted',
-            stepId,
-            stepName: WORKFLOW_STEPS.find(s => s.id === stepId)?.name || stepId
-        });
+        const step = this._state.steps[stepIndex];
+        this._state.isRunning = true;
+        
+        // 更新状态
+        step.status = 'running';
+        this._postMessage({ command: 'stepStarted', stepId, stepIndex });
+
+        const startTime = Date.now();
+        
+        try {
+            // 直接调用对应的MCP服务器执行步骤
+            const result = await this._executeStepDirect(stepId, args) as { 
+                success: boolean; 
+                summary?: string;
+                error?: string;
+                [key: string]: unknown;
+            };
+            
+            const duration = Date.now() - startTime;
+            
+            if (result.success) {
+                step.status = 'completed';
+                step.result = result;
+                step.duration = duration;
+                
+                // 保存到上下文
+                this._state.context[stepId] = result;
+                
+                this._postMessage({
+                    command: 'stepCompleted',
+                    stepId,
+                    stepIndex,
+                    result: result,
+                    summary: result.summary || '步骤完成',
+                    duration
+                });
+                
+                logger.info(`步骤完成: ${step.name}, 耗时: ${duration}ms`, MODULE);
+            } else {
+                throw new Error(result.error || '步骤执行失败');
+            }
+
+        } catch (error: any) {
+            step.status = 'failed';
+            step.result = { error: error.message };
+            step.duration = Date.now() - startTime;
+            
+            this._postMessage({
+                command: 'stepFailed',
+                stepId,
+                stepIndex,
+                error: error.message
+            });
+            
+            logger.error(`步骤失败: ${step.name} - ${error.message}`, MODULE);
+            vscode.window.showErrorMessage(`步骤 ${step.name} 执行失败: ${error.message}`);
+        }
+
+        this._state.isRunning = false;
+    }
+
+    /**
+     * 执行所有步骤
+     */
+    private async _runAllSteps(): Promise<void> {
+        if (this._state.isRunning) {
+            vscode.window.showWarningMessage('工作流正在执行中');
+            return;
+        }
+
+        if (!this._state.workflowId) {
+            await this._initWorkflow();
+        }
+
+        this._postMessage({ command: 'workflowStarted', totalSteps: 9 });
 
         try {
-            // 通过Python Bridge调用workflow_orchestrator
-            const response = await this._client.callBridge('run_workflow_step', {
-                step_id: stepId
-            });
-
-            const resp = response as any;
-            if (response.ok) {
-                // 执行成功
-                this._postMessage({
-                    command: 'stepFinished',
-                    stepId,
-                    success: true,
-                    summary: resp.summary || '执行成功',
-                    details: resp.data || {},
-                    stepName: resp.step_name || WORKFLOW_STEPS.find(s => s.id === stepId)?.name || stepId
-                });
-            } else {
-                // 执行失败
-                this._postMessage({
-                    command: 'stepFinished',
-                    stepId,
-                    success: false,
-                    summary: resp.error || '执行失败',
-                    details: {},
-                    stepName: WORKFLOW_STEPS.find(s => s.id === stepId)?.name || stepId
-                });
-            }
-        } catch (error) {
-            const msg = error instanceof Error ? error.message : String(error);
-            logger.error(`步骤 ${stepId} 执行失败: ${msg}`, MODULE);
-            this._postMessage({
-                command: 'stepFinished',
-                stepId,
-                success: false,
-                summary: `执行失败: ${msg}`,
-                details: {},
-                stepName: WORKFLOW_STEPS.find(s => s.id === stepId)?.name || stepId
-            });
-        } finally {
-            this._isRunning = false;
-            this._currentStep = null;
-        }
-    }
-
-    /**
-     * 执行全部步骤
-     * 复用桌面系统 core/workflow_orchestrator.py 的 run_full_workflow
-     */
-    private async _runAll(): Promise<void> {
-        if (this._isRunning) {
-            vscode.window.showWarningMessage('工作流正在执行中，请等待完成');
-            return;
-        }
-
-        this._isRunning = true;
-
-        // 显示进度
-        await vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: '🔄 执行完整工作流',
-            cancellable: true
-        }, async (progress, token) => {
-            const results: any[] = [];
-            let hasError = false;
-
-            // 通知前端开始执行全部
-            this._postMessage({ command: 'allStarted' });
-
-            try {
-                // 通过Python Bridge调用完整工作流
-                const response = await this._client.callBridge('run_full_workflow', {});
-
-                const resp = response as any;
-                if (response.ok && resp.data) {
-                    const data = resp.data as any;
-                    const steps = data.steps || [];
-                    
-                    // 逐个通知步骤完成
-                    for (const step of steps) {
-                        const stepId = this._getStepIdFromName(step.step_name);
-                        this._postMessage({
-                            command: 'stepFinished',
-                            stepId,
-                            success: step.success,
-                            summary: step.summary || '',
-                            details: step.details || {},
-                            stepName: step.step_name
-                        });
-
-                        results.push({
-                            step: step.step_name,
-                            success: step.success,
-                            error: step.error
-                        });
-
-                        if (!step.success) {
-                            hasError = true;
-                        }
-
-                        progress.report({
-                            message: `${step.step_name}: ${step.success ? '✅' : '❌'}`,
-                            increment: 100 / steps.length
-                        });
-                    }
-
-                    // 通知全部完成
-                    this._postMessage({
-                        command: 'allFinished',
-                        success: !hasError,
-                        results,
-                        strategyFile: data.strategy_file,
-                        totalTime: data.total_time
-                    });
-
-                    if (hasError) {
-                        vscode.window.showWarningMessage('⚠️ 工作流完成，部分步骤有错误');
-                    } else {
-                        vscode.window.showInformationMessage('✅ 完整工作流执行完成！');
-                    }
-                } else {
-                    throw new Error(response.error || '执行失败');
+            // 使用MCP server的一键执行功能
+            const result = await this._callMCP('workflow9.run_all', {
+                workflow_id: this._state.workflowId
+            }) as { success: boolean; steps?: unknown[]; context?: Record<string, unknown>; error?: string };
+            
+            if (result.success) {
+                // 更新所有步骤状态
+                if (result.steps) {
+                    this._state.steps = result.steps as WorkflowStep[];
                 }
-            } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
-                logger.error(`完整工作流执行失败: ${msg}`, MODULE);
-                this._postMessage({
-                    command: 'allFinished',
-                    success: false,
-                    results: [],
-                    error: msg
+                if (result.context) {
+                    this._state.context = result.context;
+                }
+                
+                this._postMessage({ 
+                    command: 'workflowCompleted', 
+                    context: this._state.context,
+                    steps: this._state.steps
                 });
-                vscode.window.showErrorMessage(`工作流执行失败: ${msg}`);
-            } finally {
-                this._isRunning = false;
+                
+                logger.info('所有步骤执行完成', MODULE);
+            } else {
+                throw new Error(result.error || '工作流执行失败');
             }
-        });
+        } catch (error: any) {
+            logger.error(`一键执行失败，回退到逐步执行: ${error.message}`, MODULE);
+            
+            // 回退到逐步执行
+            for (let i = 0; i < this._state.steps.length; i++) {
+                const step = this._state.steps[i];
+                await this._runStep(step.id);
+
+                // 检查是否失败
+                if (step.status === 'failed') {
+                    const proceed = await vscode.window.showWarningMessage(
+                        `步骤 ${step.name} 失败，是否继续？`,
+                        '继续', '停止'
+                    );
+                    if (proceed !== '继续') {
+                        break;
+                    }
+                }
+            }
+
+            this._postMessage({ 
+                command: 'workflowCompleted', 
+                context: this._state.context,
+                steps: this._state.steps
+            });
+        }
     }
 
     /**
-     * 步骤名称转ID
+     * 重置工作流
      */
-    private _getStepIdFromName(stepName: string): string {
-        const nameMap: Record<string, string> = {
-            '数据源': 'data_source',
-            '数据源检测': 'data_source',
-            '市场趋势': 'market_trend',
-            '投资主线': 'mainline',
-            '候选池': 'candidate_pool',
-            '候选池构建': 'candidate_pool',
-            '因子推荐': 'factor',
-            '策略生成': 'strategy',
-        };
-        return nameMap[stepName] || stepName.toLowerCase().replace(/\s+/g, '_');
+    private _resetWorkflow(): void {
+        this._state.workflowId = null;
+        this._state.context = {};
+        this._state.steps = WORKFLOW_9STEPS.map(s => ({ ...s, status: 'pending' as const }));
+        this._state.isRunning = false;
+        
+        this._postMessage({ command: 'reset' });
+    }
+
+    /**
+     * 打开报告文件
+     */
+    private _openReport(filePath: string): void {
+        if (filePath && fs.existsSync(filePath)) {
+            vscode.env.openExternal(vscode.Uri.file(filePath));
+        } else {
+            vscode.window.showErrorMessage('报告文件不存在');
+        }
     }
 
     private _postMessage(message: any): void {
@@ -303,504 +598,904 @@ export class WorkflowPanel {
     // ==================== HTML内容 ====================
 
     private _getHtmlContent(): string {
+        const stepsHtml = WORKFLOW_9STEPS.map((step, index) => `
+            <div class="step-card" id="step-${step.id}" data-step-id="${step.id}">
+                <div class="step-header">
+                    <div class="step-number" style="background: ${step.color};">${index + 1}</div>
+                    <div class="step-icon">${step.icon}</div>
+                    <div class="step-info">
+                        <div class="step-name">${step.name}</div>
+                        <div class="step-desc">${step.description}</div>
+                    </div>
+                    <div class="step-status" id="status-${step.id}">
+                        <span class="status-badge pending">等待中</span>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="btn btn-run" onclick="runStep('${step.id}')">
+                        <span class="btn-icon">▶</span> 执行
+                    </button>
+                    <button class="btn btn-view" id="view-${step.id}" onclick="toggleResult('${step.id}')" disabled>
+                        <span class="btn-icon">📊</span> 查看结果
+                    </button>
+                </div>
+                <div class="step-result" id="result-${step.id}"></div>
+            </div>
+        `).join('');
+
         return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>集成工作流程</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <title>9步投资工作流</title>
     <style>
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
-            --border-color: #30363d;
-            --text-primary: #c9d1d9;
-            --text-secondary: #8b949e;
-            --accent-blue: #58a6ff;
-            --accent-green: #3fb950;
-            --accent-yellow: #d29922;
-            --accent-red: #f85149;
-            --accent-purple: #a371f7;
+            --bg-primary: #0a0e14;
+            --bg-secondary: #0f141a;
+            --bg-card: #151c24;
+            --bg-hover: #1c2530;
+            --border: #253040;
+            --text: #e6edf3;
+            --text-secondary: #7d8590;
+            --accent: #2f81f7;
+            --accent-light: #58a6ff;
+            --success: #2ea043;
+            --success-bg: rgba(46, 160, 67, 0.15);
+            --warning: #d29922;
+            --warning-bg: rgba(210, 153, 34, 0.15);
+            --error: #f85149;
+            --error-bg: rgba(248, 81, 73, 0.15);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
+            color: var(--text);
+            padding: 24px;
+            line-height: 1.6;
+            min-height: 100vh;
         }
         
-        .container {
-            display: flex;
-            height: 100vh;
-            gap: 0;
-        }
-        
-        /* 左侧步骤区域 */
-        .steps-panel {
-            width: 280px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            padding: 16px;
-            overflow-y: auto;
-        }
-        
+        /* 头部 */
         .header {
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
         }
         
-        .header h1 {
-            font-size: 18px;
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--accent-light), #a371f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .run-all-btn {
-            width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
+        .header-title .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* 按钮 */
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
             font-size: 14px;
-            transition: all 0.2s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
         }
         
-        .run-all-btn:hover {
+        .btn-icon { font-size: 12px; }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-light);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
         
-        .run-all-btn:disabled {
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+        
+        .btn-run {
+            background: var(--success);
+            color: white;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-run:hover {
+            filter: brightness(1.1);
+        }
+        
+        .btn-view {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+        }
+        
+        .btn-view:not(:disabled):hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
         
-        .steps-list {
+        /* 进度条 */
+        .progress-container {
+            margin-bottom: 24px;
+        }
+        
+        .progress-info {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .step-card {
-            background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            border-left: 4px solid var(--step-color);
-            border-radius: 10px;
-            padding: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .step-card:hover {
-            background: var(--bg-primary);
-            border-color: var(--accent-blue);
-        }
-        
-        .step-card.running {
-            border-color: var(--accent-yellow);
-            animation: pulse 1.5s infinite;
-        }
-        
-        .step-card.completed {
-            border-color: var(--accent-green);
-        }
-        
-        .step-card.failed {
-            border-color: var(--accent-red);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(217, 153, 34, 0.4); }
-            50% { box-shadow: 0 0 0 8px rgba(217, 153, 34, 0); }
-        }
-        
-        .step-icon {
-            font-size: 26px;
-            width: 36px;
-            text-align: center;
-        }
-        
-        .step-name {
-            flex: 1;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        
-        .step-status {
-            font-size: 16px;
-        }
-        
-        /* 右侧结果区域 */
-        .result-panel {
-            flex: 1;
-            background: var(--bg-primary);
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
-        .result-header {
-            margin-bottom: 20px;
-        }
-        
-        .result-title {
-            font-size: 20px;
-            font-weight: 600;
+            justify-content: space-between;
             margin-bottom: 8px;
-        }
-        
-        .result-summary {
-            background: var(--bg-secondary);
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-        
-        .result-details {
-            background: var(--bg-secondary);
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .result-details table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .result-details th,
-        .result-details td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .result-details th {
-            background: var(--bg-tertiary);
-            font-weight: 600;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
+            font-size: 14px;
             color: var(--text-secondary);
-        }
-        
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.5;
         }
         
         .progress-bar {
             height: 6px;
-            background: var(--bg-tertiary);
+            background: var(--bg-hover);
             border-radius: 3px;
             overflow: hidden;
-            margin: 12px 0;
         }
         
-        .progress-fill {
+        .progress-bar .progress {
             height: 100%;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            background: linear-gradient(90deg, var(--accent), var(--success));
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+        
+        /* 步骤卡片 */
+        .steps-container {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .step-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px rgba(47, 129, 247, 0.1);
+        }
+        
+        .step-card.running {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(47, 129, 247, 0.05) 0%, rgba(47, 129, 247, 0.02) 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(47, 129, 247, 0.3); }
+            50% { box-shadow: 0 0 20px 5px rgba(47, 129, 247, 0.2); }
+        }
+        
+        .step-card.completed {
+            border-color: var(--success);
+            background: var(--success-bg);
+        }
+        
+        .step-card.failed {
+            border-color: var(--error);
+            background: var(--error-bg);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+        }
+        
+        .step-icon {
+            font-size: 28px;
+        }
+        
+        .step-info {
+            flex: 1;
+        }
+        
+        .step-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .step-status {
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-badge.pending {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+        }
+        
+        .status-badge.running {
+            background: var(--accent);
+            color: white;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .status-badge.completed {
+            background: var(--success);
+            color: white;
+        }
+        
+        .status-badge.failed {
+            background: var(--error);
+            color: white;
+        }
+        
+        .step-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* 结果展示 */
+        .step-result {
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .step-result.visible {
+            display: block;
+        }
+        
+        .result-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .result-header {
+            padding: 12px 16px;
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .result-content {
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result-content pre {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        /* 指标卡片 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .metric-item {
+            background: var(--bg-hover);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+        
+        .metric-value.positive { color: var(--success); }
+        .metric-value.negative { color: var(--error); }
+        
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* 上下文面板 */
+        .context-panel {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        
+        .context-panel h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .context-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* Python路径显示 */
+        .python-info {
+            margin-top: 24px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        
+        .python-info .label {
+            color: var(--accent-light);
+            margin-right: 8px;
+        }
+        
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 左侧步骤 -->
-        <div class="steps-panel">
-            <div class="header">
-                <h1>🔄 集成工作流程</h1>
-                <button class="run-all-btn" id="runAllBtn" onclick="runAll()">
-                    ▶️ 一键执行全部
-                </button>
-            </div>
-            <div class="steps-list" id="stepsList">
-                ${WORKFLOW_STEPS.map(step => `
-                    <div class="step-card" id="step-${step.id}" 
-                         style="--step-color: ${step.color}"
-                         onclick="runStep('${step.id}')">
-                        <div class="step-icon">${step.icon}</div>
-                        <div class="step-name">${step.name}</div>
-                        <div class="step-status" id="status-${step.id}">▶️</div>
-                    </div>
-                `).join('')}
+    <div class="header">
+        <div class="header-title">
+            <div>
+                <h1>🐉 韬睿量化 - 9步投资工作流</h1>
+                <p class="subtitle">专业A股量化投资工具</p>
             </div>
         </div>
-        
-        <!-- 右侧结果 -->
-        <div class="result-panel">
-            <div class="result-header">
-                <div class="result-title" id="resultTitle">📋 执行结果</div>
-            </div>
-            <div class="result-summary" id="resultSummary">
-                点击左侧步骤开始执行...
-            </div>
-            <div class="result-details" id="resultDetails"></div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="runAll()">
+                <span class="btn-icon">🚀</span> 一键执行全部
+            </button>
+            <button class="btn btn-secondary" onclick="reset()">
+                <span class="btn-icon">🔄</span> 重置
+            </button>
         </div>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-info">
+            <span id="progress-text">准备就绪</span>
+            <span id="progress-percent">0 / 9</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+    
+    <div class="steps-container">
+        ${stepsHtml}
+    </div>
+    
+    <div class="context-panel">
+        <h3>📋 执行上下文</h3>
+        <div class="context-content" id="context">
+            <p style="color: var(--text-secondary);">执行步骤后，结果将显示在这里...</p>
+        </div>
+    </div>
+    
+    <div class="python-info" id="python-info">
+        <span class="label">Python:</span>
+        <span id="python-path">正在检测...</span>
     </div>
     
     <script>
         const vscode = acquireVsCodeApi();
-        let isRunning = false;
+        let completedSteps = 0;
+        const totalSteps = 9;
+        let workflowContext = {};
+        
+        // 初始化
+        window.addEventListener('load', () => {
+            vscode.postMessage({ command: 'init' });
+        });
         
         function runStep(stepId) {
-            if (isRunning) {
-                return;
-            }
-            vscode.postMessage({ command: 'runStep', stepId });
+            vscode.postMessage({ command: 'runStep', stepId, args: {} });
         }
         
         function runAll() {
-            if (isRunning) {
-                return;
-            }
             vscode.postMessage({ command: 'runAll' });
         }
         
-        function setStepStatus(stepId, status) {
-            const card = document.getElementById('step-' + stepId);
-            const statusEl = document.getElementById('status-' + stepId);
+        function reset() {
+            vscode.postMessage({ command: 'reset' });
+            completedSteps = 0;
+            workflowContext = {};
+            updateProgress(0, '准备就绪');
+            document.getElementById('context').innerHTML = '<p style="color: var(--text-secondary);">执行步骤后，结果将显示在这里...</p>';
             
-            card.classList.remove('running', 'completed', 'failed');
-            
-            switch(status) {
-                case 'running':
-                    card.classList.add('running');
-                    statusEl.textContent = '⏳';
-                    break;
-                case 'completed':
-                    card.classList.add('completed');
-                    statusEl.textContent = '✅';
-                    break;
-                case 'failed':
-                    card.classList.add('failed');
-                    statusEl.textContent = '❌';
-                    break;
-                default:
-                    statusEl.textContent = '▶️';
-            }
+            document.querySelectorAll('.step-card').forEach(card => {
+                card.classList.remove('running', 'completed', 'failed');
+            });
+            document.querySelectorAll('[id^="status-"]').forEach(el => {
+                el.innerHTML = '<span class="status-badge pending">等待中</span>';
+            });
+            document.querySelectorAll('[id^="result-"]').forEach(el => {
+                el.innerHTML = '';
+                el.classList.remove('visible');
+            });
+            document.querySelectorAll('[id^="view-"]').forEach(btn => {
+                btn.disabled = true;
+            });
         }
         
-        function formatDetails(details) {
-            if (!details || Object.keys(details).length === 0) {
-                return '<div style="color:var(--text-secondary);">无详细数据</div>';
-            }
-            
-            let html = '';
-            
-            // 投资主线
-            if (details.top_mainlines) {
-                const mainlines = details.top_mainlines;
-                html += '<div style="margin-bottom:12px;"><strong>🔥 投资主线 TOP' + mainlines.length + '</strong></div>';
-                html += '<table><tr><th>排名</th><th>名称</th><th>评分</th></tr>';
-                mainlines.slice(0, 10).forEach(ml => {
-                    html += '<tr><td>#' + (ml.rank || '-') + '</td><td>' + (ml.name || '-') + '</td><td>' + ((ml.composite_score || ml.score || 0).toFixed?.(1) || '-') + '</td></tr>';
-                });
-                html += '</table>';
-            }
-            
-            // 候选池股票
-            else if (details.stocks) {
-                const stocks = details.stocks;
-                html += '<div style="margin-bottom:12px;"><strong>📦 候选池股票 (' + stocks.length + '只)</strong></div>';
-                html += '<table><tr><th>代码</th><th>名称</th><th>来源</th><th>评分</th></tr>';
-                stocks.slice(0, 15).forEach(s => {
-                    html += '<tr><td>' + (s.code || '-') + '</td><td>' + (s.name || '-') + '</td><td>' + (s.source || '-') + '</td><td>' + ((s.score || 0).toFixed?.(1) || '-') + '</td></tr>';
-                });
-                html += '</table>';
-            }
-            
-            // 推荐因子
-            else if (details.recommended_factors) {
-                const factors = details.recommended_factors;
-                html += '<div style="margin-bottom:12px;"><strong>🧮 推荐因子</strong></div>';
-                html += '<ul style="margin:0;padding-left:20px;">';
-                factors.forEach(f => {
-                    const weight = ((f.weight || 0) * 100).toFixed(0);
-                    html += '<li style="margin:6px 0;"><strong>' + (f.name || '-') + '</strong> (权重' + weight + '%) - ' + (f.reason || '') + '</li>';
-                });
-                html += '</ul>';
-            }
-            
-            // 数据源检测
-            else if (details.jqdata !== undefined || details.akshare !== undefined) {
-                html += '<div style="margin-bottom:12px;"><strong>📡 数据源状态</strong></div>';
-                html += '<table><tr><th>数据源</th><th>状态</th></tr>';
-                if (details.jqdata !== undefined) {
-                    html += '<tr><td>JQData</td><td style="color:' + (details.jqdata ? '#3fb950' : '#f85149') + ';">' + (details.jqdata ? '✅ 可用' : '❌ 不可用') + '</td></tr>';
+        function toggleResult(stepId) {
+            const resultEl = document.getElementById('result-' + stepId);
+            resultEl.classList.toggle('visible');
+        }
+        
+        function updateProgress(count, text) {
+            completedSteps = count;
+            const percent = (count / totalSteps * 100);
+            document.getElementById('progress').style.width = percent + '%';
+            document.getElementById('progress-text').textContent = text;
+            document.getElementById('progress-percent').textContent = count + ' / ' + totalSteps;
+        }
+        
+        function formatValue(value) {
+            if (typeof value === 'number') {
+                if (Math.abs(value) < 1) {
+                    return (value * 100).toFixed(2) + '%';
                 }
-                if (details.akshare !== undefined) {
-                    html += '<tr><td>AKShare</td><td style="color:' + (details.akshare ? '#3fb950' : '#f85149') + ';">' + (details.akshare ? '✅ 可用' : '❌ 不可用') + '</td></tr>';
+                return value.toFixed(2);
+            }
+            return value;
+        }
+        
+        function renderMetrics(result) {
+            if (!result || !result.metrics) return '';
+            
+            const metrics = result.metrics;
+            let html = '<div class="metrics-grid">';
+            
+            const metricDefs = [
+                { key: 'total_return', label: '总收益', isPercent: true },
+                { key: 'sharpe_ratio', label: '夏普比率' },
+                { key: 'max_drawdown', label: '最大回撤', isPercent: true, isNegative: true },
+                { key: 'win_rate', label: '胜率', isPercent: true },
+                { key: 'total_trades', label: '交易次数' }
+            ];
+            
+            metricDefs.forEach(def => {
+                if (metrics[def.key] !== undefined) {
+                    const value = metrics[def.key];
+                    const displayValue = def.isPercent ? (value * 100).toFixed(2) + '%' : value.toFixed ? value.toFixed(2) : value;
+                    const colorClass = def.isNegative ? 'negative' : (value > 0 ? 'positive' : '');
+                    
+                    html += '<div class="metric-item">';
+                    html += '<div class="metric-value ' + colorClass + '">' + displayValue + '</div>';
+                    html += '<div class="metric-label">' + def.label + '</div>';
+                    html += '</div>';
                 }
-                html += '</table>';
-            }
+            });
             
-            // 默认JSON显示
-            else {
-                html += '<pre style="font-size:11px;overflow-x:auto;">' + JSON.stringify(details, null, 2) + '</pre>';
-            }
-            
+            html += '</div>';
             return html;
         }
         
+        function renderResultContent(stepId, result) {
+            const chartId = 'chart-' + stepId + '-' + Date.now();
+            let html = '<div class="result-card">';
+            html += '<div class="result-header">' + (result.summary || '执行结果') + '</div>';
+            html += '<div class="result-content">';
+            
+            // 市场趋势 - 雷达图
+            if (stepId === 'market_trend') {
+                html += '<div id="' + chartId + '" style="width:100%;height:300px;"></div>';
+                html += '</div></div>';
+                setTimeout(() => {
+                    const chart = echarts.init(document.getElementById(chartId));
+                    const short = result.short_term || result.indicators || {};
+                    const medium = result.medium_term || {};
+                    const long = result.long_term || {};
+                    chart.setOption({
+                        title: { text: '市场趋势分析', left: 'center', textStyle: { color: '#e6edf3' } },
+                        backgroundColor: 'transparent',
+                        radar: {
+                            indicator: [
+                                { name: '短期趋势', max: 100 },
+                                { name: '中期趋势', max: 100 },
+                                { name: '长期趋势', max: 100 },
+                                { name: '动量', max: 100 },
+                                { name: '波动率', max: 100 }
+                            ],
+                            axisLine: { lineStyle: { color: 'rgba(255,255,255,0.3)' } },
+                            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                        },
+                        series: [{
+                            type: 'radar',
+                            data: [{
+                                value: [
+                                    (short.score || 50) + 50,
+                                    (medium.score || 50) + 50,
+                                    (long.score || 50) + 50,
+                                    Math.min(100, Math.abs(result.indicators?.momentum_20d || 0) * 5 + 50),
+                                    100 - Math.min(100, (result.indicators?.volatility_annual || 20))
+                                ],
+                                name: '市场指标',
+                                areaStyle: { color: 'rgba(47, 129, 247, 0.3)' },
+                                lineStyle: { color: '#2f81f7' }
+                            }]
+                        }]
+                    });
+                }, 100);
+                return html;
+            }
+            
+            // 投资主线 - 柱状图
+            if (stepId === 'mainline') {
+                const mainlines = result.mainlines || [];
+                html += '<div id="' + chartId + '" style="width:100%;height:300px;"></div>';
+                html += '</div></div>';
+                setTimeout(() => {
+                    const chart = echarts.init(document.getElementById(chartId));
+                    chart.setOption({
+                        title: { text: '投资主线评分', left: 'center', textStyle: { color: '#e6edf3' } },
+                        backgroundColor: 'transparent',
+                        xAxis: {
+                            type: 'category',
+                            data: mainlines.slice(0, 8).map(m => m.name || ''),
+                            axisLabel: { color: '#7d8590', rotate: 30 },
+                            axisLine: { lineStyle: { color: '#253040' } }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            max: 100,
+                            axisLabel: { color: '#7d8590' },
+                            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                        },
+                        series: [{
+                            type: 'bar',
+                            data: mainlines.slice(0, 8).map((m, i) => ({
+                                value: m.score || 0,
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                        { offset: 0, color: i < 3 ? '#f5576c' : '#667eea' },
+                                        { offset: 1, color: i < 3 ? '#f093fb' : '#764ba2' }
+                                    ])
+                                }
+                            })),
+                            barWidth: '50%'
+                        }]
+                    });
+                }, 100);
+                return html;
+            }
+            
+            // 回测结果 - 指标卡片 + 折线图
+            if (stepId === 'backtest' || stepId === 'optimization') {
+                html += renderMetrics(result);
+                if (result.equity_curve || result.returns) {
+                    html += '<div id="' + chartId + '" style="width:100%;height:250px;margin-top:16px;"></div>';
+                    html += '</div></div>';
+                    setTimeout(() => {
+                        const chart = echarts.init(document.getElementById(chartId));
+                        const curve = result.equity_curve || result.returns || [];
+                        chart.setOption({
+                            title: { text: '收益曲线', left: 'center', textStyle: { color: '#e6edf3', fontSize: 14 } },
+                            backgroundColor: 'transparent',
+                            xAxis: {
+                                type: 'category',
+                                data: curve.map((_, i) => 'D' + (i + 1)),
+                                axisLabel: { color: '#7d8590' },
+                                axisLine: { lineStyle: { color: '#253040' } }
+                            },
+                            yAxis: {
+                                type: 'value',
+                                axisLabel: { color: '#7d8590', formatter: '{value}%' },
+                                splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                            },
+                            series: [{
+                                type: 'line',
+                                data: curve.map(v => (v * 100).toFixed(2)),
+                                smooth: true,
+                                areaStyle: { color: 'rgba(46, 160, 67, 0.2)' },
+                                lineStyle: { color: '#2ea043', width: 2 }
+                            }]
+                        });
+                    }, 100);
+                    return html;
+                }
+            }
+            
+            // 五维评分 - 雷达图
+            if (result.five_dimension || result.radar_data) {
+                const dims = result.five_dimension || result.radar_data || {};
+                html += '<div id="' + chartId + '" style="width:100%;height:280px;"></div>';
+                const radarData = result.radar_data || {
+                    '基本面': dims.fundamental || 0,
+                    '技术面': dims.technical || 0,
+                    '资金面': dims.capital || 0,
+                    '消息面': dims.news || 0,
+                    '行业地位': dims.position || 0
+                };
+                html += '</div></div>';
+                setTimeout(() => {
+                    const chart = echarts.init(document.getElementById(chartId));
+                    const labels = Object.keys(radarData);
+                    const values = Object.values(radarData);
+                    chart.setOption({
+                        title: { text: '五维评分', left: 'center', textStyle: { color: '#e6edf3' } },
+                        backgroundColor: 'transparent',
+                        radar: {
+                            indicator: labels.map(l => ({ name: l, max: 20 })),
+                            axisLine: { lineStyle: { color: 'rgba(255,255,255,0.3)' } },
+                            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                        },
+                        series: [{
+                            type: 'radar',
+                            data: [{
+                                value: values,
+                                name: '评分',
+                                areaStyle: { color: 'rgba(245, 87, 108, 0.3)' },
+                                lineStyle: { color: '#f5576c' }
+                            }]
+                        }]
+                    });
+                }, 100);
+                return html;
+            }
+            
+            // 通用JSON展示
+            html += '<pre style="max-height:400px;overflow:auto;">' + JSON.stringify(result, null, 2) + '</pre>';
+            
+            html += '</div></div>';
+            return html;
+        }
+        
+        // 消息处理
         window.addEventListener('message', event => {
             const message = event.data;
             
             switch (message.command) {
-                case 'stepStarted':
-                    isRunning = true;
-                    document.getElementById('runAllBtn').disabled = true;
-                    setStepStatus(message.stepId, 'running');
-                    document.getElementById('resultTitle').textContent = '📋 ' + message.stepName + ' - 执行中';
-                    document.getElementById('resultSummary').textContent = '正在执行 ' + message.stepName + '...';
-                    document.getElementById('resultDetails').innerHTML = '';
+                case 'initialized': {
+                    document.getElementById('python-path').textContent = message.pythonPath;
                     break;
+                }
+                
+                case 'stepStarted': {
+                    const card = document.getElementById('step-' + message.stepId);
+                    const status = document.getElementById('status-' + message.stepId);
                     
-                case 'stepFinished':
-                    isRunning = false;
-                    document.getElementById('runAllBtn').disabled = false;
-                    setStepStatus(message.stepId, message.success ? 'completed' : 'failed');
-                    document.getElementById('resultTitle').textContent = '📋 ' + message.stepName + ' - ' + (message.success ? '✅ 完成' : '❌ 失败');
-                    document.getElementById('resultSummary').textContent = message.summary || (message.success ? '执行成功' : '执行失败');
-                    document.getElementById('resultDetails').innerHTML = formatDetails(message.details);
+                    card.classList.remove('completed', 'failed');
+                    card.classList.add('running');
+                    status.innerHTML = '<span class="status-badge running">执行中...</span>';
+                    updateProgress(completedSteps, '正在执行: ' + STEP_NAMES[message.stepId]);
                     break;
+                }
+                
+                case 'stepCompleted': {
+                    const card = document.getElementById('step-' + message.stepId);
+                    const status = document.getElementById('status-' + message.stepId);
+                    const result = document.getElementById('result-' + message.stepId);
+                    const viewBtn = document.getElementById('view-' + message.stepId);
                     
-                case 'allStarted':
-                    isRunning = true;
-                    document.getElementById('runAllBtn').disabled = true;
-                    document.getElementById('resultTitle').textContent = '🔄 执行完整工作流';
-                    document.getElementById('resultSummary').textContent = '正在执行所有步骤...';
-                    document.getElementById('resultDetails').innerHTML = '';
-                    // 重置所有步骤状态
-                    ${WORKFLOW_STEPS.map(s => `setStepStatus('${s.id}', 'default');`).join('')}
+                    card.classList.remove('running');
+                    card.classList.add('completed');
+                    
+                    const duration = (message.duration / 1000).toFixed(1);
+                    status.innerHTML = '<span class="status-badge completed">✅ 完成 (' + duration + 's)</span>';
+                    
+                    result.innerHTML = renderResultContent(message.stepId, message.result);
+                    viewBtn.disabled = false;
+                    
+                    completedSteps++;
+                    workflowContext[message.stepId] = message.result;
+                    updateProgress(completedSteps, '完成: ' + STEP_NAMES[message.stepId]);
                     break;
+                }
+                
+                case 'stepFailed': {
+                    const card = document.getElementById('step-' + message.stepId);
+                    const status = document.getElementById('status-' + message.stepId);
+                    const result = document.getElementById('result-' + message.stepId);
                     
-                case 'allFinished':
-                    isRunning = false;
-                    document.getElementById('runAllBtn').disabled = false;
-                    document.getElementById('resultTitle').textContent = message.success ? '✅ 工作流执行完成' : '⚠️ 工作流完成（部分失败）';
-                    document.getElementById('resultSummary').textContent = '共执行 ' + (message.results?.length || 0) + ' 个步骤';
+                    card.classList.remove('running');
+                    card.classList.add('failed');
+                    status.innerHTML = '<span class="status-badge failed">❌ 失败</span>';
                     
-                    // 显示汇总
-                    let summaryHtml = '<div style="margin-top:16px;">';
-                    summaryHtml += '<h4 style="margin-bottom:8px;">执行结果汇总</h4>';
-                    if (message.results) {
-                        message.results.forEach(r => {
-                            summaryHtml += '<div style="display:flex;align-items:center;gap:8px;margin:4px 0;">';
-                            summaryHtml += '<span>' + (r.success ? '✅' : '❌') + '</span>';
-                            summaryHtml += '<span>' + r.step + '</span>';
-                            if (r.error) {
-                                summaryHtml += '<span style="color:#f85149;font-size:11px;">(' + r.error + ')</span>';
-                            }
-                            summaryHtml += '</div>';
-                        });
-                    }
-                    summaryHtml += '</div>';
-                    document.getElementById('resultDetails').innerHTML = summaryHtml;
+                    result.innerHTML = '<div class="result-card"><div class="result-header" style="color: var(--error);">错误</div><div class="result-content"><pre style="color: var(--error);">' + message.error + '</pre></div></div>';
+                    result.classList.add('visible');
+                    
+                    updateProgress(completedSteps, '失败: ' + STEP_NAMES[message.stepId]);
                     break;
-                    
-                case 'cancelled':
-                    isRunning = false;
-                    document.getElementById('runAllBtn').disabled = false;
+                }
+                
+                case 'workflowCompleted': {
+                    document.getElementById('context').innerHTML = '<pre>' + JSON.stringify(message.context, null, 2) + '</pre>';
+                    updateProgress(completedSteps, '工作流完成');
                     break;
+                }
+                
+                case 'reset': {
+                    // 已在reset函数中处理
+                    break;
+                }
+                
+                case 'error': {
+                    alert('错误: ' + message.error);
+                    break;
+                }
             }
         });
+        
+        // 步骤名称映射
+        const STEP_NAMES = {
+            'data_source': '信息获取',
+            'market_trend': '市场趋势',
+            'mainline': '投资主线',
+            'candidate_pool': '候选池构建',
+            'factor': '因子构建',
+            'strategy': '策略生成',
+            'backtest': '回测验证',
+            'optimization': '策略优化',
+            'report': '报告生成'
+        };
     </script>
 </body>
 </html>`;
     }
 }
 
-// ============================================================
-// 注册函数
-// ============================================================
 
-export function registerWorkflowPanel(
-    context: vscode.ExtensionContext,
-    client: TRQuantClient
-): void {
-    console.log('[WorkflowPanel] ========== 开始注册工作流面板命令 ==========');
-    logger.info('开始注册工作流面板', MODULE);
-    
-    // 验证参数
-    if (!context) {
-        console.error('[WorkflowPanel] ❌ context 参数为空');
-        throw new Error('context 参数不能为空');
-    }
-    if (!client) {
-        console.error('[WorkflowPanel] ❌ client 参数为空');
-        throw new Error('client 参数不能为空');
-    }
-    
-    console.log('[WorkflowPanel] 参数验证通过，开始注册命令...');
-    
-    try {
-        const disposable = vscode.commands.registerCommand('trquant.openWorkflowPanel', () => {
-            console.log('[WorkflowPanel] ✅ trquant.openWorkflowPanel 命令被触发');
-            logger.info('打开工作流面板命令被触发', MODULE);
-            try {
-                WorkflowPanel.createOrShow(context.extensionUri, client);
-                console.log('[WorkflowPanel] ✅ 工作流面板已创建');
-                logger.info('工作流面板已创建', MODULE);
-            } catch (error) {
-                const msg = error instanceof Error ? error.message : String(error);
-                console.error('[WorkflowPanel] ❌ 创建工作流面板失败:', msg);
-                logger.error(`创建工作流面板失败: ${msg}`, MODULE);
-                vscode.window.showErrorMessage(`打开工作流面板失败: ${msg}`);
-            }
-        });
-        
-        console.log('[WorkflowPanel] 命令已注册，disposable:', disposable);
-        context.subscriptions.push(disposable);
-        console.log('[WorkflowPanel] 命令已添加到context.subscriptions，当前订阅数:', context.subscriptions.length);
-        
-        // 立即验证命令是否注册成功（同步检查）
-        console.log('[WorkflowPanel] 命令已注册到context.subscriptions');
-        
-        // 异步验证命令是否在VS Code中可用
-        setTimeout(() => {
-            vscode.commands.getCommands().then(commands => {
-                console.log('[WorkflowPanel] 检查命令列表，总数:', commands.length);
-                if (commands.includes('trquant.openWorkflowPanel')) {
-                    console.log('[WorkflowPanel] ✅ 命令注册验证成功: trquant.openWorkflowPanel');
-                    logger.info('工作流面板命令注册验证成功', MODULE);
-                } else {
-                    console.error('[WorkflowPanel] ❌ 命令注册验证失败: trquant.openWorkflowPanel 不在命令列表中');
-                    console.error('[WorkflowPanel] 搜索trquant相关命令:', commands.filter(c => c.startsWith('trquant.')));
-                    logger.error('工作流面板命令注册验证失败', MODULE);
-                }
-            }, (err: any) => {
-                console.error('[WorkflowPanel] 验证命令时出错:', err);
-            });
-        }, 1000);
-        
-        logger.info('工作流面板已注册（复用桌面系统代码）', MODULE);
-        console.log('[WorkflowPanel] ========== 工作流面板命令注册完成 ==========');
-    } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
-        console.error('[WorkflowPanel] ❌ 注册命令时发生异常:', msg);
-        console.error('[WorkflowPanel] 错误堆栈:', error instanceof Error ? error.stack : '无堆栈信息');
-        logger.error(`注册工作流面板命令时发生异常: ${msg}`, MODULE);
-        throw error;
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

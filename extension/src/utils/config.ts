@@ -8,6 +8,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
+import * as fs from 'fs';
+import { logger } from './logger';
 
 /**
  * 配置接口定义
@@ -146,24 +148,90 @@ export class ConfigManager {
 
     /**
      * 获取Python解释器完整路径
+     * 
+     * 优先级：
+     * 0. 硬编码标准路径: /home/taotao/dev/QuantTest/TRQuant/venv/bin/python
+     * 1. 工作区路径/venv/bin/python (项目根目录)
+     * 2. TRQUANT_ROOT/venv/bin/python (环境变量)
+     * 3. extensionPath/venv/bin/python (开发模式)
+     * 4. 配置的路径
      */
-    getPythonPath(extensionPath: string): string {
+        getPythonPath(extensionPath: string): string {
         const configPath = this.config.pythonPath;
+        const isWindows = os.platform() === 'win32';
         
-        // 如果是绝对路径，直接返回
-        if (path.isAbsolute(configPath)) {
-            return configPath;
-        }
-        
-        // 检查是否在虚拟环境中
-        const venvPath = path.join(extensionPath, '..', 'venv');
-        const venvPython = os.platform() === 'win32'
+        // 辅助函数：获取venv中的python路径
+        const getVenvPython = (venvPath: string) => isWindows
             ? path.join(venvPath, 'Scripts', 'python.exe')
             : path.join(venvPath, 'bin', 'python');
         
-        // 优先使用虚拟环境
-        return venvPython;
+        // 0. 硬编码标准路径（最高优先级）- 强制使用
+        const standardPython = '/home/taotao/dev/QuantTest/TRQuant/venv/bin/python';
+        if (!isWindows) {
+            try {
+                if (fs.existsSync(standardPython)) {
+                    logger.debug(`使用硬编码标准Python路径: ${standardPython}`, 'ConfigManager');
+                    return standardPython;
+                } else {
+                    logger.warn(`硬编码路径不存在，但继续尝试: ${standardPython}`, 'ConfigManager');
+                    // 即使不存在也返回，让spawn自己处理错误
+                    return standardPython;
+                }
+            } catch (error) {
+                logger.warn(`检查硬编码路径时出错: ${error}`, 'ConfigManager');
+                // 即使出错也返回标准路径
+                return standardPython;
+            }
+        }
+        
+        // 如果是绝对路径且文件存在，直接返回
+        if (path.isAbsolute(configPath) && fs.existsSync(configPath)) {
+            return configPath;
+        }
+        
+        // 1. 首先检查工作区路径下的 venv（项目根目录）
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        if (workspaceFolders && workspaceFolders.length > 0) {
+            const workspacePath = workspaceFolders[0].uri.fsPath;
+            const workspaceVenvPython = getVenvPython(path.join(workspacePath, 'venv'));
+            if (fs.existsSync(workspaceVenvPython)) {
+                logger.debug(`使用工作区Python路径: ${workspaceVenvPython}`, 'ConfigManager');
+                return workspaceVenvPython;
+            }
+        }
+        
+        // 2. 通过TRQUANT_ROOT环境变量找到项目根目录
+        const trquantRoot = process.env.TRQUANT_ROOT;
+        if (trquantRoot) {
+            const envVenvPython = getVenvPython(path.join(trquantRoot, 'venv'));
+            if (fs.existsSync(envVenvPython)) {
+                logger.debug(`使用TRQUANT_ROOT Python路径: ${envVenvPython}`, 'ConfigManager');
+                return envVenvPython;
+            }
+        }
+        
+        // 3. 检查extensionPath下的venv（开发模式，扩展在项目目录中）
+        const extVenvPython = getVenvPython(path.join(extensionPath, 'venv'));
+        if (fs.existsSync(extVenvPython)) {
+            logger.debug(`使用扩展路径Python: ${extVenvPython}`, 'ConfigManager');
+            return extVenvPython;
+        }
+        
+        // 4. 尝试从extensionPath推断项目根目录
+        if (extensionPath.endsWith('extension') || extensionPath.endsWith('extension/') || extensionPath.endsWith('extension\\')) {
+            const projectRoot = path.dirname(extensionPath);
+            const inferredVenvPython = getVenvPython(path.join(projectRoot, 'venv'));
+            if (fs.existsSync(inferredVenvPython)) {
+                logger.debug(`使用推断的Python路径: ${inferredVenvPython}`, 'ConfigManager');
+                return inferredVenvPython;
+            }
+        }
+        
+        // 5. 回退到配置的路径或系统python
+        logger.warn(`未找到venv Python，回退到: ${configPath}`, 'ConfigManager');
+        return configPath;
     }
+        
 
     /**
      * 释放资源

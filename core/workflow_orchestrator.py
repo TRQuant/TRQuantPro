@@ -21,8 +21,11 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from enum import Enum
 from pathlib import Path
 import pandas as pd
+import threading
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -55,12 +58,19 @@ class WorkflowOrchestrator:
     工作流编排器 - 统一调用现有模块
 
     不重复实现逻辑，仅负责编排调用各个独立模块
+    
+    新增功能（2025-12）：
+    - 集成状态管理器，支持断点续传
+    - 集成快速回测引擎
+    - 支持策略进化
     """
 
     def __init__(self):
         self.db = None
         self._init_db()
         self._results = {}
+        self._state_manager = None
+        self._current_workflow_id = None
 
     def _init_db(self):
         """初始化MongoDB连接"""
@@ -962,6 +972,251 @@ class WorkflowOrchestrator:
         return result
 
     # ============================================================
+    # 步骤7: 回测验证 (使用BulletTrade)
+    # ============================================================
+
+    def backtest_strategy(self, strategy_file: Optional[str] = None) -> WorkflowResult:
+        """回测策略 - 使用BulletTrade引擎"""
+        logger.info("🔬 回测验证...")
+
+        try:
+            from core.bullettrade import BulletTradeEngine, BTConfig
+            
+            # 获取策略文件
+            if not strategy_file:
+                if self.db is not None:
+                    latest = self.db.strategies.find_one(sort=[("timestamp", -1)])
+                    if latest:
+                        strategy_file = latest.get("file_path")
+            
+            if not strategy_file:
+                return WorkflowResult(
+                    step_name="回测验证",
+                    success=False,
+                    summary="❌ 未找到策略文件",
+                    error="策略文件路径为空"
+                )
+            
+            # 创建BulletTrade配置
+            config = BTConfig(
+                start_date=self.start_date or "2024-01-01",
+                end_date=self.end_date or "2024-12-31",
+                initial_capital=1000000,
+                benchmark="000300.XSHG",
+                data_provider="jqdata",
+                output_dir="./backtest_results",
+            )
+            
+            # 执行回测
+            engine = BulletTradeEngine(config)
+            result = engine.run_backtest(strategy_path=strategy_file)
+            
+            # 保存到MongoDB
+            if self.db is not None:
+                doc = result.to_mongodb_doc()
+                doc["strategy_file"] = strategy_file
+                doc["workflow_id"] = getattr(self, "workflow_id", None)
+                self.db.backtest_results.insert_one(doc)
+                logger.info("回测结果已保存到MongoDB")
+            
+            result_obj = WorkflowResult(
+                step_name="回测验证",
+                success=True,
+                summary=f"🔬 回测完成: 收益率={result.total_return:.2f}%, 夏普={result.sharpe_ratio:.2f}",
+                details={
+                    "metrics": result.get_metrics(),
+                    "report_path": result.report_path,
+                    "trading_days": result.trading_days,
+                    "total_trades": result.total_trades,
+                }
+            )
+            
+        except Exception as e:
+            import traceback
+            logger.error(f"回测失败: {e}\n{traceback.format_exc()}")
+            result_obj = WorkflowResult(
+                step_name="回测验证",
+                success=False,
+                summary=f"❌ 回测失败: {str(e)[:50]}",
+                error=str(e)
+            )
+        
+        self._results["backtest"] = result_obj
+        return result_obj
+
+    # ============================================================
+    # 步骤8: 策略优化 (使用Optuna)
+    # ============================================================
+
+    def optimize_strategy(self, backtest_result: Optional[WorkflowResult] = None) -> WorkflowResult:
+        """优化策略参数 - 使用Optuna"""
+        logger.info("⚡ 策略优化...")
+
+        try:
+            from core.optimization import OptunaOptimizer
+            from core.backtest.fast_backtest_engine import quick_backtest
+            from core.data import get_data_provider
+            
+            # 获取回测结果
+            if backtest_result is None:
+                backtest_result = self._results.get("backtest")
+            
+            # 定义参数空间
+            param_space = {
+                "mom_short": {"type": "int", "low": 3, "high": 10},
+                "mom_long": {"type": "int", "low": 15, "high": 30},
+                "stop_loss": {"type": "float", "low": 0.03, "high": 0.10},
+                "take_profit": {"type": "float", "low": 0.10, "high": 0.30},
+            }
+            
+            # 获取股票池
+            provider = get_data_provider()
+            securities = provider.get_index_stocks(count=30)
+            
+            # 定义回测函数
+            def backtest_func(params):
+                result = quick_backtest(
+                    securities=securities,
+                    start_date=self.start_date or "2024-01-01",
+                    end_date=self.end_date or "2024-06-30",
+                    strategy="momentum",
+                    use_mock=True,
+                    **params
+                )
+                return {
+                    "sharpe_ratio": result.sharpe_ratio,
+                    "total_return": result.total_return,
+                    "max_drawdown": result.max_drawdown,
+                }
+            
+            # 执行优化
+            optimizer = OptunaOptimizer(direction="maximize", sampler="tpe")
+            opt_result = optimizer.optimize_strategy(
+                backtest_func=backtest_func,
+                param_space=param_space,
+                n_trials=30,
+                target_metric="sharpe_ratio",
+            )
+            
+            # 保存到MongoDB
+            if self.db is not None:
+                self.db.optimization_results.insert_one({
+                    "best_params": opt_result.best_params,
+                    "best_value": opt_result.best_value,
+                    "n_trials": opt_result.n_trials,
+                    "optimization_time": opt_result.optimization_time,
+                    "timestamp": datetime.now(),
+                })
+            
+            result = WorkflowResult(
+                step_name="策略优化",
+                success=True,
+                summary=f"⚡ 优化完成: 最佳夏普={opt_result.best_value:.2f}",
+                details={
+                    "best_params": opt_result.best_params,
+                    "best_value": opt_result.best_value,
+                    "n_trials": opt_result.n_trials,
+                    "optimization_time": f"{opt_result.optimization_time:.2f}s",
+                }
+            )
+            
+        except Exception as e:
+            logger.error(f"策略优化失败: {e}")
+            result = WorkflowResult(
+                step_name="策略优化",
+                success=False,
+                summary=f"❌ 优化失败: {str(e)[:50]}",
+                error=str(e)
+            )
+        
+        self._results["optimization"] = result
+        return result
+
+    # ============================================================
+    # 生成最终报告
+    # ============================================================
+
+    def generate_final_report(self) -> WorkflowResult:
+        """生成最终工作流报告"""
+        logger.info("📊 生成报告...")
+        
+        try:
+            from pathlib import Path
+            from datetime import datetime
+            
+            # 收集所有步骤结果
+            all_results = self.get_all_results()
+            
+            # 生成HTML报告
+            report_dir = Path(__file__).parent.parent / "reports"
+            report_dir.mkdir(parents=True, exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            report_file = report_dir / f"workflow_report_{timestamp}.html"
+            
+            html = self._generate_report_html(all_results)
+            report_file.write_text(html, encoding='utf-8')
+            
+            # 保存到MongoDB
+            if self.db is not None:
+                self.db.workflow_reports.insert_one({
+                    "report_path": str(report_file),
+                    "steps": {k: v.summary for k, v in all_results.items()},
+                    "timestamp": datetime.now(),
+                })
+            
+            result = WorkflowResult(
+                step_name="报告生成",
+                success=True,
+                summary=f"📊 报告已生成: {report_file.name}",
+                details={"report_path": str(report_file)}
+            )
+            
+        except Exception as e:
+            result = WorkflowResult(
+                step_name="报告生成",
+                success=False,
+                summary=f"❌ 报告生成失败: {str(e)[:50]}",
+                error=str(e)
+            )
+        
+        self._results["report"] = result
+        return result
+
+    def _generate_report_html(self, results: Dict) -> str:
+        """生成HTML报告内容"""
+        steps_html = ""
+        for step_id, result in results.items():
+            status = "✅" if result.success else "❌"
+            steps_html += f"""
+            <div class="step">
+                <h3>{status} {result.step_name}</h3>
+                <p>{result.summary}</p>
+            </div>
+            """
+        
+        return f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>韬睿量化 - 工作流报告</title>
+    <style>
+        body {{ font-family: 'Segoe UI', sans-serif; margin: 40px; background: #1a1a2e; color: #eee; }}
+        h1 {{ color: #00d4ff; }}
+        .step {{ background: #16213e; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #00d4ff; }}
+        .step h3 {{ margin-top: 0; color: #00d4ff; }}
+    </style>
+</head>
+<body>
+    <h1>📈 韬睿量化工作流报告</h1>
+    <p>生成时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+    {steps_html}
+</body>
+</html>
+"""
+
+    # ============================================================
     # 完整工作流执行
     # ============================================================
 
@@ -986,6 +1241,9 @@ class WorkflowOrchestrator:
             ("候选池", self.build_candidate_pool),
             ("因子推荐", self.recommend_factors),
             ("策略生成", self.generate_strategy),
+            ("回测验证", lambda: self.backtest_strategy()),
+            ("策略优化", self.optimize_strategy),
+            ("报告生成", self.generate_final_report),
         ]
 
         results = []
@@ -1031,3 +1289,48 @@ def get_workflow_orchestrator() -> WorkflowOrchestrator:
     if _orchestrator is None:
         _orchestrator = WorkflowOrchestrator()
     return _orchestrator
+
+
+@dataclass
+
+
+# ============================================================
+# 增强型工作流编排器（合并自 enhanced_orchestrator.py）
+# ============================================================
+class WorkflowStepStatus(Enum):
+    """步骤状态"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+@dataclass
+
+
+class WorkflowStepStatus(Enum):
+    """步骤状态"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+class EnhancedWorkflowOrchestrator:
+    """增强型工作流编排器"""
+
+def create_workflow(
+    name: str = "默认工作流",
+    start_date: str = "",
+    end_date: str = "",
+    **kwargs
+) -> EnhancedWorkflowOrchestrator:
+    """创建工作流"""
+    config = WorkflowConfig(
+        name=name,
+        start_date=start_date,
+        end_date=end_date,
+        **kwargs
+    )
+    return EnhancedWorkflowOrchestrator(config)

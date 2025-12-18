@@ -21,11 +21,22 @@ export interface DataUpdateResult {
 export class DataUpdateService {
   private static instance: DataUpdateService;
   private _pythonPath: string;
+  private _extensionPath: string = '';
 
   private constructor() {
-    // 尝试找到Python路径
-    const config = vscode.workspace.getConfiguration('trquant');
-    this._pythonPath = config.get<string>('pythonPath', 'python');
+    // 获取扩展路径
+    const extension = vscode.extensions.getExtension('trquant.trquant-cursor-extension');
+    this._extensionPath = extension?.extensionPath || '';
+    
+    // 使用ConfigManager获取Python路径
+    if (this._extensionPath) {
+      const { config } = require('../utils/config');
+      this._pythonPath = config.getPythonPath(this._extensionPath);
+    } else {
+      // 回退到配置值
+      const wsConfig = vscode.workspace.getConfiguration('trquant');
+      this._pythonPath = wsConfig.get<string>('pythonPath', 'python');
+    }
   }
 
   public static getInstance(): DataUpdateService {
