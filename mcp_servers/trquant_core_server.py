@@ -937,3 +937,26 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 
+
+
+
+
+# ==================== M1里程碑工具集成 ====================
+
+try:
+    from utils.m1_tools import M1_TOOLS, call_m1_tool
+    
+    # 使用Tool对象添加M1工具
+    for tool in M1_TOOLS:
+        TOOLS.append(Tool(
+            name=tool["name"],
+            description=tool["description"],
+            inputSchema={"type": "object", "properties": {}}
+        ))
+        TOOL_HANDLERS[tool["name"]] = tool["handler"]
+    
+    M1_INTEGRATED = True
+    logger.info(f"M1工具已集成: {len(M1_TOOLS)} 个")
+except ImportError as e:
+    M1_INTEGRATED = False
+    logger.warning(f"M1工具集成失败: {e}")
