@@ -1,206 +1,182 @@
 # 十倍股早期识别体系开发计划
 
-> 基于《十倍股早期识别体系_韬睿量化系统开发建议.pdf》
+> 基于《十倍股早期识别体系_韬睿量化系统开发建议.pdf》+ AltData低成本方案
 > 更新时间: 2025-12-18
 
 ---
 
-## 一、总体目标
+## 一、数据源策略（AltData分层）
 
-### 1.1 平台级目标 (TRQuant Core 2.x)
+### 核心原则
 
-| 目标 | 说明 |
-|------|------|
-| 多策略容器 | 策略以 Strategy Pack 插件化装载 |
-| 可复现研究 | 数据/因子/策略/回测 四位一体可追溯 |
-| 端到端闭环 | 9步工作流变成可编排DAG，支持增量刷新 |
-| 生产化标准 | 监控、日志、告警、权限管理 |
+> **个人投资阶段，不要上 Wind / 巨灵 / Choice 全家桶。**
+> **用「公开数据 + 少量低成本平台 + 自建抽取」即可覆盖 70–80% 的十倍股早期有效信息。**
 
-### 1.2 十倍股早期识别 (Tenbagger Pack)
+### 数据源分层
 
-核心证据链：**产业位置→兑现路径→财务拐点→组织信号→估值错配**
+| 档位 | 数据源 | 成本 | 优先级 |
+|------|--------|------|--------|
+| **Tier1** | 公告/年报(交易所/巨潮)、互动易、JQData财务 | 0~低 | 必须有 |
+| **Tier2** | 招投标(官网)、招聘(趋势) | 0 | 强烈建议 |
+| **Tier3** | 研报数量、舆情 | 可选 | 后期再说 |
 
-输出物：
-- U1/U2/U3 分层候选池
-- Stage S0-S5 状态机
-- 7维评分卡
-- Thesis论点对象 + Falsification证伪条件
-- 专属指标：Recall@K、Time-to-detection、误杀率
-
----
-
-## 二、里程碑规划
+### 落地顺序
 
 ```
-M1 (Jan 15) ──► M2 (Jan 31) ──► M3 (Feb 28) ──► M4 (Mar 15) ──► M5 (Mar 31)
-   平台基础        策略包层       十倍股MVP       评估体系        组合执行
-```
-
-### M1: WorkflowContext + DataSnapshot + Experiment
-
-**目标**: 平台复现与步骤互联
-
-| 交付物 | 说明 |
-|--------|------|
-| WorkflowContext | 工作流上下文，步骤间数据自动传递 |
-| DataSnapshot | 数据快照，确保可复现 |
-| Experiment | 实验追踪，配置+数据+指标+产物 |
-
-**新增MCP工具**:
-- `snapshot.create/get/compare`
-- `experiment.register/get/compare/export`
-
-**验收标准**:
-- [ ] 任意步骤输出自动流入下游步骤
-- [ ] 数据快照可追溯
-- [ ] 实验可对比
-
----
-
-### M2: Strategy Pack 插件层
-
-**目标**: 策略以可插拔包形式装载
-
-| 交付物 | 说明 |
-|--------|------|
-| StrategyPack Manifest | 策略包注册表 |
-| PackLoader | 策略包加载器 |
-| pack.* 工具 | install/list/validate/run |
-
-**验收标准**:
-- [ ] 新增策略包不修改trquant-core
-- [ ] 策略包输入输出与9步工作流兼容
-
----
-
-### M3: Tenbagger Pack MVP
-
-**目标**: 十倍股早期识别最小可用闭环
-
-| 交付物 | 说明 |
-|--------|------|
-| IndustryGraph | 产业链图谱知识库 |
-| RawDocStore | 原始文档存储 (公告/年报/互动易/新闻) |
-| EventExtractor | 事件抽取 (送样/验证/量产/扩产/高管变更) |
-| StageMachine | 状态机 S0-S5 + 置信度 + 证伪触发 |
-| ScoreCard Engine | 7维评分卡，可解释维度贡献 |
-| 分层候选池 | U1/U2/U3 输出 |
-
-**新增MCP工具**:
-- `doc.ingest/search/dedup/stats`
-- `event.extract/list/validate/feedback`
-- `stage.compute/get/override/history`
-- `scorecard.compute/explain/versioning`
-- `thesis.upsert/link_evidence/falsify/timeline`
-
-**验收标准**:
-- [ ] 每周一键刷新候选池
-- [ ] 任意股票入池/出池有可追溯证据
-- [ ] 事件抽取支持人工纠错回写
-
----
-
-### M4: Tenbagger Pack 评估体系
-
-**目标**: 从能用到可迭代
-
-| 交付物 | 说明 |
-|--------|------|
-| TenbaggerMetricSuite | Recall@K、Time-to-detection、误杀率 |
-| 时间戳一致性框架 | 避免前视偏差 |
-| 评分卡版本化 | ScoreCard v1/v2 可对比 |
-
-**验收标准**:
-- [ ] 历史窗口"早识别效果评估"
-- [ ] 两版本评分卡A/B对比
-
----
-
-### M5: 多策略组合与执行 (可选)
-
-**目标**: 多策略资金分配与执行端对接
-
-| 交付物 | 说明 |
-|--------|------|
-| SignalSchema | 标准信号格式 |
-| PortfolioAllocator | 多策略分配 + 风险预算 |
-| PaperTrading | 仿真回放 |
-| ExecutionAdapter | QMT/PTrade/BulletTrade对接 |
-
----
-
-## 三、数据模型扩展
-
-### MongoDB新增集合 (trquant库)
-
-```
-raw_docs          - 原始文档
-events            - 结构化事件
-stages            - 状态机记录
-theses            - 论点对象
-scorecards        - 评分卡
-experiments       - 实验记录
-strategy_packs    - 策略包注册
-data_snapshots    - 数据快照
-industry_graph    - 产业链图谱
-```
-
-### 索引设计
-
-```javascript
-// raw_docs
-db.raw_docs.createIndex({security_id: 1, publish_time: -1})
-db.raw_docs.createIndex({doc_type: 1, publish_time: -1})
-
-// events
-db.events.createIndex({security_id: 1, event_type: 1, event_date: -1})
-
-// stages
-db.stages.createIndex({security_id: 1, stage: 1, updated: -1})
-
-// experiments
-db.experiments.createIndex({pack_name: 1, version: 1, created: -1})
+Step1: 公告+互动易 → RawDoc → Event → Stage (1个行业先跑通)
+Step2: JQData财务 + 7维评分卡V1
+Step3: 招投标+招聘 (只做趋势，不做全量)
+Step4: 考虑是否需要商业AltData
 ```
 
 ---
 
-## 四、开发优先级建议
+## 二、里程碑与任务
 
-**PDF建议的两个切入点**:
+### 里程碑概览
 
-1. **M1优先** (平台地基):
-   - 所有策略包的基础
-   - 可复现性是量化研究的生命线
+| 里程碑 | 名称 | 状态 | 目标日期 |
+|--------|------|------|----------|
+| M1 | WorkflowContext + DataSnapshot + Experiment | ✅ 完成 | 2025-01-15 |
+| M2 | Strategy Pack 插件层 | ⏳ | 2025-01-31 |
+| M3 | Tenbagger Pack MVP | ⏳ | 2025-02-28 |
+| M4 | Tenbagger 评估体系 | ⏳ | 2025-03-15 |
+| M5 | 多策略组合与执行 | ⏳ | 2025-03-31 |
 
-2. **M3优先** (业务价值):
-   - 十倍股闭环最核心路径
-   - 可快速验证商业价值
+### M3 细化任务（整合AltData）
 
-**推荐顺序**: M1 → M3 → M2 → M4 → M5
-
-理由: M1打地基，M3验证价值，M2抽象为通用能力，M4迭代优化，M5生产对接
+| 任务ID | 名称 | Tier | 预估天数 |
+|--------|------|------|----------|
+| M3.1 | RawDoc + Event 抽取 | Tier1 | 7天 |
+| M3.2 | Stage状态机 + ScoreCard评分卡 | Tier1 | 7天 |
+| M3.3 | 分层候选池 + 产业链图谱 | - | 5天 |
+| M3.4 | 第二档数据源（招投标+招聘） | Tier2 | 5天 |
 
 ---
 
-## 五、风险管理
+## 三、M3.1 详细设计：RawDoc + Event
 
-| 风险 | 对策 |
-|------|------|
-| 数据授权与合规 | 适配器层携带license_tag |
-| 事件抽取质量 | V1规则引擎，V2模型/LLM，人工反馈机制 |
-| 前视偏差 | M4前完成时间戳规则 |
-| 系统复杂度膨胀 | Strategy Pack隔离复杂度 |
+### 数据表结构
+
+```python
+# MongoDB: trquant.raw_docs
+RawDoc = {
+    "doc_id": str,           # 文档ID
+    "doc_type": str,         # announcement/annual_report/interactive_qa/news
+    "source": str,           # cninfo/sse_interact/szse_interact
+    "security_id": str,      # 股票代码
+    "publish_time": datetime,# 发布时间
+    "title": str,            # 标题
+    "content": str,          # 全文
+    "url": str,              # 原文链接
+    "credibility": float,    # 可信度权重 (0-1)
+    "processed": bool,       # 是否已抽取
+    "created_at": datetime
+}
+
+# MongoDB: trquant.events
+Event = {
+    "event_id": str,
+    "event_type": str,       # 见事件标签字典
+    "security_id": str,
+    "event_date": datetime,
+    "source_doc_id": str,    # 关联RawDoc
+    "confidence": float,     # 置信度
+    "extracted_by": str,     # rule/llm/manual
+    "details": dict,         # 事件详情
+    "created_at": datetime
+}
+```
+
+### 十倍股事件标签字典V1
+
+| 事件类型 | 代码 | 说明 | Stage影响 |
+|----------|------|------|-----------|
+| 送样 | SAMPLE_DELIVERY | 送样给客户 | S1→S2 |
+| 验证通过 | VALIDATION_PASS | 客户验证通过 | S2→S3 |
+| 小批量订单 | SMALL_BATCH | 小批量/试产订单 | S2→S3 |
+| 量产订单 | MASS_PRODUCTION | 批量订单 | S3→S4 |
+| 进入供应商 | SUPPLIER_ENTRY | 进入客户供应商体系 | S2→S3 |
+| 扩产公告 | EXPANSION | 扩产/新产线 | S3→S4 |
+| 环评公示 | ENVIRONMENTAL | 环评/项目审批 | S2→S3 |
+| 高管变更 | EXECUTIVE_CHANGE | 高管/董事变更 | - |
+| 股权激励 | EQUITY_INCENTIVE | 股权激励计划 | - |
+| 认证获取 | CERTIFICATION | 行业/客户认证 | S1→S2 |
+
+---
+
+## 四、M3.2 详细设计：Stage + ScoreCard
+
+### Stage状态机 (S0-S5)
+
+```
+S0: 观察期（有产业链位置，但无明显兑现信号）
+S1: 验证期（送样/认证中，尚未确认客户）
+S2: 导入期（已进入客户体系，小批量/验证）
+S3: 放量期（批量订单，扩产明确）
+S4: 加速期（业绩拐点，估值修复）
+S5: 成熟期（主流共识，十倍股特征消失）
+```
+
+### 7维评分卡
+
+| 维度 | 权重 | 数据来源 | 说明 |
+|------|------|----------|------|
+| 产业位置 | 20% | IndustryGraph | 产业链关键节点 |
+| 兑现路径 | 20% | Event/Stage | 送样→量产进度 |
+| 财务拐点 | 15% | JQData | 毛利/营收/现金流 |
+| 组织信号 | 10% | 招聘/高管 | 组织扩张/补强 |
+| 估值错配 | 15% | JQData | PE/PB vs 增速 |
+| 研究关注 | 10% | 研报数量 | 越少越好(早期) |
+| 证据密度 | 10% | Event count | 多证据交叉 |
+
+---
+
+## 五、开发流程（遵循TRQuant标准）
+
+### 每个任务的开发周期
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  1. 规划    │ -> │  2. 开发    │ -> │  3. 测试    │ -> │  4. 记录    │
+│  task.create│    │  编码实现    │    │  验证功能    │    │  devlog.add │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### MCP工具使用
+
+```bash
+# 规划
+task.create(title, description, priority)
+milestone.progress(milestone_id)
+
+# 开发
+task.update(task_id, status="in_progress")
+module.register(name, version, status)
+
+# 测试
+pytest tests/ -v
+
+# 记录
+devlog.add(content, tags)
+task.update(task_id, status="completed")
+git commit && git push
+```
 
 ---
 
 ## 六、下一步行动
 
-选择切入点：
-- [ ] 先细化 M1 (WorkflowContext + DataSnapshot + Experiment)
-- [ ] 先细化 M3 (Tenbagger Pack MVP)
+**推荐顺序**: M3.1 → M3.2 → M3.3 → M2 → M3.4 → M4 → M5
 
-请确认后，输出工程级细化方案：模块拆分、接口、数据表、工具清单、DoD、测试用例。
+理由：
+1. M3.1 (RawDoc+Event) 是十倍股的数据地基
+2. M3.2 (Stage+ScoreCard) 是核心识别逻辑
+3. M3.3 完成候选池输出，形成最小闭环
+4. M2 (Strategy Pack) 抽象为可复用插件
+5. M3.4 补充第二档数据源
+6. M4/M5 后续迭代
 
 ---
 
-*文档版本: 1.0 | 基于PDF建议 2025-12-18*
+*文档版本: 2.0 | 整合AltData低成本方案 | 2025-12-18*
