@@ -374,6 +374,28 @@ TOOLS = [
         description="获取服务器性能指标",
         inputSchema={"type": "object", "properties": {}}
     ),
+    
+    # ==================== ENHANCEMENTS 增强功能 ====================
+    Tool(
+        name="perf.detailed_stats",
+        description="获取详细性能统计(调用次数/平均耗时/错误率)",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "function_name": {"type": "string", "description": "函数名(可选)"}
+            }
+        }
+    ),
+    Tool(
+        name="perf.reset_stats",
+        description="重置性能统计数据",
+        inputSchema={"type": "object", "properties": {}}
+    ),
+    Tool(
+        name="cache.warmup",
+        description="执行缓存预热(预加载常用数据)",
+        inputSchema={"type": "object", "properties": {}}
+    ),
 ]
 
 
@@ -734,6 +756,52 @@ class OptimizerHandler:
 
 
 
+class EnhancementHandler:
+    """增强功能处理器"""
+    
+    @staticmethod
+    async def detailed_stats(args: Dict) -> Dict:
+        """获取详细性能统计"""
+        try:
+            from utils.enhancements import get_metrics
+            metrics = get_metrics()
+            func_name = args.get("function_name")
+            stats = metrics.get_stats(func_name)
+            return success_response(stats, "perf.detailed_stats")
+        except Exception as e:
+            logger.error(f"获取性能统计失败: {e}")
+            return error_response(str(e), "PERF_ERROR", "perf.detailed_stats")
+    
+    @staticmethod
+    async def reset_stats(args: Dict) -> Dict:
+        """重置性能统计"""
+        try:
+            from utils.enhancements import get_metrics
+            metrics = get_metrics()
+            metrics.reset()
+            return success_response({"message": "性能统计已重置"}, "perf.reset_stats")
+        except Exception as e:
+            logger.error(f"重置性能统计失败: {e}")
+            return error_response(str(e), "PERF_ERROR", "perf.reset_stats")
+    
+    @staticmethod
+    async def cache_warmup(args: Dict) -> Dict:
+        """执行缓存预热"""
+        try:
+            from utils.enhancements import get_warmer
+            warmer = get_warmer()
+            if not warmer.warmup_tasks:
+                from market_server_v2 import _handle_status, _handle_mainlines
+                warmer.register(_handle_status, {"index": "000300.XSHG"})
+                warmer.register(_handle_mainlines, {"top_n": 10, "time_horizon": "short"})
+            result = await warmer.warmup()
+            return success_response(result, "cache.warmup")
+        except Exception as e:
+            logger.error(f"缓存预热失败: {e}")
+            return error_response(str(e), "WARMUP_ERROR", "cache.warmup")
+
+
+
 class CacheHandler:
     """缓存管理处理器"""
     
@@ -807,6 +875,11 @@ TOOL_HANDLERS = {
     # Cache
     "cache.stats": CacheHandler.stats,
     "cache.clear": CacheHandler.clear,
+    
+    # Enhancements
+    "perf.detailed_stats": EnhancementHandler.detailed_stats,
+    "perf.reset_stats": EnhancementHandler.reset_stats,
+    "cache.warmup": EnhancementHandler.cache_warmup,
 }
 
 
