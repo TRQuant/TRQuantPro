@@ -960,3 +960,23 @@ try:
 except ImportError as e:
     M1_INTEGRATED = False
     logger.warning(f"M1工具集成失败: {e}")
+
+
+# ==================== M3.1里程碑工具集成 ====================
+
+try:
+    from utils.m31_tools import M31_TOOLS
+    
+    for tool in M31_TOOLS:
+        TOOLS.append(Tool(
+            name=tool["name"],
+            description=tool["description"],
+            inputSchema={"type": "object", "properties": {}}
+        ))
+        TOOL_HANDLERS[tool["name"]] = tool["handler"]
+    
+    M31_INTEGRATED = True
+    logger.info(f"M3.1工具已集成: {len(M31_TOOLS)} 个")
+except ImportError as e:
+    M31_INTEGRATED = False
+    logger.warning(f"M3.1工具集成失败: {e}")
