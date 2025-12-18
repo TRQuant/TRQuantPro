@@ -980,3 +980,23 @@ try:
 except ImportError as e:
     M31_INTEGRATED = False
     logger.warning(f"M3.1工具集成失败: {e}")
+
+
+# ==================== M3.2里程碑工具集成 ====================
+
+try:
+    from utils.m32_tools import M32_TOOLS
+    
+    for tool in M32_TOOLS:
+        TOOLS.append(Tool(
+            name=tool["name"],
+            description=tool["description"],
+            inputSchema={"type": "object", "properties": {}}
+        ))
+        TOOL_HANDLERS[tool["name"]] = tool["handler"]
+    
+    M32_INTEGRATED = True
+    logger.info(f"M3.2工具已集成: {len(M32_TOOLS)} 个")
+except ImportError as e:
+    M32_INTEGRATED = False
+    logger.warning(f"M3.2工具集成失败: {e}")
