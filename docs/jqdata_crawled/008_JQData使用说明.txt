@@ -1,0 +1,6 @@
+URL: https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9851
+标题: JQData使用说明
+爬取时间: 2026-01-01T12:10:38.538910
+======================================================================
+
+返回 目录 JQData试用及购买 JQData使用指南 JQData安装/登录/流量查询/查看账号权限 JQData常见报错 JQData数据范围及更新时间 JQData数据处理规则 ⭐ 全市场通用 ⭐ 沪深A股 股票交易标的列表 股票标的交易信息 股票ST信息 上市公司状态变动 融资融券信息 交易统计数据 行业概念及成分股数据 沪股通，深股通和港股通(市场通数据） 批量查询数据库（新） 股票量价信息 股票-单季度/年度财务数据（含新接口） 股票-报告期财务数据⭐ 上市公司相关信息 期货 期权 基金 指数⭐ 债券（含可转债⭐） Tick数据 资金流因子 舆情数据 风险模型 - 风格因子（CNE5）⭐ 风险模型-风格因子pro（CNE6）⭐ 聚宽因子⭐ alpha101和alpha191 技术指标 宏观数据 股票ST信息 历史范围：2005年至今；更新时间：盘前09:15更新 get_extras(info, security_list, start_date= '2015-01-01' , end_date= '2015-12-31' , df= True , count= None ) 获取的是相对广义的一个 st状态, 股改s, st, *st和退市整理期标的 都会被判定为 True 参数 参数名称 参数说明 注释 info ['is_st'] 是则返回 True，否则返回 False start_date/end_date 开始/结束日期, df True或False df=True返回[pandas.DataFrame]对象 列索引是股票代号, 行索引是[datetime.datetime] df=False，返回一个dict, key是股票代号，案例如下 count 数量 与 start_date 二选一, 不可同时使用, 必须大于 0。 表示取 end_date 往前的 count 个交易日的数据 代码示例 当df=True，返回为dataframe # 平安银行和神城A在2021-12-01至2021-12-03是否为ST get_extras( 'is_st' , [ '000001.XSHE' , '000018.XSHE' ], start_date= '2021-12-01' , end_date= '2021-12-03' ) # 输出： 000001. XSHE 000018. XSHE 2021 -12 -01 False True 2021 -12 -02 False True 2021 -12 -03 False True 在线客服

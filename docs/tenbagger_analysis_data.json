@@ -1,0 +1,688 @@
+{
+  "analysis_date": "2025-06-21",
+  "current_date": "2025-09-19",
+  "total_analyzed": 299,
+  "high_score_count": 53,
+  "top_stocks": [
+    {
+      "symbol": "000688.XSHE",
+      "name": "国城矿业",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 18.52,
+        "gross_margin": 18.56,
+        "net_margin": 115.37,
+        "revenue_growth": 77.25,
+        "profit_growth": 40773.14,
+        "eps": 0.5435
+      },
+      "valuation": {
+        "pe": 27.72,
+        "pb": 3.9422,
+        "market_cap": 137.411,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 12.21,
+        "ma5": 12.288,
+        "ma20": 12.395999999999999,
+        "ma60": 11.878000000000002,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8467121558697034,
+        "change_20d": 1.4119601328903797
+      },
+      "score": 54.4,
+      "stage": "S1",
+      "recommendation": "B",
+      "current_price": 14.8,
+      "current_date": "2025-09-19",
+      "return_pct": 21.21
+    },
+    {
+      "symbol": "000426.XSHE",
+      "name": "兴业银锡",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 4.63,
+        "gross_margin": 55.57,
+        "net_margin": 31.86,
+        "revenue_growth": 50.37,
+        "profit_growth": 62.84,
+        "eps": 0.2108
+      },
+      "valuation": {
+        "pe": 15.9449,
+        "pb": 3.2265,
+        "market_cap": 267.0556,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 14.99,
+        "ma5": 15.712,
+        "ma20": 14.9255,
+        "ma60": 13.509500000000001,
+        "ma_bullish": "False",
+        "vol_ratio": 0.918657243088204,
+        "change_20d": 8.309248554913298
+      },
+      "score": 53.0,
+      "stage": "S1",
+      "recommendation": "B",
+      "current_price": 24.95,
+      "current_date": "2025-09-19",
+      "return_pct": 66.44
+    },
+    {
+      "symbol": "000791.XSHE",
+      "name": "甘肃能源",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 3.47,
+        "gross_margin": 40.66,
+        "net_margin": 31.41,
+        "revenue_growth": 343.66,
+        "profit_growth": 1096.81,
+        "eps": 0.1479
+      },
+      "valuation": {
+        "pe": 11.3946,
+        "pb": 1.4257,
+        "market_cap": 200.4693,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 6.18,
+        "ma5": 6.304,
+        "ma20": 6.246,
+        "ma60": 6.441666666666666,
+        "ma_bullish": "False",
+        "vol_ratio": 0.9655708522352092,
+        "change_20d": 0.9803921568627386
+      },
+      "score": 53.0,
+      "stage": "S1",
+      "recommendation": "B",
+      "current_price": 6.37,
+      "current_date": "2025-09-19",
+      "return_pct": 3.07
+    },
+    {
+      "symbol": "000833.XSHE",
+      "name": "粤桂股份",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 3.23,
+        "gross_margin": 34.01,
+        "net_margin": 16.85,
+        "revenue_growth": 10.94,
+        "profit_growth": 87.28,
+        "eps": 0.1457
+      },
+      "valuation": {
+        "pe": 28.3324,
+        "pb": 2.5706,
+        "market_cap": 94.4051,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 11.77,
+        "ma5": 11.748,
+        "ma20": 11.523,
+        "ma60": 11.72083333333333,
+        "ma_bullish": "True",
+        "vol_ratio": 1.074077940802829,
+        "change_20d": 4.343971631205676
+      },
+      "score": 50.1,
+      "stage": "S0",
+      "recommendation": "B",
+      "current_price": 13.96,
+      "current_date": "2025-09-19",
+      "return_pct": 18.61
+    },
+    {
+      "symbol": "000823.XSHE",
+      "name": "超声电子",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 0.87,
+        "gross_margin": 17.1,
+        "net_margin": 3.86,
+        "revenue_growth": 15.81,
+        "profit_growth": 188.1,
+        "eps": 0.0778
+      },
+      "valuation": {
+        "pe": 24.3357,
+        "pb": 1.2468,
+        "market_cap": 58.4783,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 10.89,
+        "ma5": 10.854000000000003,
+        "ma20": 10.505500000000001,
+        "ma60": 10.053833333333333,
+        "ma_bullish": "True",
+        "vol_ratio": 1.414634449782723,
+        "change_20d": 9.77822580645162
+      },
+      "score": 49.4,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 14.15,
+      "current_date": "2025-09-19",
+      "return_pct": 29.94
+    },
+    {
+      "symbol": "000537.XSHE",
+      "name": "中绿电",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 1.29,
+        "gross_margin": 52.78,
+        "net_margin": 33.99,
+        "revenue_growth": 19.81,
+        "profit_growth": 63.32,
+        "eps": 0.12300000000000001
+      },
+      "valuation": {
+        "pe": 15.6164,
+        "pb": 0.8617,
+        "market_cap": 171.1147,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 8.05,
+        "ma5": 8.129999999999999,
+        "ma20": 8.2315,
+        "ma60": 8.279166666666667,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8797765321572752,
+        "change_20d": -1.3480392156862675
+      },
+      "score": 48.5,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 8.84,
+      "current_date": "2025-09-19",
+      "return_pct": 9.81
+    },
+    {
+      "symbol": "000755.XSHE",
+      "name": "山西高速",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 1.98,
+        "gross_margin": 57.63,
+        "net_margin": 31.74,
+        "revenue_growth": 2.53,
+        "profit_growth": 26.92,
+        "eps": 0.0732
+      },
+      "valuation": {
+        "pe": 14.6794,
+        "pb": 1.3156,
+        "market_cap": 71.7515,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 4.89,
+        "ma5": 4.944000000000001,
+        "ma20": 4.867,
+        "ma60": 4.7908333333333335,
+        "ma_bullish": "False",
+        "vol_ratio": 1.2750978122676817,
+        "change_20d": 2.9473684210526248
+      },
+      "score": 48.0,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 4.9,
+      "current_date": "2025-09-19",
+      "return_pct": 0.2
+    },
+    {
+      "symbol": "000603.XSHE",
+      "name": "盛达资源",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 0.27,
+        "gross_margin": 28.91,
+        "net_margin": 3.15,
+        "revenue_growth": 33.92,
+        "profit_growth": 155.66,
+        "eps": 0.012
+      },
+      "valuation": {
+        "pe": 25.338,
+        "pb": 3.3989999999999996,
+        "market_cap": 103.1504,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 14.95,
+        "ma5": 15.398,
+        "ma20": 14.567000000000002,
+        "ma60": 14.223333333333333,
+        "ma_bullish": "False",
+        "vol_ratio": 0.9867574317172773,
+        "change_20d": 13.688212927756647
+      },
+      "score": 47.6,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 20.27,
+      "current_date": "2025-09-19",
+      "return_pct": 35.59
+    },
+    {
+      "symbol": "000777.XSHE",
+      "name": "中核科技",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 0.08,
+        "gross_margin": 16.4,
+        "net_margin": 0.76,
+        "revenue_growth": 53.15,
+        "profit_growth": 217.74,
+        "eps": 0.0047
+      },
+      "valuation": {
+        "pe": 34.4409,
+        "pb": 3.5994,
+        "market_cap": 80.1343,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 20.72,
+        "ma5": 21.302,
+        "ma20": 19.9215,
+        "ma60": 18.03516666666667,
+        "ma_bullish": "False",
+        "vol_ratio": 1.4033203732200685,
+        "change_20d": 15.560513106525372
+      },
+      "score": 47.0,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 19.14,
+      "current_date": "2025-09-19",
+      "return_pct": -7.63
+    },
+    {
+      "symbol": "000554.XSHE",
+      "name": "泰山石油",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 4.98,
+        "gross_margin": 17.68,
+        "net_margin": 6.63,
+        "revenue_growth": -4.76,
+        "profit_growth": 182.4,
+        "eps": 0.1102
+      },
+      "valuation": {
+        "pe": 27.0305,
+        "pb": 3.3099,
+        "market_cap": 36.1557,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 7.38,
+        "ma5": 7.738000000000001,
+        "ma20": 6.6285,
+        "ma60": 6.193333333333333,
+        "ma_bullish": "False",
+        "vol_ratio": 2.8333256846744557,
+        "change_20d": 21.381578947368418
+      },
+      "score": 45.9,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 6.65,
+      "current_date": "2025-09-19",
+      "return_pct": -9.89
+    },
+    {
+      "symbol": "000526.XSHE",
+      "name": "学大教育",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 8.79,
+        "gross_margin": 32.02,
+        "net_margin": 8.51,
+        "revenue_growth": 22.46,
+        "profit_growth": 44.77,
+        "eps": 0.6054
+      },
+      "valuation": {
+        "pe": 27.4447,
+        "pb": 6.5388,
+        "market_cap": 55.788000000000004,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 45.78,
+        "ma5": 46.228,
+        "ma20": 48.876000000000005,
+        "ma60": 51.084500000000006,
+        "ma_bullish": "False",
+        "vol_ratio": 1.1400409164521124,
+        "change_20d": -11.296260414648321
+      },
+      "score": 45.2,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 48.8,
+      "current_date": "2025-09-19",
+      "return_pct": 6.6
+    },
+    {
+      "symbol": "000415.XSHE",
+      "name": "渤海租赁",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 2.12,
+        "gross_margin": 24.75,
+        "net_margin": 5.92,
+        "revenue_growth": 99.82,
+        "profit_growth": 58.24,
+        "eps": 0.1082
+      },
+      "valuation": {
+        "pe": 16.1838,
+        "pb": 0.6055,
+        "market_cap": 191.7202,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 3.1,
+        "ma5": 3.17,
+        "ma20": 3.2555,
+        "ma60": 3.1646666666666667,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8067293369981842,
+        "change_20d": -7.462686567164178
+      },
+      "score": 44.4,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 3.69,
+      "current_date": "2025-09-19",
+      "return_pct": 19.03
+    },
+    {
+      "symbol": "000655.XSHE",
+      "name": "金岭矿业",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 1.45,
+        "gross_margin": 24.09,
+        "net_margin": 14.04,
+        "revenue_growth": 26.98,
+        "profit_growth": 118.12,
+        "eps": 0.0825
+      },
+      "valuation": {
+        "pe": 17.3964,
+        "pb": 1.179,
+        "market_cap": 40.1855,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 6.59,
+        "ma5": 6.715999999999999,
+        "ma20": 6.786,
+        "ma60": 6.6155,
+        "ma_bullish": "False",
+        "vol_ratio": 1.1093134051411515,
+        "change_20d": 0.3044140030441335
+      },
+      "score": 44.4,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 8.64,
+      "current_date": "2025-09-19",
+      "return_pct": 31.11
+    },
+    {
+      "symbol": "000429.XSHE",
+      "name": "粤高速A",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 6.1,
+        "gross_margin": 67.75,
+        "net_margin": 84.39,
+        "revenue_growth": -6.63,
+        "profit_growth": 58.04,
+        "eps": 0.3145
+      },
+      "valuation": {
+        "pe": 16.0858,
+        "pb": 2.6076,
+        "market_cap": 289.3676,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 13.33,
+        "ma5": 13.16,
+        "ma20": 13.476999999999999,
+        "ma60": 13.433333333333334,
+        "ma_bullish": "False",
+        "vol_ratio": 0.7961931852285432,
+        "change_20d": -4.307250538406315
+      },
+      "score": 43.6,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 10.7,
+      "current_date": "2025-09-19",
+      "return_pct": -19.73
+    },
+    {
+      "symbol": "000672.XSHE",
+      "name": "上峰水泥",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 0.89,
+        "gross_margin": 27.41,
+        "net_margin": 7.28,
+        "revenue_growth": 4.64,
+        "profit_growth": 437.64,
+        "eps": 0.0825
+      },
+      "valuation": {
+        "pe": 11.2361,
+        "pb": 0.8621,
+        "market_cap": 77.8425,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 8.03,
+        "ma5": 7.7780000000000005,
+        "ma20": 7.958,
+        "ma60": 7.780666666666667,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8988769974185532,
+        "change_20d": 0.0
+      },
+      "score": 43.6,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 8.88,
+      "current_date": "2025-09-19",
+      "return_pct": 10.59
+    },
+    {
+      "symbol": "000719.XSHE",
+      "name": "中原传媒",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 0.95,
+        "gross_margin": 33.16,
+        "net_margin": 5.93,
+        "revenue_growth": 1.04,
+        "profit_growth": 222.26,
+        "eps": 0.1075
+      },
+      "valuation": {
+        "pe": 11.8125,
+        "pb": 1.1272,
+        "market_cap": 130.7654,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 12.19,
+        "ma5": 12.387999999999998,
+        "ma20": 12.3915,
+        "ma60": 11.783666666666669,
+        "ma_bullish": "False",
+        "vol_ratio": 0.7021178905742077,
+        "change_20d": 4.0102389078498195
+      },
+      "score": 42.1,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 11.9,
+      "current_date": "2025-09-19",
+      "return_pct": -2.38
+    },
+    {
+      "symbol": "000623.XSHE",
+      "name": "吉林敖东",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 1.77,
+        "gross_margin": 47.11,
+        "net_margin": 82.96,
+        "revenue_growth": -27.71,
+        "profit_growth": 289.37,
+        "eps": 0.4322
+      },
+      "valuation": {
+        "pe": 10.0602,
+        "pb": 0.6579999999999999,
+        "market_cap": 193.6155,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 15.76,
+        "ma5": 16.016,
+        "ma20": 16.066000000000003,
+        "ma60": 15.816666666666665,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8663400502673906,
+        "change_20d": -0.1899936668777667
+      },
+      "score": 41.5,
+      "stage": "S0",
+      "recommendation": "C",
+      "current_price": 18.62,
+      "current_date": "2025-09-19",
+      "return_pct": 18.15
+    },
+    {
+      "symbol": "000776.XSHE",
+      "name": "广发证券",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 1.85,
+        "gross_margin": NaN,
+        "net_margin": 41.03,
+        "revenue_growth": 46.29,
+        "profit_growth": 73.4,
+        "eps": 0.3625
+      },
+      "valuation": {
+        "pe": 11.4413,
+        "pb": 1.0064,
+        "market_cap": 1242.0346,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 15.89,
+        "ma5": 16.152,
+        "ma20": 16.052,
+        "ma60": 15.6035,
+        "ma_bullish": "False",
+        "vol_ratio": 0.8002573047692378,
+        "change_20d": 0.3156565656565702
+      },
+      "score": 41.5,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 20.15,
+      "current_date": "2025-09-19",
+      "return_pct": 26.81
+    },
+    {
+      "symbol": "000783.XSHE",
+      "name": "长江证券",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 2.47,
+        "gross_margin": NaN,
+        "net_margin": 38.99,
+        "revenue_growth": 88.81,
+        "profit_growth": 146.44,
+        "eps": 0.1771
+      },
+      "valuation": {
+        "pe": 14.8986,
+        "pb": 1.0523,
+        "market_cap": 359.4547,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 6.5,
+        "ma5": 6.609999999999999,
+        "ma20": 6.522499999999999,
+        "ma60": 6.321000000000001,
+        "ma_bullish": "False",
+        "vol_ratio": 1.0231453178043999,
+        "change_20d": 1.7214397496087688
+      },
+      "score": 41.5,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 7.92,
+      "current_date": "2025-09-19",
+      "return_pct": 21.85
+    },
+    {
+      "symbol": "000737.XSHE",
+      "name": "北方铜业",
+      "analysis_date": "2025-06-21",
+      "financial": {
+        "roe": 5.77,
+        "gross_margin": 10.42,
+        "net_margin": 5.43,
+        "revenue_growth": 24.08,
+        "profit_growth": 57.48,
+        "eps": 0.1948
+      },
+      "valuation": {
+        "pe": 22.5879,
+        "pb": 2.5476,
+        "market_cap": 168.9483,
+        "turnover": NaN
+      },
+      "technical": {
+        "price": 8.79,
+        "ma5": 9.024,
+        "ma20": 9.04,
+        "ma60": 9.235999999999999,
+        "ma_bullish": "False",
+        "vol_ratio": 0.648127143857709,
+        "change_20d": -1.457399103139022
+      },
+      "score": 41.1,
+      "stage": "S1",
+      "recommendation": "C",
+      "current_price": 13.71,
+      "current_date": "2025-09-19",
+      "return_pct": 55.97
+    }
+  ]
+}

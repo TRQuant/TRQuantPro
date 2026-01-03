@@ -1,0 +1,155 @@
+flowchart TB
+
+%% ================== 节点样式（高对比度优化，粉色/紫色使用白色文字） ==================
+classDef layerUi        fill:#e3f2fd,stroke:#1976d2,stroke-width:2.5px,color:#0d47a1;
+classDef layerApi       fill:#e8f5e9,stroke:#388e3c,stroke-width:2.5px,color:#1b5e20;
+classDef layerAI        fill:#e91e63,stroke:#c2185b,stroke-width:2.5px,color:#ffffff;
+classDef layerOrch      fill:#9c27b0,stroke:#7b1fa2,stroke-width:2.5px,color:#ffffff;
+classDef layerTool      fill:#673ab7,stroke:#512da8,stroke-width:2.5px,color:#ffffff;
+classDef layerCore      fill:#fff3e0,stroke:#f57c00,stroke-width:2.5px,color:#e65100;
+classDef layerData      fill:#fff8e1,stroke:#f9a825,stroke-width:2.5px,color:#f57f17;
+classDef layerExec      fill:#e0f2f1,stroke:#00796b,stroke-width:2.5px,color:#004d40;
+classDef labelNode      fill:#f5f5f5,stroke:#616161,stroke-width:1.5px,color:#212121,font-size:11px;
+
+%% ================== 箭头样式（优化颜色和粗细） ==================
+classDef edgeAI   stroke:#e91e63,stroke-width:2.5px;
+classDef edgeOrch stroke:#9c27b0,stroke-width:2.5px;
+classDef edgeTool stroke:#673ab7,stroke-width:2.5px;
+classDef edgeData stroke:#ff9800,stroke-width:2.5px;
+classDef edgeExec stroke:#009688,stroke-width:2.5px;
+
+%% ================== 表现层 ==================
+subgraph Presentation["表现层"]
+  direction LR
+  GUI["桌面系统 GUI<br/>(PyQt6)"]:::layerUi
+  CLI["命令行工具<br/>(CLI)"]:::layerUi
+  AstroDoc["投研手册<br/>(Astro)"]:::layerUi
+  CursorExt["Cursor 扩展<br/>(TypeScript)"]:::layerUi
+end
+
+%% ================== API 层 ==================
+subgraph API["API 接口层"]
+  APIBase["统一接口抽象<br/>TRQuantAPIBase"]:::layerApi
+end
+
+%% ================== AI 代理层 ==================
+subgraph AILayer["AI 代理层（大模型参与）"]
+  LLMHub["AI Agent Hub<br/>LLM 服务 + 工具调度"]:::layerAI
+end
+
+%% ================== 编排 & 工具链 ==================
+subgraph Orchestration["编排与工具链层"]
+  Orchestrator["WorkflowOrchestrator<br/>(工作流编排器)"]:::layerOrch
+
+  subgraph Toolchain["工具链"]
+    MCP["MCP Server<br/>(工程执行 / 工具封装)"]:::layerTool
+    StrategyKB["Strategy KB<br/>(策略知识)"]:::layerTool
+    Evidence["Evidence<br/>(验证记录)"]:::layerTool
+    RAGKB["RAG KB<br/>(知识检索)"]:::layerTool
+  end
+end
+
+%% ================== 核心业务 ==================
+subgraph Core["核心业务（通过 MCP 工具实现）"]
+  direction TB
+  subgraph CoreRow1[" "]
+    direction LR
+    DS["DataSource<br/>数据源管理"]:::layerCore
+    TA["TrendAnalyzer<br/>市场分析"]:::layerCore
+    ML["Mainline<br/>主线识别"]:::layerCore
+    CP["CandidatePool<br/>候选池构建"]:::layerCore
+  end
+  subgraph CoreRow2[" "]
+    direction LR
+    FL["FactorLib<br/>因子库"]:::layerCore
+    SD["StrategyDev<br/>策略开发"]:::layerCore
+    OP["Optimizer<br/>策略优化"]:::layerCore
+    BT["Backtest<br/>回测验证"]:::layerCore
+  end
+end
+
+%% ================== 数据平台 ==================
+subgraph DataPlatform["数据与知识平台"]
+  direction TB
+  subgraph DataRow1[" "]
+    direction LR
+    MarketDB["MarketDataDB<br/>行情 & 基本面库"]:::layerData
+    FactorStore["FactorStore<br/>因子存储库"]:::layerData
+    BacktestDB["BacktestDB<br/>回测结果库"]:::layerData
+  end
+  subgraph DataRow2[" "]
+    direction LR
+    StrategyStore["StrategyKBStore<br/>策略知识库存储"]:::layerData
+    EvidenceStore["EvidenceStore<br/>验证记录库存储"]:::layerData
+    KnowledgeIdx["KnowledgeIndex<br/>知识索引"]:::layerData
+    VectorDB["VectorDB<br/>向量库"]:::layerData
+  end
+end
+
+%% ================== 执行层 ==================
+subgraph Execution["执行层"]
+  direction LR
+  PTrade["PTrade<br/>(交易平台)"]:::layerExec
+  QMT["QMT<br/>(交易平台)"]:::layerExec
+end
+
+%% ================== 说明标签 ==================
+LegendCall["工具调用"]:::labelNode
+LegendAI["AI 决策 / 生成 / 解释"]:::labelNode
+LegendData["数据读写"]:::labelNode
+
+LegendCall -.- MCP
+LegendAI -.- LLMHub
+LegendData -.- DataPlatform
+
+%% ================== 主调用链 ==================
+
+%% 表现层 → AI / API
+CursorExt --> LLMHub:::edgeAI
+GUI --> APIBase
+CLI --> APIBase
+AstroDoc --> APIBase
+
+%% API → AI / 编排 / 工具
+APIBase --> LLMHub:::edgeAI
+APIBase --> Orchestrator:::edgeOrch
+APIBase --> MCP:::edgeTool
+
+%% AI → 工具链 / 编排器
+LLMHub --> MCP:::edgeAI
+LLMHub --> Orchestrator:::edgeAI
+LLMHub --> RAGKB:::edgeAI
+LLMHub --> StrategyKB:::edgeAI
+LLMHub --> Evidence:::edgeAI
+
+%% 编排器 → MCP
+Orchestrator --> MCP:::edgeOrch
+
+%% MCP → 核心业务
+MCP --> DS:::edgeTool
+MCP --> TA:::edgeTool
+MCP --> ML:::edgeTool
+MCP --> CP:::edgeTool
+MCP --> FL:::edgeTool
+MCP --> SD:::edgeTool
+MCP --> OP:::edgeTool
+MCP --> BT:::edgeTool
+
+%% 核心业务 → 数据平台
+DS --> MarketDB:::edgeData
+FL --> FactorStore:::edgeData
+BT --> BacktestDB:::edgeData
+
+SD --> StrategyStore:::edgeData
+OP --> StrategyStore:::edgeData
+BT --> EvidenceStore:::edgeData
+
+%% 工具链 → 数据平台
+StrategyKB --> StrategyStore:::edgeData
+Evidence --> EvidenceStore:::edgeData
+RAGKB --> KnowledgeIdx:::edgeData
+RAGKB --> VectorDB:::edgeData
+
+%% 回测 → 执行层
+BT --> PTrade:::edgeExec
+BT --> QMT:::edgeExec

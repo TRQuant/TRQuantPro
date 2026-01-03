@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-12-21 19:49:26",
+  "dev_mode": false,
+  "checks": {
+    "构建产物": true,
+    "HTML 内容": true,
+    "React 构建配置": true,
+    "MCP 客户端": true,
+    "状态管理 Store": true,
+    "ReactPanel 配置": true
+  },
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0
+  }
+}

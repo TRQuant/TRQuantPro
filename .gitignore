@@ -1,0 +1,161 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# 敏感信息和密码
+*.token
+*.key
+*.pem
+*.p12
+*.p8
+github_token.txt
+*.password
+*.secret
+.env
+.env.local
+*.env
+config/*.json
+!config/*.example.json
+
+# 日志文件
+logs/
+*.log
+*.log.*
+
+# 数据文件（可以重新下载）
+data/
+*.csv
+*.xlsx
+*.xls
+*.h5
+*.hdf5
+*.db
+*.sqlite
+*.sqlite3
+
+# 构建和缓存
+build/
+dist/
+*.egg-info/
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.egg
+
+# 测试和结果
+test_results/
+backtest_results/
+results/
+output/
+reports/
+*.html
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.old
+
+# Jupyter Notebook检查点
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# 编译文件
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# 虚拟环境
+venv/
+ENV/
+env/
+.venv
+
+# 大文件和二进制文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+
+# 特定目录（可以重新构建）
+backtest_results/
+backtests/
+packages-microsoft-prod.deb*
+trquant-*.vsix
+
+# 但保留核心代码和配置
+!core/
+!config/
+!strategies/
+!data_sources/
+!notebooks/
+!docs/
+!scripts/
+!utils/
+!bridge_common/
+!ptrade_bridge/
+!qmt_bridge/
+!quantconnect_bridge/
+!markets/
+!research/
+!tests/
+!gui/
+!web/
+!dashboard/
+!extension/
+!frontend/
+!mcp_servers/
+mcp_servers/official_servers/**  # 第三方软件包，忽略（使用**匹配所有文件）
+!projects/
+!Projects/
+!ProjectsTest/
+
+# 保留关键配置文件
+!requirements.txt
+!requirements-dev.txt
+!pyproject.toml
+!pytest.ini
+!setup.py
+!README.md
+!README.txt
+!QUICK_START.txt
+!VERSION
+!TRQuant.code-workspace
+!.gitignore
+
+
+
+

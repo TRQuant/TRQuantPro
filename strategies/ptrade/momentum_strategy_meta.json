@@ -1,0 +1,12 @@
+{
+  "id": "momentum_strategy",
+  "name": "Momentum Strategy",
+  "version": "v1.0.0",
+  "status": "draft",
+  "broker": "PTrade",
+  "description": "",
+  "code_path": "/home/taotao/dev/QuantTest/JQQuant/strategies/ptrade/momentum_strategy.py",
+  "parameters": {},
+  "created_at": "2025-11-25T06:24:55.806986",
+  "updated_at": "2025-11-25T06:24:55.806986"
+}

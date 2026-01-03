@@ -1,0 +1,12 @@
+{
+  "id": "TRQuant_momentum_v3_optimized_final_ptrade",
+  "name": "Trquant Momentum V3 Optimized Final Ptrade",
+  "version": "v1.0.0",
+  "status": "draft",
+  "broker": "PTrade",
+  "description": "",
+  "code_path": "/home/taotao/dev/QuantTest/TRQuant/strategies/ptrade/TRQuant_momentum_v3_optimized_final_ptrade.py",
+  "parameters": {},
+  "created_at": "2025-12-17T13:39:31.183287",
+  "updated_at": "2025-12-17T13:39:31.183287"
+}

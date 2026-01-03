@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../JQQuant"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"files.autoSave": "afterDelay"
+	}
+}

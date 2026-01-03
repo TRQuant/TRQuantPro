@@ -1,0 +1,28 @@
+{
+  "username": "13327806797",
+  "password": "Taorui888",
+  "api_endpoint": "https://dataapi.joinquant.com",
+  "timeout": 30,
+  "retry_times": 3,
+  
+  "data_mode": "historical",
+  "data_mode_comment": "historical: 使用历史数据, realtime: 使用实时数据",
+  
+  "permission": {
+    "auto_detect": true,
+    "auto_detect_comment": "自动检测账号权限范围",
+    "start_date": null,
+    "end_date": null,
+    "start_date_comment": "如果auto_detect为false，手动指定开始日期",
+    "end_date_comment": "如果auto_detect为false，手动指定结束日期"
+  },
+  
+  "account_type": "正式账号",
+  "account_note": "正式账号13327806797，数据范围无限制"
+}
+
+}
+
+}
+
+}

@@ -1,0 +1,470 @@
+# TRQuant Shared Library
+
+## 📐 架构设计
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      TRQuant 系统架构                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐           ┌─────────────────┐             │
+│  │   桌面系统 GUI  │           │  VS Code 扩展   │             │
+│  │   (PyQt6)       │           │  (TypeScript)   │             │
+│  │                 │           │                 │             │
+│  │  gui/widgets/   │           │  extension/     │             │
+│  │  ├─ market_*    │           │  ├─ src/views/  │             │
+│  │  ├─ mainline_*  │           │  └─ python/     │             │
+│  │  └─ strategy_*  │           │     └─ bridge.py│             │
+│  └────────┬────────┘           └────────┬────────┘             │
+│           │                             │                       │
+│           │         共享接口层          │                       │
+│           │    ┌────────────────┐       │                       │
+│           └───►│  shared/api.py │◄──────┘                       │
+│                │                │                               │
+│                │  TRQuantAPI    │                               │
+│                │  ├─ CoreAdapter│ ← 完整功能                    │
+│                │  └─ MockAdapter│ ← 独立部署                    │
+│                └───────┬────────┘                               │
+│                        │                                        │
+│                        ▼                                        │
+│           ┌────────────────────────┐                           │
+│           │      core/ 模块        │                           │
+│           │                        │                           │
+│           │  workflow_orchestrator │ ← 工作流编排              │
+│           │  trend_analyzer        │ ← 趋势分析                │
+│           │  candidate_pool_builder│ ← 候选池                  │
+│           │  mainline_scanner      │ ← 主线扫描                │
+│           │  backtest_engine       │ ← 回测引擎                │
+│           │  strategy_generator    │ ← 策略生成                │
+│           │  factors/*             │ ← 因子库                  │
+│           └────────────────────────┘                           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 🎯 设计原则
+
+### 1. DRY (Don't Repeat Yourself)
+- 业务逻辑集中在 `core/` 模块
+- UI层（桌面/扩展）只负责展示和交互
+- 通过 `shared/api.py` 提供统一接口
+
+### 2. 适配器模式
+- `CoreAdapter`: 调用完整 core 模块（开发/桌面部署）
+- `MockAdapter`: 提供演示数据（扩展独立部署）
+
+### 3. 自动环境检测
+```python
+from shared import get_api
+api = get_api()  # 自动选择适配器
+print(api.mode)  # 'full' 或 'mock'
+```
+
+## 📁 目录结构
+
+```
+TRQuant/
+├── core/                    # 核心业务逻辑 ⭐
+│   ├── workflow_orchestrator.py
+│   ├── trend_analyzer.py
+│   ├── backtest_engine.py
+│   ├── strategy_generator.py
+│   └── factors/
+│
+├── shared/                  # 共享接口层 ⭐ (新增)
+│   ├── __init__.py
+│   ├── api.py              # TRQuantAPI 统一接口
+│   └── README.md
+│
+├── gui/                     # 桌面GUI (PyQt6)
+│   └── widgets/            # 调用 shared.api
+│
+└── extension/               # VS Code扩展
+    ├── python/
+    │   └── bridge.py       # 调用 shared.api
+    └── src/
+        └── views/          # TypeScript UI
+```
+
+## 🔄 使用方式
+
+### 桌面系统 (Python)
+```python
+from shared import get_api
+
+api = get_api()
+result = api.analyze_market_trend()
+print(result.summary)
+```
+
+### VS Code扩展 (通过bridge.py)
+```python
+# extension/python/bridge.py
+from shared import get_api
+
+_api = get_api()
+
+def get_market_status(params):
+    result = _api.analyze_market_trend()
+    return {'ok': result.success, 'data': result.details}
+```
+
+## 📊 API 方法
+
+| 方法 | 说明 | 对应步骤 |
+|------|------|----------|
+| `check_data_sources()` | 数据源检测 | 步骤1 |
+| `analyze_market_trend()` | 市场趋势分析 | 步骤2 |
+| `identify_mainlines()` | 投资主线识别 | 步骤3 |
+| `build_candidate_pool()` | 候选池构建 | 步骤4 |
+| `recommend_factors()` | 因子推荐 | 步骤5 |
+| `generate_strategy()` | 策略生成 | 步骤6 |
+| `run_backtest()` | 回测验证 | 步骤7 |
+| `check_broker_status()` | 券商状态 | 步骤8 |
+| `run_full_workflow()` | 完整工作流 | 全部 |
+
+## ✅ 已复用模块
+
+| 模块 | 来源 | 状态 |
+|------|------|------|
+| WorkflowOrchestrator | core/ | ✅ |
+| TrendAnalyzer | core/ | ✅ |
+| CandidatePoolBuilder | core/ | ✅ |
+| MainlineScanner | core/ | ✅ |
+| BacktestEngine | core/ | ✅ |
+| StrategyGenerator | core/ | ✅ |
+| FactorManager | core/factors/ | ✅ |
+
+## 🚀 扩展独立部署
+
+当扩展独立部署（无core模块）时：
+
+```python
+api = get_api()
+print(api.mode)  # 'mock'
+
+# 仍然可以正常调用，返回演示数据
+result = api.analyze_market_trend()
+# result.summary = '📈 震荡偏多 | 综合评分:65（演示）'
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

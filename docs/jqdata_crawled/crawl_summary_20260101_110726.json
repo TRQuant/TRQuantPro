@@ -1,0 +1,15 @@
+{
+  "start_time": "2026-01-01T11:06:26.062702",
+  "end_time": "2026-01-01T11:07:26.282930",
+  "duration_seconds": 60.220228,
+  "stats": {
+    "total_links": 1,
+    "crawled": 1,
+    "success": 0,
+    "failed": 1,
+    "skipped": 0,
+    "saved_to_kb": 0
+  },
+  "results_count": 0,
+  "results": []
+}

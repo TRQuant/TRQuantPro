@@ -1,0 +1,121 @@
+/* VS Code 主题变量兼容 */
+:root {
+  --vscode-foreground: #cccccc;
+  --vscode-editor-background: #1e1e1e;
+  --vscode-sideBar-background: #252526;
+  --vscode-button-background: #0e639c;
+  --vscode-button-foreground: #ffffff;
+  --vscode-input-background: #3c3c3c;
+  --vscode-input-foreground: #cccccc;
+  --vscode-input-border: #3c3c3c;
+}
+
+/* 全局样式 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-foreground);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Ant Design 主题覆盖 */
+.ant-layout {
+  background: var(--vscode-editor-background) !important;
+}
+
+.ant-layout-header {
+  background: var(--vscode-sideBar-background) !important;
+}
+
+.ant-card {
+  background: var(--vscode-sideBar-background) !important;
+  border-color: #3c3c3c !important;
+}
+
+.ant-card-head {
+  border-bottom-color: #3c3c3c !important;
+  color: var(--vscode-foreground) !important;
+}
+
+.ant-card-body {
+  color: var(--vscode-foreground) !important;
+}
+
+.ant-table {
+  background: transparent !important;
+}
+
+.ant-table-thead > tr > th {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--vscode-foreground) !important;
+  border-bottom-color: #3c3c3c !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom-color: #3c3c3c !important;
+  color: var(--vscode-foreground) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+  background: var(--vscode-sideBar-background) !important;
+  border-color: #3c3c3c !important;
+}
+
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  background: var(--vscode-editor-background) !important;
+}
+
+.ant-statistic-title {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.ant-statistic-content {
+  color: var(--vscode-foreground) !important;
+}
+
+.ant-input {
+  background: var(--vscode-input-background) !important;
+  border-color: var(--vscode-input-border) !important;
+  color: var(--vscode-input-foreground) !important;
+}
+
+.ant-select-selector {
+  background: var(--vscode-input-background) !important;
+  border-color: var(--vscode-input-border) !important;
+}
+
+.ant-select-selection-item {
+  color: var(--vscode-input-foreground) !important;
+}
+
+/* 步骤条样式 */
+.ant-steps-item-title {
+  color: var(--vscode-foreground) !important;
+}
+
+.ant-steps-item-description {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* 进度条样式 */
+.ant-progress-text {
+  color: var(--vscode-foreground) !important;
+}
+
+/* 描述列表样式 */
+.ant-descriptions-item-label {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.ant-descriptions-item-content {
+  color: var(--vscode-foreground) !important;
+}

@@ -1,0 +1,138 @@
+{
+  "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9842": [
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10268",
+      "text": "将标的代码转化成聚宽标准格式"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10243",
+      "text": "获取所有标的信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10244",
+      "text": "获取单支标的信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10746",
+      "text": "获取股票当日盘前交易信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9851",
+      "text": "股票ST信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10032",
+      "text": "上市公司状态变动"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9852",
+      "text": "获取股票的融资融券信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9853",
+      "text": "融资标的列表"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9854",
+      "text": "融券标的列表"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9855",
+      "text": "融资融券汇总数据"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10674",
+      "text": "股票资金流向"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9857",
+      "text": "股票龙虎榜数据"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9858",
+      "text": "沪深市场每日成交概况"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9863",
+      "text": "行业列表"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9864",
+      "text": "行业成份股"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9861",
+      "text": "查询股票所属行业"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9865",
+      "text": "概念列表"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9866",
+      "text": "概念成分股"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9862",
+      "text": "股票所属概念板块"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9867",
+      "text": "市场通交易日历"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9868",
+      "text": "市场通AH股价格对比"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9869",
+      "text": "市场通合格证券变动记录"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9870",
+      "text": "沪深港通持股数据"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9871",
+      "text": "市场通十大成交活跃股"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9872",
+      "text": "市场通成交与额度信息"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9873",
+      "text": "市场通汇率"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9874",
+      "text": "get_price 移动窗口"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9875",
+      "text": "get_bars 固定窗口"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9876",
+      "text": "获取集合竞价数据"
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9877",
+      "text": "股票tick数据"
+    }
+  ],
+  "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10268": [],
+  "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10243": [],
+  "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10244": [
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9841",
+      "text": "get_all_securities"
+    }
+  ],
+  "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10746": [
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9884",
+      "text": "估值表"
+    }
+  ]
+}

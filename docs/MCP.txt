@@ -1,0 +1,387 @@
+2025-12-09 15:58:32 ET
+
+## 目标：用 MCP 把“vibe coding”升级成“spec coding”
+
+核心思路：**让 Cursor/LLM 不再“反复读资料 + 临场发挥”，而是“永远基于同一套可版本化 Spec + 可查询的事实源 + 可验证的约束”**。MCP 的价值在于把这些事实源与约束变成**标准化工具调用**，并把“记忆/上下文”从 prompt 搬到“可检索、可缓存、可审计”的系统里。
+
+---
+
+## 一套可落地的架构（推荐）
+
+### 1) Spec 资产（必须落盘、可版本化）
+
+把复杂系统开发拆成 6 类“不可省略的 Spec 文件”，每次改动走 PR（或至少走变更记录）：
+
+* `product.md`：产品目标、用户、非目标、成功指标
+* `domain.md`：领域模型（实体/事件/状态机/术语表）
+* `api.md`：API/事件契约（OpenAPI/AsyncAPI 或等价结构）
+* `ux.md`：关键页面/交互与边界情况
+* `arch.md`：架构决策记录 ADR（为什么这么做、替代方案、权衡）
+* `acceptance.md`：验收标准（Given-When-Then + 非功能：性能/安全/一致性）
+
+> 这一步直接把“主观灵感”变成“客观约束”。Cursor 不需要“反复读资料”，它只需要**查询这些 spec 的最新版本**。
+
+### 2) MCP 工具层（让 Cursor 永远“查事实”而不是“凭感觉”）
+
+用 MCP 把你系统的“事实源”做成工具：
+
+* `spec.read / spec.search`：读取、检索 spec（带版本号/commit）
+* `code.search / code.open`：检索代码库（定义、调用链、约定）
+* `adr.list / adr.read`：查架构决策（避免反复争论）
+* `schema.validate`：校验契约（OpenAPI/JSON schema/事件schema）
+* `test.run / test.report`：跑测试并产出报告（客观验收）
+* `lint.format`：格式与静态检查（减少风格漂移）
+* `task.plan / task.update`：把实现拆成可追踪任务树（而不是聊天记录）
+
+> 关键：**任何不确定的问题都必须转为工具调用**；模型不能靠“想当然”补全系统事实。
+
+### 3) “Spec-first 编码协议”（让输出一致）
+
+定义一条硬规则：每次改代码必须输出并落盘以下内容（可自动化）：
+
+1. **变更影响面**：这次改动影响哪些模块/接口/数据表/事件
+2. **契约更新**：若改 API/事件，必须先改 `api.md`/schema，再写代码
+3. **验收标准对齐**：引用 `acceptance.md` 中对应条目并逐条满足
+4. **证据**：测试、性能、迁移脚本、回滚策略的可运行输出
+
+---
+
+## 把“vibe”变“spec”的关键机制（3 个）
+
+### 机制 A：强制“计划—执行”两段式（Plan/Act）
+
+* **Plan 阶段**只允许：读 spec、查代码、列任务、写设计、更新契约
+* **Act 阶段**才允许：修改代码、加测试、跑验证
+  用 MCP 把“读 spec / 查仓库 / 查 ADR / 跑验证”变成可调用工具，Cursor 会自然减少胡编。
+
+### 机制 B：把“重复资料”变成“可缓存的 Context Pack”
+
+做一个 `context_pack/`（或 `.taorui/ctx/`）目录，每个包是稳定事实的聚合：
+
+* `system_overview.json`（模块/边界）
+* `contracts.openapi.json`
+* `db_schema.sql`（或 Prisma schema）
+* `domain_glossary.json`
+* `constraints.json`（性能/安全/风控红线）
+
+MCP 服务器提供 `ctx.get(pack_name, version)`：Cursor 每次只要拉一次“pack”，之后只增量更新，不用反复读散落资料。
+
+### 机制 C：用“客观裁判”终止争论：Schema + Tests + Linters
+
+* 所有接口变更：`schema.validate` 必须通过
+* 所有功能变更：`test.run` 必须通过
+* 所有风格一致性：`lint.format` 必须通过
+  这样一致性来自“机器判定”，而不是“谁说服谁”。
+
+---
+
+## 在 Cursor 里最有效的 MCP 用法（建议你直接照这个流程用）
+
+1. **启动会话先拉 Context Pack**：`ctx.get("taorui-core", latest)`
+2. **任何需求先定位验收**：`spec.search("acceptance", "<feature>")`
+3. **先改契约/ADR 再改代码**：`adr.create/update` + `api.md`/schema 更新
+4. **再查现有实现**：`code.search("<关键接口/类名>")`
+5. **生成任务树**：`task.plan`（拆到可测试的最小单元）
+6. **逐任务实现**：每次小步提交 + `test.run` + `schema.validate`
+7. **自动生成变更说明**：从任务树与测试报告汇总到 `change_log.md`
+
+---
+
+## 你要的“客观理性 + 一致性”落地清单（最短路径）
+
+* 先把 Spec 文件体系定下来（上面 6 类）
+* MCP 第一批只做 6 个工具：`spec.read/search`、`code.search/open`、`schema.validate`、`test.run`、`adr.read/list`
+* 立规矩：**不查 spec 不动手；不改契约不实现；不跑验证不合并**
+
+---
+
+如果你愿意，我可以直接给你一份“韬睿投研系统”的 **MCP 工具清单 + Spec 目录模板 + Cursor 工作协议（可复制粘贴）**，按你们的模块（数据源、因子库、策略生成、回测、发布、权限审计）预先把 context pack 的字段也设计好，这样从第一天就能把一致性做成系统能力。
+2025-12-09 16:01:10 ET
+
+下面把你点名的 **BMAD Method**、GitHub 上的 **awesome-mcp-servers / MCP 生态**、**GraphQL**、以及 Anthropic 的 **long-running agents harness** 逐一做“技术审阅（review）”，最后给出“开发韬睿系统”的**最佳方案（建议架构+落地路线）**。我会尽量把“能直接写进项目计划书”的部分写清楚。
+
+---
+
+## BMAD Method：它解决什么、适合你什么、哪里要警惕
+
+BMAD（Breakthrough Method for Agile AI-Driven Development）本质是一个“**多角色AI协作 + 流程引擎 + 模块系统**”的工作方法/框架，其 GitHub 仓库把它实现为可安装的模块体系（BMad Core + BMad Method + Builder）。
+
+### 你能直接借鉴的“硬核要点”
+
+* **四阶段方法论**：Analysis → Planning → Solutioning → Implementation（把“vibe coding”拆成可追踪阶段）。
+* **Agent-as-code**：用文件（如 persona/agent yaml、workflow yaml）定义角色、输入输出、流程状态与执行器，让协作“可复现、可审计”。
+* **Scale-adaptive routing**：按项目规模自动走不同粒度流程（小需求不必走重流程，大系统必须走重流程）。
+
+### 对韬睿系统的适配评价
+
+* **非常适配**：你要做“投研OS/策略生成与管理”，需求跨模块且长周期；BMAD 的“阶段化+角色化+状态文件”能显著降低返工。
+* **要警惕**：BMAD 强在“流程与协作纪律”，但**不等于**解决“事实源一致性、工具安全、上下文缓存”。这块你需要用 MCP + Harness（下面两部分）补齐。
+
+---
+
+## MCP 生态（awesome-mcp-servers 等）：你该怎么用，怎么不踩雷
+
+“awesome-mcp-servers”是 MCP server 的汇总目录（多个维护者/分叉版本），本质价值是：**把外部资源（文件、Git、DB、Web、记忆图谱等）标准化成工具接口**。
+
+### 韬睿系统最该优先复用/对标的 MCP Server 类型
+
+从汇总中常见的“基础能力”来看，韬睿最相关的是这几类：
+
+* **Filesystem**：受控文件读写（本地策略工程、研究资料、导出报告）
+* **Git**：读/查/改 repo（把 spec、代码、实验、报告都版本化）
+* **Fetch/Web**：抓取网页内容并转成 LLM 友好格式（宏观数据、政策/公告、公开文档）
+* **Memory（Knowledge Graph）**：持久化“事实与决策”（不是聊天记录）
+* **Everything/Test servers**：对 MCP 功能做端到端验证
+
+### MCP 的关键风险（必须写进计划书）
+
+一些 MCP 列表仓库直接给了安全警示：**不加沙盒的 MCP server 可能以宿主权限执行任意代码**。
+因此韬睿系统必须默认：
+
+* 工具白名单 + 参数 schema 校验 + 权限分级（读/写/执行分离）
+* 本地执行走沙盒（容器/受限子进程）
+* 所有“写文件/下单/调用券商”强制可审计与可回滚
+
+---
+
+## Anthropic：long-running agents 的“harness”到底是什么，你该怎么抄
+
+Anthropic 这篇工程文的核心是：**不要指望一个 agent 跨很多上下文窗口仍保持纪律**，必须有“工程化的 harness（缰绳/套件）”来强制其像人类工程团队一样工作。
+
+你可以直接抽象成 4 个结构件（适合韬睿）：
+
+1. **Initializer / Scaffolder**：先把项目骨架、目录、契约、测试框架、运行方式搭好
+2. **Incremental progress**：小步提交、每步可运行、每步有证据
+3. **Persistent artifacts**：用文件/状态记录来跨 session 继承上下文，而不是靠“记忆力”
+4. **Rigorous validation**：测试/校验/格式化是“客观裁判”，避免幻觉与漂移
+
+> 这套 harness 与 BMAD 的“阶段+角色”是互补关系：BMAD 解决“流程”，Anthropic harness 解决“长跑的工程纪律”。
+
+---
+
+## GraphQL：你为什么提它？在韬睿系统里是否是“最佳选择”
+
+GraphQL 是强类型 API 查询语言与规范，优势是 **schema 可内省（introspection）**，利于工具化与客户端效率。
+
+### GraphQL 在韬睿系统里的最佳用法（不是万能）
+
+适合的场景：
+
+* **投研工作台/前端**需要灵活拉取复杂对象图：策略→因子→实验→回测→图表→引用证据链
+* **Schema 内省**帮助生成客户端、减少文档重复维护（“spec coding”的一部分）
+
+不适合或需要谨慎的场景：
+
+* **高吞吐数据下载**（分钟级行情、tick、大表批量）GraphQL 容易被滥用、难控成本；这类更适合专门的数据 API/批处理接口。
+* **工具调用（MCP）**并不要求 GraphQL；MCP 工具往往更像“动作型函数”，用 JSON Schema/REST/gRPC 都行。
+
+---
+
+# 开发韬睿系统：最佳综合方案（BMAD + MCP + Harness + GraphQL 的组合打法）
+
+下面给你一个“最优组合”——目标是：**一致性、客观理性、可复现、可上线/可本地安装、Cursor 不反复读相同资料**。
+
+## 1) 开发方法论：BMAD 作为“流程骨架”
+
+把韬睿的研发流程固化成 4 阶段，并把每阶段产物“写成文件”：
+
+* Analysis：问题定义、边界、数据口径、合规要求
+* Planning：模块拆分、接口契约、验收标准、里程碑
+* Solutioning：关键 ADR、数据模型、插件接口、威胁建模
+* Implementation：任务树、PR、测试报告、性能与成本证据
+  （这套对应 BMAD 的核心精神与模块化实现方式。）
+
+## 2) 系统级 Harness：把 agent 绑在“可验证轨道”上
+
+参考 Anthropic：你需要两类 agent：
+
+* **Initializer Agent**：生成目录、schema、测试框架、MCP 工具清单、Context Pack
+* **Builder Agent**：只允许小步改动 + 必须跑校验（schema/test/lint）
+  （长周期任务靠 artifact 继承，而不是靠聊天记忆。）
+
+## 3) MCP：把“事实源”与“动作”外置成工具（减少重复阅读）
+
+韬睿系统应自建一组“核心 MCP servers”（不要指望把第三方列表里的服务器拼起来就完事）：
+
+* `spec-server`：读/搜 spec + 版本号 + 变更差异
+* `repo-server`：Git 搜索、打开文件、生成 diff
+* `data-source-server`：聚宽/同花顺/IBKR/宏观数据的统一读取（只读优先）
+* `backtest-server`：触发回测、取回结果、生成报告工件
+* `evidence-server`：把每条结论绑定到来源与时间戳（证据链）
+* `secrets-server`：密钥与权限（模型永远拿不到原始密钥，只拿临时 token）
+
+并且强制执行 MCP 安全红线（白名单+校验+审计），因为社区列表已明确提示风险。
+
+## 4) API 形态：GraphQL 用于“前端对象图”，不用于一切
+
+* **GraphQL Gateway（读为主）**：策略、因子、实验、报告、证据链、权限可视化
+* **动作型接口**（回测/训练/抓取/发布）：走“命令式 API”（REST/gRPC/队列任务），更容易审计与限流
+  GraphQL 的优势来自 schema 与内省，而不是替代所有后端。
+
+---
+
+# 你可以直接采用的“落地路线”（最少返工、最快变强）
+
+### Phase 0（1-2周，立规矩）
+
+* 建 Spec 目录与模板（BMAD 四阶段产物）
+* 上 `spec-server` + `repo-server` MCP
+* 初始化 harness：Initializer/Builder 两角色
+
+### Phase 1（MVP：先做“研究与策略资产化”，再做自动化）
+
+* 策略/因子/实验/报告的数据模型（Postgres 为主，向量检索可后置）
+* 回测任务队列 + 报告工件存储（本地/云端双形态）
+* “证据链”强制：每条输出必须引用来源
+
+### Phase 2（平台化：多数据源 + 多代码生成目标）
+
+* 数据源适配器：聚宽/美股财报/宏观等
+* Codegen 适配器：ptrade/QMT/QuantConnect（输出工程+测试）
+* GraphQL Gateway 上线，工作台开始协作
+
+### Phase 3（智能化：非线性因子/Agent 自动研究）
+
+* ML 因子流水线（特征/标签/训练/评估/漂移监控）
+* Agent 自动写研究报告 + 自动更新策略实验（严格 harness）
+
+---
+
+## 最终建议（一句话）
+
+**BMAD 负责“把开发变成阶段化 spec”；Anthropic harness 负责“让 agent 长跑不跑偏”；MCP 负责“把上下文变成可查询的事实与工具”；GraphQL 负责“把复杂对象图给前端与工具化生态”。** 这四个拼起来，才是韬睿系统“最稳、可扩展、不会反复读资料”的最佳方案。
+
+如果你愿意，我下一步可以把上述方案“收敛成韬睿系统项目计划书的技术章节”：包含目录结构、MCP 工具清单（含 JSON Schema）、GraphQL schema 草案、以及 BMAD 四阶段的交付物清单与验收门槛。
+
+2025-12-09 16:03:12 ET
+
+# 韬睿系统技术路线与相关方法/项目综述（简版汇总文档）
+
+## 一、核心目标与问题定义
+
+* 目标：把“vibe coding”升级为“spec coding”，提升复杂系统开发的一致性、客观理性与可复现性；减少 Cursor/LLM 反复读取同一资料造成的漂移与浪费。
+* 系统能力范围：美股/A股/港股投研（成长股/中概/宏观策略）+ 策略/因子管理 + 量化代码生成（ptrade/QMT/QuantConnect 等）+ 回测/演示闭环 + 可本地安装与可上线（双形态）。
+
+---
+
+## 二、关键技术/方法/生态 Review（要点结论）
+
+### 1) BMAD Method（方法论/流程框架）
+
+* 核心价值：用“阶段化 + 多角色 + 可落盘工件”的方式，把开发从临场生成转为可追踪、可复现的流程。
+* 典型阶段：Analysis → Planning → Solutioning → Implementation（用于约束开发节奏与产物）。
+* 适配：非常适合韬睿这种跨模块、长周期的投研OS建设；但不直接解决“事实源一致性/工具安全/上下文缓存”，需 MCP + Harness 补齐。
+
+### 2) MCP 生态（awesome-mcp-servers 等）
+
+* 核心价值：把“外部资源与系统动作”标准化成工具接口，让 LLM 通过工具获取事实/执行动作，降低幻觉与重复阅读。
+* 优先复用/对标的 server 类型：filesystem、git/repo、web/fetch、memory/graph、test/everything 等。
+* 关键风险：社区汇总仓库明确提示安全隐患——若不加沙盒与权限控制，可能带来宿主权限执行风险；因此必须做工具白名单、参数 schema 校验、权限分级、审计与沙盒执行。
+
+### 3) Anthropic：long-running agents 的 Harness
+
+* 核心价值：长周期 agent 必须被“工程化缰绳”约束，不能靠对话记忆与临场发挥。
+* 可直接抽象的工程机制：
+
+  * Initializer/Scaffolder：先搭骨架（目录、契约、测试、运行方式）
+  * Incremental progress：小步可运行、每步有证据
+  * Persistent artifacts：跨 session 靠文件/状态继承
+  * Rigorous validation：测试/校验/格式化作为客观裁判
+
+### 4) GraphQL（在韬睿中的最佳定位）
+
+* 适合：前端/工作台需要灵活查询复杂对象图（策略→因子→实验→回测→证据链）；schema 内省有利于工具化与减少文档重复维护。
+* 不适合/需谨慎：高吞吐大表数据（行情/tick/大批量下载）与强动作型接口（下单/回测触发）——更适合命令式 API/队列任务以便限流审计。
+* 推荐定位：GraphQL 做“读为主的对象图网关”；动作走 REST/gRPC/队列。
+
+---
+
+## 三、从“系统截图范式”得到的产品启示（节点编排 + AI 助手）
+
+* 截图系统呈现的能力链路：线性因子（公式/归一化/权重/合并）+ 非线性因子（特征/标签/XGBoost/输出因子）+ 因子分析 + 回测 + 编辑器 + AI 助手。
+* 对韬睿的差异化建议：
+
+  * DAG/节点编排可以做，但应是“视图层”；底层必须以“因子/策略/模型/实验”为一等公民并版本化，否则上线后维护成本高。
+  * AI 不应只是编辑器侧问答，应升级为“系统级编排器”：跨因子库/数据源/回测结果/风控约束输出结构化计划并执行（带审计）。
+
+---
+
+## 四、非线性因子（机器学习因子）结论汇总
+
+### 1) 是否必须
+
+* 不是必须：线性多因子 + 风控 + 成本控制可形成稳健体系。
+* 值得做的场景：弱信号融合、状态切换明显、交易与执行成本是瓶颈（成本/成交概率建模常是最大净值贡献来源）。
+
+### 2) 标准步骤（从数据到实盘）
+
+* 数据与样本定义（股票池/频率/对齐/口径/清洗）
+* 标签构建（未来收益/超额/排序/分类；需匹配持有期与调仓）
+* 特征工程（技术/基本面/宏观/风格；标准化/去极值/防泄露）
+* 模型训练（XGBoost/GBDT 等；walk-forward；超参；日志与版本）
+* 因子构建（模型输出→标准化/分位/中性化→可交易信号）
+* 因子评估（IC/分层/暴露/成本敏感/稳健性）
+* 组合与回测（选股/权重/风控/滑点冲击/输出指标）
+* 上线监控（漂移、重训、事故回滚）
+
+### 3) 实际投资常见用法（典型三类）
+
+* 多因子“排序融合器”（用 GBDT 学非线性交互与动态权重）
+* 交易成本/成交概率建模（提升实盘贴近回测、提高容量）
+* 宏观/风格状态识别（动态配置与回撤控制）
+
+---
+
+## 五、Tauri 的定位与对韬睿的正确用法
+
+* Tauri 是开源桌面应用框架（非“韬睿/taorui”自研系统）。
+* 正确定位：作为“本地端壳（Desktop Runtime）”提供本机资源能力（文件、进程、密钥、本地数据库/回测运行），而不是把全部系统塞进桌面壳。
+* 推荐工程形态：本地端（Desktop）+ 云端（Web/SaaS）双形态同源，业务核心服务可本地/云端复用。
+
+---
+
+## 六、技术路线最佳方案（BMAD + MCP + Harness + GraphQL 的组合打法）
+
+### 1) 方法论层（BMAD）
+
+* 以 Analysis/Planning/Solutioning/Implementation 四阶段固化产物与验收，所有产物落盘可版本化（PR/变更记录）。
+
+### 2) 工程纪律层（Harness）
+
+* 两类 agent：
+
+  * Initializer：建骨架（目录、schema、测试框架、Context Pack、MCP 清单）
+  * Builder：小步提交、强制验证（schema/test/lint），跨 session 只读工件不读聊天
+
+### 3) 工具化与事实源层（MCP）
+
+* 韬睿应自建核心 MCP servers（而非拼凑）：
+
+  * spec-server（spec 读/搜/版本差异）
+  * repo-server（Git 搜索/打开/变更）
+  * data-source-server（聚宽等数据源统一读取）
+  * backtest-server（触发回测、取回结果、产物化）
+  * evidence-server（结论-来源-时间戳证据链）
+  * secrets-server（密钥隔离、临时令牌、权限）
+* 安全基线：工具白名单、参数 schema 校验、权限分级、沙盒执行、全链路审计；任何写/执行/交易动作需风险分级与二次确认策略（至少 MVP）。
+
+### 4) API 层（GraphQL + 命令式接口）
+
+* GraphQL：读为主的对象图网关（策略/因子/实验/报告/证据链）。
+* 动作接口：回测/训练/抓取/发布等走 REST/gRPC/队列任务，便于审计与限流。
+
+---
+
+## 七、落地里程碑（最少返工的路线）
+
+* Phase 0：Spec 体系 + `spec/repo` MCP + harness 双角色 + 规则落地（不查 spec 不动手、不验证不合并）
+* Phase 1（MVP）：策略/因子/实验/报告资产化 + 回测任务与工件存储 + 证据链强制
+* Phase 2：数据源与代码生成平台适配（聚宽、ptrade/QMT/QC）+ 工作台协作 + GraphQL 网关
+* Phase 3：非线性因子流水线与自动研究 agent（严格 harness + 漂移监控与回滚）
+
+---
+
+## 八、一句话总纲
+
+* BMAD 提供“流程骨架”，Harness 提供“长跑纪律”，MCP 提供“事实与动作工具化（减少重复读资料）”，GraphQL 提供“复杂对象图的高效读取”；四者组合是韬睿系统在可控、安全、可复现前提下实现智能化与平台化的最优路线。
+

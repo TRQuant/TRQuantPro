@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": "/home/taotao/dev/QuantTest/TRQuant"
+    }
+  ],
+  "settings": {
+    "cursor.codebaseIndexing.enableWorktrees": false,
+    "cursor.codebaseIndexing.enabled": false,
+    "cursor.composer.enabled": false
+  }
+}

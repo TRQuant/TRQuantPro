@@ -1,0 +1,54 @@
+JQData Query使用方式完整指南（PDF提取）
+
+核心方法：
+1. query(): 创建查询对象
+2. filter(): 添加查询条件
+3. order_by(): 排序
+4. limit(): 限制返回数量
+5. distinct(): 去重
+6. in_(): 判断字段值是否在列表中
+
+基本查询语法：
+```python
+from jqdatasdk import query, get_fundamentals, finance
+
+# 基本查询
+q = query(finance.STK_INCOME_STATEMENT).filter(
+    finance.STK_INCOME_STATEMENT.code == '000001.XSHE'
+)
+df = finance.run_query(q)
+```
+
+in_方法（多只股票查询）：
+```python
+q = query(valuation).filter(
+    valuation.code.in_(['000001.XSHE', '000002.XSHE'])
+)
+```
+
+distinct去重：
+```python
+q = query(distinct(finance.STK_INCOME_STATEMENT.code))
+```
+
+与或非逻辑：
+- 多个条件用逗号分隔表示AND
+- 使用and_()、or_()、not_()进行逻辑运算
+
+财务数据表：
+- valuation: 估值数据（每日更新）
+- indicator: 财务指标数据（季度更新）
+- finance.STK_CASHFLOW_STATEMENT: 现金流量表
+- finance.STK_INCOME_STATEMENT: 利润表
+- finance.STK_BALANCE_SHEET: 资产负债表
+
+批量查询：
+- run_query(): 单次最多返回5000条
+- run_offset_query(): 单次最多返回20万条
+
+重要提示：
+- 查询时尽量根据id、日期、标的代码进行filter（这些字段通常有索引）
+- 使用run_offset_query时，自己传递的limit和offset参数不生效
+- 查询超过20万条数据可能不完整，需要分批查询
+
+文档来源：JQDataQuery.pdf

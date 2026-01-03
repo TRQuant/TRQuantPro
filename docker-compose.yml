@@ -1,0 +1,5789 @@
+version: '3.8'
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+services:
+  jqquant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jqquant
+    volumes:
+      # 挂载配置文件（包含账号信息）
+      - ./config:/app/config:ro
+      # 挂载结果目录（持久化回测结果）
+      - ./results:/app/results
+      # 挂载数据目录（缓存数据）
+      - ./data:/app/data
+      # 挂载日志目录
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    # 如果需要交互式运行，取消下面的注释
+    # stdin_open: true
+    # tty: true
+    # 默认命令（可以覆盖）
+    command: python main.py --help
+    # 如果需要网络访问
+    # ports:
+    #   - "8000:8000"
+
+
+
+
+
+
+
+
+
+
+
+
+
+

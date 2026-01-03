@@ -1,0 +1,47 @@
+# 排除大型目录
+venv/
+venv/**
+AShare-manual/
+AShare-manual/**
+node_modules/
+node_modules/**
+src/
+src/**
+docs/
+docs/**
+
+# 排除开发文件
+*.ts
+!*.d.ts
+tsconfig.json
+webpack.config.js
+.gitignore
+.git/**
+
+# 排除Python缓存
+__pycache__/
+__pycache__/**
+*.pyc
+*.pyo
+.pytest_cache/
+.pytest_cache/**
+
+# 排除测试文件
+tests/
+tests/**
+*.test.ts
+*.spec.ts
+
+# 排除其他
+*.md
+.eslintrc*
+*.vsix
+*.pdf
+development_templates_and_rules/
+development_templates_and_rules/**
+development-templates-and-rules/
+development-templates-and-rules/**
+Projects/
+Projects/**
+logs/
+logs/**

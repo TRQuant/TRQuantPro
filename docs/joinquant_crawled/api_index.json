@@ -1,0 +1,2255 @@
+{
+  "total_apis": 315,
+  "categories": {
+    "数据获取": 17,
+    "财务数据": 8,
+    "交易执行": 18,
+    "策略设置": 11,
+    "因子分析": 5,
+    "技术指标": 32,
+    "融资融券": 8,
+    "期货": 21,
+    "Tick级": 6,
+    "其他": 221
+  },
+  "apis": {
+    "initialize": {
+      "name": "initialize",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": true
+    },
+    "run_daily": {
+      "name": "run_daily",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "market_open": {
+      "name": "market_open",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "order": {
+      "name": "order",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": true
+    },
+    "set_benchmark": {
+      "name": "set_benchmark",
+      "categories": [
+        "策略设置",
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_option": {
+      "name": "set_option",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "attribute_history": {
+      "name": "attribute_history",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "mean": {
+      "name": "mean",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "order_value": {
+      "name": "order_value",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": true
+    },
+    "log.info": {
+      "name": "log.info",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "order_target": {
+      "name": "order_target",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": true
+    },
+    "record": {
+      "name": "record",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "handle_data": {
+      "name": "handle_data",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": true
+    },
+    "before_trading_start": {
+      "name": "before_trading_start",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "C13C": {
+      "name": "C13C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C26C": {
+      "name": "C26C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C12C": {
+      "name": "C12C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Cov": {
+      "name": "Cov",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Var": {
+      "name": "Var",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C47CVar": {
+      "name": "C47CVar",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Max": {
+      "name": "Max",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "C15C": {
+      "name": "C15C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C18C": {
+      "name": "C18C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "log": {
+      "name": "log",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C69C": {
+      "name": "C69C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C85C": {
+      "name": "C85C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C199C": {
+      "name": "C199C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C226C": {
+      "name": "C226C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "C232C": {
+      "name": "C232C",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "print": {
+      "name": "print",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "query": {
+      "name": "query",
+      "categories": [
+        "财务数据"
+      ],
+      "has_detailed_doc": false
+    },
+    "process_initialize": {
+      "name": "process_initialize",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "open": {
+      "name": "open",
+      "categories": [
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "requests.get": {
+      "name": "requests.get",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "after_code_changed": {
+      "name": "after_code_changed",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "python2": {
+      "name": "python2",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "python3": {
+      "name": "python3",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "log.set_level": {
+      "name": "log.set_level",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_order_cost": {
+      "name": "set_order_cost",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "run_monthly": {
+      "name": "run_monthly",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "before_market_open": {
+      "name": "before_market_open",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "list": {
+      "name": "list",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set": {
+      "name": "set",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "order_target_value": {
+      "name": "order_target_value",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "pd.Series": {
+      "name": "pd.Series",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "len": {
+      "name": "len",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "portfolio_optimizer": {
+      "name": "portfolio_optimizer",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MarketConstraint": {
+      "name": "MarketConstraint",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "Bound": {
+      "name": "Bound",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "WeightConstraint": {
+      "name": "WeightConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "AnnualProfitConstraint": {
+      "name": "AnnualProfitConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "calc": {
+      "name": "calc",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "type": {
+      "name": "type",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "optimized_weight.keys": {
+      "name": "optimized_weight.keys",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "run_weekly": {
+      "name": "run_weekly",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "func": {
+      "name": "func",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "func1": {
+      "name": "func1",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "on_week_start": {
+      "name": "on_week_start",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MyObject": {
+      "name": "MyObject",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "on_week_start2": {
+      "name": "on_week_start2",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "on_week_end": {
+      "name": "on_week_end",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "weekly": {
+      "name": "weekly",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "context.current_dt.isoweekday": {
+      "name": "context.current_dt.isoweekday",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "monthly": {
+      "name": "monthly",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "daily": {
+      "name": "daily",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "on_event": {
+      "name": "on_event",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "after_trading_end": {
+      "name": "after_trading_end",
+      "categories": [
+        "策略设置"
+      ],
+      "has_detailed_doc": false
+    },
+    "on_strategy_end": {
+      "name": "on_strategy_end",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_fundamentals": {
+      "name": "get_fundamentals",
+      "categories": [
+        "数据获取",
+        "财务数据"
+      ],
+      "has_detailed_doc": true
+    },
+    "unschedule_all": {
+      "name": "unschedule_all",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_slippage": {
+      "name": "set_slippage",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "FixedSlippage": {
+      "name": "FixedSlippage",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "PriceRelatedSlippage": {
+      "name": "PriceRelatedSlippage",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "StepRelatedSlippage": {
+      "name": "StepRelatedSlippage",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "False": {
+      "name": "False",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "history": {
+      "name": "history",
+      "categories": [
+        "数据获取",
+        "财务数据"
+      ],
+      "has_detailed_doc": true
+    },
+    "g.cached_data.append": {
+      "name": "g.cached_data.append",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_universe": {
+      "name": "set_universe",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_commission": {
+      "name": "set_commission",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "PerTrade": {
+      "name": "PerTrade",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "disable_cache": {
+      "name": "disable_cache",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_price": {
+      "name": "get_price",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "datetime.datetime": {
+      "name": "datetime.datetime",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "None": {
+      "name": "None",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Dict": {
+      "name": "Dict",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "array": {
+      "name": "array",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "h.mean": {
+      "name": "h.mean",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "sum": {
+      "name": "sum",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "h.sum": {
+      "name": "h.sum",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "datetime.date": {
+      "name": "datetime.date",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_bars": {
+      "name": "get_bars",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "datetime.now": {
+      "name": "datetime.now",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "datetime.date.today": {
+      "name": "datetime.date.today",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "context.current_dt.date": {
+      "name": "context.current_dt.date",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "datetime.datetime.now": {
+      "name": "datetime.datetime.now",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "date": {
+      "name": "date",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_current_tick": {
+      "name": "get_current_tick",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_ticks": {
+      "name": "get_ticks",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_dominant_future": {
+      "name": "get_dominant_future",
+      "categories": [
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_current_data": {
+      "name": "get_current_data",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_extras": {
+      "name": "get_extras",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_all_factors": {
+      "name": "get_all_factors",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_values": {
+      "name": "get_factor_values",
+      "categories": [
+        "因子分析"
+      ],
+      "has_detailed_doc": false
+    },
+    "Skewness60": {
+      "name": "Skewness60",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_kanban_values": {
+      "name": "get_factor_kanban_values",
+      "categories": [
+        "因子分析"
+      ],
+      "has_detailed_doc": false
+    },
+    "filter": {
+      "name": "filter",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "valuation.code.in_": {
+      "name": "valuation.code.in_",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "order_by": {
+      "name": "order_by",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "limit": {
+      "name": "limit",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "range": {
+      "name": "range",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_fundamentals_continuously": {
+      "name": "get_fundamentals_continuously",
+      "categories": [
+        "数据获取",
+        "财务数据"
+      ],
+      "has_detailed_doc": true
+    },
+    "panel.minor_xs": {
+      "name": "panel.minor_xs",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "panel.major_xs": {
+      "name": "panel.major_xs",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "panel.xs": {
+      "name": "panel.xs",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "finance.run_query": {
+      "name": "finance.run_query",
+      "categories": [
+        "财务数据"
+      ],
+      "has_detailed_doc": false
+    },
+    "macro.run_query": {
+      "name": "macro.run_query",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_billboard_list": {
+      "name": "get_billboard_list",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_index_stocks": {
+      "name": "get_index_stocks",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "get_index_weights": {
+      "name": "get_index_weights",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "display_name": {
+      "name": "display_name",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "weight": {
+      "name": "weight",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_industry_stocks": {
+      "name": "get_industry_stocks",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "get_concept_stocks": {
+      "name": "get_concept_stocks",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "get_industries": {
+      "name": "get_industries",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_concepts": {
+      "name": "get_concepts",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_all_securities": {
+      "name": "get_all_securities",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "stock": {
+      "name": "stock",
+      "categories": [
+        "数据获取",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "index": {
+      "name": "index",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": false
+    },
+    "etf": {
+      "name": "etf",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "options": {
+      "name": "options",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_security_info": {
+      "name": "get_security_info",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_industry": {
+      "name": "get_industry",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": false
+    },
+    "decode": {
+      "name": "decode",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_all_trade_days": {
+      "name": "get_all_trade_days",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_trade_days": {
+      "name": "get_trade_days",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": true
+    },
+    "get_money_flow": {
+      "name": "get_money_flow",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": true
+    },
+    "get_concept": {
+      "name": "get_concept",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_call_auction": {
+      "name": "get_call_auction",
+      "categories": [
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_trade_day": {
+      "name": "get_trade_day",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_history_fundamentals": {
+      "name": "get_history_fundamentals",
+      "categories": [
+        "数据获取",
+        "财务数据"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_valuation": {
+      "name": "get_valuation",
+      "categories": [
+        "财务数据"
+      ],
+      "has_detailed_doc": true
+    },
+    "alpha_001": {
+      "name": "alpha_001",
+      "categories": [
+        "因子分析"
+      ],
+      "has_detailed_doc": false
+    },
+    "a.head": {
+      "name": "a.head",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "alpha_007": {
+      "name": "alpha_007",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "CORR": {
+      "name": "CORR",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "RANK": {
+      "name": "RANK",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "GDX": {
+      "name": "GDX",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "ABS": {
+      "name": "ABS",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "DMA": {
+      "name": "DMA",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "neutralize": {
+      "name": "neutralize",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pd.DataFrame": {
+      "name": "pd.DataFrame",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "winsorize": {
+      "name": "winsorize",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "winsorize_med": {
+      "name": "winsorize_med",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "standardlize": {
+      "name": "standardlize",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MinVariance": {
+      "name": "MinVariance",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MaxProfit": {
+      "name": "MaxProfit",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "MaxSharpeRatio": {
+      "name": "MaxSharpeRatio",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "MinTrackingError": {
+      "name": "MinTrackingError",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "RiskParity": {
+      "name": "RiskParity",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MaxScore": {
+      "name": "MaxScore",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "MinScore": {
+      "name": "MinScore",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MaxFactorValue": {
+      "name": "MaxFactorValue",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "MinFactorValue": {
+      "name": "MinFactorValue",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "WeightEqualConstraint": {
+      "name": "WeightEqualConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "AnnualStdConstraint": {
+      "name": "AnnualStdConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "IndustryConstraint": {
+      "name": "IndustryConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "IndustriesConstraint": {
+      "name": "IndustriesConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "ExposureConstraint": {
+      "name": "ExposureConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "BarraConstraint": {
+      "name": "BarraConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "IndustryDeviationConstraint": {
+      "name": "IndustryDeviationConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "IndustriesDeviationConstraint": {
+      "name": "IndustriesDeviationConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "TrackingErrorConstraint": {
+      "name": "TrackingErrorConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "TurnoverConstraint": {
+      "name": "TurnoverConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "RatioConstraint": {
+      "name": "RatioConstraint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MaxDrawdownConstraint": {
+      "name": "MaxDrawdownConstraint",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "IndustryBound": {
+      "name": "IndustryBound",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "LiquidityBound": {
+      "name": "LiquidityBound",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "CapBound": {
+      "name": "CapBound",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "cancel_order": {
+      "name": "cancel_order",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_open_orders": {
+      "name": "get_open_orders",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "orders.values": {
+      "name": "orders.values",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_orders": {
+      "name": "get_orders",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_trades": {
+      "name": "get_trades",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "trades.values": {
+      "name": "trades.values",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "inout_cash": {
+      "name": "inout_cash",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "batch_submit_orders": {
+      "name": "batch_submit_orders",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "batch_cancel_orders": {
+      "name": "batch_cancel_orders",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "context.current_dt.strftime": {
+      "name": "context.current_dt.strftime",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "closeable_amountprint": {
+      "name": "closeable_amountprint",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "isnan": {
+      "name": "isnan",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "mavg": {
+      "name": "mavg",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "vwap": {
+      "name": "vwap",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "stddev": {
+      "name": "stddev",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "OrderStatus": {
+      "name": "OrderStatus",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "MarketOrderStyle": {
+      "name": "MarketOrderStyle",
+      "categories": [
+        "交易执行",
+        "技术指标",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "__init__": {
+      "name": "__init__",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "LimitOrderStyle": {
+      "name": "LimitOrderStyle",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "StopMarketOrderStyle": {
+      "name": "StopMarketOrderStyle",
+      "categories": [
+        "交易执行",
+        "技术指标",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "StopLimitOrderStyle": {
+      "name": "StopLimitOrderStyle",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "send_message": {
+      "name": "send_message",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "log.error": {
+      "name": "log.error",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "log.warn": {
+      "name": "log.warn",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "log.debug": {
+      "name": "log.debug",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "API": {
+      "name": "API",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "write_file": {
+      "name": "write_file",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "read_file": {
+      "name": "read_file",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "json.loads": {
+      "name": "json.loads",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pd.read_csv": {
+      "name": "pd.read_csv",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "create_backtest": {
+      "name": "create_backtest",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "str": {
+      "name": "str",
+      "categories": [
+        "数据获取"
+      ],
+      "has_detailed_doc": false
+    },
+    "after_market_close": {
+      "name": "after_market_close",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_backtest": {
+      "name": "get_backtest",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_status": {
+      "name": "gt.get_status",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_params": {
+      "name": "gt.get_params",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_results": {
+      "name": "gt.get_results",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_positions": {
+      "name": "gt.get_positions",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_orders": {
+      "name": "gt.get_orders",
+      "categories": [
+        "交易执行",
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_records": {
+      "name": "gt.get_records",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_risk": {
+      "name": "gt.get_risk",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_period_risks": {
+      "name": "gt.get_period_risks",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "gt.get_balances": {
+      "name": "gt.get_balances",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "normalize_code": {
+      "name": "normalize_code",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "enable_profile": {
+      "name": "enable_profile",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "int": {
+      "name": "int",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "set_subportfolios": {
+      "name": "set_subportfolios",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "SubPortfolioConfig": {
+      "name": "SubPortfolioConfig",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "transfer_cash": {
+      "name": "transfer_cash",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "handle_tick": {
+      "name": "handle_tick",
+      "categories": [
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "subscribe": {
+      "name": "subscribe",
+      "categories": [
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "unsubscribe": {
+      "name": "unsubscribe",
+      "categories": [
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "unsubscribe_all": {
+      "name": "unsubscribe_all",
+      "categories": [
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "margincash_open": {
+      "name": "margincash_open",
+      "categories": [
+        "技术指标",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "margincash_close": {
+      "name": "margincash_close",
+      "categories": [
+        "技术指标",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "margincash_direct_refund": {
+      "name": "margincash_direct_refund",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "marginsec_open": {
+      "name": "marginsec_open",
+      "categories": [
+        "技术指标",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "marginsec_close": {
+      "name": "marginsec_close",
+      "categories": [
+        "技术指标",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "marginsec_direct_refund": {
+      "name": "marginsec_direct_refund",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_margincash_stocks": {
+      "name": "get_margincash_stocks",
+      "categories": [
+        "技术指标",
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_marginsec_stocks": {
+      "name": "get_marginsec_stocks",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_mtss": {
+      "name": "get_mtss",
+      "categories": [
+        "融资融券"
+      ],
+      "has_detailed_doc": false
+    },
+    "AG9999.XSGE": {
+      "name": "AG9999.XSGE",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Y9999.XDCE": {
+      "name": "Y9999.XDCE",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "AG8888.XSGE": {
+      "name": "AG8888.XSGE",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "Y8888.XDCE": {
+      "name": "Y8888.XDCE",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_future_contracts": {
+      "name": "get_future_contracts",
+      "categories": [
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "is_dangerous": {
+      "name": "is_dangerous",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "and": {
+      "name": "and",
+      "categories": [
+        "策略设置",
+        "Tick级"
+      ],
+      "has_detailed_doc": false
+    },
+    "morning_sell_all": {
+      "name": "morning_sell_all",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "g.today_bought_stocks.add": {
+      "name": "g.today_bought_stocks.add",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "auth": {
+      "name": "auth",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "logout": {
+      "name": "logout",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_query_count": {
+      "name": "get_query_count",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "end_date": {
+      "name": "end_date",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "report_type": {
+      "name": "report_type",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "df.sort_values": {
+      "name": "df.sort_values",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "roe": {
+      "name": "roe",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "datatime.date.today": {
+      "name": "datatime.date.today",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "factor": {
+      "name": "factor",
+      "categories": [
+        "因子分析"
+      ],
+      "has_detailed_doc": false
+    },
+    "run_query": {
+      "name": "run_query",
+      "categories": [
+        "财务数据"
+      ],
+      "has_detailed_doc": false
+    },
+    "opt.run_query": {
+      "name": "opt.run_query",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "decimal": {
+      "name": "decimal",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "code": {
+      "name": "code",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_locked_shares": {
+      "name": "get_locked_shares",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "varchar": {
+      "name": "varchar",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pd.concat": {
+      "name": "pd.concat",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "d.items": {
+      "name": "d.items",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "EPS": {
+      "name": "EPS",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "ROE": {
+      "name": "ROE",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "ROA": {
+      "name": "ROA",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "indicator.code.in_": {
+      "name": "indicator.code.in_",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "tail": {
+      "name": "tail",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "char": {
+      "name": "char",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "futures": {
+      "name": "futures",
+      "categories": [
+        "期货"
+      ],
+      "has_detailed_doc": false
+    },
+    "futures_sett_priceget_extras": {
+      "name": "futures_sett_priceget_extras",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "head": {
+      "name": "head",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_futures_info": {
+      "name": "get_futures_info",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "ETF": {
+      "name": "ETF",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "bond.run_query": {
+      "name": "bond.run_query",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "float": {
+      "name": "float",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "conbond": {
+      "name": "conbond",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "finance.CCTV_NEWS.title.like": {
+      "name": "finance.CCTV_NEWS.title.like",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_effect": {
+      "name": "get_factor_effect",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pcf_ratio": {
+      "name": "pcf_ratio",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "ps_ratio": {
+      "name": "ps_ratio",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "TTM": {
+      "name": "TTM",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "AvgQ": {
+      "name": "AvgQ",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "max": {
+      "name": "max",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "std": {
+      "name": "std",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "EMA": {
+      "name": "EMA",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "Aroon": {
+      "name": "Aroon",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "BBI": {
+      "name": "BBI",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "AVEDEV": {
+      "name": "AVEDEV",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MASS": {
+      "name": "MASS",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "Rank": {
+      "name": "Rank",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "STD": {
+      "name": "STD",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "MACD": {
+      "name": "MACD",
+      "categories": [
+        "技术指标"
+      ],
+      "has_detailed_doc": false
+    },
+    "alpha191.alpha_001": {
+      "name": "alpha191.alpha_001",
+      "categories": [
+        "因子分析"
+      ],
+      "has_detailed_doc": false
+    },
+    "alpha191.alpha_002": {
+      "name": "alpha191.alpha_002",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_stats": {
+      "name": "get_factor_stats",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_style_returns": {
+      "name": "get_factor_style_returns",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_factor_specific_returns": {
+      "name": "get_factor_specific_returns",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_table_info": {
+      "name": "get_table_info",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "high_limit": {
+      "name": "high_limit",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "low_limit": {
+      "name": "low_limit",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "avg": {
+      "name": "avg",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pre_close": {
+      "name": "pre_close",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "paused": {
+      "name": "paused",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "run_offset_query": {
+      "name": "run_offset_query",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_money_flow_pro": {
+      "name": "get_money_flow_pro",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_preopen_infos": {
+      "name": "get_preopen_infos",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_call_acution": {
+      "name": "get_call_acution",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "pro": {
+      "name": "pro",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "get_account_info": {
+      "name": "get_account_info",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "fjm": {
+      "name": "fjm",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    },
+    "df.display_name.str.contains": {
+      "name": "df.display_name.str.contains",
+      "categories": [
+        "其他"
+      ],
+      "has_detailed_doc": false
+    }
+  },
+  "created_at": "2025-12-19T22:19:41.174536"
+}

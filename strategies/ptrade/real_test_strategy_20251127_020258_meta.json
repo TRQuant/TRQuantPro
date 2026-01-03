@@ -1,0 +1,12 @@
+{
+  "id": "real_test_strategy_20251127_020258",
+  "name": "Real Test Strategy 20251127 020258",
+  "version": "v1.0.0",
+  "status": "draft",
+  "broker": "PTrade",
+  "description": "",
+  "code_path": "/home/taotao/.local/share/jqquant/strategies/ptrade/real_test_strategy_20251127_020258.py",
+  "parameters": {},
+  "created_at": "2025-11-27T02:34:02.473166",
+  "updated_at": "2025-11-27T02:34:02.473166"
+}

@@ -1,0 +1,27 @@
+{
+  "gjzq": {
+    "account": "8885019982",
+    "password": "774316",
+    "ptrade": {
+      "enabled": true,
+      "host": "ptrade.gjzq.com",
+      "port": 7709,
+      "account_id": "8885019982",
+      "install_path": "C:\\gjzq\\ptrade"
+    },
+    "qmt": {
+      "enabled": true,
+      "qmt_path": "D:\\国金证券QMT交易端",
+      "session_id": 123456,
+      "account_id": "8885019982"
+    }
+  },
+  "default_broker": "ptrade",
+  "risk_control": {
+    "max_position_per_stock": 0.2,
+    "max_daily_loss": 0.05,
+    "max_drawdown": 0.15,
+    "min_cash_ratio": 0.1
+  }
+}
+

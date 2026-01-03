@@ -1,0 +1,18 @@
+{
+  "name": "test",
+  "platform": "ptrade",
+  "style": "multi_factor",
+  "universe": [
+    "HS300"
+  ],
+  "startDate": "2024-12-03",
+  "endDate": "2025-08-03",
+  "capital": 1000000,
+  "riskParams": {
+    "maxPosition": 0.1,
+    "stopLoss": 0.08,
+    "takeProfit": 0.2
+  },
+  "version": "1.0.0",
+  "created": "2025-12-03T06:17:28.779Z"
+}

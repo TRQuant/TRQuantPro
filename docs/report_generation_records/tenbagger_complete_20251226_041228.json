@@ -1,0 +1,9 @@
+{
+  "report_type": "tenbagger_complete",
+  "timestamp": "20251226_041228",
+  "username": "13327806797",
+  "total_stocks": 100,
+  "recommended": 0,
+  "report_path": "/home/taotao/dev/QuantTest/TRQuant/reports/tenbagger_complete_report_13327806797_20251226_041228.html",
+  "generation_method": "scripts/generate_complete_tenbagger_report.py"
+}
