@@ -1,0 +1,8 @@
+{
+  "anchor_id": "check_strategy",
+  "title": "check_strategy-检查策略内容",
+  "content": "check_strategy-检查策略内容\n\ncheck_strategy(strategy_content=None, strategy_path=None)\n\n每次版本升级后应当将使用的策略内容统一检查一遍。\nstrategy_content和strategy_path都传入时仅对strategy_content入参内容进行检查。\n如果传入strategy_path，需要将对应策略文件上传至研究，且必须是utf-8编码的文本文件。\n如果日志打印策略内容涉及升级过程变动，需根据告警信息参考API接口说明调整策略内容。",
+  "code_blocks": [],
+  "content_length": 262,
+  "url": "https://ptradeapi.com/#check_strategy"
+}

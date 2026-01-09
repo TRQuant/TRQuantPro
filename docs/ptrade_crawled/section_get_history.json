@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_history",
+  "title": "get_history - 获取历史行情",
+  "content": "get_history - 获取历史行情\n\nget_history(count, frequency='1d', field='close', security_list=None, fq=None, include=False, fill='nan', is_dict=False)\n\n该接口只能获取2005年后的数据。\n针对停牌场景，我们没有跳过停牌的日期，无论对单只股票还是多只股票进行调用，时间轴均为二级市场交易日日历， 停牌时使用停牌前的数据填充，成交量为0，日K线可使用成交量为0的逻辑进行停牌日过滤。\n证监会行业、聚源行业、概念板块、地域板块所对应标的的行情数据为非标准的交易所下发数据，是由数据源自行按照成分股分类规则进行计算的，存在与三方数据源不一致的情况。如用户需要在策略中使用，应自行评估该数据的合理性。\n该接口与get_price接口不支持多线程同时调用，即在run_daily或run_interval等函数中不要与handle_data等框架模块同一时刻调用get_history或get_price接口，否则会偶现获取数据为空的现象",
+  "code_blocks": [],
+  "content_length": 481,
+  "url": "https://ptradeapi.com/#get_history"
+}

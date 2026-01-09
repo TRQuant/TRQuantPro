@@ -1,0 +1,8 @@
+{
+  "anchor_id": "on_trade_response",
+  "title": "on_trade_response - 交易主推(可选)",
+  "content": "on_trade_response - 交易主推(可选)\n\n该函数会在成交主推回调时响应，比引擎和get_trades()函数更新Order状态的速度更快，适合对速度要求比较高的策略。",
+  "code_blocks": [],
+  "content_length": 92,
+  "url": "https://ptradeapi.com#on_trade_response"
+}

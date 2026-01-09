@@ -170,6 +170,18 @@ class EnhancedSignalRecord:
         d['long_term_signal'] = self.long_term_signal.value
         d['state_category'] = self.state_category.value
         return d
+    
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> 'EnhancedSignalRecord':
+        """从字典恢复信号记录对象"""
+        # 转换枚举类型
+        d = d.copy()
+        d['signal_type'] = SignalType(d['signal_type']) if isinstance(d['signal_type'], str) else d['signal_type']
+        d['short_term_signal'] = SignalType(d['short_term_signal']) if isinstance(d['short_term_signal'], str) else d['short_term_signal']
+        d['medium_term_signal'] = SignalType(d['medium_term_signal']) if isinstance(d['medium_term_signal'], str) else d['medium_term_signal']
+        d['long_term_signal'] = SignalType(d['long_term_signal']) if isinstance(d['long_term_signal'], str) else d['long_term_signal']
+        d['state_category'] = MarketStateCategory(d['state_category']) if isinstance(d['state_category'], str) else d['state_category']
+        return cls(**d)
 
 
 @dataclass
@@ -265,6 +277,24 @@ class EnhancedBacktestResult:
         result['config'] = self.config.to_dict()
         result['signals'] = [s.to_dict() if hasattr(s, 'to_dict') else asdict(s) for s in self.signals]
         return result
+    
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> 'EnhancedBacktestResult':
+        """从字典恢复回测结果对象"""
+        d = d.copy()
+        
+        # 转换 config
+        if 'config' in d and isinstance(d['config'], dict):
+            d['config'] = BacktestConfig(**d['config'])
+        
+        # 转换 signals
+        if 'signals' in d and isinstance(d['signals'], list):
+            d['signals'] = [
+                EnhancedSignalRecord.from_dict(s) if isinstance(s, dict) else s
+                for s in d['signals']
+            ]
+        
+        return cls(**d)
 
 
 # ==================== 回测器类 ====================
@@ -1362,44 +1392,100 @@ class ParallelBacktester:
         
         return ranges
     
-    def run_phase1(self, sample_interval: int = 5) -> EnhancedBacktestResult:
+    def run_phase1(self, sample_interval: int = 5, 
+                   start_date: str = None,
+                   end_date: str = None) -> EnhancedBacktestResult:
         """
         Phase 1: 快速验证 (1年数据)
         
-        - 时间范围: 2023-01-01 ~ 2024-08-16
+        - 时间范围: 可配置（默认2023-01-01 ~ 2024-08-16）
         - 采样间隔: 默认每5天
         - 单进程执行
         - 目的: 验证框架正确性
+        
+        Args:
+            sample_interval: 采样间隔（每N个交易日）
+            start_date: 开始日期（格式：YYYY-MM-DD），如果为None则使用默认值
+            end_date: 结束日期（格式：YYYY-MM-DD），如果为None则使用默认值
         """
+        from core.market_trend_storage import MarketTrendStorage
+        
+        # 使用传入的时间范围，如果没有则使用默认值
+        if start_date is None:
+            start_date = "2023-01-01"
+        if end_date is None:
+            end_date = "2024-08-16"
+        
         config = BacktestConfig(
-            start_date="2023-01-01",
-            end_date="2024-08-16"
+            start_date=start_date,
+            end_date=end_date
         )
         
+        # 构建配置字典
+        config_dict = config.to_dict()
+        config_dict['sample_interval'] = sample_interval
+        
+        # 执行回测
         backtester = SignalBacktester()
         result = backtester.run_backtest(config, sample_interval=sample_interval)
         result.phase = "phase1"
         
+        # 保存结果（version_tag由调用方在notebook中设置）
+        storage = MarketTrendStorage()
+        if storage.is_connected():
+            try:
+                result_id = storage.save_backtest_result(
+                    result=result,
+                    config=config_dict,
+                    backtest_type='signal_phase1',
+                    version_tag=None  # 由调用方在notebook中设置
+                )
+                if result_id:
+                    logger.info(f"✅ Phase 1回测结果已保存: {result_id}")
+            except Exception as e:
+                logger.warning(f"保存Phase 1回测结果失败: {e}")
+        
         return result
     
     def run_phase2(self, sample_interval: int = 1, 
+                   start_date: str = None,
+                   end_date: str = None,
                    progress_callback: Callable = None) -> EnhancedBacktestResult:
         """
-        Phase 2: 完整回测 (10年数据)
+        Phase 2: 完整回测 (可配置时间范围)
         
-        - 时间范围: 2014-11-17 ~ 2024-08-16
+        - 时间范围: 可配置（默认2014-11-17 ~ 2024-08-16）
         - 采样间隔: 默认每1天 (可调)
         - 3进程并行执行
         - 目的: 完整验证信号准确率
-        """
-        logger.info(f"开始Phase 2完整回测 (使用{self.num_workers}个进程)")
         
-        # 分割时间段
-        date_ranges = [
-            ("2014-11-17", "2017-12-31"),  # Worker 1: 牛熊转换期
-            ("2018-01-01", "2021-06-30"),  # Worker 2: 熊市+疫情复苏
-            ("2021-07-01", "2024-08-16"),  # Worker 3: 结构性行情
-        ]
+        Args:
+            sample_interval: 采样间隔（每N个交易日）
+            start_date: 开始日期（格式：YYYY-MM-DD），如果为None则使用默认值
+            end_date: 结束日期（格式：YYYY-MM-DD），如果为None则使用默认值
+            progress_callback: 进度回调函数
+        """
+        from core.market_trend_storage import MarketTrendStorage
+        
+        # 使用传入的时间范围，如果没有则使用默认值
+        if start_date is None:
+            start_date = "2014-11-17"
+        if end_date is None:
+            end_date = "2024-08-16"
+        
+        # 构建完整配置字典
+        full_config = BacktestConfig(
+            start_date=start_date,
+            end_date=end_date
+        )
+        config_dict = full_config.to_dict()
+        config_dict['sample_interval'] = sample_interval
+        
+        logger.info(f"开始Phase 2完整回测 (使用{self.num_workers}个进程)")
+        logger.info(f"时间范围: {start_date} ~ {end_date}")
+        
+        # 使用_split_date_range方法动态分割时间段（分成3段）
+        date_ranges = self._split_date_range(start_date, end_date, num_splits=3)
         
         all_signals = []
         all_yearly_stats = {}
@@ -1435,10 +1521,7 @@ class ParallelBacktester:
         
         # 合并结果
         merged_result = EnhancedBacktestResult(
-            config=BacktestConfig(
-                start_date="2014-11-17",
-                end_date="2024-08-16"
-            ),
+            config=full_config,
             phase="phase2"
         )
         
@@ -1449,6 +1532,9 @@ class ParallelBacktester:
         
         # 重新计算统计数据
         self._recalculate_stats(merged_result)
+        
+        # 保存结果（version_tag由调用方在notebook中设置，这里不保存）
+        # 注意：run_phase2方法不直接保存，由notebook中的调用代码保存并设置version_tag
         
         return merged_result
     
@@ -1547,16 +1633,41 @@ def run_quick_backtest(start_date: str = "2023-01-01",
     return backtester.run_backtest(config, sample_interval=sample_interval)
 
 
-def run_phase1_backtest(sample_interval: int = 5) -> EnhancedBacktestResult:
-    """Phase 1: 快速验证回测"""
+def run_phase1_backtest(sample_interval: int = 5,
+                        start_date: str = None,
+                        end_date: str = None) -> EnhancedBacktestResult:
+    """
+    Phase 1: 快速验证回测（可配置时间范围）
+    
+    Args:
+        sample_interval: 采样间隔（每N个交易日）
+        start_date: 开始日期（格式：YYYY-MM-DD），如果为None则使用默认值
+        end_date: 结束日期（格式：YYYY-MM-DD），如果为None则使用默认值
+    """
     parallel = ParallelBacktester()
-    return parallel.run_phase1(sample_interval=sample_interval)
+    return parallel.run_phase1(sample_interval=sample_interval,
+                               start_date=start_date,
+                               end_date=end_date)
 
 
-def run_phase2_backtest(sample_interval: int = 3) -> EnhancedBacktestResult:
-    """Phase 2: 完整10年回测"""
+def run_phase2_backtest(sample_interval: int = 3,
+                         start_date: str = None,
+                         end_date: str = None,
+                         progress_callback: Callable = None) -> EnhancedBacktestResult:
+    """
+    Phase 2: 完整回测（可配置时间范围）
+    
+    Args:
+        sample_interval: 采样间隔（每N个交易日）
+        start_date: 开始日期（格式：YYYY-MM-DD），如果为None则使用默认值
+        end_date: 结束日期（格式：YYYY-MM-DD），如果为None则使用默认值
+        progress_callback: 进度回调函数，格式: callback(current, total, message)
+    """
     parallel = ParallelBacktester()
-    return parallel.run_phase2(sample_interval=sample_interval)
+    return parallel.run_phase2(sample_interval=sample_interval,
+                                start_date=start_date,
+                                end_date=end_date,
+                                progress_callback=progress_callback)
 
 
 if __name__ == "__main__":

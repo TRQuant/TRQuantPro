@@ -1,0 +1,8 @@
+{
+  "anchor_id": "两融头寸性质",
+  "title": "cash_group -- 两融头寸性质",
+  "content": "cash_group -- 两融头寸性质\n\n\"0\" -- 开仓未归还\n\"1\" -- 部分归还\n\"2\" -- 合约已过期\n\"3\" -- 客户自行归还\n\"4\" -- 手工了结\n\"5\" -- 未形成负债",
+  "code_blocks": [],
+  "content_length": 98,
+  "url": "https://ptradeapi.com#两融头寸性质"
+}

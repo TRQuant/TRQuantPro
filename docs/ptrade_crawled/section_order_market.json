@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_market",
+  "title": "order_market - 按市价进行委托",
+  "content": "order_market - 按市价进行委托\n\norder_market(security, amount, market_type, limit_price=None)\n\n支持逆回购交易。委托方向为卖出(amount必须为负数)，逆回购最小申购金额为1000元(10张)，因此本接口amount入参应大于等于10(10张)，否则会导致委托失败。\n不支持可转债交易。\n该函数中market_type是必传字段，如不传入参数会出现报错。\n该函数委托上证股票时limit_price是必传字段，如不传入参数会出现报错。",
+  "code_blocks": [],
+  "content_length": 257,
+  "url": "https://ptradeapi.com/#order_market"
+}

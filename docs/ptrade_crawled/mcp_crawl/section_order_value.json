@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_value",
+  "title": "order_value - 指定目标价值买卖",
+  "content": "order_value - 指定目标价值买卖\n\norder_value\n(\nsecurity\n,\nvalue\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 77,
+  "url": "https://ptradeapi.com#order_value"
+}

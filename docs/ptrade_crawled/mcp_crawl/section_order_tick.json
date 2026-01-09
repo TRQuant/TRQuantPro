@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_tick",
+  "title": "order_tick - tick行情触发买卖",
+  "content": "order_tick - tick行情触发买卖\n\norder_tick\n(\nsid\n,\namount\n,\npriceGear\n=\n'1'\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 91,
+  "url": "https://ptradeapi.com#order_tick"
+}

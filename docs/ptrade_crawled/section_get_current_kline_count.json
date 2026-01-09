@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_current_kline_count",
+  "title": "get_current_kline_count-获取股票业务当前时间的分钟bar数量",
+  "content": "get_current_kline_count-获取股票业务当前时间的分钟bar数量\n\n回测中返回回测日当前时间的分钟bar数量。\n研究中返回最新交易日当前时间的分钟bar数量，非交易日执行均返回0。\n交易中返回最新交易日当前时间的分钟bar数量。",
+  "code_blocks": [],
+  "content_length": 124,
+  "url": "https://ptradeapi.com/#get_current_kline_count"
+}

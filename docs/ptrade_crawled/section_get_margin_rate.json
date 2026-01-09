@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_margin_rate",
+  "title": "get_margin_rate- 获取用户设置的保证金比例",
+  "content": "get_margin_rate- 获取用户设置的保证金比例\n\ntransaction_code：期货合约的交易代码，str类型，如沪铜2112（\"CU2112\"）的交易代码为\"CU\"；",
+  "code_blocks": [],
+  "content_length": 92,
+  "url": "https://ptradeapi.com/#get_margin_rate"
+}

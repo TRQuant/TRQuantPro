@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trend_data",
+  "title": "get_trend_data - 获取集中竞价期间代码数据",
+  "content": "get_trend_data - 获取集中竞价期间代码数据\n\nget_trend_data(date=None, stocks=None, market=None)\n\n不传参数时，默认返回当日XSHE,XSHG市场所有代码的数据。\nstocks和market不能同时入参。",
+  "code_blocks": [],
+  "content_length": 136,
+  "url": "https://ptradeapi.com/#get_trend_data"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "策略运行时间",
+  "title": "策略运行时间",
+  "content": "策略运行时间\n\n9:30分钟之前为盘前运行时间，交易环境支持运行在run_daily中指定交易时间(如time='09:15')运行的函数；回测环境和交易环境支持运行before_trading_start函数\n\n9:31(回测)/9:30(交易)~15:00分钟为盘中运行时间，分钟级别回测环境和交易环境支持运行在run_daily中指定交易时间(如time='14:30')运行的函数；回测环境和交易环境支持运行handle_data函数；交易环境支持运行run_interval函数和tick_data函数\n\n15:30分钟为盘后运行时间，回测环境和交易环境支持运行after_trading_end函数(该函数为定时运行)；15:00之后交易环境支持运行在run_daily中指定交易时间(如time='15:10')运行的函数，",
+  "code_blocks": [],
+  "content_length": 369,
+  "url": "https://ptradeapi.com/#策略运行时间"
+}

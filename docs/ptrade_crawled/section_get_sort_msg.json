@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_sort_msg",
+  "title": "get_sort_msg – 获取板块、行业的涨幅排名",
+  "content": "get_sort_msg – 获取板块、行业的涨幅排名\n\nget_sort_msg(sort_type_grp=None, sort_field_name=None, sort_type=1, data_count=100)\n\nsort_type_grp: 板块或行业的代码(list[str]/str)；(暂时只支持XBHS.DY地域、XBHS.GN概念、XBHS.ZJHHY证监会行业、XBHS.ZS指数、XBHS.HY行业等)\n\npreclose_px: 昨日收盘价；\nopen_px: 今日开盘价；\nlast_px: 最新价；\nhigh_px: 最高价；\nlow_px: 最低价；\nwavg_px: 加权平均价；\nbusiness_amount: 总成交量；\nbusiness_balance: 总成交额；\npx_change: 涨跌额；\namplitude: 振幅；\npx_change_rate: 涨跌幅；\ncirculation_amount: 流通股本；\ntotal_shares: 总股本；\nmarket_value: 市值；\ncirculation_value: 流通市值；\nvol_ratio: 量比；\nrise_count: 上涨家数；\nfall_count: 下跌家数；",
+  "code_blocks": [],
+  "content_length": 548,
+  "url": "https://ptradeapi.com/#get_sort_msg"
+}

@@ -63,8 +63,12 @@ class SimpleCache:
             return None
         
         try:
-            with open(cache_path, 'rb') as f:
-                return pickle.load(f)
+            import warnings
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=DeprecationWarning,
+                                        module='pandas.compat.pickle_compat')
+                with open(cache_path, 'rb') as f:
+                    return pickle.load(f)
         except Exception as e:
             logger.warning(f"缓存读取失败: {e}")
             return None

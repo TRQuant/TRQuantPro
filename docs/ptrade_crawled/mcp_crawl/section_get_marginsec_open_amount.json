@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_marginsec_open_amount",
+  "title": "get_marginsec_open_amount - 融券标的最大可卖数量查询",
+  "content": "get_marginsec_open_amount - 融券标的最大可卖数量查询\n\nget_marginsec_open_amount\n(\nsecurity\n,\nprice\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 95,
+  "url": "https://ptradeapi.com#get_marginsec_open_amount"
+}

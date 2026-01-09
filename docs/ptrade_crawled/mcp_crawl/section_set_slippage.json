@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_slippage",
+  "title": "set_slippage-设置滑点",
+  "content": "set_slippage-设置滑点\n\n该函数用于设置滑点比例，滑点在真实交易场景是不可避免的，因此回测中设置合理的滑点有利于让回测逼近真实场景。",
+  "code_blocks": [],
+  "content_length": 72,
+  "url": "https://ptradeapi.com#set_slippage"
+}

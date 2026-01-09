@@ -1,0 +1,8 @@
+{
+  "anchor_id": "期货专用函数",
+  "title": "期货专用函数",
+  "content": "期货专用函数\n\n不同期货品种每一跳的价格变动都不一样，limit_price入参的时候要参考对应品种的价格变动规则，如limit_price不做入参则会以交易的行情快照最新价或者回测的分钟最新价进行报单；",
+  "code_blocks": [],
+  "content_length": 102,
+  "url": "https://ptradeapi.com/#期货专用函数"
+}

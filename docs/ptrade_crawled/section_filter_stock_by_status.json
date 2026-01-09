@@ -1,0 +1,8 @@
+{
+  "anchor_id": "filter_stock_by_status",
+  "title": "filter_stock_by_status-过滤指定状态的股票代码",
+  "content": "filter_stock_by_status-过滤指定状态的股票代码\n\nfilter_stock_by_status(stocks, filter_type=[\"ST\", \"HALT\", \"DELISTING\"], query_date=None)\n\nstocks: 例如 ['000001.SZ','000003.SZ']。该字段必须输入。(list[str]/str)；\n\nfilter_type: 支持以下四种类型属性的过滤条件，默认为[\"ST\", \"HALT\", \"DELISTING\"](str/list)",
+  "code_blocks": [],
+  "content_length": 258,
+  "url": "https://ptradeapi.com/#filter_stock_by_status"
+}

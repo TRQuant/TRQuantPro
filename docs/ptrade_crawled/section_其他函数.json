@@ -1,0 +1,8 @@
+{
+  "anchor_id": "其他函数",
+  "title": "其他函数",
+  "content": "其他函数\n\nlog.debug(\"debug\")\nlog.info(\"info\")\nlog.warning(\"warning\")\nlog.error(\"error\")\nlog.critical(\"critical\")",
+  "code_blocks": [],
+  "content_length": 108,
+  "url": "https://ptradeapi.com/#其他函数"
+}

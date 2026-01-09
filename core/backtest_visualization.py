@@ -39,64 +39,267 @@ except ImportError:
     logger.warning("Plotly未安装，部分可视化功能不可用")
 
 
-# 颜色配置 (Dark Mode)
+# 颜色配置 (Dark Mode) - 确保文字与背景有高对比度
 COLORS = {
-    'background': '#1E1E1E',
-    'paper': '#252525',
-    'text': '#FFFFFF',
-    'grid': '#333333',
-    'bullish': '#00C853',
-    'bearish': '#FF5252',
-    'neutral': '#FFC107',
-    'bull_state': '#4CAF50',
-    'bear_state': '#F44336',
-    'volatile_state': '#FF9800',
-    'short': '#2196F3',
-    'medium': '#9C27B0',
-    'long': '#FF5722',
+    'background': '#1E1E1E',      # 深色背景
+    'paper': '#252525',           # 图表外背景（略浅）
+    'text': '#FFFFFF',            # 白色文字（高对比度）
+    'text_secondary': '#CCCCCC',  # 次要文字（略浅但仍清晰）
+    'grid': '#444444',            # 网格线（增强可见性）
+    'axis_line': '#666666',       # 坐标轴线
+    'bullish': '#00C853',         # 看多（绿色）
+    'bearish': '#FF5252',         # 看空（红色）
+    'neutral': '#FFC107',         # 中性（黄色）
+    'bull_state': '#4CAF50',      # 牛市状态
+    'bear_state': '#F44336',      # 熊市状态
+    'volatile_state': '#FF9800',  # 震荡状态
+    'short': '#2196F3',           # 短期（蓝色）
+    'medium': '#9C27B0',          # 中期（紫色）
+    'long': '#FF5722',            # 长期（橙红色）
 }
 
 
 class BacktestVisualization:
     """回测结果可视化"""
     
-    def __init__(self, result: Any):
+    @staticmethod
+    def _get_dark_layout(title: str = '', height: int = 400, **kwargs) -> Dict[str, Any]:
+        """
+        获取统一的Dark Mode布局配置
+        确保所有文字颜色与背景有明显对比度
+        
+        Args:
+            title: 图表标题
+            height: 图表高度
+            **kwargs: 其他布局参数（会覆盖默认值）
+            
+        Returns:
+            布局字典
+        """
+        layout = {
+            'title': {
+                'text': title,
+                'font': {
+                    'color': COLORS['text'],      # 白色标题
+                    'size': 16,
+                    'family': 'Arial, Microsoft YaHei, sans-serif'
+                },
+                'x': 0.5,
+                'xanchor': 'center'
+            },
+            'paper_bgcolor': COLORS['paper'],      # 图表外背景
+            'plot_bgcolor': COLORS['background'],  # 图表内背景
+            'font': {
+                'color': COLORS['text'],           # 所有文字为白色
+                'size': 12,
+                'family': 'Arial, Microsoft YaHei, sans-serif'
+            },
+            'xaxis': {
+                'gridcolor': COLORS['grid'],       # 网格线
+                'linecolor': COLORS.get('axis_line', COLORS['grid']),  # 坐标轴线
+                'zerolinecolor': COLORS['grid'],
+                'title': {
+                    'font': {'color': COLORS['text']}
+                },
+                'tickfont': {'color': COLORS['text']}
+            },
+            'yaxis': {
+                'gridcolor': COLORS['grid'],
+                'linecolor': COLORS.get('axis_line', COLORS['grid']),
+                'zerolinecolor': COLORS['grid'],
+                'title': {
+                    'font': {'color': COLORS['text']}
+                },
+                'tickfont': {'color': COLORS['text']}
+            },
+            'legend': {
+                'font': {'color': COLORS['text']},
+                'bgcolor': 'rgba(37, 37, 37, 0.8)',  # 半透明背景
+                'bordercolor': COLORS['grid'],
+                'borderwidth': 1
+            },
+            'height': height
+        }
+        
+        # 合并用户自定义参数
+        layout.update(kwargs)
+        return layout
+    
+    @staticmethod
+    def _to_bool(value: Any) -> bool:
+        """将值转换为布尔值，支持字符串'true'/'false'"""
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            return value.lower() == 'true'
+        return bool(value)
+    
+    def __init__(self, result: Any, version_info: Optional[Dict[str, Any]] = None):
         """
         初始化可视化器
         
         Args:
             result: EnhancedBacktestResult 实例
+            version_info: 版本信息字典（可选，包含algorithm_version, version_tag等）
         """
         self.result = result
+        self.version_info = version_info or {}
         self.signals_df = self._signals_to_dataframe()
     
+    @classmethod
+    def from_database(
+        cls,
+        result_id: str,
+        version: Optional[str] = None
+    ) -> 'BacktestVisualization':
+        """
+        从数据库加载结果并创建可视化对象
+        
+        Args:
+            result_id: 结果ID（MongoDB _id的字符串形式）
+            version: 版本标签（可选，用于过滤）
+            
+        Returns:
+            BacktestVisualization实例
+            
+        Raises:
+            ValueError: 如果结果不存在或加载失败
+        """
+        from core.market_trend_storage import MarketTrendStorage
+        
+        storage = MarketTrendStorage()
+        if not storage.is_connected():
+            raise ValueError("MongoDB未连接，无法从数据库加载")
+        
+        result = storage.load_backtest_result(result_id)
+        if not result:
+            raise ValueError(f"未找到回测结果: {result_id}")
+        
+        # 获取版本信息
+        from bson import ObjectId
+        doc = storage.db[storage.BACKTEST_COLLECTION].find_one({'_id': ObjectId(result_id)})
+        version_info = {}
+        if doc:
+            version_info = {
+                'algorithm_version': doc.get('algorithm_version'),
+                'version_tag': doc.get('version_tag'),
+                'migrated_from': doc.get('migrated_from'),
+                'created_at': doc.get('created_at')
+            }
+        
+        return cls(result, version_info=version_info)
+    
+    @classmethod
+    def from_cache(
+        cls,
+        config: Dict[str, Any],
+        backtest_type: str,
+        version: Optional[str] = None
+    ) -> Optional['BacktestVisualization']:
+        """
+        从缓存查找结果并创建可视化对象
+        
+        Args:
+            config: 配置字典
+            backtest_type: 回测类型
+            version: 算法版本（可选）
+            
+        Returns:
+            BacktestVisualization实例，未找到返回None
+        """
+        from core.market_trend_storage import MarketTrendStorage
+        
+        storage = MarketTrendStorage()
+        if not storage.is_connected():
+            logger.warning("MongoDB未连接，无法从缓存加载")
+            return None
+        
+        cached = storage.find_cached_backtest(config, backtest_type, algorithm_version=version)
+        if not cached:
+            return None
+        
+        result = storage.load_backtest_result(cached['_id'])
+        if not result:
+            return None
+        
+        # 获取版本信息
+        version_info = {
+            'algorithm_version': cached.get('algorithm_version'),
+            'version_tag': cached.get('version_tag'),
+            'migrated_from': cached.get('migrated_from'),
+            'created_at': cached.get('created_at')
+        }
+        
+        return cls(result, version_info=version_info)
+    
+    def get_version_info(self) -> Dict[str, Any]:
+        """
+        返回结果的版本信息
+        
+        Returns:
+            版本信息字典
+        """
+        return self.version_info.copy() if self.version_info else {}
+    
     def _signals_to_dataframe(self) -> pd.DataFrame:
-        """将信号列表转换为DataFrame"""
+        """将信号列表转换为DataFrame
+        
+        支持两种格式：
+        1. EnhancedSignalRecord对象列表（直接从回测得到）
+        2. 字典列表（从数据库加载）
+        """
         if not self.result.signals:
             return pd.DataFrame()
         
         data = []
         for s in self.result.signals:
-            data.append({
-                'date': pd.to_datetime(s.date),
-                'signal_type': s.signal_type.value,
-                'composite_score': s.composite_score,
-                'short_score': s.short_term_score,
-                'medium_score': s.medium_term_score,
-                'long_score': s.long_term_score,
-                'market_state': s.market_state,
-                'state_category': s.state_category.value,
-                'returns_5d': s.returns_5d,
-                'returns_20d': s.returns_20d,
-                'returns_60d': s.returns_60d,
-                'correct_5d': s.correct_5d,
-                'correct_20d': s.correct_20d,
-                'correct_60d': s.correct_60d,
-                'short_correct': s.short_correct_5d,
-                'medium_correct': s.medium_correct_20d,
-                'long_correct': s.long_correct_60d,
-                'state_correct': s.state_correct_60d,
-            })
+            # 判断是对象还是字典
+            if isinstance(s, dict):
+                # 从数据库加载的字典格式
+                signal_type_val = s.get('signal_type', 'neutral')
+                state_category_val = s.get('state_category', '震荡')
+                data.append({
+                    'date': pd.to_datetime(s.get('date', '')),
+                    'signal_type': signal_type_val if isinstance(signal_type_val, str) else signal_type_val.value if hasattr(signal_type_val, 'value') else str(signal_type_val),
+                    'composite_score': s.get('composite_score', 0.0),
+                    'short_score': s.get('short_term_score', 0.0),
+                    'medium_score': s.get('medium_term_score', 0.0),
+                    'long_score': s.get('long_term_score', 0.0),
+                    'market_state': s.get('market_state', ''),
+                    'state_category': state_category_val if isinstance(state_category_val, str) else state_category_val.value if hasattr(state_category_val, 'value') else str(state_category_val),
+                    'returns_5d': float(s.get('returns_5d', 0.0)) if s.get('returns_5d') not in [None, ''] else 0.0,
+                    'returns_20d': float(s.get('returns_20d', 0.0)) if s.get('returns_20d') not in [None, ''] else 0.0,
+                    'returns_60d': float(s.get('returns_60d', 0.0)) if s.get('returns_60d') not in [None, ''] else 0.0,
+                    'correct_5d': self._to_bool(s.get('correct_5d', False)),
+                    'correct_20d': self._to_bool(s.get('correct_20d', False)),
+                    'correct_60d': self._to_bool(s.get('correct_60d', False)),
+                    'short_correct': self._to_bool(s.get('short_correct_5d', False)),
+                    'medium_correct': self._to_bool(s.get('medium_correct_20d', False)),
+                    'long_correct': self._to_bool(s.get('long_correct_60d', False)),
+                    'state_correct': self._to_bool(s.get('state_correct_60d', False)),
+                })
+            else:
+                # EnhancedSignalRecord对象格式
+                data.append({
+                    'date': pd.to_datetime(s.date),
+                    'signal_type': s.signal_type.value if hasattr(s.signal_type, 'value') else str(s.signal_type),
+                    'composite_score': s.composite_score,
+                    'short_score': s.short_term_score,
+                    'medium_score': s.medium_term_score,
+                    'long_score': s.long_term_score,
+                    'market_state': s.market_state,
+                    'state_category': s.state_category.value if hasattr(s.state_category, 'value') else str(s.state_category),
+                    'returns_5d': s.returns_5d,
+                    'returns_20d': s.returns_20d,
+                    'returns_60d': s.returns_60d,
+                    'correct_5d': s.correct_5d,
+                    'correct_20d': s.correct_20d,
+                    'correct_60d': s.correct_60d,
+                    'short_correct': s.short_correct_5d,
+                    'medium_correct': s.medium_correct_20d,
+                    'long_correct': s.long_correct_60d,
+                    'state_correct': s.state_correct_60d,
+                })
         
         df = pd.DataFrame(data)
         df['year'] = df['date'].dt.year
@@ -129,16 +332,15 @@ class BacktestVisualization:
             zmax=100,
             text=[[f'{v:.1f}%' if v > 0 else '' for v in row] for row in z],
             texttemplate="%{text}",
-            textfont={"size": 14, "color": "white"},
+            textfont={"size": 14, "color": COLORS['text']},  # 使用配置的白色文字
             hovertemplate='%{y} %{x}: %{z:.1f}%<extra></extra>'
         ))
         
         fig.update_layout(
-            title='准确率热力图 (各周期验证)',
-            paper_bgcolor=COLORS['paper'],
-            plot_bgcolor=COLORS['background'],
-            font=dict(color=COLORS['text']),
-            height=400,
+            self._get_dark_layout(
+                title='准确率热力图 (各周期验证)',
+                height=400
+            )
         )
         
         return fig
@@ -187,12 +389,14 @@ class BacktestVisualization:
         )
         
         fig.update_layout(
-            title='信号分布',
-            paper_bgcolor=COLORS['paper'],
-            plot_bgcolor=COLORS['background'],
-            font=dict(color=COLORS['text']),
-            height=400,
+            self._get_dark_layout(
+                title='信号分布',
+                height=400
+            )
         )
+        
+        # 更新subplot标题颜色
+        fig.update_annotations(font_color=COLORS['text'])
         
         return fig
     
@@ -234,25 +438,24 @@ class BacktestVisualization:
         fig.add_trace(go.Bar(name='中期(20日)', x=years, y=medium_acc, marker_color=COLORS['medium']))
         fig.add_trace(go.Bar(name='长期(60日)', x=years, y=long_acc, marker_color=COLORS['long']))
         
-        fig.update_layout(
+        layout = self._get_dark_layout(
             title='年度分周期准确率',
+            height=400,
             xaxis_title='年份',
             yaxis_title='准确率 (%)',
             barmode='group',
-            paper_bgcolor=COLORS['paper'],
-            plot_bgcolor=COLORS['background'],
-            font=dict(color=COLORS['text']),
-            xaxis=dict(gridcolor=COLORS['grid']),
-            yaxis=dict(gridcolor=COLORS['grid'], range=[0, 100]),
-            height=400,
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
                 y=1.02,
                 xanchor="right",
-                x=1
+                x=1,
+                font={'color': COLORS['text']}
             )
         )
+        # 更新y轴范围
+        layout['yaxis']['range'] = [0, 100]
+        fig.update_layout(layout)
         
         return fig
     
@@ -317,11 +520,8 @@ class BacktestVisualization:
         
         fig.add_hline(y=0, line_dash="solid", line_color=COLORS['grid'], row=3, col=1)
         
-        fig.update_layout(
+        layout = self._get_dark_layout(
             title='信号得分与收益时序',
-            paper_bgcolor=COLORS['paper'],
-            plot_bgcolor=COLORS['background'],
-            font=dict(color=COLORS['text']),
             height=800,
             showlegend=True,
             legend=dict(
@@ -329,12 +529,26 @@ class BacktestVisualization:
                 yanchor="bottom",
                 y=1.02,
                 xanchor="right",
-                x=1
+                x=1,
+                font={'color': COLORS['text']}
             )
         )
+        fig.update_layout(layout)
         
-        fig.update_xaxes(gridcolor=COLORS['grid'])
-        fig.update_yaxes(gridcolor=COLORS['grid'])
+        # 更新所有subplot的坐标轴
+        fig.update_xaxes(
+            gridcolor=COLORS['grid'],
+            linecolor=COLORS.get('axis_line', COLORS['grid']),
+            tickfont={'color': COLORS['text']}
+        )
+        fig.update_yaxes(
+            gridcolor=COLORS['grid'],
+            linecolor=COLORS.get('axis_line', COLORS['grid']),
+            tickfont={'color': COLORS['text']}
+        )
+        
+        # 更新subplot标题颜色
+        fig.update_annotations(font_color=COLORS['text'])
         
         return fig
     
@@ -375,15 +589,12 @@ class BacktestVisualization:
             ))
         
         fig.update_layout(
-            title='市场状态时间线',
-            xaxis_title='日期',
-            yaxis_title='状态类别',
-            paper_bgcolor=COLORS['paper'],
-            plot_bgcolor=COLORS['background'],
-            font=dict(color=COLORS['text']),
-            xaxis=dict(gridcolor=COLORS['grid']),
-            yaxis=dict(gridcolor=COLORS['grid']),
-            height=300,
+            self._get_dark_layout(
+                title='市场状态时间线',
+                xaxis_title='日期',
+                yaxis_title='状态类别',
+                height=300
+            )
         )
         
         return fig

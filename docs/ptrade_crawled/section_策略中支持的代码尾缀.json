@@ -1,0 +1,8 @@
+{
+  "anchor_id": "策略中支持的代码尾缀",
+  "title": "策略中支持的代码尾缀",
+  "content": "策略中支持的代码尾缀\n\n市场品种\t尾缀全称\t尾缀简称\n上海市场证券\tXSHG\tSS\n深圳市场证券\tXSHE\tSZ\n指数\tXBHS\t\n中金所期货\tCCFX\t\n上海股票期权\tXSHO\t\n深圳股票期权\tXSZO\t\n上海港股通\tXHKG-SS\t\n深圳港股通\tXHKG-SZ\t",
+  "code_blocks": [],
+  "content_length": 133,
+  "url": "https://ptradeapi.com/#策略中支持的代码尾缀"
+}

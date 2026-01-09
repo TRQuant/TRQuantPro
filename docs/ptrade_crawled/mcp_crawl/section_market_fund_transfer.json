@@ -1,0 +1,8 @@
+{
+  "anchor_id": "market_fund_transfer",
+  "title": "market_fund_transfer-市场间资金调拨",
+  "content": "market_fund_transfer-市场间资金调拨\n\nmarket_fund_transfer\n(\nexchange_type\n,\noccur_balance\n)",
+  "code_blocks": [],
+  "content_length": 84,
+  "url": "https://ptradeapi.com#market_fund_transfer"
+}

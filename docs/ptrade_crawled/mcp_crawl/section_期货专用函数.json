@@ -1,0 +1,8 @@
+{
+  "anchor_id": "期货专用函数",
+  "title": "期货专用函数",
+  "content": "期货专用函数\n\nbuy_open\n(\ncontract\n,\namount\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 59,
+  "url": "https://ptradeapi.com#期货专用函数"
+}

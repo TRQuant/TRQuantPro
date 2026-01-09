@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_stock_status",
+  "title": "get_stock_status – 获取股票状态信息",
+  "content": "get_stock_status – 获取股票状态信息\n\nget_stock_status\n(\nstocks\n,\nquery_type\n=\n'ST'\n,\nquery_date\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 96,
+  "url": "https://ptradeapi.com#get_stock_status"
+}

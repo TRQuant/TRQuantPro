@@ -8,7 +8,7 @@
 1. 信息获取 (data_source) - data_source_server_v2._handle_health_check
 2. 市场趋势 (market_trend) - market_server_v2._handle_status
 3. 投资主线 (mainline) - market_server_v2._handle_mainlines
-4. 候选池 (candidate_pool) - data_source_server_v2._handle_candidate_pool
+4. 投资标的筛选 (investment_target_selection) - data_source_server_v2._handle_candidate_pool
 5. 因子构建 (factor) - factor_server._handle_recommend
 6. 策略生成 (strategy) - strategy_template_server._handle_generate
 7. 回测验证 (backtest) - backtest_server._handle_quick
@@ -124,7 +124,7 @@ WORKFLOW_9STEPS = [
     {"id": "data_source", "name": "信息获取", "icon": "📡", "color": "#58a6ff", "mcp_tool": "data_source.health_check", "description": "检查数据源连接状态"},
     {"id": "market_trend", "name": "市场趋势", "icon": "📈", "color": "#667eea", "mcp_tool": "market.status", "description": "分析当前市场状态"},
     {"id": "mainline", "name": "投资主线", "icon": "🔥", "color": "#F59E0B", "mcp_tool": "market.mainlines", "description": "识别投资主线"},
-    {"id": "candidate_pool", "name": "候选池构建", "icon": "📦", "color": "#a371f7", "mcp_tool": "data_source.candidate_pool", "description": "构建候选股票池"},
+    {"id": "investment_target_selection", "name": "投资标的筛选", "icon": "📦", "color": "#a371f7", "mcp_tool": "data_source.candidate_pool", "description": "筛选投资标的股票"},
     {"id": "factor", "name": "因子构建", "icon": "🧮", "color": "#3fb950", "mcp_tool": "factor.recommend", "description": "推荐量化因子"},
     {"id": "strategy", "name": "策略生成", "icon": "💻", "color": "#d29922", "mcp_tool": "template.generate", "description": "生成策略代码"},
     {"id": "backtest", "name": "回测验证", "icon": "🔄", "color": "#1E3A5F", "mcp_tool": "backtest.quick", "description": "执行回测验证"},
@@ -237,8 +237,8 @@ async def execute_step_mainline(args: Dict, context: Dict) -> Dict:
     return {"success": False, "error": "市场服务器不可用"}
 
 
-async def execute_step_candidate_pool(args: Dict, context: Dict) -> Dict:
-    """步骤4: 候选池构建 - 调用 data_source_server_v2"""
+async def execute_step_investment_target_selection(args: Dict, context: Dict) -> Dict:
+    """步骤4: 投资标的筛选 - 调用 data_source_server_v2"""
     if _handle_candidate_pool:
         # 从上下文获取主线
         mainline = args.get("mainline")
@@ -305,10 +305,10 @@ async def execute_step_strategy(args: Dict, context: Dict) -> Dict:
 async def execute_step_backtest(args: Dict, context: Dict) -> Dict:
     """步骤7: 回测验证 - 调用 backtest_server"""
     if _handle_backtest_quick:
-        # 从上下文获取候选池股票
+        # 从上下文获取投资标的股票
         securities = args.get("securities", [])
-        if not securities and "candidate_pool" in context:
-            stocks = context["candidate_pool"].get("stocks", [])
+        if not securities and "investment_target_selection" in context:
+            stocks = context["investment_target_selection"].get("stocks", [])
             securities = [s.get("code") for s in stocks[:10] if s.get("code")]
         
         if not securities:
@@ -439,7 +439,7 @@ STEP_EXECUTORS = {
     "data_source": execute_step_data_source,
     "market_trend": execute_step_market_trend,
     "mainline": execute_step_mainline,
-    "candidate_pool": execute_step_candidate_pool,
+    "investment_target_selection": execute_step_investment_target_selection,
     "factor": execute_step_factor,
     "strategy": execute_step_strategy,
     "backtest": execute_step_backtest,

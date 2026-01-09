@@ -60,8 +60,12 @@ class DataCache:
         cache_file = CACHE_DIR / f"{key}.pkl"
         if cache_file.exists():
             try:
-                with open(cache_file, 'rb') as f:
-                    data = pickle.load(f)
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.filterwarnings('ignore', category=DeprecationWarning,
+                                            module='pandas.compat.pickle_compat')
+                    with open(cache_file, 'rb') as f:
+                        data = pickle.load(f)
                 self._memory_cache[key] = data
                 return data
             except:
@@ -73,7 +77,7 @@ class DataCache:
         self._memory_cache[key] = data
         try:
             with open(CACHE_DIR / f"{key}.pkl", 'wb') as f:
-                pickle.dump(data, f)
+                pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as e:
             logger.warning(f"缓存保存失败: {e}")
 

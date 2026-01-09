@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_market_detail",
+  "title": "get_market_detail-获取市场详细信息",
+  "content": "get_market_detail-获取市场详细信息\n\nfinance_mic: 市场代码，相关市场编码参考get_market_list返回信息(str)。",
+  "code_blocks": [],
+  "content_length": 79,
+  "url": "https://ptradeapi.com/#get_market_detail"
+}

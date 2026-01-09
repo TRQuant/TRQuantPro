@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_info",
+  "title": "get_etf_info - 获取ETF信息",
+  "content": "get_etf_info - 获取ETF信息\n\netf_code : 单支ETF代码或者一个ETF代码的list，必传参数(list[str]/str)\n\n正常返回一个dict类型字段，包含每只ETF信息，key为ETF代码，values为包含etf信息的dict。异常返回空dict，如{}(dict[str:dict[...]])\n\netf_redemption_code -- 申赎代码(str:str)；\npublish -- 是否需要发布IOPV(str:int)；\nreport_unit -- 最小申购、赎回单位(str:int)；\ncash_balance -- 现金差额(str:float)；\nmax_cash_ratio -- 现金替代比例上限(str:float)；\npre_cash_componet -- T-1日申购基准单位现金余额(str:float)；\nnav_percu -- T-1日申购基准单位净值(str:float)；\nnav_pre -- T-1日基金单位净值(str:float)；\nallot_max -- 申购上限(str:float)；\nredeem_max -- 赎回上限(str:float)；\n\n{'510020.SS': {'nav_percu': 206601.39, 'redeem_max': 0.0, 'nav_pre': 0.207, 'report_unit': 1000000, 'max_cash_ratio': 0.4,\n                'cash_balance': -813.75, 'etf_redemption_code': '510021', 'pre_cash_componet': 598.39, 'allot_max': 0.0, 'publish': 1}}\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #ETF信息\n    etf_info = get_etf_info('510020.SS')\n    log.info(etf_info)\n    etfs_info = get_etf_info(['510020.SS','510050.SS'])\n    log.info(etfs_info)",
+  "code_blocks": [],
+  "content_length": 1058,
+  "url": "https://ptradeapi.com/#get_etf_info"
+}

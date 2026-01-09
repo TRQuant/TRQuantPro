@@ -26,6 +26,36 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+def _jqdata_price_worker(args: Dict[str, Any]) -> pd.DataFrame:
+    """子进程：拉取一组股票的价格数据（JQData）。
+
+    注意：必须是模块级函数，才能被 ProcessPoolExecutor pickle。
+    """
+    codes = args["codes"]
+    start_date = args["start_date"]
+    end_date = args["end_date"]
+    frequency = args["frequency"]
+    fields = args["fields"]
+
+    import jqdatasdk as jq
+    from config.config_manager import get_config_manager
+
+    cm = get_config_manager()
+    jq_cfg = cm.get_config("jqdata")
+    jq.auth(jq_cfg.get("username"), jq_cfg.get("password"))
+
+    df = jq.get_price(
+        codes,
+        start_date=start_date,
+        end_date=end_date,
+        frequency=frequency,
+        fields=fields,
+        panel=False,
+        fq="post",
+        skip_paused=True,
+    )
+    return df if df is not None else pd.DataFrame()
+
 
 # ==================== 枚举定义 ====================
 
@@ -64,6 +94,9 @@ class UnifiedBacktestConfig:
     # 基础配置
     start_date: str
     end_date: str
+    # 评估窗口（允许加载更长历史用于warmup，但只统计eval区间）
+    eval_start_date: Optional[str] = None
+    eval_end_date: Optional[str] = None
     securities: List[str] = field(default_factory=list)
     initial_capital: float = 1000000.0
     benchmark: str = "000300.XSHG"
@@ -83,6 +116,9 @@ class UnifiedBacktestConfig:
     # 引擎配置
     engine: BacktestEngine = BacktestEngine.VECTORIZED
     level: BacktestLevel = BacktestLevel.FAST
+
+    # 并发配置（主要用于 JQData 批量拉取加速；JoinQuant研究环境通常允许3连接）
+    parallel_workers: int = 1
     
     # 输出配置
     output_dir: str = "output/backtest"
@@ -293,6 +329,7 @@ class UnifiedBacktestManager:
         
         # 数据缓存
         self._price_data = None
+        self._data_provider = None
         
         # 进度回调
         self._progress_callback = None
@@ -319,27 +356,103 @@ class UnifiedBacktestManager:
             return False
         
         try:
-            from core.data import get_data_provider_v2, DataRequest
-            
-            provider = get_data_provider_v2()
-            request = DataRequest(
-                securities=securities,
-                start_date=self.config.start_date,
-                end_date=self.config.end_date,
-                use_mock=self.config.use_mock
+            # phase4-fastdata: 优先使用 FastDataLoader（close矩阵 + 增量更新 + 本地索引）
+            if (not self.config.use_mock) and str(self.config.data_source).lower() == "jqdata":
+                try:
+                    from core.data.fast_data_loader import FastDataLoader, FastDataLoaderConfig
+
+                    loader = FastDataLoader(
+                        FastDataLoaderConfig(max_workers=int(getattr(self.config, "parallel_workers", 3)))
+                    )
+                    px = loader.get_close_matrix(
+                        securities=securities,
+                        start_date=self.config.start_date,
+                        end_date=self.config.end_date,
+                        frequency=self.config.frequency.value if hasattr(self.config.frequency, "value") else "daily",
+                        parallel_workers=int(getattr(self.config, "parallel_workers", 3)),
+                        use_cache=True,
+                    )
+                    if px is not None and not px.empty:
+                        self._price_data = px
+                        self._report_progress(
+                            0.2,
+                            f"FastDataLoader命中: {len(self._price_data)}天 x {len(self._price_data.columns)}股票",
+                        )
+                        return True
+                except Exception as e:
+                    logger.debug(f"FastDataLoader不可用/失败，回退UnifiedDataProviderV2: {e}")
+
+            # 注意：core.data 默认会初始化 AKShare（会触发第三方依赖 warning 且拖慢初始化）
+            # 回测默认优先“聚宽研究环境”，因此这里按需启用数据源，避免无谓依赖与开销。
+            from core.data.unified_data_provider_v2 import (
+                UnifiedDataProviderV2,
+                DataRequest,
+                DataSource,
             )
-            
-            response = provider.get_data(request)
-            
-            if not response.success or response.data is None:
-                logger.error(f"数据加载失败: {response.error}")
-                return False
+
+            enable_akshare = str(self.config.data_source).lower() == "akshare"
+            enable_jqdata = str(self.config.data_source).lower() in ("auto", "jqdata", "cache")
+
+            if self._data_provider is None:
+                self._data_provider = UnifiedDataProviderV2(
+                    use_mock=self.config.use_mock,
+                    enable_jqdata=enable_jqdata,
+                    enable_akshare=enable_akshare,
+                )
+
+            preferred = None
+            if str(self.config.data_source).lower() == "jqdata":
+                preferred = DataSource.JQDATA
+            elif str(self.config.data_source).lower() == "akshare":
+                preferred = DataSource.AKSHARE
+            elif str(self.config.data_source).lower() == "mock":
+                preferred = DataSource.MOCK
+
+            freq = self.config.frequency.value if hasattr(self.config.frequency, "value") else "daily"
+
+            # Fast/Standard层：默认只需要 close，减少数据量，加速加载
+            # Phase4.2: 大股票池时启用 3 并发连接并行拉取（避免单次超大请求过慢/超时）
+            use_parallel = (
+                (not self.config.use_mock)
+                and (str(self.config.data_source).lower() in ("jqdata", "auto", "cache"))
+                and int(getattr(self.config, "parallel_workers", 1)) > 1
+                and len(securities) >= 600
+            )
+
+            if use_parallel:
+                data = self._load_data_parallel_jqdata(
+                    securities=securities,
+                    start_date=self.config.start_date,
+                    end_date=self.config.end_date,
+                    frequency=freq,
+                    fields=["close"],
+                    max_workers=int(self.config.parallel_workers),
+                )
+                if data is None or data.empty:
+                    logger.error("并行数据加载失败: 返回为空")
+                    return False
+                response_data = data
+            else:
+                request = DataRequest(
+                    securities=securities,
+                    start_date=self.config.start_date,
+                    end_date=self.config.end_date,
+                    frequency=freq,
+                    fields=["close"],
+                    use_mock=self.config.use_mock,
+                    preferred_source=preferred,
+                )
+                response = self._data_provider.get_data(request)
+                if not response.success or response.data is None:
+                    logger.error(f"数据加载失败: {response.error}")
+                    return False
+                response_data = response.data
             
             # 转换为pivot格式
-            data = response.data
+            data = response_data
             if "time" in data.columns and "code" in data.columns:
                 self._price_data = data.pivot(index="time", columns="code", values="close")
-            elif "date" in data.columns:
+            elif "date" in data.columns and "code" in data.columns:
                 self._price_data = data.pivot(index="date", columns="code", values="close")
             else:
                 self._price_data = data
@@ -350,6 +463,59 @@ class UnifiedBacktestManager:
         except Exception as e:
             logger.error(f"数据加载异常: {e}")
             return False
+
+    @staticmethod
+    def _load_data_parallel_jqdata(
+        securities: List[str],
+        start_date: str,
+        end_date: str,
+        frequency: str,
+        fields: List[str],
+        max_workers: int = 3,
+    ) -> Optional[pd.DataFrame]:
+        """并行拉取 JQData 数据（用于大股票池的批量加速）。
+
+        Notes:
+            - 每个子进程会各自执行一次 jq.auth（等价于占用一个“连接”）
+            - 为了避免跨进程缓存竞争，这里直接调用 jqdatasdk，不走 UnifiedDataProviderV2 的磁盘缓存
+        """
+        from concurrent.futures import ProcessPoolExecutor, as_completed
+
+        if not securities:
+            return None
+
+        max_workers = max(1, min(int(max_workers), 8))
+
+        # 均匀切分
+        chunks: List[List[str]] = []
+        n = len(securities)
+        step = max(1, int(np.ceil(n / max_workers)))
+        for i in range(0, n, step):
+            chunks.append(securities[i:i + step])
+
+        results: List[pd.DataFrame] = []
+        with ProcessPoolExecutor(max_workers=max_workers) as ex:
+            futs = [
+                ex.submit(
+                    _jqdata_price_worker,
+                    {
+                        "codes": ch,
+                        "start_date": start_date,
+                        "end_date": end_date,
+                        "frequency": frequency,
+                        "fields": fields,
+                    },
+                )
+                for ch in chunks
+            ]
+            for fut in as_completed(futs):
+                df = fut.result()
+                if df is not None and not df.empty:
+                    results.append(df)
+
+        if not results:
+            return None
+        return pd.concat(results, ignore_index=True)
     
     # ==================== 三层回测 ====================
     
@@ -381,7 +547,8 @@ class UnifiedBacktestManager:
             
             # 计算收益
             self._report_progress(0.6, "计算收益...")
-            returns = self._price_data.pct_change()
+            # 显式关闭默认fill_method（避免FutureWarning；策略应自己处理缺失值）
+            returns = self._price_data.pct_change(fill_method=None)
             
             # 向量化计算组合收益
             portfolio_returns = (weights.shift(1) * returns).sum(axis=1)
@@ -392,6 +559,15 @@ class UnifiedBacktestManager:
             portfolio_returns = portfolio_returns - cost
             
             portfolio_returns = portfolio_returns.dropna()
+
+            # 仅统计评估窗口（避免 warmup 数据污染指标）
+            eval_start = self.config.eval_start_date or self.config.start_date
+            eval_end = self.config.eval_end_date or self.config.end_date
+            try:
+                portfolio_returns = portfolio_returns.loc[eval_start:eval_end]
+            except Exception:
+                # 如果索引不是DatetimeIndex/不可切片，保持原样
+                pass
             
             if len(portfolio_returns) == 0:
                 result.error = "收益计算为空"
@@ -400,6 +576,15 @@ class UnifiedBacktestManager:
             # 计算指标
             self._report_progress(0.8, "计算绩效指标...")
             result = self._calculate_metrics(portfolio_returns, result)
+
+            # Fast层：给出一个“近似交易次数”，用于快速验证是否发生调仓
+            try:
+                changes = weights.diff().abs()
+                # 每个(日期, 股票)的权重变化视为一次交易侧事件（买/卖），除以2近似得到回合数
+                approx_events = int((changes > 1e-12).sum().sum())
+                result.total_trades = int(approx_events / 2)
+            except Exception:
+                result.total_trades = 0
             result.success = True
             result.duration_seconds = time.time() - start_time
             
@@ -591,6 +776,11 @@ class UnifiedBacktestManager:
                 initial_capital=self.config.initial_capital,
                 benchmark=self.config.benchmark,
                 frequency=bt_frequency,
+                # 关键：快速验证默认不生成HTML/CSV，避免报告链路拖慢 & 触发外部依赖警告
+                generate_html=bool(self.config.generate_report),
+                generate_csv=bool(self.config.generate_report),
+                output_dir=self.config.output_dir,
+                extras={"stock_pool": self.config.securities} if self.config.securities else None,
             )
             
             engine = BulletTradeEngine(bt_config)

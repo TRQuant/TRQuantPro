@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_open_orders",
+  "title": "get_open_orders - 获取未完成订单",
+  "content": "get_open_orders - 获取未完成订单\n\ndef initialize(context):\n    g.security = ['600570.SS', '000001.SZ']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    for _sec in g.security:\n        _id = order(_sec, 100, limit_price = 30)\n    # 当运行周期为分钟则可获取本周期及之前所有未完成的订单\n    dict_list = get_open_orders()\n    log.info(dict_list)\n\n# 当运行周期为天，可在after_trading_end中调用此函数获取当天未完成的订单\ndef after_trading_end(context, data):\n    dict_list = get_open_orders()\n    log.info(dict_list)",
+  "code_blocks": [],
+  "content_length": 468,
+  "url": "https://ptradeapi.com/#get_open_orders"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_marginsec_close_amount",
+  "title": "get_marginsec_close_amount - 买券还券标的最大可买数量查询",
+  "content": "get_marginsec_close_amount - 买券还券标的最大可买数量查询\n\nget_marginsec_close_amount\n(\nsecurity\n,\nprice\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 99,
+  "url": "https://ptradeapi.com#get_marginsec_close_amount"
+}

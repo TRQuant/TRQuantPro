@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_deliver",
+  "title": "get_deliver – 获取历史交割单信息",
+  "content": "get_deliver – 获取历史交割单信息\n\n该函数仅在交易模块使用；仅支持before_trading_start和after_trading_end阶段调用",
+  "code_blocks": [],
+  "content_length": 82,
+  "url": "https://ptradeapi.com#get_deliver"
+}

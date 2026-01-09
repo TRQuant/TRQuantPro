@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_list",
+  "title": "get_etf_list - 获取ETF代码",
+  "content": "get_etf_list - 获取ETF代码\n\n正常返回一个list类型对象，包含所有ETF代码。异常返回空list，如[](list[str,...])。",
+  "code_blocks": [],
+  "content_length": 78,
+  "url": "https://ptradeapi.com/#get_etf_list"
+}

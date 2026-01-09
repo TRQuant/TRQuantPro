@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_Ashares",
+  "title": "get_Ashares – 获取指定日期A股代码列表",
+  "content": "get_Ashares – 获取指定日期A股代码列表\n\n1、在回测中，date不入参默认取回测日期，默认值会随着回测日期变化而变化，等于context.current_dt",
+  "code_blocks": [],
+  "content_length": 86,
+  "url": "https://ptradeapi.com/#get_Ashares"
+}

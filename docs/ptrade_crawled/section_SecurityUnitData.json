@@ -1,0 +1,8 @@
+{
+  "anchor_id": "SecurityUnitData",
+  "title": "SecurityUnitData",
+  "content": "SecurityUnitData\n\ndt 时间\nopen 时间段开始时价格\nclose 时间段结束时价格\nprice结束时价格\nlow 最低价\nhigh 最高价\nvolume 成交的股票数量\nmoney 成交的金额",
+  "code_blocks": [],
+  "content_length": 107,
+  "url": "https://ptradeapi.com/#SecurityUnitData"
+}

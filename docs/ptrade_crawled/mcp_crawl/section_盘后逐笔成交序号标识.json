@@ -1,0 +1,8 @@
+{
+  "anchor_id": "盘后逐笔成交序号标识",
+  "title": "trans_identify_am -- 盘后逐笔成交序号标识",
+  "content": "trans_identify_am -- 盘后逐笔成交序号标识\n\n\"0\" -- 禁止替代\n\"1\" -- 允许替代\n\"2\" -- 必须替代\n\"3\" -- 非沪市退补现金替代\n\"4\" -- 非沪市必须现金替代\n\"5\" -- 非沪深退补现金替代\n\"6\" -- 非沪深必须现金替代",
+  "code_blocks": [],
+  "content_length": 136,
+  "url": "https://ptradeapi.com#盘后逐笔成交序号标识"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "可转债溢价率规模数据",
+  "title": "可转债溢价率规模数据",
+  "content": "可转债溢价率规模数据\n\n由于ptrade内置数据没有可转债溢价率数据，所以需要调用外部数据，如果券商提供的ptrade不支持外网访问，这个是没有办法获取这个数据的\n\n目前支持外网访问的是国盛证券，笔者部署了一系列针对可转债的数据接口，支持的字段丰富，且是实时更新的数据。\n\n字段名\t中文含义\t类型\nbond_nm\t可转债名称\tstr\nbond_id\t可转债代码\tstr，没有后缀\nbond_nm\t可转债名称\tstr\nprice\t可转债价格\tfloat\nsincrease_rt\t正股涨幅\tfloat\nincrease_rt\t可转债涨幅\tfloat\ncurr_iss_amt\t可转债剩余规模(亿)\tfloat\npb\t市净率\tfloat\nlist_dt\t可转债上市日期\tstr\nconvert_value\t转股价值\tfloat\nconvert_price\t转股价\tfloat\nstock_id\t正股代码\tfloat\nytm_rt\t到期收益率\tfloat\nyear_left\t剩余年限\tfloat，null的为已公布强赎\nrating_cd\t评级\tstr\n\nclass Bond:\n        '''\n        转债相关\n        '''\n    \n        def __int__(self):\n            self.code_dict = None\n    \n        def modify_code(self, x):\n            return x + '.SZ' if x.startswith('12') else x + '.SS'\n    \n        \n        def get_bond(self):\n            # 获取可转债列表\n            baseinfo = 'info'\n            data = {'sign': SIGN}\n            resp = requests.post(\n                url=API_HOST.format(baseinfo),\n                data=data\n            )\n            bond_data = resp.json()\n    \n            df = pd.DataFrame(bond_data['data'])\n            df['bond_id']=df['bond_id'].map(self.modify_code)\n            return df\n\nbond = Bond()\nb_df = bond.get_bond()\n\n        ",
+  "code_blocks": [],
+  "content_length": 1166,
+  "url": "https://ptradeapi.com/#可转债溢价率规模数据"
+}

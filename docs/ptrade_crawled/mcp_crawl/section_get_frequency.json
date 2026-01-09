@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_frequency",
+  "title": "get_frequency-获取当前业务代码的周期",
+  "content": "get_frequency-获取当前业务代码的周期\n\n该接口用于返回当前业务代码的周期，如在周期为分钟的情况下执行回测或交易，该函数返回minute；在周期为每日的情况下执行回测或交易，该函数返回daily。",
+  "code_blocks": [],
+  "content_length": 104,
+  "url": "https://ptradeapi.com#get_frequency"
+}

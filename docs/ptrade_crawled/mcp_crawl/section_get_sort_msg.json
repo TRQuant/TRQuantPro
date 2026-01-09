@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_sort_msg",
+  "title": "get_sort_msg – 获取板块、行业的涨幅排名",
+  "content": "get_sort_msg – 获取板块、行业的涨幅排名\n\nget_sort_msg\n(\nsort_type_grp\n=\nNone\n,\nsort_field_name\n=\nNone\n,\nsort_type\n=\n1\n,\ndata_count\n=\n100\n)",
+  "code_blocks": [],
+  "content_length": 126,
+  "url": "https://ptradeapi.com#get_sort_msg"
+}

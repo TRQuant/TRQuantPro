@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_individual_transaction",
+  "title": "get_individual_transaction - 获取逐笔成交行情",
+  "content": "get_individual_transaction - 获取逐笔成交行情\n\nget_individual_transaction\n(\nstocks\n=\nNone\n,\ndata_count\n=\n50\n,\nstart_pos\n=\n0\n,\nsearch_direction\n=\n1\n,\nis_dict\n=\nFalse\n)",
+  "code_blocks": [],
+  "content_length": 158,
+  "url": "https://ptradeapi.com#get_individual_transaction"
+}

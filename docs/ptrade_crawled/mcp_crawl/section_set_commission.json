@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_commission",
+  "title": "set_commission-设置佣金费率",
+  "content": "set_commission-设置佣金费率\n\nset_commission\n(\ncommission_ratio\n=\n0.0003\n,\nmin_commission\n=\n5.0\n,\ntype\n=\n\"STOCK\"\n)",
+  "code_blocks": [],
+  "content_length": 107,
+  "url": "https://ptradeapi.com#set_commission"
+}

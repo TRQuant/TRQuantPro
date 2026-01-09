@@ -18,9 +18,7 @@
 """
 
 from .chart_engine import ChartEngine
-from .dashboard import Dashboard, MarketGauge, StatusTimeline
-
-__all__ = [
+from .dashboard import Dashboard, MarketGauge, StatusTimeline__all__ = [
     "ChartEngine",
     "Dashboard",
     "MarketGauge",

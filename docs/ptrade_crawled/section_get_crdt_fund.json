@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_crdt_fund",
+  "title": "get_crdt_fund - 可融资金信息查询",
+  "content": "get_crdt_fund - 可融资金信息查询\n\ncash_group：两融头寸性质(int)，1为普通头寸，2为专项头寸，该字段不入参默认表示普通头寸；",
+  "code_blocks": [],
+  "content_length": 78,
+  "url": "https://ptradeapi.com/#get_crdt_fund"
+}

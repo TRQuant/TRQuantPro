@@ -1,0 +1,8 @@
+{
+  "anchor_id": "Portfolio",
+  "title": "Portfolio",
+  "content": "Portfolio\n\ncash 当前可用资金（不包含冻结资金）\npositions 当前持有的标的(包含不可卖出的标的)，dict类型，key是标的代码，value是Position对象\nportfolio_value 当前持有的标的和现金的总价值\npositions_value 持仓价值\ncapital_used 已使用的现金\nreturns 当前的收益比例, 相对于初始资金\npnl 浮动盈亏\nstart_date 开始时间",
+  "code_blocks": [],
+  "content_length": 215,
+  "url": "https://ptradeapi.com/#Portfolio"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "公共交易函数",
+  "title": "公共交易函数",
+  "content": "公共交易函数\n\norder_tick\n(\nsid\n,\namount\n,\npriceGear\n=\n'1'\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 74,
+  "url": "https://ptradeapi.com#公共交易函数"
+}

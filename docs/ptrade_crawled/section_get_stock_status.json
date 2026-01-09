@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_stock_status",
+  "title": "get_stock_status – 获取股票状态信息",
+  "content": "get_stock_status – 获取股票状态信息\n\nget_stock_status(stocks, query_type='ST', query_date=None)\n\nstocks: 例如 ['000001.SZ','000003.SZ']。该字段必须输入，否则返回None(list[str]/str)；",
+  "code_blocks": [],
+  "content_length": 158,
+  "url": "https://ptradeapi.com/#get_stock_status"
+}

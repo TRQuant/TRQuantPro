@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_fundamentals",
+  "title": "get_fundamentals-获取财务数据",
+  "content": "get_fundamentals-获取财务数据\n\nget_fundamentals(security, table, fields = None, date = None, start_year = None, end_year = None, report_types = None, date_type = None, merge_type = None)\n\n1、该接口为http在线获取，会存在因网络拥堵等原因导致应答失败的情况，如果返回数据结果为空请多次尝试，策略中请增加保护机制。\n\n2、该接口有流量限制，每秒不得调用超过100次，单次最大调用量是500条数据，每一条数据的定义为：一个股票对应一个表的一个字段，相当于最大不超过5万条。因此如果涉及多股多字段的查询要考虑限流情况，依据实际调用场景加入sleep做时间间隔，方法可参考示例。",
+  "code_blocks": [],
+  "content_length": 374,
+  "url": "https://ptradeapi.com/#get_fundamentals"
+}

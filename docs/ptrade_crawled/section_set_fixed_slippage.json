@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_fixed_slippage",
+  "title": "set_fixed_slippage-设置固定滑点",
+  "content": "set_fixed_slippage-设置固定滑点\n\n该函数用于设置固定滑点，滑点在真实交易场景是不可避免的，因此回测中设置合理的滑点有利于让回测逼近真实场景。\n\nfixedslippage：固定滑点，委托价格与最后的成交价格的价差设置，这个价差是一个固定的值(比如0.02元，撮合成交时委托价格加减0.01元)。最终的成交价格=委托价格±fixedslippage(float)/2，默认固定滑点为0.0。",
+  "code_blocks": [],
+  "content_length": 204,
+  "url": "https://ptradeapi.com/#set_fixed_slippage"
+}

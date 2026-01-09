@@ -1,0 +1,173 @@
+{
+  "items": [
+    {
+      "id": "kb_20260109_105614",
+      "title": "BulletTrade get_price返回MultiIndex列名问题",
+      "content": "\n问题描述：\nBulletTrade的get_price API返回的DataFrame列名是MultiIndex格式，如('close', 'code')，而不是简单的字符串'code'。\n这导致 'code' in df.columns 返回False，因子计算逻辑无法正确获取数据。\n\n错误表现：\n- 因子计算结果全部为0\n- 20日动量: min=0.0%, max=0.0%\n- 市值: min=0.0亿, max=0.0亿\n\n根因分析：\nBulletTrade的数据API包装层(bullet_trade.data.api)返回的DataFrame使用MultiIndex列名，\n而策略代码假设是简单的字符串列名。\n\n解决方案：\n在处理get_price返回值之前，将MultiIndex列名展平：\n```python\nif isinstance(prices_20.columns, pd.MultiIndex):\n    prices_20.columns = [col[-1] if isinstance(col, tuple) else col for col in prices_20.columns]\n```\n\n适用场景：\n- BulletTrade回测\n- 使用get_price获取多只股票数据\n- panel=False模式\n\n验证方法：\n打印 prices_20.columns.tolist() 检查列名格式\n",
+      "category": "bulletrade_debug",
+      "created": "2026-01-09T10:56:14.321427"
+    },
+    {
+      "id": "kb_20260109_105614",
+      "title": "BulletTrade get_fundamentals未定义错误",
+      "content": "\n问题描述：\n在BulletTrade策略中使用get_fundamentals时报错：name 'get_fundamentals' is not defined\n\n错误原因：\nBulletTrade的jqdata兼容层(bullet_trade.compat.jqdata)不包含get_fundamentals/query/valuation/indicator等函数。\n这些函数仅在聚宽官方环境中通过from jqdata import *可用。\n\n解决方案：\n1. 直接从jqdatasdk导入这些函数\n2. 在策略开头进行jqdatasdk认证\n\n代码示例：\n```python\nimport jqdatasdk\nfrom jqdatasdk import query, valuation, indicator, get_fundamentals\n\n# 在策略导入时认证\njqdatasdk.auth('username', 'password')\n\n# 使用示例\nq = query(valuation.code, valuation.market_cap).filter(valuation.code.in_(codes))\nfund_df = get_fundamentals(q, date=date_str)\n```\n\n注意事项：\n- BulletTrade引擎注入的get_price等函数来自bullet_trade.data.api\n- get_fundamentals必须从jqdatasdk获取，且需要认证\n- 策略代码中不要使用from jqdata import *获取基本面数据函数\n",
+      "category": "bulletrade_debug",
+      "created": "2026-01-09T10:56:14.321583"
+    },
+    {
+      "id": "kb_20260109_105614",
+      "title": "JQData market_cap单位是亿元不需要转换",
+      "content": "\n问题描述：\n使用get_fundamentals获取market_cap后，结果显示市值接近0\n\n错误原因：\nJQData的valuation.market_cap返回值单位已经是亿元，\n代码中误以为是元单位，再除以1亿导致数值极小。\n\n验证数据：\n- 平安银行(000001.XSHE) market_cap返回值: 2332.5914 (约2332亿)\n- 浦发银行(600000.XSHG) market_cap返回值: 3052.6265 (约3052亿)\n\n解决方案：\n```python\n# 错误写法（不需要转换）\ndf['market_cap'] = fund_df['market_cap'] / 100000000\n\n# 正确写法（直接使用）\ndf['market_cap'] = fund_df['market_cap']\n```\n\n适用范围：\n- JQData所有market_cap字段\n- get_fundamentals查询valuation表\n",
+      "category": "jqdata_api",
+      "created": "2026-01-09T10:56:14.321763"
+    },
+    {
+      "id": "kb_20260109_105614",
+      "title": "BulletTrade Position对象属性与聚宽不同",
+      "content": "\n问题描述：\n在BulletTrade策略中访问context.portfolio.positions[stock].total_value报错：\n'Position' object has no attribute 'total_value'\n\n差异说明：\nBulletTrade的Position对象与聚宽官方环境的Position对象属性名不同。\n\n属性对照：\n| 聚宽官方 | BulletTrade |\n|---------|-------------|\n| total_value | value / market_value |\n| total_amount | total_amount |\n| last_price | last_price |\n\n解决方案：\n使用兼容性检查代码：\n```python\nif stock in context.portfolio.positions:\n    position = context.portfolio.positions[stock]\n    if hasattr(position, 'value'):\n        current_value = position.value\n    elif hasattr(position, 'market_value'):\n        current_value = position.market_value\n    elif hasattr(position, 'total_amount') and hasattr(position, 'last_price'):\n        current_value = position.total_amount * position.last_price\n    else:\n        current_value = 0.0\n```\n\n最佳实践：\n编写BulletTrade策略时，优先使用hasattr检查属性是否存在\n",
+      "category": "bulletrade_debug",
+      "created": "2026-01-09T10:56:14.321906"
+    },
+    {
+      "id": "kb_20260109_105614",
+      "title": "BulletTrade jqdata模块替换机制",
+      "content": "\nBulletTrade引擎加载策略时的模块替换机制：\n\n1. 引擎在_inject_globals方法中创建自定义jq_mod模块\n2. 将jq_mod注册到sys.modules['jqdata']\n3. 策略代码中的from jqdata import *会使用这个替换后的模块\n\n替换后的jqdata模块包含：\n- 全局对象: g, log\n- 数据API: get_price, attribute_history, get_current_data, get_trade_days, get_all_securities, get_index_stocks\n- 订单API: order, order_value, order_target, order_target_value\n- 设置API: set_benchmark, set_order_cost, set_slippage, set_option\n- 调度API: run_daily, run_weekly, run_monthly\n\n不包含（需要从jqdatasdk获取）：\n- get_fundamentals\n- query, valuation, indicator\n- 其他财务数据相关函数\n\n代码位置：\nbullet_trade/core/engine.py: _inject_globals方法\nbullet_trade/compat/jqdata.py: 兼容层定义\n\n调试建议：\n如果怀疑模块替换问题，可以打印sys.modules['jqdata']查看实际使用的模块\n",
+      "category": "bulletrade_debug",
+      "created": "2026-01-09T10:56:14.322055"
+    },
+    {
+      "id": "kb_20260109_105942",
+      "title": "测试知识条目",
+      "content": "这是一个测试知识条目，用于验证知识库功能",
+      "category": "test",
+      "created": "2026-01-09T10:59:42.053661"
+    },
+    {
+      "id": "kb_20260109_111644",
+      "title": "聚宽get_factor_values返回Z-score标准化值",
+      "content": "\n问题描述：\n尝试使用聚宽get_factor_values()替代手工因子计算时发现，聚宽返回的是标准化后的Z-score值，不是原始数值。\n\n测试验证：\n- size因子：均值0.58，标准差0.37（而不是市值亿元）\n- momentum因子：值范围[-0.57, 1.01]（而不是动量百分比）\n- 三只不同市值股票的size因子值相同(0.92)\n\n可用因子列表（共276个）：\n- CNE5: size, beta, momentum, liquidity, residual_volatility\n- CNE6额外: growth, earnings_yield\n- 换手率: turnover_volatility\n- ROE: roe_ttm, roe_ttm_8y\n\n不可用因子：\n- reversal（报错：无效的因子）\n\n结论：\n1. 聚宽因子适合用于**排序**，不适合用于**阈值筛选**\n2. 需要原始值时仍需手工计算或使用get_fundamentals\n3. 可以用roe_ttm因子获取标准化ROE值\n\n最佳实践：\n- 阈值筛选：使用get_price + get_fundamentals获取原始值\n- 综合评分：可以使用get_factor_values的Z-score值加权求和\n- 排序选股：直接使用聚宽因子排序\n",
+      "category": "jqdata_api",
+      "created": "2026-01-09T11:16:44.103043"
+    },
+    {
+      "id": "kb_20260109_112035",
+      "title": "聚宽与BulletTrade数据API差异对照表",
+      "content": "\n## 数据API差异对照表\n\n| 功能 | 聚宽API | BulletTrade | 解决方案 |\n|------|---------|-------------|----------|\n| 历史价格 | get_price() | get_price()✅ | 相同，但返回格式可能不同 |\n| 基本面数据 | get_fundamentals() | ❌不支持 | 需从jqdatasdk导入并认证 |\n| 财务查询 | query/valuation/indicator | ❌不支持 | 需从jqdatasdk导入 |\n| 因子数据 | get_factor_values() | ❌不支持 | 需从jqdatasdk导入 |\n| 指数成分 | get_index_stocks() | get_index_stocks()✅ | 相同 |\n| 全部证券 | get_all_securities() | get_all_securities()✅ | 相同 |\n| 交易日历 | get_trade_days() | get_trade_days()✅ | 相同 |\n| 当前数据 | get_current_data() | get_current_data()✅ | 相同 |\n\n## get_price返回格式差异\n\n聚宽官方返回：\n- DataFrame，列名为简单字符串（'close', 'code'等）\n\nBulletTrade返回：\n- DataFrame，列名可能是MultiIndex（如('close', 'code')）\n- 需要展平处理\n\n## 解决方案代码\n\n```python\n# 处理MultiIndex列名\ndef _flatten_multiindex_columns(df):\n    if isinstance(df.columns, pd.MultiIndex):\n        df.columns = [col[-1] if isinstance(col, tuple) else col for col in df.columns]\n    return df\n\n# 获取基本面数据\nimport jqdatasdk\nfrom jqdatasdk import query, valuation, indicator, get_fundamentals\njqdatasdk.auth('username', 'password')\n```\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:20:35.904389"
+    },
+    {
+      "id": "kb_20260109_112035",
+      "title": "聚宽与BulletTrade订单API差异对照表",
+      "content": "\n## 订单API差异对照表\n\n| 功能 | 聚宽API | BulletTrade | 兼容性 |\n|------|---------|-------------|--------|\n| 按股数下单 | order() | order()✅ | 完全兼容 |\n| 按金额下单 | order_value() | order_value()✅ | 完全兼容 |\n| 目标股数 | order_target() | order_target()✅ | 完全兼容 |\n| 目标金额 | order_target_value() | order_target_value()✅ | 完全兼容 |\n| 取消订单 | cancel_order() | cancel_order()✅ | 完全兼容 |\n| 取消全部 | cancel_all_orders() | ❌ | 需要循环取消 |\n\n## 订单成本设置\n\n聚宽：\n```python\nfrom jqdata import OrderCost\nset_order_cost(OrderCost(\n    open_tax=0,\n    close_tax=0.001,\n    open_commission=0.0003,\n    close_commission=0.0003,\n    min_commission=5\n), type='stock')\n```\n\nBulletTrade：\n- 相同语法，但OrderCost需要自定义或从jqdata导入\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:20:35.904655"
+    },
+    {
+      "id": "kb_20260109_112035",
+      "title": "聚宽与BulletTrade持仓账户API差异对照表",
+      "content": "\n## 持仓/账户API差异\n\n| 属性 | 聚宽官方 | BulletTrade | 解决方案 |\n|------|---------|-------------|----------|\n| 持仓市值 | position.total_value | position.value | 使用hasattr检查 |\n| 持仓数量 | position.total_amount | position.total_amount | 相同 |\n| 最新价格 | position.last_price | position.last_price | 相同 |\n| 成本价 | position.avg_cost | position.avg_cost | 相同 |\n| 持仓收益 | position.closeable_amount | - | 可能不支持 |\n\n## Position属性兼容代码\n\n```python\ndef get_position_value(position):\n    if hasattr(position, 'value'):\n        return position.value\n    elif hasattr(position, 'market_value'):\n        return position.market_value\n    elif hasattr(position, 'total_amount') and hasattr(position, 'last_price'):\n        return position.total_amount * position.last_price\n    return 0.0\n```\n\n## Portfolio属性\n\n| 属性 | 聚宽官方 | BulletTrade |\n|------|---------|-------------|\n| 总资产 | portfolio.total_value | portfolio.total_value |\n| 可用资金 | portfolio.available_cash | portfolio.available_cash |\n| 持仓字典 | portfolio.positions | portfolio.positions |\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:20:35.906408"
+    },
+    {
+      "id": "kb_20260109_112035",
+      "title": "聚宽与BulletTrade定时任务API差异对照表",
+      "content": "\n## 定时任务API差异\n\n| 功能 | 聚宽API | BulletTrade | 兼容性 |\n|------|---------|-------------|--------|\n| 每日执行 | run_daily(func, time) | run_daily(func, time)✅ | 完全兼容 |\n| 每周执行 | run_weekly(func, weekday, time) | run_weekly(func, weekday, time)✅ | 完全兼容 |\n| 每月执行 | run_monthly(func, tradingday, time) | run_monthly(func, tradingday, time)✅ | 完全兼容 |\n\n## 回调函数\n\n| 回调 | 聚宽API | BulletTrade |\n|------|---------|-------------|\n| 初始化 | initialize(context) | initialize(context)✅ |\n| 开盘前 | before_trading_start(context) | before_trading_start(context)✅ |\n| 收盘后 | after_trading_end(context) | after_trading_end(context)✅ |\n| 每tick | handle_data(context, data) | handle_data(context, data)✅ |\n\n## 全局对象\n\n| 对象 | 聚宽API | BulletTrade |\n|------|---------|-------------|\n| 全局状态 | g | g✅ |\n| 日志 | log | log✅ |\n| 上下文 | context | context✅ |\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:20:35.906612"
+    },
+    {
+      "id": "kb_20260109_112035",
+      "title": "聚宽与BulletTrade认证机制差异",
+      "content": "\n## 认证机制差异\n\n### 聚宽官方环境\n- 无需手动认证\n- 在聚宽平台运行时自动获取权限\n- from jqdata import * 直接可用\n\n### BulletTrade本地环境\n- 需要手动认证jqdatasdk\n- BulletTrade引擎会替换sys.modules['jqdata']\n- get_fundamentals等函数不可用\n\n## 认证代码\n\n```python\n# 在BulletTrade策略中使用基本面数据\nimport jqdatasdk\nfrom jqdatasdk import query, valuation, indicator, get_fundamentals\n\n# 认证（在策略加载时执行）\njqdatasdk.auth('username', 'password')\n\n# 使用\nq = query(valuation.code, valuation.market_cap)\nfund_df = get_fundamentals(q, date='2024-01-01')\n```\n\n## 注意事项\n1. 认证信息不要硬编码在策略中（使用配置文件）\n2. 认证失败时要有兜底处理\n3. BulletTrade的get_price已自动注入，无需认证\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:20:35.906810"
+    },
+    {
+      "id": "kb_20260109_112119",
+      "title": "聚宽与Ptrade数据API差异对照表",
+      "content": "\n## 聚宽与Ptrade数据API差异\n\nPtrade是恒生电子提供的量化交易平台，API与聚宽有较大差异。\n\n### 数据获取API\n\n| 功能 | 聚宽API | Ptrade API | 备注 |\n|------|---------|------------|------|\n| 历史K线 | get_price() | get_klines() | 参数不同 |\n| 基本面 | get_fundamentals() | get_fundamentals() | 参数格式不同 |\n| 实时行情 | get_current_data() | get_snapshot() | 返回格式不同 |\n| 指数成分 | get_index_stocks() | get_index_component() | 函数名不同 |\n| 股票列表 | get_all_securities() | get_stock_list() | 函数名不同 |\n\n### get_price vs get_klines\n\n聚宽：\n```python\ndf = get_price('000001.XSHE', start_date='2024-01-01', end_date='2024-01-31', frequency='daily', fields=['open','close'])\n```\n\nPtrade：\n```python\ndf = get_klines('000001.SZ', count=30, frequency='1d')\n# 注意：股票代码格式不同(.XSHE -> .SZ)\n```\n\n### 股票代码转换\n\n| 市场 | 聚宽格式 | Ptrade格式 |\n|------|---------|-----------|\n| 上交所 | 600000.XSHG | 600000.SH |\n| 深交所 | 000001.XSHE | 000001.SZ |\n| 创业板 | 300001.XSHE | 300001.SZ |\n| 科创板 | 688001.XSHG | 688001.SH |\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:21:19.223604"
+    },
+    {
+      "id": "kb_20260109_112119",
+      "title": "聚宽与Ptrade订单API差异对照表",
+      "content": "\n## 聚宽与Ptrade订单API差异\n\n### 下单API\n\n| 功能 | 聚宽API | Ptrade API | 备注 |\n|------|---------|------------|------|\n| 按股数下单 | order(code, amount) | order(code, amount, price) | Ptrade需指定价格 |\n| 按金额下单 | order_value(code, value) | 不支持 | 需自行计算 |\n| 目标股数 | order_target(code, amount) | order_to(code, amount) | 函数名不同 |\n| 目标金额 | order_target_value(code, value) | 不支持 | 需自行计算 |\n\n### 下单参数差异\n\n聚宽：\n```python\norder('000001.XSHE', 1000)  # 市价单\norder('000001.XSHE', 1000, limit_price=10.5)  # 限价单\n```\n\nPtrade：\n```python\norder('000001.SZ', 1000, price=0, order_type='market')  # 市价单\norder('000001.SZ', 1000, price=10.5, order_type='limit')  # 限价单\n```\n\n### 订单状态\n\n| 状态 | 聚宽 | Ptrade |\n|------|------|--------|\n| 已提交 | SUBMITTED | 0 |\n| 已成交 | FILLED | 1 |\n| 部分成交 | PARTIAL_FILLED | 2 |\n| 已撤单 | CANCELLED | 3 |\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:21:19.223912"
+    },
+    {
+      "id": "kb_20260109_112119",
+      "title": "聚宽与Ptrade持仓账户API差异对照表",
+      "content": "\n## 聚宽与Ptrade持仓账户API差异\n\n### 账户查询\n\n| 属性 | 聚宽 | Ptrade |\n|------|------|--------|\n| 总资产 | context.portfolio.total_value | get_account().total_asset |\n| 可用资金 | context.portfolio.available_cash | get_account().enable_balance |\n| 持仓字典 | context.portfolio.positions | get_positions() |\n\n### 持仓查询\n\n| 属性 | 聚宽 | Ptrade |\n|------|------|--------|\n| 持仓市值 | position.total_value | position.market_value |\n| 持仓数量 | position.total_amount | position.total_qty |\n| 可卖数量 | position.closeable_amount | position.enable_qty |\n| 成本价 | position.avg_cost | position.cost_price |\n\n### 代码示例\n\n聚宽：\n```python\nfor stock, pos in context.portfolio.positions.items():\n    print(f'{stock}: {pos.total_amount}股, 市值{pos.total_value}')\n```\n\nPtrade：\n```python\npositions = get_positions()\nfor pos in positions:\n    print(f'{pos.security}: {pos.total_qty}股, 市值{pos.market_value}')\n```\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:21:19.225193"
+    },
+    {
+      "id": "kb_20260109_112119",
+      "title": "聚宽与Ptrade定时任务差异对照表",
+      "content": "\n## 聚宽与Ptrade定时任务差异\n\n### 回调函数\n\n| 回调 | 聚宽 | Ptrade |\n|------|------|--------|\n| 初始化 | initialize(context) | init(context) |\n| 开盘前 | before_trading_start() | before_market_open() |\n| 收盘后 | after_trading_end() | after_market_close() |\n| 每tick | handle_data(context, data) | handle_bar(context) |\n\n### 定时执行\n\n聚宽：\n```python\nrun_daily(func, time='09:30')\nrun_weekly(func, weekday=1, time='09:30')\n```\n\nPtrade：\n```python\nschedule(time='09:30', func=func)\n# Ptrade使用crontab风格的调度\nschedule('0 30 9 * * 1', func=func)  # 每周一9:30\n```\n\n### 全局对象\n\n| 对象 | 聚宽 | Ptrade |\n|------|------|--------|\n| 全局状态 | g | g (需自定义) |\n| 日志 | log | log |\n| 上下文 | context | context |\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:21:19.225448"
+    },
+    {
+      "id": "kb_20260109_112209",
+      "title": "聚宽与QMT数据API差异对照表",
+      "content": "\n## 聚宽与QMT数据API差异\n\nQMT（迅投QMT/MiniQMT）是迅投科技提供的量化交易平台，使用本地数据。\n\n### 数据获取API\n\n| 功能 | 聚宽API | QMT API | 备注 |\n|------|---------|---------|------|\n| 历史K线 | get_price() | xtdata.get_market_data() | 完全不同 |\n| 实时行情 | get_current_data() | xtdata.get_full_tick() | 格式不同 |\n| 股票列表 | get_all_securities() | xtdata.get_stock_list_in_sector() | 参数不同 |\n| 财务数据 | get_fundamentals() | xtdata.get_financial_data() | 字段映射不同 |\n\n### 股票代码格式\n\n| 市场 | 聚宽格式 | QMT格式 |\n|------|---------|---------|\n| 上交所 | 600000.XSHG | 600000.SH |\n| 深交所 | 000001.XSHE | 000001.SZ |\n| 创业板 | 300001.XSHE | 300001.SZ |\n| 科创板 | 688001.XSHG | 688001.SH |\n\n### 历史K线对比\n\n聚宽：\n```python\ndf = get_price('000001.XSHE', \n               start_date='2024-01-01', \n               end_date='2024-01-31', \n               frequency='daily')\n```\n\nQMT：\n```python\nimport xtdata\nxtdata.download_history_data('000001.SZ', '1d', '20240101', '20240131')\ndata = xtdata.get_market_data(\n    field_list=['open', 'high', 'low', 'close', 'volume'],\n    stock_list=['000001.SZ'],\n    period='1d',\n    start_time='20240101',\n    end_time='20240131'\n)\n```\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:22:09.760679"
+    },
+    {
+      "id": "kb_20260109_112209",
+      "title": "聚宽与QMT订单API差异对照表",
+      "content": "\n## 聚宽与QMT订单API差异\n\n### 交易接口\n\n| 功能 | 聚宽API | QMT API | 备注 |\n|------|---------|---------|------|\n| 交易对象 | 自动创建 | xt_trader | 需手动创建 |\n| 按股数下单 | order(code, amount) | xt_trader.order_stock() | 参数格式不同 |\n| 撤单 | cancel_order(order_id) | xt_trader.cancel_order_stock() | 函数名不同 |\n\n### QMT交易初始化\n\n```python\nfrom xtquant import xttrader, xtdata\n\n# 创建交易对象\nxt_trader = xttrader.XtQuantTrader(path, session_id)\nxt_trader.start()\n\n# 账号信息\naccount = xttrader.StockAccount(account_id)\nxt_trader.subscribe(account)\n```\n\n### 下单对比\n\n聚宽：\n```python\norder('000001.XSHE', 1000)  # 买入1000股\n```\n\nQMT：\n```python\nxt_trader.order_stock(\n    account,           # 账户对象\n    '000001.SZ',      # 股票代码\n    xtconstant.STOCK_BUY,  # 买入\n    1000,             # 数量\n    xtconstant.LATEST_PRICE,  # 最新价\n    0                 # 价格（0表示市价）\n)\n```\n\n### 订单状态\n\nQMT使用数字状态码：\n- xtconstant.ORDER_SUBMITTED = 1\n- xtconstant.ORDER_FILLED = 2\n- xtconstant.ORDER_CANCELLED = 4\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:22:09.761039"
+    },
+    {
+      "id": "kb_20260109_112209",
+      "title": "聚宽与QMT回调机制差异对照表",
+      "content": "\n## 聚宽与QMT回调机制差异\n\n### 回调函数\n\nQMT使用事件驱动的回调机制，与聚宽的定时任务不同。\n\n| 功能 | 聚宽 | QMT |\n|------|------|-----|\n| 初始化 | initialize(context) | on_init() |\n| 订单回报 | 无 | on_order_callback() |\n| 成交回报 | 无 | on_deal_callback() |\n| 行情回调 | handle_data() | on_data() |\n\n### QMT回调类\n\n```python\nclass MyCallback(xttrader.XtQuantTraderCallback):\n    def on_order_callback(self, order):\n        # 订单状态变化\n        print(f'订单: {order.order_id}, 状态: {order.order_status}')\n    \n    def on_deal_callback(self, deal):\n        # 成交回报\n        print(f'成交: {deal.stock_code}, 数量: {deal.traded_qty}')\n    \n    def on_account_callback(self, account):\n        # 账户变化\n        print(f'账户: {account.account_id}')\n\n# 注册回调\ncallback = MyCallback()\nxt_trader.register_callback(callback)\n```\n\n### 定时任务\n\nQMT没有内置的run_daily/run_weekly，需要使用外部调度器：\n```python\nimport schedule\nschedule.every().day.at(\"09:30\").do(my_function)\n```\n",
+      "category": "platform_compat",
+      "created": "2026-01-09T11:22:09.762327"
+    },
+    {
+      "id": "kb_20260109_112209",
+      "title": "聚宽策略转换到Ptrade和QMT的核心要点",
+      "content": "\n## 聚宽策略转换核心要点\n\n### 转换流程\n\n```\n聚宽策略 → 解析AST → 替换API → 适配代码生成\n```\n\n### 必须转换的内容\n\n1. **股票代码格式**\n   - .XSHG → .SH\n   - .XSHE → .SZ\n\n2. **数据获取函数**\n   - get_price() → get_klines() / xtdata.get_market_data()\n   - get_fundamentals() → 对应平台API\n\n3. **订单函数**\n   - order() → order() / xt_trader.order_stock()\n   - order_value() → 手动计算\n\n4. **持仓查询**\n   - context.portfolio.positions → get_positions() / xt_trader.query_stock_positions()\n\n5. **定时任务**\n   - run_daily() → schedule() / 外部调度\n\n### 转换器实现建议\n\n使用AST（抽象语法树）进行代码转换：\n```python\nimport ast\n\nclass CodeTransformer(ast.NodeTransformer):\n    def visit_Call(self, node):\n        # 转换函数调用\n        if node.func.id == 'get_price':\n            node.func.id = 'get_klines'\n        return node\n```\n\n### 测试验证\n\n1. 单元测试：每个转换规则\n2. 集成测试：完整策略转换\n3. 回测验证：转换前后结果对比\n",
+      "category": "strategy_convert",
+      "created": "2026-01-09T11:22:09.762615"
+    },
+    {
+      "id": "kb_20260109_144233",
+      "title": "华泰证券交易佣金费率",
+      "content": "# 华泰证券交易佣金费率\n\n## 基本信息\n- **券商名称**: 华泰证券 (Huatai Securities)\n- **佣金费率**: 万分之一 (0.01%)\n- **官方页面**: https://www.htsc.com.cn/site-services/common/commission\n\n## 详细说明\n华泰证券的股票交易佣金费率为**万分之一**，即**0.01%**。\n\n## 计算示例\n- 交易金额: 10,000元\n- 佣金费用: 10,000 × 0.01% = 1元\n\n## 注意事项\n- 佣金费率可能因客户等级、交易量等因素有所调整\n- 实际费率以开户时约定的费率为准\n- 建议在开户前咨询具体佣金费率\n\n## 更新时间\n2026-01-09",
+      "category": "trading_commission",
+      "created": "2026-01-09T14:42:33.856444"
+    },
+    {
+      "id": "kb_20260109_144233_2",
+      "title": "国金证券交易佣金费率",
+      "content": "# 国金证券交易佣金费率\n\n## 基本信息\n- **券商名称**: 国金证券\n- **佣金费率**: 0.0087%\n\n## 详细说明\n国金证券的股票交易佣金费率为**0.0087%**。\n\n## 计算示例\n- 交易金额: 10,000元\n- 佣金费用: 10,000 × 0.0087% = 0.87元\n\n## 对比\n- 华泰证券: 0.01% (万分之一)\n- 国金证券: 0.0087% (更低)\n\n## 注意事项\n- 佣金费率可能因客户等级、交易量等因素有所调整\n- 实际费率以开户时约定的费率为准\n- 建议在开户前咨询具体佣金费率\n\n## 更新时间\n2026-01-09",
+      "category": "trading_commission",
+      "created": "2026-01-09T14:42:33.856451"
+    },
+    {
+      "id": "kb_20260109_144525",
+      "title": "华泰证券交易佣金费率完整规则（策略参数配置）",
+      "content": "# 华泰证券交易佣金费率完整规则\n\n## 基本信息\n- **券商名称**: 华泰证券 (Huatai Securities)\n- **官方页面**: https://www.htsc.com.cn/site-services/common/commission\n- **更新时间**: 2026-01-09\n\n## 股票交易佣金\n\n### A股交易佣金\n- **佣金费率**: 万分之一 (0.01%)\n- **最低收费**: 通常为5元（具体以开户时约定为准）\n- **收费方式**: 双向收费（买入和卖出都收取）\n\n### 佣金计算规则\n1. **计算公式**: 佣金 = 交易金额 × 0.01%\n2. **最低收费**: 如果计算出的佣金低于最低收费（如5元），则按最低收费收取\n3. **双向收费**: 买入和卖出时分别收取佣金\n\n### 计算示例\n- **交易金额**: 10,000元\n  - 佣金 = 10,000 × 0.01% = 1元\n  - 如果最低收费为5元，则实际收取5元\n  \n- **交易金额**: 100,000元\n  - 佣金 = 100,000 × 0.01% = 10元\n  - 实际收取10元\n\n## 其他交易费用\n\n### 印花税\n- **费率**: 0.1%（卖出时收取，买入不收）\n- **收费方**: 国家税务局\n- **计算**: 印花税 = 卖出金额 × 0.1%\n\n### 过户费\n- **费率**: 0.001%（双向收取）\n- **收费方**: 中国结算\n- **计算**: 过户费 = 交易金额 × 0.001%\n\n### 规费（经手费+证管费）\n- **经手费**: 0.00487%（双向收取）\n- **证管费**: 0.002%（双向收取）\n- **合计**: 0.00687%（双向收取）\n\n## 完整交易成本计算\n\n### 买入成本\n- 佣金: 交易金额 × 0.01%（最低5元）\n- 过户费: 交易金额 × 0.001%\n- 规费: 交易金额 × 0.00687%\n- **买入总成本率**: 约 0.01787% + 最低佣金\n\n### 卖出成本\n- 佣金: 交易金额 × 0.01%（最低5元）\n- 印花税: 交易金额 × 0.1%\n- 过户费: 交易金额 × 0.001%\n- 规费: 交易金额 × 0.00687%\n- **卖出总成本率**: 约 0.11787% + 最低佣金\n\n### 完整交易成本（买入+卖出）\n- **总成本率**: 约 0.13574% + 最低佣金（双向）\n- **示例**: 10,000元买入卖出\n  - 买入成本: 5元（最低佣金）+ 0.787元（其他费用）= 5.787元\n  - 卖出成本: 5元（最低佣金）+ 10元（印花税）+ 0.787元（其他费用）= 15.787元\n  - **总成本**: 21.574元（约0.22%）\n\n## 策略参数配置\n\n### 回测参数\n```python\n# 华泰证券佣金配置\nCOMMISSION_RATE = 0.0001  # 0.01% = 万分之一\nMIN_COMMISSION = 5.0      # 最低佣金5元\nSTAMP_TAX = 0.001         # 印花税0.1%（仅卖出）\nTRANSFER_FEE = 0.00001    # 过户费0.001%\nREGULATORY_FEE = 0.0000687  # 规费0.00687%\n\n# 买入成本率\nBUY_COST_RATE = COMMISSION_RATE + TRANSFER_FEE + REGULATORY_FEE\n# 约 0.01787%\n\n# 卖出成本率\nSELL_COST_RATE = COMMISSION_RATE + STAMP_TAX + TRANSFER_FEE + REGULATORY_FEE\n# 约 0.11787%\n\n# 完整交易成本率（买入+卖出）\nTOTAL_COST_RATE = BUY_COST_RATE + SELL_COST_RATE\n# 约 0.13574%\n```\n\n### BulletTrade配置\n```python\n# 在BulletTrade策略中设置佣金\nset_order_cost(\n    OrderCost(\n        open_commission=0.0001,      # 买入佣金0.01%\n        close_commission=0.0001,    # 卖出佣金0.01%\n        min_commission=5.0,          # 最低佣金5元\n        close_tax=0.001              # 印花税0.1%（仅卖出）\n    ),\n    type='stock'\n)\n```\n\n## 注意事项\n\n1. **实际费率**: 佣金费率可能因客户等级、交易量、资产规模等因素有所调整\n2. **最低收费**: 具体最低佣金以开户时约定的为准\n3. **其他费用**: 印花税、过户费、规费等为国家统一规定，所有券商相同\n4. **费率确认**: 建议在开户前或交易前咨询具体佣金费率\n5. **费率变化**: 券商可能根据市场情况调整佣金费率，以最新公告为准\n\n## 对比其他券商\n\n- **华泰证券**: 0.01%（万分之一）\n- **国金证券**: 0.0087%\n- **行业平均**: 约0.02%-0.03%\n\n## 适用场景\n\n- A股股票交易\n- 回测系统成本计算\n- 策略参数配置\n- 交易成本优化\n",
+      "category": "trading_commission",
+      "tags": [
+        "华泰证券",
+        "佣金费率",
+        "交易成本",
+        "策略参数",
+        "回测配置",
+        "BulletTrade"
+      ],
+      "created": "2026-01-09T14:45:25.725636"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_info",
+  "title": "get_etf_info - 获取ETF信息",
+  "content": "get_etf_info - 获取ETF信息\n\netf_code : 单支ETF代码或者一个ETF代码的list，必传参数(list[str]/str)",
+  "code_blocks": [],
+  "content_length": 76,
+  "url": "https://ptradeapi.com/#get_etf_info"
+}

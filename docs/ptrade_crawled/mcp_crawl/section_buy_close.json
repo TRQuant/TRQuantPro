@@ -1,0 +1,8 @@
+{
+  "anchor_id": "buy_close",
+  "title": "buy_close - 空平",
+  "content": "buy_close - 空平\n\nbuy_close\n(\ncontract\n,\namount\n,\nlimit_price\n=\nNone\n,\nclose_today\n=\nFalse\n)",
+  "code_blocks": [],
+  "content_length": 90,
+  "url": "https://ptradeapi.com#buy_close"
+}

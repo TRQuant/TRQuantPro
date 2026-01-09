@@ -1,0 +1,8 @@
+{
+  "anchor_id": "permission_test",
+  "title": "permission_test-权限校验",
+  "content": "permission_test-权限校验\n\n该接口用于账号和有效期的权限校验，用户可以在接口中入参指定账号和指定有效期截止日，策略运行时会校验运行策略的账户与指定账户是否相符，以及运行当日日期是否超过指定的有效期截止日，任一条件校验失败，接口都会返回False，两者同时校验成功则返回True。校验失败会在策略日志中提示原因。\n\n如果需要使用授权模式下载功能，不要在接口中入参，策略编码时候直接调用permission_test()，授权工具会把需要授权的账号和有效期信息放到策略文件中。\n\n该函数仅在initialize、before_trading_start、after_trading_end模块中支持调用",
+  "code_blocks": [],
+  "content_length": 307,
+  "url": "https://ptradeapi.com/#permission_test"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "g",
+  "title": "g-全局对象",
+  "content": "g-全局对象\n\ndef initialize(context):\n    g.security = \"600570.SS\"\n    g.count = 1\n    g.flag = 0\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    log.info(g.security)\n    log.info(g.count)\n    log.info(g.flag)",
+  "code_blocks": [],
+  "content_length": 222,
+  "url": "https://ptradeapi.com/#g"
+}

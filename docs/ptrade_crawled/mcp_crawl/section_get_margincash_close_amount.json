@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_margincash_close_amount",
+  "title": "get_margincash_close_amount - 卖券还款标的最大可卖数量查询",
+  "content": "get_margincash_close_amount - 卖券还款标的最大可卖数量查询\n\nget_margincash_close_amount\n(\nsecurity\n,\nprice\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 101,
+  "url": "https://ptradeapi.com#get_margincash_close_amount"
+}

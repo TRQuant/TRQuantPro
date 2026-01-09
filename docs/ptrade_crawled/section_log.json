@@ -1,0 +1,8 @@
+{
+  "anchor_id": "log",
+  "title": "log-日志记录",
+  "content": "log-日志记录\n\nlog.debug(\"debug\")\nlog.info(\"info\")\nlog.warning(\"warning\")\nlog.error(\"error\")\nlog.critical(\"critical\")",
+  "code_blocks": [],
+  "content_length": 112,
+  "url": "https://ptradeapi.com/#log"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_MACD",
+  "title": "get_MACD - 异同移动平均线",
+  "content": "get_MACD - 异同移动平均线\n\nget_MACD\n(\nclose\n,\nshort\n=\n12\n,\nlong\n=\n26\n,\nm\n=\n9\n)",
+  "code_blocks": [],
+  "content_length": 71,
+  "url": "https://ptradeapi.com#get_MACD"
+}

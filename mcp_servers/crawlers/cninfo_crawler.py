@@ -50,6 +50,55 @@ class CninfoCrawler(BaseCrawler):
             "profit": "category_yjyg_szsh",
             "major": "category_zdsx_szsh",
         }
+
+    def _normalize_code(self, stock_code: Optional[str]) -> str:
+        if not stock_code:
+            return ""
+        return str(stock_code).replace(".SZ", "").replace(".SH", "").strip()
+
+    def _infer_column(self, stock_code: Optional[str]) -> str:
+        code = self._normalize_code(stock_code)
+        if code.startswith("6"):
+            return "sse"
+        return "szse"
+
+    def _resolve_org_id(self, stock_code: str) -> Optional[str]:
+        """
+        cninfo 的 hisAnnouncement/query 接口在按股票过滤时通常需要 "secCode,orgId" 的格式。
+        我们用 searchkey 先查到 orgId。
+        """
+        code = self._normalize_code(stock_code)
+        if not code:
+            return None
+
+        payload = {
+            "pageNum": 1,
+            "pageSize": 10,
+            "column": self._infer_column(code),
+            "tabName": "fulltext",
+            "plate": "",
+            "stock": "",
+            "searchkey": code,
+            "secid": "",
+            "category": "",
+            "trade": "",
+            "seDate": "",
+            "sortName": "",
+            "sortType": "",
+            "isHLtitle": "true",
+        }
+        res = self.post_sync(self.API_BASE, data=payload)
+        if not res.success or not res.content:
+            return None
+        try:
+            data = json.loads(res.content)
+            anns = data.get("announcements") or []
+            for item in anns:
+                if str(item.get("secCode", "")).strip() == code and item.get("orgId"):
+                    return str(item.get("orgId")).strip()
+        except Exception:
+            return None
+        return None
     
     def build_url(self, **kwargs) -> str:
         return self.API_BASE
@@ -65,13 +114,26 @@ class CninfoCrawler(BaseCrawler):
         if not start_date:
             start_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
         
+        column = self._infer_column(stock_code)
+
+        # cninfo 按股票过滤时通常需要 "secCode,orgId" 格式
+        stock_param = stock_code or ""
+        if stock_code:
+            code = self._normalize_code(stock_code)
+            if code.isdigit() and "," not in code:
+                org_id = self._resolve_org_id(code)
+                if org_id:
+                    stock_param = f"{code},{org_id}"
+
         params = {
-            "pageNum": page, "pageSize": page_size, "column": "szse",
+            "pageNum": page, "pageSize": page_size, "column": column,
             "tabName": "fulltext", "plate": "", "stock": stock_code or "",
             "searchkey": "", "secid": "", "category": ann_type or "",
             "trade": "", "seDate": f"{start_date}~{end_date}",
             "sortName": "", "sortType": "", "isHLtitle": "true"
         }
+
+        params["stock"] = stock_param
         
         result = self.post_sync(self.API_BASE, data=params)
         if not result.success:

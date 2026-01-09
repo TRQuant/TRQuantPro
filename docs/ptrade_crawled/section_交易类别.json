@@ -1,0 +1,8 @@
+{
+  "anchor_id": "交易类别",
+  "title": "exchange_type/futu_exch_type -- 交易类别",
+  "content": "exchange_type/futu_exch_type -- 交易类别\n\n\"0\" -- 资金\n\"1\" -- 上海\n\"2\" -- 深圳\n\"9\" -- 特转A\n\"A\" -- 特转B\n\"D\" -- 沪Ｂ\n\"G\" -- 沪港通\n\"H\" -- 深Ｂ\n\"Q\" -- 青岛产权\n\"S\" -- 深港通\n\"T\" -- 场外OTC市场\n\"U\" -- 转融通\n\"J\" -- 金华基金\n\"K\" -- 香港市场\n\"X\" -- 固定收益\n\"F1\" -- 郑州交易所\n\"F2\" -- 大连交易所\n\"F3\" -- 上海交易所\n\"F4\" -- 金融交易所\n\"F5\" -- 能源交易所\n\"Z1\" -- 业务受理\n\"R\" -- H股全流通",
+  "code_blocks": [],
+  "content_length": 301,
+  "url": "https://ptradeapi.com/#交易类别"
+}

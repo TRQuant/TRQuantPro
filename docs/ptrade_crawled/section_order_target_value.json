@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_target_value",
+  "title": "order_target_value - 指定持仓市值买卖",
+  "content": "order_target_value - 指定持仓市值买卖\n\norder_target_value(security, value, limit_price=None)\n\n3、交易场景如果limit_price字段不入参，系统会默认用行情快照数据最新价报单，假如行情快照获取失败会导致委托失败，系统会在日志中增加提醒。",
+  "code_blocks": [],
+  "content_length": 159,
+  "url": "https://ptradeapi.com/#order_target_value"
+}

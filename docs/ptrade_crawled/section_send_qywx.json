@@ -1,0 +1,8 @@
+{
+  "anchor_id": "send_qywx",
+  "title": "send_qywx - 发送企业微信信息",
+  "content": "send_qywx - 发送企业微信信息\n\nsend_qywx(corp_id, secret, agent_id, info='', path='', toparty='', touser= '', totag= '')",
+  "code_blocks": [],
+  "content_length": 111,
+  "url": "https://ptradeapi.com/#send_qywx"
+}

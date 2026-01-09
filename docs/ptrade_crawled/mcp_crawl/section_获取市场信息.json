@@ -1,0 +1,8 @@
+{
+  "anchor_id": "获取市场信息",
+  "title": "获取市场信息",
+  "content": "获取市场信息\n\n\tfinance_mic\tfinance_name\n0\tA\t美国证券交易所\n1\tCBJC\t北京邮票\n2\tCBOT\t芝加哥商品期货\n3\tCCFX\t中国金融期货交易所\n4\tCCGG\t中国国际文交所\n5\tCCJC\t卡巴拉长江交易所\n…\t…\t…\n66\tXFUND\t基金\n67\tXHKG-SS\t沪港通\n68\tXHKG-SZ\t深港通\n69\tXSGE\t上海期货交易所\n70\tXSHO\t上海个股期权\n71\tXZCE\t郑州商品交易所\n72\tYCME\t渝川玉石",
+  "code_blocks": [],
+  "content_length": 228,
+  "url": "https://ptradeapi.com/#获取市场信息"
+}

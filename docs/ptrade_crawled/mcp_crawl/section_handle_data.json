@@ -1,0 +1,8 @@
+{
+  "anchor_id": "handle_data",
+  "title": "handle_data（必选）",
+  "content": "handle_data（必选）\n\n该函数在交易时间内按指定的周期频率运行，是用于处理策略交易的主要模块，根据策略保存时的周期参数分为每分钟运行和每天运行，是策略运行的唯二必须定义函数之一。",
+  "code_blocks": [],
+  "content_length": 94,
+  "url": "https://ptradeapi.com#handle_data"
+}

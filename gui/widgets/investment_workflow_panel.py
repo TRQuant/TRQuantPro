@@ -8,7 +8,7 @@
 """
 
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QFrame, QScrollArea, QGridLayout, QMessageBox, QGroupBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -16,6 +16,7 @@ from pathlib import Path
 import logging
 import subprocess
 import os
+import threading
 
 from gui.styles.theme import Colors
 
@@ -86,9 +87,35 @@ class InvestmentWorkflowPanel(QWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
         
+        # 标题和快速操作按钮
+        title_layout = QHBoxLayout()
+        title_layout.setSpacing(15)
+        
         title = QLabel("📊 投资工作流程")
         title.setStyleSheet(f"font-size: 24px; font-weight: 700; color: {Colors.TEXT_PRIMARY}; padding: 10px 0;")
-        layout.addWidget(title)
+        title_layout.addWidget(title)
+        title_layout.addStretch()
+        
+        # 添加打开 Jupyter Notebook 按钮
+        jupyter_btn = QPushButton("📓 打开 Jupyter Notebook")
+        jupyter_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #10B981;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-size: 14px;
+                font-weight: 600;
+            }}
+            QPushButton:hover {{
+                background-color: #059669;
+            }}
+        """)
+        jupyter_btn.clicked.connect(self._on_open_jupyter_notebook)
+        title_layout.addWidget(jupyter_btn)
+        
+        layout.addLayout(title_layout)
         
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -382,6 +409,111 @@ class InvestmentWorkflowPanel(QWidget):
         """打开数据源状态面板"""
         self.open_data_source_panel.emit()
         logger.info("打开数据源状态面板")
+    
+    def _on_open_jupyter_notebook(self):
+        """打开 Jupyter Notebook（在独立浏览器中）"""
+        notebook_dir = self.project_root / "notebooks"
+        notebook_dir.mkdir(exist_ok=True)
+        
+        # 检查是否已经运行
+        pid_file = Path("/tmp/jupyter_notebook.pid")
+        if pid_file.exists():
+            try:
+                pid = int(pid_file.read_text().strip())
+                # 检查进程是否还在运行
+                try:
+                    os.kill(pid, 0)  # 发送信号0检查进程是否存在
+                    logger.info(f"Jupyter Notebook 已在运行 (PID: {pid})")
+                    # 打开浏览器
+                    subprocess.Popen(
+                        ["xdg-open", "http://localhost:8888"],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL
+                    )
+                    return
+                except OSError:
+                    # 进程不存在，删除旧的 PID 文件
+                    pid_file.unlink()
+            except (ValueError, OSError):
+                pid_file.unlink()
+        
+        # 查找 jupyter 命令
+        jupyter_cmd = None
+        for conda_path in [
+            Path.home() / "miniconda3" / "bin" / "jupyter",
+            Path.home() / "anaconda3" / "bin" / "jupyter",
+            Path("/opt/miniconda3/bin/jupyter"),
+            Path("/opt/anaconda3/bin/jupyter"),
+        ]:
+            if conda_path.exists():
+                jupyter_cmd = str(conda_path)
+                break
+        
+        if not jupyter_cmd:
+            # 尝试系统路径
+            try:
+                result = subprocess.run(
+                    ["which", "jupyter"],
+                    capture_output=True,
+                    text=True,
+                    timeout=2
+                )
+                if result.returncode == 0:
+                    jupyter_cmd = result.stdout.strip()
+            except Exception:
+                pass
+        
+        if not jupyter_cmd:
+            logger.error("未找到 jupyter 命令")
+            return
+        
+        try:
+            # 启动 Jupyter Notebook（后台运行）
+            log_file = Path("/tmp/jupyter_notebook.log")
+            pid_file_path = "/tmp/jupyter_notebook.pid"
+            
+            # 使用 nohup 在后台启动
+            cmd = [
+                "nohup", jupyter_cmd, "notebook",
+                "--no-browser",
+                f"--notebook-dir={notebook_dir}",
+                "--ip=127.0.0.1",
+                "--port=8888",
+                "--NotebookApp.open_browser=True",
+                "--NotebookApp.token=",
+                "--NotebookApp.password=",
+            ]
+            
+            with open(log_file, "w") as log:
+                process = subprocess.Popen(
+                    cmd,
+                    cwd=str(notebook_dir),
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    start_new_session=True
+                )
+                
+                # 保存 PID
+                with open(pid_file_path, "w") as f:
+                    f.write(str(process.pid))
+            
+            logger.info(f"✅ 已启动 Jupyter Notebook 服务器 (PID: {process.pid})")
+            
+            # 等待几秒后打开浏览器
+            def open_browser():
+                import time
+                time.sleep(3)
+                subprocess.Popen(
+                    ["xdg-open", "http://localhost:8888"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+            
+            # 在后台线程中打开浏览器
+            threading.Thread(target=open_browser, daemon=True).start()
+            
+        except Exception as e:
+            logger.error(f"启动 Jupyter Notebook 失败: {str(e)}")
     
     def _on_execute_action(self, action):
         """执行动作"""

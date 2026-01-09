@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_fundjour",
+  "title": "get_fundjour – 获取历史资金流水信息",
+  "content": "get_fundjour – 获取历史资金流水信息\n\n该函数仅在交易模块使用；仅支持before_trading_start和after_trading_end阶段调用",
+  "code_blocks": [],
+  "content_length": 84,
+  "url": "https://ptradeapi.com/#get_fundjour"
+}

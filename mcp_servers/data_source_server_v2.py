@@ -7,7 +7,7 @@
 - 数据源热切换
 - 缓存管理
 - 性能监控
-- 候选池构建
+- 投资标的筛选
 """
 
 import logging
@@ -124,7 +124,7 @@ TOOLS = [
     ),
     Tool(
         name="data_source.candidate_pool",
-        description="基于投资主线构建候选股票池",
+        description="基于投资主线筛选投资标的股票",
         inputSchema={
             "type": "object",
             "properties": {
@@ -344,7 +344,7 @@ async def _handle_clear_cache(args: Dict) -> Dict:
 
 
 async def _handle_candidate_pool(args: Dict) -> Dict:
-    """构建候选股票池 - 使用成熟的CandidatePoolBuilder"""
+    """筛选投资标的股票 - 使用成熟的CandidatePoolBuilder"""
     from datetime import datetime
     
     mainline = args.get("mainline", "人工智能")
@@ -405,15 +405,15 @@ async def _handle_candidate_pool(args: Dict) -> Dict:
             "data_mode": pool.data_mode,
             "data_date": pool.data_date,
             "criteria": criteria if criteria else ["主线相关", "技术突破", "财务健康"],
-            "summary": f"从'{mainline}'构建{len(stocks)}只股票候选池（数据模式: {pool.data_mode}）",
+            "summary": f"从'{mainline}'筛选出{len(stocks)}只投资标的股票（数据模式: {pool.data_mode}）",
             "update_time": datetime.now().isoformat()
         }
         
     except Exception as e:
-        logger.error(f"候选池构建失败: {e}", exc_info=True)
+        logger.error(f"投资标的筛选失败: {e}", exc_info=True)
         return {
             "success": False,
-            "error": f"候选池构建失败: {str(e)}",
+            "error": f"投资标的筛选失败: {str(e)}",
             "pool_size": 0,
             "candidates": [],
             "stocks": [],

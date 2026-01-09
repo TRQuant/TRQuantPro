@@ -1,0 +1,8 @@
+{
+  "anchor_id": "on_order_response",
+  "title": "on_order_response - 委托主推(可选)",
+  "content": "on_order_response - 委托主推(可选)\n\n该函数会在委托主推回调时响应，比引擎、get_order()和get_orders()函数更新Order状态的速度更快，适合对速度要求比较高的策略。",
+  "code_blocks": [],
+  "content_length": 104,
+  "url": "https://ptradeapi.com#on_order_response"
+}

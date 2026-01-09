@@ -107,6 +107,14 @@ from core.backtest.enhanced_backtest import (
     batch_enhanced_backtest,
 )
 
+# 共振阶段事件研究
+from core.backtest.resonance_event_study import (
+    ResonanceEventStudy,
+    EventStudyResult,
+    GroupStats,
+    EventStudySummary,
+)
+
 __all__ = [
     # 统一管理器
     "UnifiedBacktestManager",
@@ -146,67 +154,9 @@ __all__ = [
     "mcp_backtest_precise",
     "quick_enhanced_backtest",
     "batch_enhanced_backtest",
-]
-
-    "Event",
-    "BarData",
-    "OrderData",
-    "TradeData",
-    "PositionData",
-    # 批量回测
-    "BatchBacktestManager",
-    # 工具
-    "convert_strategy_to_signals",
-    "StrategyComparator",
-    # 增强回测
-    "EnhancedBacktestEngine",
-    "EnhancedBacktestConfig",
-    "EnhancedBacktestResult",
-    "mcp_backtest_fast",
-    "mcp_backtest_enhanced",
-    "mcp_backtest_precise",
-    "quick_enhanced_backtest",
-    "batch_enhanced_backtest",
-]
-
-    "Event",
-    "BarData",
-    "OrderData",
-    "TradeData",
-    "PositionData",
-    # 批量回测
-    "BatchBacktestManager",
-    # 工具
-    "convert_strategy_to_signals",
-    "StrategyComparator",
-    # 增强回测
-    "EnhancedBacktestEngine",
-    "EnhancedBacktestConfig",
-    "EnhancedBacktestResult",
-    "mcp_backtest_fast",
-    "mcp_backtest_enhanced",
-    "mcp_backtest_precise",
-    "quick_enhanced_backtest",
-    "batch_enhanced_backtest",
-]
-
-    "Event",
-    "BarData",
-    "OrderData",
-    "TradeData",
-    "PositionData",
-    # 批量回测
-    "BatchBacktestManager",
-    # 工具
-    "convert_strategy_to_signals",
-    "StrategyComparator",
-    # 增强回测
-    "EnhancedBacktestEngine",
-    "EnhancedBacktestConfig",
-    "EnhancedBacktestResult",
-    "mcp_backtest_fast",
-    "mcp_backtest_enhanced",
-    "mcp_backtest_precise",
-    "quick_enhanced_backtest",
-    "batch_enhanced_backtest",
+    # 共振事件研究
+    "ResonanceEventStudy",
+    "EventStudyResult",
+    "GroupStats",
+    "EventStudySummary",
 ]

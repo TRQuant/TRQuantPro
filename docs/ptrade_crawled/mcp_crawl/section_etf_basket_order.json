@@ -1,0 +1,8 @@
+{
+  "anchor_id": "etf_basket_order",
+  "title": "etf_basket_order - ETF成分券篮子下单",
+  "content": "etf_basket_order - ETF成分券篮子下单\n\netf_basket_order\n(\netf_code\n,\namount\n,\nprice_style\n=\nNone\n,\nposition\n=\nTrue\n,\ninfo\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 122,
+  "url": "https://ptradeapi.com#etf_basket_order"
+}

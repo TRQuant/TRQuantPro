@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_volume_ratio",
+  "title": "set_volume_ratio-设置成交比例",
+  "content": "set_volume_ratio-设置成交比例\n\n假如委托下单数量大于成交比例计算后的数量，系统会按成交比例计算后的数量撮合，差额部分委托数量不会继续挂单。\n\nvolume_ratio：设置成交比例，默认0.25，即指本周期最大成交数量为本周期市场可成交总量的四分之一(float)\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n    #将最大成交数量设置为本周期可成交总量的二分之一\n    set_volume_ratio(volume_ratio = 0.5)\n\ndef handle_data(context, data):\n    pass\n\n该函数用于设置回测的成交数量限制模式。对于月度调仓等低频策略，对流动性冲击不是很敏感，不做成交量限制可以让回测更加便捷。",
+  "code_blocks": [],
+  "content_length": 399,
+  "url": "https://ptradeapi.com/#set_volume_ratio"
+}

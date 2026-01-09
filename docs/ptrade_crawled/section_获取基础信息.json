@@ -1,0 +1,8 @@
+{
+  "anchor_id": "获取基础信息",
+  "title": "获取基础信息",
+  "content": "获取基础信息\n\n1、默认情况下，回测中当前时间为策略中调用该接口的回测日日期(context.blotter.current_dt)。",
+  "code_blocks": [],
+  "content_length": 67,
+  "url": "https://ptradeapi.com/#获取基础信息"
+}

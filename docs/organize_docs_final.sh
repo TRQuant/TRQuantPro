@@ -158,3 +158,7 @@ echo "最终统计:"
 echo "  tmp_old_files/ 目录大小: $(du -sh $TMP_DIR 2>/dev/null | cut -f1)"
 echo "  剩余根目录文件数: $(find . -maxdepth 1 -type f \( -name '*.md' -o -name '*.txt' -o -name '*.pdf' -o -name '*.html' \) | wc -l)"
 
+
+
+
+

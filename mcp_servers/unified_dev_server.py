@@ -2303,7 +2303,8 @@ TOOL_HANDLERS["session.init"] = session_init_with_learning
 logger.info("自动学习增强已启用")
 
 def kb_search(query: str, category: str = None) -> Dict:
-    """搜索策略知识库"""
+    """搜索策略知识库（包括预定义知识和自定义知识）"""
+    # 预定义知识库
     KNOWLEDGE_BASE = {
         "strategies": {
             "momentum": {"title": "动量策略", "description": "追涨杀跌，买入近期表现强势的股票", "best_params": {"period": 20, "top_n": 10}},
@@ -2318,12 +2319,25 @@ def kb_search(query: str, category: str = None) -> Dict:
     results = []
     query_lower = query.lower()
     
+    # 搜索预定义知识库
     for cat, items in KNOWLEDGE_BASE.items():
         if category and cat != category:
             continue
         for key, value in items.items():
             if query_lower in key.lower() or query_lower in str(value).lower():
-                results.append({"category": cat, "key": key, **value})
+                results.append({"category": cat, "key": key, "source": "builtin", **value})
+    
+    # 搜索自定义知识库
+    kb_file = DATA_DIR / "kb" / "custom_kb.json"
+    if kb_file.exists():
+        custom_kb = _load_json(kb_file, {"items": []})
+        for item in custom_kb.get("items", []):
+            # 按分类过滤
+            if category and item.get("category") != category:
+                continue
+            # 按关键词搜索（标题和内容）
+            if query_lower in item.get("title", "").lower() or query_lower in item.get("content", "").lower():
+                results.append({"source": "custom", **item})
     
     return {"success": True, "query": query, "results": results, "total": len(results)}
 

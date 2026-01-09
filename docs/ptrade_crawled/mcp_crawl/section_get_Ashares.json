@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_Ashares",
+  "title": "get_Ashares – 获取指定日期A股代码列表",
+  "content": "get_Ashares – 获取指定日期A股代码列表\n\n1、在回测中，date不入参默认取回测日期，默认值会随着回测日期变化而变化，等于context.current_dt\n\n['000001.SZ', '000002.SZ', '000004.SZ', '000005.SZ', '000006.SZ', '000007.SZ', '000008.SZ', '000009.SZ', '000010.SZ', '000011.SZ', '000012.SZ', '000014.SZ', '000016.SZ', '000017.SZ', '000018.SZ', '000019.SZ',\n '000020.SZ', '000021.SZ', '000023.SZ', '000024.SZ', '000025.SZ', '000026.SZ', '000027.SZ',..., '603128.SS', '603167.SS', '603333.SS', '603366.SS', '603399.SS', '603766.SS', '603993.SS'] \n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #沪深A股代码\n    ashares = get_Ashares()\n    log.info('%s A股数量为%s' % (context.blotter.current_dt,len(ashares)))\n    ashares = get_Ashares('20130512')\n    log.info('20130512 A股数量为%s'%len(ashares))",
+  "code_blocks": [],
+  "content_length": 796,
+  "url": "https://ptradeapi.com/#get_Ashares"
+}

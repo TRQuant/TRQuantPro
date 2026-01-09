@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_limit_mode",
+  "title": "set_limit_mode-设置成交数量限制模式",
+  "content": "set_limit_mode-设置成交数量限制模式\n\n该函数用于设置回测的成交数量限制模式。对于月度调仓等低频策略，对流动性冲击不是很敏感，不做成交量限制可以让回测更加便捷。",
+  "code_blocks": [],
+  "content_length": 87,
+  "url": "https://ptradeapi.com#set_limit_mode"
+}

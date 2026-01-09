@@ -1,0 +1,8 @@
+{
+  "anchor_id": "convert_position_from_csv",
+  "title": "convert_position_from_csv – 获取设置底仓的参数列表(股票)",
+  "content": "convert_position_from_csv – 获取设置底仓的参数列表(股票)\n\nsid,enable_amount,amount,cost_basis\n600570.SS,10000,10000,45\n\nsid: 标的代码(str)；\namount: 持仓数量(str)；\nenable_amount: 可用数量(str)；\ncost_basis: 每股的持仓成本价格(str)：\n\n返回一个list，该list中是一个字典类型的元素(list[dict[str:str],...])，如：\n\n[{\n    'sid':标的代码,\n    'amount':持仓数量,\n    'enable_amount':可用数量,\n    'cost_basis':每股的持仓成本价格,\n}]",
+  "code_blocks": [],
+  "content_length": 346,
+  "url": "https://ptradeapi.com/#convert_position_from_csv"
+}

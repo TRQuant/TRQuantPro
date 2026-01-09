@@ -195,3 +195,7 @@ echo "1. 检查 tmp_old_files/ 目录确认重复/过时文件"
 echo "2. 审查后可以删除tmp目录或保留备份"
 echo "3. 运行 git status 查看更改"
 
+
+
+
+

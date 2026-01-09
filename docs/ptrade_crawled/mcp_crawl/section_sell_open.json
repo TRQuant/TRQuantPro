@@ -1,0 +1,8 @@
+{
+  "anchor_id": "sell_open",
+  "title": "sell_open - 空开",
+  "content": "sell_open - 空开\n\nsell_open\n(\ncontract\n,\namount\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 68,
+  "url": "https://ptradeapi.com#sell_open"
+}

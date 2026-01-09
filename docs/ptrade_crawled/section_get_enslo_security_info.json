@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_enslo_security_info",
+  "title": "get_enslo_security_info - 融券信息查询",
+  "content": "get_enslo_security_info - 融券信息查询\n\ncash_group：两融头寸性质(int)，1为普通头寸，2为专项头寸，该字段不入参默认表示普通头寸；",
+  "code_blocks": [],
+  "content_length": 86,
+  "url": "https://ptradeapi.com/#get_enslo_security_info"
+}

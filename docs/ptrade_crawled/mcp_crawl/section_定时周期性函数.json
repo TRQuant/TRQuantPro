@@ -1,0 +1,8 @@
+{
+  "anchor_id": "定时周期性函数",
+  "title": "定时周期性函数",
+  "content": "定时周期性函数\n\n3、股票策略回测中，当回测周期为分钟时，time的取值指定在09:31~11:30与13:00~15:00之间，当回测周期为日时，无论设定值是多少都只会在15:00执行；交易中不受此时间限制。\n\nfunc：自定义函数名称，此函数必须以context作为参数(Callable[[Context], None])；\n\n# 定义一个财务数据获取函数，每天执行一次 \ndef initialize(context):\n    run_daily(context, get_finance, time='9:31')\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef get_finance(context):\n    re = get_fundamentals(g.security,'balance_statement','total_assets')\n    log.info(re)\n\ndef handle_data(context, data):\n    pass",
+  "code_blocks": [],
+  "content_length": 480,
+  "url": "https://ptradeapi.com/#定时周期性函数"
+}

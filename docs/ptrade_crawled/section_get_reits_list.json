@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_reits_list",
+  "title": "get_reits_list - 获取基础设施公募REITs基金代码列表",
+  "content": "get_reits_list - 获取基础设施公募REITs基金代码列表\n\n在回测中，date不入参默认取回测日期，默认值会随着回测日期变化而变化，等于context.current_dt。\n在研究中，date不入参默认取当天日期。\n在交易中，date不入参默认取当天日期。",
+  "code_blocks": [],
+  "content_length": 137,
+  "url": "https://ptradeapi.com/#get_reits_list"
+}

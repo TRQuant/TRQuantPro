@@ -229,11 +229,33 @@ class MCPClient:
         "test.run": "unified_dev_server",
         "test.report": "unified_dev_server",
         "test.coverage": "unified_dev_server",
+        
+        # xuanyuan_server (轩辕剑灵开发助手)
+        "xuanyuan.prompt.templates.list": "xuanyuan_server",
+        "xuanyuan.prompt.templates.get": "xuanyuan_server",
+        "xuanyuan.prompt.templates.create": "xuanyuan_server",
+        "xuanyuan.prompt.templates.update": "xuanyuan_server",
+        "xuanyuan.prompt.templates.evaluate": "xuanyuan_server",
+        "xuanyuan.prompt.optimize": "xuanyuan_server",
+        "xuanyuan.prompt.feedback": "xuanyuan_server",
+        "xuanyuan.prompt.best_practices.search": "xuanyuan_server",
+        "xuanyuan.prompt.extract_from_logs": "xuanyuan_server",
+        "xuanyuan.error.analyze": "xuanyuan_server",
+        "xuanyuan.error.suggest_fix": "xuanyuan_server",
+        "xuanyuan.error.history": "xuanyuan_server",
+        "xuanyuan.debug.steps": "xuanyuan_server",
+        "xuanyuan.command.suggest": "xuanyuan_server",
+        "xuanyuan.command.explain": "xuanyuan_server",
+        "xuanyuan.command.history": "xuanyuan_server",
+        "xuanyuan.command.check_safety": "xuanyuan_server",
+        "xuanyuan.memory.save_context": "xuanyuan_server",
+        "xuanyuan.memory.recall": "xuanyuan_server",
+        "xuanyuan.memory.search": "xuanyuan_server",
+        "xuanyuan.memory.summarize": "xuanyuan_server",
     }
     
     def __init__(self, project_root: Optional[Path] = None, python_path: Optional[str] = None):
         from pathlib import Path
-        project_root = Path(project_root)
         """
         初始化MCP客户端
         
@@ -243,6 +265,8 @@ class MCPClient:
         """
         if project_root is None:
             project_root = Path(__file__).parent.parent.parent
+        else:
+            project_root = Path(project_root)
         self.project_root = project_root
         self.mcp_servers_dir = project_root / "mcp_servers"
         
@@ -689,6 +713,45 @@ class MCPClient:
         finally:
             loop.close()
     
+    def _call_xuanyuan_direct(self, tool_name: str, arguments: Dict[str, Any]) -> Dict:
+        """直接调用xuanyuan服务器（避免subprocess问题，因为使用官方MCP SDK）"""
+        import sys
+        import asyncio
+        import json
+        
+        # 确保路径正确
+        sys.path.insert(0, str(self.project_root))
+        sys.path.insert(0, str(self.mcp_servers_dir))
+        
+        from xuanyuan_server import handle_tool
+        
+        # 检查是否已有事件循环
+        try:
+            loop = asyncio.get_running_loop()
+            # 如果已有循环，使用线程池执行
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(self._run_async_in_thread, handle_tool, tool_name, arguments)
+                result = future.result(timeout=60)
+                # handle_tool返回List[TextContent]，需要提取JSON
+                if result and len(result) > 0:
+                    text_content = result[0].text if hasattr(result[0], 'text') else str(result[0])
+                    return json.loads(text_content)
+                return {"error": "空响应"}
+        except RuntimeError:
+            # 没有运行中的循环，创建新循环
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                result = loop.run_until_complete(handle_tool(tool_name, arguments))
+                # handle_tool返回List[TextContent]，需要提取JSON
+                if result and len(result) > 0:
+                    text_content = result[0].text if hasattr(result[0], 'text') else str(result[0])
+                    return json.loads(text_content)
+                return {"error": "空响应"}
+            finally:
+                loop.close()
+    
     def _call_mcp_server(self,
                          tool_name: str,
                          arguments: Dict[str, Any],
@@ -698,6 +761,10 @@ class MCPClient:
         # workflow9.* 工具使用直接调用方式
         if tool_name.startswith("workflow9."):
             return self._call_workflow9_direct(tool_name, arguments)
+        
+        # xuanyuan.* 工具使用直接调用方式（使用官方MCP SDK，不兼容subprocess）
+        if tool_name.startswith("xuanyuan."):
+            return self._call_xuanyuan_direct(tool_name, arguments)
         
         # 确定服务器文件
         server_name = self.TOOL_SERVER_MAP.get(tool_name)
@@ -818,6 +885,34 @@ MCPClient.TOOL_SERVER_MAP.update({
     "learn.from_experience": "unified_dev_server",
     "learn.auto_extract": "unified_dev_server",
     "learn.suggest": "unified_dev_server",
+    # 爬虫工具（unified_dev_server）
+    "crawler.fetch": "unified_dev_server",
+    "crawler.search_docs": "unified_dev_server",
+    "crawler.download": "unified_dev_server",
+    "crawler.extract_code": "unified_dev_server",
+    "crawler.api_docs": "unified_dev_server",
+    "crawler.selenium.fetch": "unified_dev_server",
+    "crawler.selenium.click": "unified_dev_server",
+    "crawler.selenium.extract": "unified_dev_server",
+    "crawler.lavague.execute": "unified_dev_server",
+    "crawler.lavague.extract": "unified_dev_server",
+})
+
+# 添加爬虫工具映射
+MCPClient.TOOL_SERVER_MAP.update({
+    # 基础爬虫工具
+    "crawler.fetch": "unified_dev_server",
+    "crawler.search_docs": "unified_dev_server",
+    "crawler.download": "unified_dev_server",
+    "crawler.extract_code": "unified_dev_server",
+    "crawler.api_docs": "unified_dev_server",
+    # Selenium工具
+    "crawler.selenium.fetch": "unified_dev_server",
+    "crawler.selenium.click": "unified_dev_server",
+    "crawler.selenium.extract": "unified_dev_server",
+    # Lavague工具
+    "crawler.lavague.execute": "unified_dev_server",
+    "crawler.lavague.extract": "unified_dev_server",
 })
 
 # 添加数据源服务器工具映射

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trend_data",
+  "title": "get_trend_data - 获取集中竞价期间代码数据",
+  "content": "get_trend_data - 获取集中竞价期间代码数据\n\nget_trend_data\n(\ndate\n=\nNone\n,\nstocks\n=\nNone\n,\nmarket\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 93,
+  "url": "https://ptradeapi.com#get_trend_data"
+}

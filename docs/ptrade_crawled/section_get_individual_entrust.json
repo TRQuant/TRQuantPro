@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_individual_entrust",
+  "title": "get_individual_entrust - 获取逐笔委托行情",
+  "content": "get_individual_entrust - 获取逐笔委托行情\n\nget_individual_entrust(stocks=None, data_count=50, start_pos=0, search_direction=1, is_dict=False)\n\n沪深市场都有逐笔委托数据。\n逐笔委托，逐笔成交数据需开通level2行情才能获取到数据，否则无数据返回。\n当策略入参is_dict为True时返回的数据类型为dict，返回dict类型数据的速度比(python3.11版本支持)DataFrame,(python3.5版本支持)Panel类型数据有大幅提升。",
+  "code_blocks": [],
+  "content_length": 289,
+  "url": "https://ptradeapi.com/#get_individual_entrust"
+}

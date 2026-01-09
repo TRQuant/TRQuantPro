@@ -1,0 +1,8 @@
+{
+  "anchor_id": "filter_stock_by_status",
+  "title": "filter_stock_by_status-过滤指定状态的股票代码",
+  "content": "filter_stock_by_status-过滤指定状态的股票代码\n\nfilter_stock_by_status\n(\nstocks\n,\nfilter_type\n=[\n\"ST\"\n,\n\"HALT\"\n,\n\"DELISTING\"\n],\nquery_date\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 135,
+  "url": "https://ptradeapi.com#filter_stock_by_status"
+}

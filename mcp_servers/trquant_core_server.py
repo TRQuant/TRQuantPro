@@ -166,7 +166,7 @@ TOOLS = [
     ),
     Tool(
         name="data.candidate_pool",
-        description="根据主线构建候选股票池",
+        description="根据主线筛选投资标的股票",
         inputSchema={
             "type": "object",
             "properties": {

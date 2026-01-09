@@ -1,0 +1,8 @@
+{
+  "anchor_id": "is_trade",
+  "title": "is_trade-业务代码场景判断",
+  "content": "is_trade-业务代码场景判断\n\n该接口用于提供业务代码执行场景判断依据，明确标识当前业务代码运行场景为回测还是交易。因部分函数仅限回测或交易场景使用，该函数可以协助区分对应场景，以便限制函数可以在一套策略代码同时兼容回测与交易场景。",
+  "code_blocks": [],
+  "content_length": 119,
+  "url": "https://ptradeapi.com#is_trade"
+}

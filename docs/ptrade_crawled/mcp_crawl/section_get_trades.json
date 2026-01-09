@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trades",
+  "title": "get_trades - 获取当日成交订单",
+  "content": "get_trades - 获取当日成交订单\n\n一笔订单对应一笔成交:{'订单编号': [ [成交编号,委托编号, 标的代码, 买卖类型, 成交数量, 成交价格, 成交金额, 成交时间]]}，如下:\n\n{'ba6a80d9746347a99c050b29069807c7': [[5001, 700001, '600570.XSHG', '买', 100000, 86.60, 8660000.0, datetime.datetime(2021, 7, 13, 15, 0)]]}\n\n一笔订单对应多笔成交:{'订单编号': [ [成交编号1,委托编号, 标的代码, 买卖类型,成交数量,成交价格,成交金额,成交时间],[成交编号2,委托编号, 标的代码, 买卖类型,成交数量,成交价格,成交金额,成交时间]]}(dict[str:list[list[int,int,str,str,int,int,numpy.float64,numpy.float64,datetime.datetime]]])\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #获取当日成交数据\n    trades_info = get_trades()\n    log.info(trades_info)",
+  "code_blocks": [],
+  "content_length": 635,
+  "url": "https://ptradeapi.com/#get_trades"
+}

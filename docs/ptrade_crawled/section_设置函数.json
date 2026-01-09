@@ -1,0 +1,8 @@
+{
+  "anchor_id": "设置函数",
+  "title": "设置函数",
+  "content": "设置函数\n\n股票策略中，该函数只用于设定get_history函数的默认security_list入参, 除此之外并无其他用处，因此为非必须设定的函数。",
+  "code_blocks": [],
+  "content_length": 76,
+  "url": "https://ptradeapi.com/#设置函数"
+}

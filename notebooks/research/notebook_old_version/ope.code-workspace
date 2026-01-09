@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"notebook.showFoldingControls": "always",
+		"files.autoSave": "afterDelay"
+	}
+}

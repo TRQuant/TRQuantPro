@@ -21,6 +21,15 @@ from PyQt6.QtGui import QFont, QIcon
 from typing import Optional
 import logging
 import sys
+import os
+from pathlib import Path
+
+# 添加项目根目录到Python路径（当直接运行此文件时）
+if __name__ == "__main__":
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
 
 # 导入面板
 from gui.widgets.strategy_manager_panel import StrategyManagerPanel

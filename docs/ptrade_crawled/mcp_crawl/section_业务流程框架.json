@@ -1,0 +1,8 @@
+{
+  "anchor_id": "业务流程框架",
+  "title": "业务流程框架",
+  "content": "业务流程框架\n\nptrade量化引擎以事件触发为基础，通过初始化事件（initialize）、盘前事件（before_trading_start）、盘中事件（handle_data）、盘后事件（after_trading_end）来完成每个交易日的策略任务。\n\ninitialize和handle_data是一个允许运行策略的最基础结构，也就是必选项，before_trading_start和after_trading_end是可以按需运行的。\n\nhandle_data仅满足日线和分钟级别的盘中处理，tick级别的盘中处理则需要通过tick_data或者run_interval来实现。\n\nptrade还支持委托主推事件（on_order_respense）、交易主推事件（on_trade_response），可以通过委托和成交的信息来处理策略逻辑，是tick级的一个补充。\n\n除了以上的一些事件以外，ptrade也支持通过定时任务来运行策略逻辑，可以通过run_daily接口实现。",
+  "code_blocks": [],
+  "content_length": 445,
+  "url": "https://ptradeapi.com#业务流程框架"
+}

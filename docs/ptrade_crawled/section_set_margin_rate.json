@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_margin_rate",
+  "title": "set_margin_rate - 设置期货保证金比例",
+  "content": "set_margin_rate - 设置期货保证金比例\n\ntransaction_code：期货合约的交易代码，str类型，如沪铜2112（\"CU2112\"）的交易代码为\"CU\"；",
+  "code_blocks": [],
+  "content_length": 90,
+  "url": "https://ptradeapi.com/#set_margin_rate"
+}

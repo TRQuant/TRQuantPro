@@ -1,0 +1,8 @@
+{
+  "anchor_id": "Context",
+  "title": "Context-上下文对象",
+  "content": "Context-上下文对象\n\ncapital_base -- 起始资金\nprevious_date –- 前一个交易日\nsim_params -- SimulationParameters对象\n    capital_base -- 起始资金\n    data_frequency -- 数据频率\nportfolio -- 账户信息，可参考Portfolio对象\ninitialized -- 是否执行初始化\nslippage -- 滑点，VolumeShareSlippage对象\n    volume_limit -- 成交限量\n    price_impact -- 价格影响力\ncommission -- 佣金费用，Commission对象\n    tax—印花税费率\n    cost—佣金费率\n    min_trade_cost—最小佣金\nblotter -- Blotter对象（记录）\n    current_dt -- 当前单位时间的开始时间，datetime.datetime对象（北京时间）\nrecorded_vars -- 收益曲线值",
+  "code_blocks": [],
+  "content_length": 480,
+  "url": "https://ptradeapi.com/#Context"
+}

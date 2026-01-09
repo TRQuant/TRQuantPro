@@ -1,0 +1,8 @@
+{
+  "anchor_id": "ipo_stocks_order",
+  "title": "ipo_stocks_order - 新股一键申购",
+  "content": "ipo_stocks_order - 新股一键申购\n\nipo_stocks_order\n(\nmarket_type\n=\nNone\n,\nblack_stocks\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 88,
+  "url": "https://ptradeapi.com#ipo_stocks_order"
+}

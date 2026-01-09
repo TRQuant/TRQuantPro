@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_all_trades_days",
+  "title": "get_all_trades_days - 获取全部交易日期",
+  "content": "get_all_trades_days - 获取全部交易日期\n\n1、默认情况下，回测中date为策略中调用该接口的回测日日期(context.blotter.current_dt)。",
+  "code_blocks": [],
+  "content_length": 91,
+  "url": "https://ptradeapi.com/#get_all_trades_days"
+}

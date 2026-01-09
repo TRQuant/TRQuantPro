@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_lucky_info",
+  "title": "get_lucky_info - 获取历史中签信息",
+  "content": "get_lucky_info - 获取历史中签信息\n\nstart_date：开始日期(str)，输入形式仅支持\"YYYYmmdd\"，如\"20220928\"。",
+  "code_blocks": [],
+  "content_length": 78,
+  "url": "https://ptradeapi.com/#get_lucky_info"
+}

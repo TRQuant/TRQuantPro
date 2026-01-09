@@ -1,0 +1,8 @@
+{
+  "anchor_id": "可转债溢价率规模数据",
+  "title": "可转债溢价率规模数据",
+  "content": "可转债溢价率规模数据\n\n由于ptrade内置数据没有可转债溢价率数据，所以需要调用外部数据，如果券商提供的ptrade不支持外网访问，这个是没有办法获取这个数据的\n\n目前支持外网访问的是国盛证券，笔者部署了一系列针对可转债的数据接口，支持的字段丰富，且是实时更新的数据。\n\n字段名\n中文含义\n类型\nbond_nm\n可转债名称\nstr\nbond_id\n可转债代码\nstr，没有后缀\nbond_nm\n可转债名称\nstr\nprice\n可转债价格\nfloat\nsincrease_rt\n正股涨幅\nfloat\nincrease_rt\n可转债涨幅\nfloat\ncurr_iss_amt\n可转债剩余规模(亿)\nfloat\npb\n市净率\nfloat\nlist_dt\n可转债上市日期\nstr\nconvert_value\n转股价值\nfloat\nconvert_price\n转股价\nfloat\nstock_id\n正股代码\nfloat\nytm_rt\n到期收益率\nfloat\nyear_left\n剩余年限\nfloat，null的为已公布强赎\nrating_cd\n评级\nstr",
+  "code_blocks": [],
+  "content_length": 474,
+  "url": "https://ptradeapi.com#可转债溢价率规模数据"
+}

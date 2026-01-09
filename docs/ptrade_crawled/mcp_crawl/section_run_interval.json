@@ -1,0 +1,8 @@
+{
+  "anchor_id": "run_interval",
+  "title": "run_interval - 按设定周期处理",
+  "content": "run_interval - 按设定周期处理\n\nfunc：自定义函数名称，此函数必须以context作为参数(Callable[[Context], None])；\n\n# 定义一个周期处理函数，每10秒执行一次 \ndef initialize(context):\n    run_interval(context, interval_handle, seconds = 10)\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef interval_handle(context):\n    snapshot = get_snapshot(g.security)\n    log.info(snapshot)\n\ndef handle_data(context, data):\n    pass",
+  "code_blocks": [],
+  "content_length": 382,
+  "url": "https://ptradeapi.com/#run_interval"
+}

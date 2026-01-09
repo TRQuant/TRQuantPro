@@ -1,0 +1,8 @@
+{
+  "anchor_id": "简单但是完整的策略",
+  "title": "简单但是完整的策略",
+  "content": "简单但是完整的策略\n\ndef\ninitialize\n(\ncontext\n):\nset_universe\n(\n'600570.SS'\n)\ndef\nhandle_data\n(\ncontext\n,\ndata\n):\npass\n\nset_universe: 设置我们要操作的股票池，上面的例子中，只操作一支股票: '600570.SS'，恒生电子。所有的操作只能对股票池的标的进行。\n实现一个函数: handle_data。",
+  "code_blocks": [],
+  "content_length": 207,
+  "url": "https://ptradeapi.com#简单但是完整的策略"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_stock_info",
+  "title": "get_etf_stock_info - 获取ETF成分券信息",
+  "content": "get_etf_stock_info - 获取ETF成分券信息\n\nsecurity : 单只股票代码或者一个由多只股票代码组成的列表，必传参数(list[str]/str)\n\n正常返回一个dict类型字段，包含每只etf代码中成分股的信息。异常返回空dict，如{}(dict[str:dict[...]])\n\ncode_num -- 成分券数量(str:float)；\ncash_replace_flag -- 现金替代标志(str:str)；\n'0' -- 禁止替代；\n'1' -- 允许替代；\n'2' -- 必须替代；\n'3' -- 非沪市退补现金替代；\n'4' -- 非沪市必须现金替代；\n'5' -- 非沪深退补现金替代；\n'6' -- 非沪深必须现金替代；\nreplace_ratio -- 保证金率（溢价比率），允许现金替代标的此字段有效(str:float)；\nreplace_balance -- 替代金额,必须现金替代标的此字段有效(str:float)；\nis_open -- 停牌标志，0-停牌，1-非停牌(str:int)；\n\n{'600000.SS': {'cash_replace_flag': '1', 'replace_ratio': 0.1, 'is_open': 1, 'code_num': 4700.0, 'replace_balance': 0.0}}\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #ETF成分券信息\n    stock_info = get_etf_stock_info('510050.SS','600000.SS')\n    log.info(stock_info)\n    stocks_info = get_etf_stock_info('510050.SS',['600000.SS','600036.SS'])\n    log.info(stocks_info)",
+  "code_blocks": [],
+  "content_length": 917,
+  "url": "https://ptradeapi.com/#get_etf_stock_info"
+}

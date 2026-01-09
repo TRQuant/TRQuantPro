@@ -638,6 +638,8 @@ def get_market_regime_detector() -> MarketRegimeDetector:
     """获取市场环境检测器"""
     global _detector
     if _detector is None:
+        _detector = MarketRegimeDetector()
+    return _detector
 
 
 
