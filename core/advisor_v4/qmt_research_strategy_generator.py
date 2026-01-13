@@ -137,24 +137,75 @@ g_stock_pool = []  # 股票池
 def normalize_stock_code(code):
     """
     Normalize stock code format for QMT
-    Convert '600837.SH' to '600837.XSHG' or '600837'
+    QMT uses .SH (Shanghai) and .SZ (Shenzhen) format
+    Convert various formats to QMT format: 000001.SH or 000001.SZ
     """
     if not code:
         return code
     
-    # Remove .SH suffix and convert to .XSHG if needed
-    if code.endswith('.SH'):
-        # Shanghai stocks: convert to .XSHG format
-        return code.replace('.SH', '.XSHG')
-    elif code.endswith('.SZ'):
-        # Shenzhen stocks: convert to .XSHE format
-        return code.replace('.SZ', '.XSHE')
-    elif '.' not in code:
-        # Already normalized format
-        return code
+    # Remove any existing suffix
+    code_clean = code.strip().upper()
+    
+    # Handle different input formats
+    if code_clean.endswith('.XSHG'):
+        # JQData format: convert to QMT format
+        code_clean = code_clean.replace('.XSHG', '')
+        return f"{code_clean}.SH"
+    elif code_clean.endswith('.XSHE'):
+        # JQData format: convert to QMT format
+        code_clean = code_clean.replace('.XSHE', '')
+        return f"{code_clean}.SZ"
+    elif code_clean.endswith('.SH'):
+        # Already in QMT format
+        return code_clean
+    elif code_clean.endswith('.SZ'):
+        # Already in QMT format
+        return code_clean
+    elif '.' not in code_clean:
+        # Pure number format: determine market by prefix
+        if len(code_clean) == 6:
+            # Shanghai stocks: 600xxx, 601xxx, 603xxx, 605xxx, 688xxx
+            if code_clean.startswith(('600', '601', '603', '605', '688')):
+                return f"{code_clean}.SH"
+            # Shenzhen stocks: 000xxx, 001xxx, 002xxx, 003xxx, 300xxx
+            elif code_clean.startswith(('000', '001', '002', '003', '300')):
+                return f"{code_clean}.SZ"
+            else:
+                # Default to Shanghai if cannot determine
+                return f"{code_clean}.SH"
+        else:
+            # Invalid format, return as is
+            return code_clean
     else:
-        # Keep as is if already in correct format
-        return code
+        # Unknown format, return as is
+        return code_clean
+
+
+def get_current_datetime(ContextInfo):
+    """
+    获取当前时间（QMT兼容版本）
+    QMT使用bartime（毫秒时间戳）而不是current_dt
+    
+    Returns:
+        datetime object
+    """
+    from datetime import datetime
+    try:
+        # 方法1: 使用bartime（毫秒时间戳）
+        if hasattr(ContextInfo, 'bartime') and ContextInfo.bartime:
+            return datetime.fromtimestamp(ContextInfo.bartime / 1000.0)
+        
+        # 方法2: 使用get_bar_timetag
+        if hasattr(ContextInfo, 'barpos') and hasattr(ContextInfo, 'get_bar_timetag'):
+            timetag = ContextInfo.get_bar_timetag(ContextInfo.barpos)
+            if timetag:
+                return datetime.fromtimestamp(timetag / 1000.0)
+        
+        # 方法3: 回退到系统时间
+        return datetime.now()
+    except Exception as e:
+        print(f"[Warning] 获取当前时间失败: {{e}}")
+        return datetime.now()
 
 
 def get_stock_list(ContextInfo):
@@ -163,13 +214,21 @@ def get_stock_list(ContextInfo):
         # QMT研究环境获取指数成分股
         index_code = "000300.SH"
         stock_list = ContextInfo.get_stock_list_in_sector(index_code)
-        if stock_list:
-            # Normalize stock codes for QMT
-            normalized_list = [normalize_stock_code(code) for code in stock_list]
-            return normalized_list
-        return []
+        if not stock_list:
+            print("[Warning] get_stock_list_in_sector返回空列表")
+            return []
+        
+        # 标准化股票代码
+        # 注意: 在init期间不要使用get_last_price()验证
+        # 因为市场数据可能还不可用
+        normalized_list = [normalize_stock_code(code) for code in stock_list]
+        
+        print(f"[Stock List] 从指数获取 {{len(normalized_list)}} 只股票")
+        return normalized_list
     except Exception as e:
         print(f"获取股票池失败: {{e}}")
+        import traceback
+        traceback.print_exc()
         return []
 
 
@@ -526,7 +585,8 @@ def check_risk_control(ContextInfo):
     """风控检查（止损止盈）"""
     global g_positions
     
-    current_date = ContextInfo.current_dt.strftime('%Y-%m-%d')
+    current_dt = get_current_datetime(ContextInfo)
+    current_date = current_dt.strftime('%Y-%m-%d')
     positions = ContextInfo.get_trade_detail_data(ContextInfo.accout_id, 'stock', 'position')
     
     for pos in positions:
@@ -584,7 +644,7 @@ def check_risk_control(ContextInfo):
         
         # 时间止损
         entry_date = datetime.strptime(pos_record['entry_date'], '%Y-%m-%d')
-        days_held = (ContextInfo.current_dt - entry_date).days
+        days_held = (current_dt - entry_date).days
         if days_held >= TIME_STOP_DAYS:
             print(f"[时间止损] {{stock_code}} 持仓{{days_held}}天，卖出")
             ContextInfo.order(stock_code, -pos.m_nVolume, ContextInfo.MARKET_SH_SZ)
@@ -596,8 +656,9 @@ def rebalance(ContextInfo):
     """调仓函数"""
     global g_last_rebalance_date, g_stock_pool
     
-    current_date = ContextInfo.current_dt.strftime('%Y-%m-%d')
-    current_weekday = ContextInfo.current_dt.weekday()
+    current_dt = get_current_datetime(ContextInfo)
+    current_date = current_dt.strftime('%Y-%m-%d')
+    current_weekday = current_dt.weekday()
     
     # 检查是否需要调仓（每周指定日期）
     if current_weekday != REBALANCE_WEEKDAY:
@@ -689,13 +750,25 @@ def init(ContextInfo):
     print("=" * 60)
     
     # 设置股票池（沪深300）
-    index_code = "000300.SH"
-    g_stock_pool = ContextInfo.get_stock_list_in_sector(index_code)
-    # Normalize stock codes for QMT
-    g_stock_pool = [normalize_stock_code(code) for code in g_stock_pool]
-    ContextInfo.set_universe(g_stock_pool)
+    g_stock_pool = get_stock_list(ContextInfo)
+    if not g_stock_pool:
+        print("[Warning] 股票池为空，无法初始化策略")
+        return
     
-    print(f"✅ 股票池初始化: {{len(g_stock_pool)}} 只股票")
+    # Set universe with validated stock codes
+    try:
+        ContextInfo.set_universe(g_stock_pool)
+        print(f"✅ 股票池初始化: {{len(g_stock_pool)}} 只股票")
+    except Exception as e:
+        print(f"[Warning] 设置股票池失败: {{e}}")
+        # Try to set with a smaller subset if full list fails
+        if len(g_stock_pool) > 50:
+            print(f"[Fallback] 尝试使用前50只股票...")
+            try:
+                ContextInfo.set_universe(g_stock_pool[:50])
+                print(f"✅ 股票池初始化（子集）: 50 只股票")
+            except Exception as e2:
+                print(f"[Error] 即使使用子集也无法设置股票池: {{e2}}")
     
     # 设置定时任务
     # QMT研究环境使用run_time (不支持weekday参数)
@@ -718,17 +791,22 @@ def handlebar(ContextInfo):
     """
     global g_stock_pool
     
-    current_weekday = ContextInfo.current_dt.weekday()
-    current_time = ContextInfo.current_dt.strftime('%H:%M:%S')
+    # 使用QMT兼容方式获取当前时间
+    current_dt = get_current_datetime(ContextInfo)
+    current_weekday = current_dt.weekday()
+    current_time = current_dt.strftime('%H:%M:%S')
     
     # 每周更新股票池（周一）
     if current_weekday == 0:  # 周一
-        index_code = "000300.SH"
-        g_stock_pool = ContextInfo.get_stock_list_in_sector(index_code)
-        # Normalize stock codes
-        g_stock_pool = [normalize_stock_code(code) for code in g_stock_pool]
-        ContextInfo.set_universe(g_stock_pool)
-        print(f"[盘前] 股票池已更新: {{len(g_stock_pool)}} 只股票")
+        g_stock_pool = get_stock_list(ContextInfo)
+        if g_stock_pool:
+            try:
+                ContextInfo.set_universe(g_stock_pool)
+                print(f"[盘前] 股票池已更新: {{len(g_stock_pool)}} 只股票")
+            except Exception as e:
+                print(f"[Warning] 更新股票池失败: {{e}}")
+        else:
+            print("[Warning] 股票池为空，保持之前的股票池")
     
     # 风控检查（每日收盘前，约14:50）
     if current_time >= '14:50:00':

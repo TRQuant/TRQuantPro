@@ -1,0 +1,37 @@
+{
+  "id": "research_20260111_153744",
+  "topic": "MongoDB测试结果存储",
+  "module_name": "core.dev_workflow",
+  "objectives": [],
+  "kb_results_count": 9,
+  "kb_results_summary": [
+    {
+      "title": "V4.0系统生成聚宽策略代码指南",
+      "type": "guide"
+    },
+    {
+      "title": "聚宽回测过程说明",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽数据获取函数 - get_price, history, get_fundamentals",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽策略程序架构",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽交易函数 - order_target, order_value, order_target_percent",
+      "type": "reference"
+    }
+  ],
+  "web_search_suggestions": [
+    "MongoDB测试结果存储 best practices 2024",
+    "MongoDB测试结果存储 implementation guide",
+    "MongoDB测试结果存储 python example github",
+    "core.dev_workflow MongoDB测试结果存储 tutorial"
+  ],
+  "status": "completed",
+  "created_at": "2026-01-11T15:37:48.332591"
+}

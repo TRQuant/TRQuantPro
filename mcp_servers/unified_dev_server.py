@@ -51,8 +51,18 @@ try:
     from mcp.server.stdio import stdio_server
     from mcp.types import Tool, TextContent
     MCP_SDK_AVAILABLE = True
-except ImportError:
-    logger.error("MCP SDK不可用，请安装: pip install mcp")
+except ImportError as e:
+    # 提供更详细的错误信息和修复建议
+    logger.error(f"MCP SDK不可用: {e}")
+    logger.error("请确保使用venv中的Python，并安装MCP SDK:")
+    logger.error("  ./venv/bin/pip install mcp")
+    logger.error(f"当前Python路径: {sys.executable}")
+    # 检查是否是系统Python
+    if 'venv' not in sys.executable and 'virtualenv' not in sys.executable:
+        logger.error("⚠️  检测到使用系统Python，请使用venv中的Python:")
+        venv_python = Path(__file__).parent.parent / "venv" / "bin" / "python3"
+        if venv_python.exists():
+            logger.error(f"  建议使用: {venv_python}")
     sys.exit(1)
 
 # 创建服务器
@@ -2727,6 +2737,307 @@ TOOL_HANDLERS.update({
 })
 
 logger.info("网络爬虫工具已加载 (10个工具: 5个基础 + 3个Selenium + 2个Lavague)")
+
+# ==================== QMT/PTrade策略工具 ====================
+
+def strategy_qmt_validate(code: str) -> Dict:
+    """验证QMT策略代码的语法和API兼容性"""
+    import ast
+    import re
+    
+    errors = []
+    warnings = []
+    info = []
+    
+    # 1. Check Python syntax
+    try:
+        ast.parse(code)
+        info.append("Python语法检查: 通过")
+    except SyntaxError as e:
+        errors.append(f"Python语法错误: 行{e.lineno}: {e.msg}")
+        return {"success": False, "valid": False, "errors": errors, "warnings": warnings, "info": info}
+    
+    # 2. Check required functions
+    required_funcs = ['init', 'handlebar']
+    optional_funcs = ['after_trading_end', 'before_trading_start']
+    
+    found_funcs = re.findall(r'^def\s+(\w+)\s*\(', code, re.MULTILINE)
+    
+    for func in required_funcs:
+        if func not in found_funcs:
+            errors.append(f"缺少必需函数: {func}(ContextInfo)")
+        else:
+            info.append(f"必需函数 {func}: 已定义")
+    
+    for func in optional_funcs:
+        if func in found_funcs:
+            info.append(f"可选函数 {func}: 已定义")
+    
+    # 3. Check QMT API usage
+    qmt_apis = {
+        'get_sector': 'ContextInfo.get_sector()',
+        'set_universe': 'ContextInfo.set_universe()',
+        'get_history_data': 'ContextInfo.get_history_data()',
+        'barpos': 'ContextInfo.barpos',
+        'get_bar_timetag': 'ContextInfo.get_bar_timetag()',
+        'capital': 'ContextInfo.capital',
+        'accountID': 'ContextInfo.accountID'
+    }
+    
+    found_apis = []
+    for api, desc in qmt_apis.items():
+        if api in code:
+            found_apis.append(api)
+            info.append(f"QMT API {desc}: 使用中")
+    
+    # 4. Check encoding
+    if code.startswith('#coding:gbk') or code.startswith('# -*- coding: gbk -*-'):
+        info.append("编码声明: GBK (QMT推荐)")
+    elif code.startswith('#coding:utf-8') or code.startswith('# -*- coding: utf-8 -*-'):
+        warnings.append("编码声明: UTF-8 (建议改为GBK以兼容QMT)")
+    elif code.startswith('# -*- coding: ascii -*-'):
+        info.append("编码声明: ASCII (纯英文，兼容性好)")
+    else:
+        warnings.append("建议添加编码声明: #coding:gbk")
+    
+    # 5. Check for common issues
+    if 'datetime.now()' in code:
+        warnings.append("使用datetime.now()可能在回测中不准确，建议使用ContextInfo.get_bar_timetag()")
+    
+    if 'time.sleep' in code:
+        warnings.append("time.sleep()在回测模式下无效")
+    
+    if 'print(' in code:
+        info.append("发现print语句 (回测日志)")
+    
+    # 6. Check order function usage
+    if 'order_shares' in code or 'order(' in code:
+        info.append("交易函数: 已定义")
+    else:
+        warnings.append("未找到order函数定义，请确保使用正确的下单API")
+    
+    return {
+        "success": True,
+        "valid": len(errors) == 0,
+        "errors": errors,
+        "warnings": warnings,
+        "info": info,
+        "found_functions": found_funcs,
+        "found_qmt_apis": found_apis
+    }
+
+
+def strategy_qmt_fetch_docs(topic: str) -> Dict:
+    """获取QMT API文档"""
+    try:
+        # Search knowledge base first
+        result = knowledge_search(topic, limit=5)
+        if result.get("success") and result.get("results"):
+            kb_results = [r for r in result["results"] if 'qmt' in r.get('title', '').lower() or 'qmt' in r.get('content', '').lower()]
+            if kb_results:
+                return {
+                    "success": True,
+                    "topic": topic,
+                    "source": "knowledge_base",
+                    "results": kb_results[:5]
+                }
+        
+        # Fallback to web search
+        qmt_doc_urls = [
+            "https://qmt.ptradeapi.com/QMT_Python_API_Doc.html",
+            "https://www.xuntou.net/wiki/",
+        ]
+        
+        return {
+            "success": True,
+            "topic": topic,
+            "source": "documentation_links",
+            "doc_urls": qmt_doc_urls,
+            "suggestion": f"请使用 crawler.fetch 或 web_search 搜索: QMT {topic}"
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e), "topic": topic}
+
+
+def strategy_convert(code: str, source: str, target: str) -> Dict:
+    """在JQData/BulletTrade/QMT/PTrade之间转换策略代码"""
+    
+    conversions = {
+        ("jqdata", "qmt"): _convert_jqdata_to_qmt,
+        ("bullettrade", "qmt"): _convert_bullettrade_to_qmt,
+        ("qmt", "ptrade"): _convert_qmt_to_ptrade,
+        ("jqdata", "ptrade"): _convert_jqdata_to_ptrade,
+    }
+    
+    key = (source.lower(), target.lower())
+    if key not in conversions:
+        return {
+            "success": False,
+            "error": f"不支持的转换: {source} -> {target}",
+            "supported_conversions": list(conversions.keys())
+        }
+    
+    try:
+        converted_code = conversions[key](code)
+        return {
+            "success": True,
+            "source": source,
+            "target": target,
+            "original_lines": len(code.split('\n')),
+            "converted_lines": len(converted_code.split('\n')),
+            "converted_code": converted_code
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e), "source": source, "target": target}
+
+
+def _convert_jqdata_to_qmt(code: str) -> str:
+    """JQData -> QMT 转换"""
+    import re
+    
+    # Basic replacements
+    replacements = [
+        ('def initialize(context):', 'def init(ContextInfo):'),
+        ('def handle_data(context, data):', 'def handlebar(ContextInfo):'),
+        ('context.portfolio', 'ContextInfo'),
+        ('get_price(', "ContextInfo.get_history_data("),
+        ('order_target_value(', 'order_shares('),
+        ('g.', 'ContextInfo.'),
+    ]
+    
+    result = code
+    for old, new in replacements:
+        result = result.replace(old, new)
+    
+    # Add encoding header if not present
+    if not result.startswith('#coding'):
+        result = '#coding:gbk\n' + result
+    
+    return result
+
+
+def _convert_bullettrade_to_qmt(code: str) -> str:
+    """BulletTrade -> QMT 转换"""
+    import re
+    
+    replacements = [
+        ('def initialize(context):', 'def init(ContextInfo):'),
+        ('def handle_data(context, data):', 'def handlebar(ContextInfo):'),
+        ('context.portfolio.positions', 'ContextInfo.holdings'),
+        ('context.portfolio.cash', 'ContextInfo.money'),
+        ('order_target_percent(', 'order_shares('),
+    ]
+    
+    result = code
+    for old, new in replacements:
+        result = result.replace(old, new)
+    
+    if not result.startswith('#coding'):
+        result = '#coding:gbk\n' + result
+    
+    return result
+
+
+def _convert_qmt_to_ptrade(code: str) -> str:
+    """QMT -> PTrade 转换"""
+    # QMT and PTrade APIs are very similar
+    # Main differences are in some specific function names
+    result = code
+    
+    replacements = [
+        ('ContextInfo.get_sector', 'get_Ashare'),
+        ('ContextInfo.get_history_data', 'get_price'),
+    ]
+    
+    for old, new in replacements:
+        result = result.replace(old, new)
+    
+    return result
+
+
+def _convert_jqdata_to_ptrade(code: str) -> str:
+    """JQData -> PTrade 转换"""
+    # First convert to QMT, then to PTrade
+    qmt_code = _convert_jqdata_to_qmt(code)
+    return _convert_qmt_to_ptrade(qmt_code)
+
+
+def crawler_qmt_fetch(url: str, section: str = None) -> Dict:
+    """专门爬取QMT文档的工具"""
+    try:
+        import requests
+        from bs4 import BeautifulSoup
+        
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        
+        # Handle anchor links
+        if '#' in url:
+            base_url, anchor = url.split('#', 1)
+            response = requests.get(base_url, headers=headers, timeout=30)
+        else:
+            response = requests.get(url, headers=headers, timeout=30)
+            anchor = None
+        
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # If anchor specified, find that section
+        if anchor:
+            target = soup.find(id=anchor) or soup.find('a', {'name': anchor})
+            if target:
+                # Get content of that section
+                content_parts = []
+                for sibling in target.find_next_siblings():
+                    if sibling.name in ['h1', 'h2', 'h3']:
+                        break
+                    content_parts.append(sibling.get_text(strip=True))
+                content = '\n'.join(content_parts)
+            else:
+                content = soup.get_text(separator='\n', strip=True)
+        else:
+            # Remove scripts and styles
+            for script in soup(['script', 'style', 'nav', 'footer']):
+                script.decompose()
+            content = soup.get_text(separator='\n', strip=True)
+        
+        # Extract code blocks
+        code_blocks = []
+        for pre in soup.find_all('pre'):
+            code = pre.get_text(strip=True)
+            if len(code) > 20:
+                code_blocks.append(code[:2000])
+        
+        # Save to knowledge base
+        kb_result = knowledge_add(
+            title=f"QMT API文档: {section or url}",
+            content=content[:5000],
+            type="reference",
+            tags=["qmt", "api", "documentation"],
+            source=url
+        )
+        
+        return {
+            "success": True,
+            "url": url,
+            "section": section or anchor,
+            "content_length": len(content),
+            "content_preview": content[:2000],
+            "code_blocks": code_blocks[:5],
+            "saved_to_kb": kb_result.get("success", False)
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e), "url": url}
+
+
+# 更新工具注册 - QMT/策略工具
+TOOL_HANDLERS.update({
+    "strategy.qmt.validate": strategy_qmt_validate,
+    "strategy.qmt.fetch_docs": strategy_qmt_fetch_docs,
+    "strategy.convert": strategy_convert,
+    "crawler.qmt.fetch": crawler_qmt_fetch,
+})
+
+logger.info("QMT/策略工具已加载 (4个工具: validate, fetch_docs, convert, crawler.qmt.fetch)")
 
 if __name__ == "__main__":
     import sys

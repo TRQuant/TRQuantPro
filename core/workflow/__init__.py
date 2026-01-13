@@ -1,17 +1,13 @@
-"""工作流管理模块"""
-from .state_manager import WorkflowStateManager, WorkflowState, WorkflowStatus, StepStatus, get_state_manager
+# -*- coding: utf-8 -*-
+"""
+工作流模块
+=========
+包含工作流增强和集成功能
 
-# 别名支持（兼容性）
-StateManager = WorkflowStateManager
+模块:
+- openmanus_integration: OpenManus工作流集成
+"""
 
-# 增强型编排器（已合并到 workflow_orchestrator.py）
-from core.workflow_orchestrator import EnhancedWorkflowOrchestrator, create_workflow
+from .openmanus_integration import WorkflowEnhancer, EnhancementResult, enhance_workflow_step
 
-# 可选导入（如果类存在）
-try:
-    from core.workflow_orchestrator import WorkflowConfig, WorkflowStep, WorkflowStepStatus
-except ImportError:
-    # 这些类可能不存在，不影响主要功能
-    WorkflowConfig = None
-    WorkflowStep = None
-    WorkflowStepStatus = None
+__all__ = ['WorkflowEnhancer', 'EnhancementResult', 'enhance_workflow_step']

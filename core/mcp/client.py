@@ -291,8 +291,21 @@ class MCPClient:
         logger.info(f"MCPClient初始化完成: {self.project_root}, Python: {self.python_path}")
     
     def _find_python_path(self) -> str:
-        """查找Python解释器路径，优先使用工作区venv"""
+        """
+        查找Python解释器路径，优先使用工作区venv
+        
+        查找顺序:
+        1. 项目根目录下的 venv（主虚拟环境）
+        2. 环境变量TRQUANT_ROOT下的venv
+        3. 工作区路径下的 extension/venv（备用）
+        4. 系统Python（最后回退）
+        
+        如果找到venv Python，会验证MCP SDK是否可用
+        """
         import platform
+        
+        # 候选路径列表
+        candidates = []
         
         # 1. 检查项目根目录下的 venv（主虚拟环境）
         venv_path = self.project_root / "venv"
@@ -301,8 +314,7 @@ class MCPClient:
         else:
             python_exe = venv_path / "bin" / "python3"
         if python_exe.exists():
-            logger.info(f"✅ 找到项目根目录venv: {python_exe}")
-            return str(python_exe)
+            candidates.append(("项目根目录venv", python_exe))
         
         # 2. 检查环境变量TRQUANT_ROOT下的venv（项目根目录）
         trquant_root = os.environ.get("TRQUANT_ROOT")
@@ -314,8 +326,7 @@ class MCPClient:
                 python_exe = trquant_venv / "bin" / "python3"
             
             if python_exe.exists():
-                logger.info(f"✅ 找到TRQUANT_ROOT venv: {python_exe}")
-                return str(python_exe)
+                candidates.append(("TRQUANT_ROOT venv", python_exe))
         
         # 3. 检查工作区路径下的 extension/venv（备用）
         venv_path = self.project_root / "extension" / "venv"
@@ -325,11 +336,36 @@ class MCPClient:
             python_exe = venv_path / "bin" / "python"
         
         if python_exe.exists():
-            logger.info(f"✅ 找到extension/venv: {python_exe}")
+            candidates.append(("extension/venv", python_exe))
+        
+        # 验证候选路径，优先选择有MCP SDK的
+        for name, python_exe in candidates:
+            # 验证MCP SDK是否可用
+            try:
+                import subprocess
+                result = subprocess.run(
+                    [str(python_exe), '-c', 'import mcp; print("OK")'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5.0
+                )
+                if result.returncode == 0:
+                    logger.info(f"✅ 找到{name}（MCP可用）: {python_exe}")
+                    return str(python_exe)
+            except Exception as e:
+                logger.debug(f"{name} Python验证失败: {e}")
+                continue
+        
+        # 如果所有venv都没有MCP，使用第一个可用的venv
+        if candidates:
+            name, python_exe = candidates[0]
+            logger.warning(f"⚠️  使用{name}（MCP可能不可用）: {python_exe}")
+            logger.warning(f"   建议运行: {python_exe} -m pip install mcp")
             return str(python_exe)
         
-        # 3. 回退到sys.executable
-        logger.info(f"使用系统Python: {sys.executable}")
+        # 最后回退到sys.executable
+        logger.warning(f"⚠️  未找到venv，使用系统Python: {sys.executable}")
+        logger.warning(f"   建议在项目根目录创建venv并安装MCP: pip install mcp")
         return sys.executable
     
     def call(self, 
@@ -779,6 +815,26 @@ class MCPClient:
             raise FileNotFoundError(f"MCP服务器文件不存在: {server_file}")
         
         # 构建调用请求
+        # 注意：MCP服务器需要先初始化，所以使用直接函数调用方式
+        # 对于unified_dev_server，直接导入并调用函数
+        if server_name == "unified_dev_server":
+            try:
+                # 直接导入并调用函数
+                sys.path.insert(0, str(self.mcp_servers_dir))
+                from unified_dev_server import TOOL_HANDLERS
+                
+                handler = TOOL_HANDLERS.get(tool_name)
+                if handler:
+                    result = handler(**arguments)
+                    return result
+                else:
+                    raise RuntimeError(f"工具未找到: {tool_name}")
+            except ImportError as e:
+                logger.warning(f"直接调用失败，回退到subprocess: {e}")
+                # 回退到subprocess方式
+                pass
+        
+        # 使用subprocess方式（需要MCP协议初始化）
         request = {
             "jsonrpc": "2.0",
             "method": "tools/call",
@@ -803,8 +859,24 @@ class MCPClient:
             if result.returncode != 0:
                 raise RuntimeError(f"MCP服务器返回错误: {result.stderr}")
             
-            response = json.loads(result.stdout)
-            return response.get("result", {})
+            # 解析响应
+            try:
+                response = json.loads(result.stdout)
+                # MCP协议返回格式: {"jsonrpc": "2.0", "result": {...}, "id": 1}
+                if "result" in response:
+                    return response["result"]
+                # 如果result是TextContent列表，提取text内容
+                if "result" in response and isinstance(response["result"], list):
+                    if len(response["result"]) > 0:
+                        text_content = response["result"][0].get("text", "")
+                        if text_content:
+                            return json.loads(text_content)
+                return response.get("result", {})
+            except json.JSONDecodeError:
+                # 如果不是JSON，尝试解析为文本
+                if result.stdout.strip():
+                    return json.loads(result.stdout)
+                return {}
             
         except subprocess.TimeoutExpired:
             raise TimeoutError(f"MCP调用超时: {tool_name}")
@@ -927,4 +999,27 @@ MCPClient.TOOL_SERVER_MAP.update({
     "data_source.cache_stats": "data_source_server_v2",
     "data_source.clear_cache": "data_source_server_v2",
     "data_source.candidate_pool": "data_source_server_v2",
+})
+
+# 添加增强版开发工作流工具映射
+MCPClient.TOOL_SERVER_MAP.update({
+    # 调研工具
+    "research.background": "enhanced_dev_workflow_server",
+    "research.compare_standards": "enhanced_dev_workflow_server",
+    "research.query_history": "enhanced_dev_workflow_server",
+    "research.add_finding": "enhanced_dev_workflow_server",
+    # 代码复用检查
+    "dev.check_existing": "enhanced_dev_workflow_server",
+    "dev.record_progress": "enhanced_dev_workflow_server",
+    "dev.record_to_kb": "enhanced_dev_workflow_server",
+    # 测试管理
+    "test.record": "enhanced_dev_workflow_server",
+    "test.query": "enhanced_dev_workflow_server",
+    "test.start_session": "enhanced_dev_workflow_server",
+    "test.complete_session": "enhanced_dev_workflow_server",
+    "test.get_stats": "enhanced_dev_workflow_server",
+    # 工作流增强
+    "workflow.incremental_test": "enhanced_dev_workflow_server",
+    "workflow.validate_step": "enhanced_dev_workflow_server",
+    "workflow.enhanced_check": "enhanced_dev_workflow_server",
 })

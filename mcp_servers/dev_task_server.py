@@ -43,7 +43,16 @@ try:
     MCP_SDK_AVAILABLE = True
     logger.info("使用官方MCP SDK")
 except ImportError as e:
-    logger.error(f"官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}")
+    logger.error(f"官方MCP SDK不可用: {e}")
+    logger.error("请确保使用venv中的Python，并安装MCP SDK:")
+    logger.error("  ./venv/bin/pip install mcp")
+    logger.error(f"当前Python路径: {sys.executable}")
+    # 检查是否是系统Python
+    if 'venv' not in sys.executable and 'virtualenv' not in sys.executable:
+        logger.error("⚠️  检测到使用系统Python，请使用venv中的Python:")
+        venv_python = Path(__file__).parent.parent / "venv" / "bin" / "python3"
+        if venv_python.exists():
+            logger.error(f"  建议使用: {venv_python}")
     sys.exit(1)
 
 # 创建服务器

@@ -868,6 +868,215 @@ class DataPreloader:
             logger.warning(f"缓存交易日数据失败: {e}")
             return {}
     
+    def check_data_completeness(
+        self,
+        start_date: str,
+        end_date: str,
+        stocks: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        检查MongoDB中数据是否完整
+        
+        Args:
+            start_date: 开始日期
+            end_date: 结束日期
+            stocks: 股票列表（None表示检查所有股票）
+        
+        Returns:
+            完整性检查结果字典
+        """
+        if self.mongodb_storage is None or not self.use_mongodb:
+            return {
+                'is_complete': False,
+                'reason': 'MongoDB not available',
+                'covered_date_range': None,
+                'missing_date_ranges': [(start_date, end_date)],
+                'total_stocks': 0,
+                'covered_stocks': 0,
+                'coverage_percentage': 0.0
+            }
+        
+        try:
+            # 转换日期为datetime对象
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+            period_key = self._get_period_key(start_date, end_date)
+            
+            # 从MongoDB查询数据
+            collection = self.mongodb_storage.db[self.mongodb_storage.COLLECTIONS["daily_prices"]]
+            
+            # 查询该时间段的数据
+            query = {
+                "period_key": period_key,
+                "date": {
+                    "$gte": start_date,
+                    "$lte": end_date
+                }
+            }
+            
+            if stocks:
+                query["code"] = {"$in": stocks}
+            
+            # 获取已覆盖的日期范围
+            pipeline = [
+                {"$match": query},
+                {"$group": {
+                    "_id": None,
+                    "min_date": {"$min": "$date"},
+                    "max_date": {"$max": "$date"},
+                    "unique_codes": {"$addToSet": "$code"},
+                    "unique_dates": {"$addToSet": "$date"}
+                }}
+            ]
+            
+            result = list(collection.aggregate(pipeline))
+            
+            if not result:
+                # 没有数据
+                return {
+                    'is_complete': False,
+                    'reason': 'No data found',
+                    'covered_date_range': None,
+                    'missing_date_ranges': [(start_date, end_date)],
+                    'total_stocks': len(stocks) if stocks else 0,
+                    'covered_stocks': 0,
+                    'coverage_percentage': 0.0
+                }
+            
+            agg_result = result[0]
+            covered_stocks = len(agg_result.get("unique_codes", []))
+            covered_dates = sorted(agg_result.get("unique_dates", []))
+            
+            # 计算缺失的日期范围
+            if not covered_dates:
+                missing_ranges = [(start_date, end_date)]
+            else:
+                missing_ranges = []
+                # 检查开始日期之前
+                if covered_dates[0] > start_date:
+                    missing_ranges.append((start_date, covered_dates[0]))
+                # 检查结束日期之后
+                if covered_dates[-1] < end_date:
+                    missing_ranges.append((covered_dates[-1], end_date))
+                # 检查中间缺失的日期（简化版：只检查首尾）
+            
+            # 获取预期股票数
+            if stocks is None:
+                # 获取该时间段的所有股票
+                all_stocks = self._get_all_stocks(end_date)
+                total_stocks = len(all_stocks)
+            else:
+                total_stocks = len(stocks)
+            
+            # 计算覆盖率
+            coverage_percentage = (covered_stocks / total_stocks * 100) if total_stocks > 0 else 0.0
+            
+            # 判断是否完整（覆盖率>95%且没有缺失日期范围）
+            is_complete = (
+                coverage_percentage >= 95.0 and
+                len(missing_ranges) == 0 and
+                len(covered_dates) > 0
+            )
+            
+            return {
+                'is_complete': is_complete,
+                'reason': 'Complete' if is_complete else 'Incomplete',
+                'covered_date_range': (
+                    covered_dates[0] if covered_dates else None,
+                    covered_dates[-1] if covered_dates else None
+                ),
+                'missing_date_ranges': missing_ranges,
+                'total_stocks': total_stocks,
+                'covered_stocks': covered_stocks,
+                'coverage_percentage': coverage_percentage,
+                'total_trading_days': len(covered_dates),
+                'period_key': period_key
+            }
+            
+        except Exception as e:
+            logger.error(f"检查数据完整性失败: {e}")
+            return {
+                'is_complete': False,
+                'reason': f'Error: {str(e)}',
+                'covered_date_range': None,
+                'missing_date_ranges': [(start_date, end_date)],
+                'total_stocks': 0,
+                'covered_stocks': 0,
+                'coverage_percentage': 0.0
+            }
+    
+    def preload_multiple_periods(
+        self,
+        periods: List[Tuple[str, str]],
+        force_refresh: bool = False,
+        show_progress: bool = True
+    ) -> Dict[str, PreloadResult]:
+        """
+        批量预加载多个时间段的数据
+        
+        Args:
+            periods: 时间段列表，每个元素为(start_date, end_date)元组
+            force_refresh: 是否强制刷新（忽略缓存）
+            show_progress: 是否显示进度
+        
+        Returns:
+            每个时间段对应的预加载结果字典
+        """
+        results = {}
+        
+        if show_progress:
+            print(f"\n{'='*60}")
+            print(f"📦 批量预加载 {len(periods)} 个时间段")
+            print(f"{'='*60}")
+        
+        for i, (period_start, period_end) in enumerate(periods, 1):
+            if show_progress:
+                print(f"\n[{i}/{len(periods)}] 时间段: {period_start} ~ {period_end}")
+            
+            # 检查完整性
+            completeness = self.check_data_completeness(period_start, period_end)
+            
+            if completeness.get('is_complete') and not force_refresh:
+                if show_progress:
+                    print(f"  ✅ 数据已完整（覆盖率: {completeness.get('coverage_percentage', 0):.1f}%），跳过下载")
+                
+                # 创建成功结果
+                period_key = self._get_period_key(period_start, period_end)
+                results[f"{period_start}_{period_end}"] = PreloadResult(
+                    success=True,
+                    total_stocks=completeness.get('total_stocks', 0),
+                    total_trading_days=completeness.get('total_trading_days', 0),
+                    duration_seconds=0.0
+                )
+                continue
+            
+            # 如果数据不完整，下载缺失的数据
+            if show_progress and not completeness.get('is_complete'):
+                print(f"  ⚠️  数据不完整（覆盖率: {completeness.get('coverage_percentage', 0):.1f}%），开始下载...")
+            
+            # 下载数据
+            result = self.preload_market_data(
+                start_date=period_start,
+                end_date=period_end,
+                force_refresh=force_refresh
+            )
+            
+            results[f"{period_start}_{period_end}"] = result
+            
+            if show_progress:
+                if result.success:
+                    print(f"  ✅ 下载完成（{result.duration_seconds:.1f}秒，{result.total_stocks}只股票）")
+                else:
+                    print(f"  ❌ 下载失败: {', '.join(result.errors[:2])}")
+        
+        if show_progress:
+            successful = sum(1 for r in results.values() if r.success)
+            print(f"\n{'='*60}")
+            print(f"📦 批量预加载完成: {successful}/{len(periods)} 成功")
+            print(f"{'='*60}")
+        
+        return results
+    
     def clear_cache(self, period_key: str = None):
         """清除缓存"""
         if period_key:

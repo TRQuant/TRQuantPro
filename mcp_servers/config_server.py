@@ -22,7 +22,16 @@ try:
     MCP_SDK_AVAILABLE = True
 except ImportError as e:
     import sys
-    print(f'官方MCP SDK不可用，请安装: pip install mcp. 错误: {e}', file=sys.stderr)
+    print(f'官方MCP SDK不可用: {e}', file=sys.stderr)
+        print('请确保使用venv中的Python，并安装MCP SDK:', file=sys.stderr)
+        print('  ./venv/bin/pip install mcp', file=sys.stderr)
+        print(f'当前Python路径: {sys.executable}', file=sys.stderr)
+        # 检查是否是系统Python
+        if 'venv' not in sys.executable and 'virtualenv' not in sys.executable:
+            print('⚠️  检测到使用系统Python，请使用venv中的Python:', file=sys.stderr)
+            venv_python = Path(__file__).parent.parent / "venv" / "bin" / "python3"
+            if venv_python.exists():
+                print(f'  建议使用: {venv_python}', file=sys.stderr)
     sys.exit(1)
 
 from mcp.server import Server

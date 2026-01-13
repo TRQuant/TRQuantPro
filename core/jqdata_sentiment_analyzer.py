@@ -1,20 +1,25 @@
 """
-JQData 市场情绪分析器
+JQData 市场情绪分析器（优化版）
 
-使用JQData的情绪类因子和舆情数据进行市场情绪分析。
+使用JQData的价格数据计算情绪类因子，并进行市场情绪分析。
 
 数据源:
-1. get_factor_kanban_values(category='emotion') - 情绪类因子
-   - PSY: 心理线
-   - ARBR: AR/BR人气意愿指标
-   - VR: 成交量变异率
-   - WVAD: 威廉变异离散量
+1. get_price - 价格数据（用于计算情绪因子）
+   - PSY: 心理线（12日）
+   - ARBR: AR/BR人气意愿指标（26日）
+   - VR: 成交量变异率（26日）
+   - WVAD: 威廉变异离散量（24日）
    
 2. finance.CCTV_NEWS - 新闻联播文本 (2009年至今)
    - 用于政策情绪分析
 
+注意:
+- 聚宽因子看板（get_factor_kanban_values）提供情绪因子的历史表现数据，
+  但不提供当前因子值，因此需要手动计算
+- 已优化：添加价格数据缓存，减少API调用，提升性能
+
 Author: TRQuant Team
-Date: 2026-01-02
+Date: 2026-01-12 (优化版)
 """
 
 import logging
@@ -134,6 +139,10 @@ class JQDataSentimentAnalyzer:
         self._jq = None
         self._cache: Dict[str, Any] = {}
         
+        # 价格数据缓存（避免重复获取）
+        self._price_cache: Dict[str, pd.DataFrame] = {}
+        self._cache_max_size = 50  # 最多缓存50个日期的数据
+        
     def _ensure_jqdata(self):
         """确保JQData连接"""
         if self._jq is None:
@@ -233,18 +242,49 @@ class JQDataSentimentAnalyzer:
             description=desc
         )
     
+    def _get_price_data_cached(self, index_code: str, start_date: str, end_date: str, fields: List[str]) -> Optional[pd.DataFrame]:
+        """获取价格数据（带缓存）"""
+        cache_key = f"{index_code}_{start_date}_{end_date}_{'_'.join(fields)}"
+        
+        if cache_key in self._price_cache:
+            return self._price_cache[cache_key]
+        
+        try:
+            df = self._jq.get_price(
+                index_code,
+                start_date=start_date,
+                end_date=end_date,
+                frequency='daily',
+                fields=fields
+            )
+            
+            # 处理MultiIndex
+            if isinstance(df.index, pd.MultiIndex):
+                df = df.reset_index(level='code', drop=True)
+            
+            # 缓存数据
+            if len(self._price_cache) >= self._cache_max_size:
+                # 删除最旧的缓存
+                oldest_key = next(iter(self._price_cache))
+                del self._price_cache[oldest_key]
+            
+            self._price_cache[cache_key] = df
+            return df
+        except Exception as e:
+            logger.debug(f"获取价格数据失败: {e}")
+            return None
+    
     def _calc_psy_score(self, date: str, index_code: str) -> tuple:
-        """计算心理线得分"""
+        """计算心理线得分（优化版：使用缓存）"""
         try:
             end_dt = datetime.strptime(date, '%Y-%m-%d')
             start_dt = end_dt - timedelta(days=30)
             
-            df = self._jq.get_price(
+            df = self._get_price_data_cached(
                 index_code,
-                start_date=start_dt.strftime('%Y-%m-%d'),
-                end_date=date,
-                frequency='daily',
-                fields=['close']
+                start_dt.strftime('%Y-%m-%d'),
+                date,
+                ['close']
             )
             
             if df is None or df.empty or len(df) < 12:
@@ -276,17 +316,16 @@ class JQDataSentimentAnalyzer:
             return 0.0, 50.0
     
     def _calc_arbr_score(self, date: str, index_code: str) -> tuple:
-        """计算AR/BR人气意愿指标得分"""
+        """计算AR/BR人气意愿指标得分（优化版：使用缓存）"""
         try:
             end_dt = datetime.strptime(date, '%Y-%m-%d')
             start_dt = end_dt - timedelta(days=40)
             
-            df = self._jq.get_price(
+            df = self._get_price_data_cached(
                 index_code,
-                start_date=start_dt.strftime('%Y-%m-%d'),
-                end_date=date,
-                frequency='daily',
-                fields=['open', 'high', 'low', 'close']
+                start_dt.strftime('%Y-%m-%d'),
+                date,
+                ['open', 'high', 'low', 'close']
             )
             
             if df is None or df.empty or len(df) < 26:
@@ -339,17 +378,16 @@ class JQDataSentimentAnalyzer:
             return 0.0, 100.0, 100.0
     
     def _calc_vr_score(self, date: str, index_code: str) -> tuple:
-        """计算成交量变异率得分"""
+        """计算成交量变异率得分（优化版：使用缓存）"""
         try:
             end_dt = datetime.strptime(date, '%Y-%m-%d')
             start_dt = end_dt - timedelta(days=40)
             
-            df = self._jq.get_price(
+            df = self._get_price_data_cached(
                 index_code,
-                start_date=start_dt.strftime('%Y-%m-%d'),
-                end_date=date,
-                frequency='daily',
-                fields=['close', 'volume']
+                start_dt.strftime('%Y-%m-%d'),
+                date,
+                ['close', 'volume']
             )
             
             if df is None or df.empty or len(df) < 26:
@@ -387,17 +425,16 @@ class JQDataSentimentAnalyzer:
             return 0.0, 150.0
     
     def _calc_wvad_score(self, date: str, index_code: str) -> float:
-        """计算威廉变异离散量得分"""
+        """计算威廉变异离散量得分（优化版：使用缓存）"""
         try:
             end_dt = datetime.strptime(date, '%Y-%m-%d')
             start_dt = end_dt - timedelta(days=30)
             
-            df = self._jq.get_price(
+            df = self._get_price_data_cached(
                 index_code,
-                start_date=start_dt.strftime('%Y-%m-%d'),
-                end_date=date,
-                frequency='daily',
-                fields=['open', 'high', 'low', 'close', 'volume']
+                start_dt.strftime('%Y-%m-%d'),
+                date,
+                ['open', 'high', 'low', 'close', 'volume']
             )
             
             if df is None or df.empty or len(df) < 24:

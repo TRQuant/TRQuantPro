@@ -87,39 +87,187 @@ g_stock_pool = []  # Stock pool
 def normalize_stock_code(code):
     """
     Normalize stock code format for QMT
-    Convert '600837.SH' to '600837.XSHG' or '600837'
+    QMT uses .SH (Shanghai) and .SZ (Shenzhen) format
+    Convert various formats to QMT format: 000001.SH or 000001.SZ
     """
     if not code:
         return code
     
-    # Remove .SH suffix and convert to .XSHG if needed
-    if code.endswith('.SH'):
-        # Shanghai stocks: convert to .XSHG format
-        return code.replace('.SH', '.XSHG')
-    elif code.endswith('.SZ'):
-        # Shenzhen stocks: convert to .XSHE format
-        return code.replace('.SZ', '.XSHE')
-    elif '.' not in code:
-        # Already normalized format
-        return code
+    # Remove any existing suffix
+    code_clean = code.strip().upper()
+    
+    # Handle different input formats
+    if code_clean.endswith('.XSHG'):
+        # JQData format: convert to QMT format
+        code_clean = code_clean.replace('.XSHG', '')
+        return f"{code_clean}.SH"
+    elif code_clean.endswith('.XSHE'):
+        # JQData format: convert to QMT format
+        code_clean = code_clean.replace('.XSHE', '')
+        return f"{code_clean}.SZ"
+    elif code_clean.endswith('.SH'):
+        # Already in QMT format
+        return code_clean
+    elif code_clean.endswith('.SZ'):
+        # Already in QMT format
+        return code_clean
+    elif '.' not in code_clean:
+        # Pure number format: determine market by prefix
+        if len(code_clean) == 6:
+            # Shanghai stocks: 600xxx, 601xxx, 603xxx, 605xxx, 688xxx
+            if code_clean.startswith(('600', '601', '603', '605', '688')):
+                return f"{code_clean}.SH"
+            # Shenzhen stocks: 000xxx, 001xxx, 002xxx, 003xxx, 300xxx
+            elif code_clean.startswith(('000', '001', '002', '003', '300')):
+                return f"{code_clean}.SZ"
+            else:
+                # Default to Shanghai if cannot determine
+                return f"{code_clean}.SH"
+        else:
+            # Invalid format, return as is
+            return code_clean
     else:
-        # Keep as is if already in correct format
-        return code
+        # Unknown format, return as is
+        return code_clean
 
 
-def get_stock_list(ContextInfo):
-    """Get stock pool (CSI 300 component stocks)"""
+def get_current_datetime(ContextInfo):
+    """
+    Get current datetime in QMT
+    QMT uses bartime (milliseconds since epoch) instead of current_dt
+    
+    Returns:
+        datetime object
+    """
+    from datetime import datetime
+    try:
+        # Method 1: Use bartime (milliseconds since epoch)
+        if hasattr(ContextInfo, 'bartime') and ContextInfo.bartime:
+            return datetime.fromtimestamp(ContextInfo.bartime / 1000.0)
+        
+        # Method 2: Use get_bar_timetag
+        if hasattr(ContextInfo, 'barpos') and hasattr(ContextInfo, 'get_bar_timetag'):
+            timetag = ContextInfo.get_bar_timetag(ContextInfo.barpos)
+            if timetag:
+                return datetime.fromtimestamp(timetag / 1000.0)
+        
+        # Method 3: Fallback to system time
+        return datetime.now()
+    except Exception as e:
+        print(f"[Warning] Failed to get current datetime: {e}")
+        return datetime.now()
+
+
+def validate_stock_tradable(ContextInfo, code, max_retries=2):
+    """
+    Validate if a stock is still tradable (not delisted, not suspended)
+    
+    Args:
+        ContextInfo: QMT context object
+        code: Stock code to validate
+        max_retries: Maximum retry attempts
+    
+    Returns:
+        bool: True if tradable, False if delisted/suspended
+    """
+    for attempt in range(max_retries):
+        try:
+            # Method 1: Try to get latest price
+            price = ContextInfo.get_last_price(code)
+            if price is not None and price > 0:
+                return True
+            
+            # Method 2: Try to get market data (last 1 day)
+            try:
+                data = ContextInfo.get_market_data(code, period='1d', count=1)
+                if data is not None and len(data) > 0:
+                    # Check if we got valid data
+                    if hasattr(data, 'close') or (isinstance(data, dict) and 'close' in data):
+                        return True
+                    elif isinstance(data, list) and len(data) > 0:
+                        return True
+            except:
+                pass
+            
+            # Method 3: Try to get bar data
+            try:
+                if hasattr(ContextInfo, 'get_bar_timetag'):
+                    # If we can get bar timetag, stock exists
+                    return True
+            except:
+                pass
+            
+            # If all methods fail, stock is likely delisted/suspended
+            return False
+            
+        except Exception as e:
+            if attempt < max_retries - 1:
+                continue
+            # Last attempt failed, assume not tradable
+            return False
+    
+    return False
+
+
+def get_stock_list(ContextInfo, validate=True):
+    """
+    Get stock pool (CSI 300 component stocks)
+    
+    Args:
+        ContextInfo: QMT context object
+        validate: Whether to validate stock tradability (default: True)
+    
+    Returns:
+        list: List of valid stock codes
+    """
     try:
         # QMT research environment get index component stocks
+        # Note: This returns ALL historical component stocks, including delisted ones
         index_code = "000300.SH"
         stock_list = ContextInfo.get_stock_list_in_sector(index_code)
-        if stock_list:
-            # Normalize stock codes for QMT
-            normalized_list = [normalize_stock_code(code) for code in stock_list]
+        if not stock_list:
+            print("[Warning] get_stock_list_in_sector returned empty list")
+            return []
+        
+        print(f"[Stock List] Raw list from QMT: {len(stock_list)} stocks (may include delisted stocks)")
+        
+        # Normalize stock codes for QMT
+        normalized_list = [normalize_stock_code(code) for code in stock_list]
+        
+        if not validate:
+            # Skip validation (faster, but may include delisted stocks)
+            print(f"[Stock List] Using {len(normalized_list)} stocks without validation")
             return normalized_list
-        return []
+        
+        # Validate each stock to filter out delisted/suspended stocks
+        valid_list = []
+        invalid_codes = []
+        
+        print(f"[Stock List] Validating {len(normalized_list)} stocks...")
+        for i, code in enumerate(normalized_list):
+            if validate_stock_tradable(ContextInfo, code):
+                valid_list.append(code)
+            else:
+                invalid_codes.append(code)
+            
+            # Progress indicator every 50 stocks
+            if (i + 1) % 50 == 0:
+                print(f"[Stock List] Validated {i + 1}/{len(normalized_list)} stocks...")
+        
+        if invalid_codes:
+            print(f"[Stock List] Filtered {len(invalid_codes)} delisted/suspended stocks")
+            if len(invalid_codes) <= 10:
+                print(f"[Stock List] Invalid codes: {', '.join(invalid_codes)}")
+            else:
+                print(f"[Stock List] Invalid codes (first 10): {', '.join(invalid_codes[:10])}...")
+        
+        print(f"[Stock List] Final valid stocks: {len(valid_list)}")
+        return valid_list
+        
     except Exception as e:
         print(f"Failed to get stock list: {e}")
+        import traceback
+        traceback.print_exc()
         return []
 
 
@@ -476,7 +624,8 @@ def check_risk_control(ContextInfo):
     """Risk control check (stop-loss/take-profit)"""
     global g_positions
     
-    current_date = ContextInfo.current_dt.strftime('%Y-%m-%d')
+    current_dt = get_current_datetime(ContextInfo)
+    current_date = current_dt.strftime('%Y-%m-%d')
     positions = ContextInfo.get_trade_detail_data(ContextInfo.accout_id, 'stock', 'position')
     
     for pos in positions:
@@ -534,7 +683,7 @@ def check_risk_control(ContextInfo):
         
         # Time stop
         entry_date = datetime.strptime(pos_record['entry_date'], '%Y-%m-%d')
-        days_held = (ContextInfo.current_dt - entry_date).days
+        days_held = (current_dt - entry_date).days
         if days_held >= TIME_STOP_DAYS:
             print(f"[Time Stop] {stock_code} held {days_held} days, sell")
             ContextInfo.order(stock_code, -pos.m_nVolume, ContextInfo.MARKET_SH_SZ)
@@ -546,8 +695,9 @@ def rebalance(ContextInfo):
     """Rebalance function"""
     global g_last_rebalance_date, g_stock_pool
     
-    current_date = ContextInfo.current_dt.strftime('%Y-%m-%d')
-    current_weekday = ContextInfo.current_dt.weekday()
+    current_dt = get_current_datetime(ContextInfo)
+    current_date = current_dt.strftime('%Y-%m-%d')
+    current_weekday = current_dt.weekday()
     
     # Check if rebalancing is needed (weekly on specified day)
     if current_weekday != REBALANCE_WEEKDAY:
@@ -639,13 +789,27 @@ def init(ContextInfo):
     print("=" * 60)
     
     # Set stock pool (CSI 300)
-    index_code = "000300.SH"
-    g_stock_pool = ContextInfo.get_stock_list_in_sector(index_code)
-    # Normalize stock codes for QMT
-    g_stock_pool = [normalize_stock_code(code) for code in g_stock_pool]
-    ContextInfo.set_universe(g_stock_pool)
+    # Note: During init, validation may be slow, so we skip it initially
+    # Validation will be done in handlebar when market data is available
+    g_stock_pool = get_stock_list(ContextInfo, validate=False)
+    if not g_stock_pool:
+        print("[Warning] Stock pool is empty, cannot initialize strategy")
+        return
     
-    print(f"Stock pool initialized: {len(g_stock_pool)} stocks")
+    # Set universe with validated stock codes
+    try:
+        ContextInfo.set_universe(g_stock_pool)
+        print(f"Stock pool initialized: {len(g_stock_pool)} stocks")
+    except Exception as e:
+        print(f"[Warning] Failed to set universe: {e}")
+        # Try to set with a smaller subset if full list fails
+        if len(g_stock_pool) > 50:
+            print(f"[Fallback] Trying with first 50 stocks...")
+            try:
+                ContextInfo.set_universe(g_stock_pool[:50])
+                print(f"Stock pool initialized (subset): 50 stocks")
+            except Exception as e2:
+                print(f"[Error] Failed to set universe even with subset: {e2}")
     
     # Set scheduled tasks
     # QMT research environment uses run_time (without weekday parameter)
@@ -669,17 +833,33 @@ def handlebar(ContextInfo):
     """
     global g_stock_pool
     
-    current_weekday = ContextInfo.current_dt.weekday()
-    current_time = ContextInfo.current_dt.strftime('%H:%M:%S')
+    # Get current datetime using QMT-compatible method
+    current_dt = get_current_datetime(ContextInfo)
+    current_weekday = current_dt.weekday()
+    current_time = current_dt.strftime('%H:%M:%S')
     
     # Update stock pool weekly (Monday)
+    # Validate stocks to filter out delisted/suspended stocks
     if current_weekday == 0:  # Monday
-        index_code = "000300.SH"
-        g_stock_pool = ContextInfo.get_stock_list_in_sector(index_code)
-        # Normalize stock codes
-        g_stock_pool = [normalize_stock_code(code) for code in g_stock_pool]
-        ContextInfo.set_universe(g_stock_pool)
-        print(f"[Pre-market] Stock pool updated: {len(g_stock_pool)} stocks")
+        print("[Pre-market] Updating stock pool with validation...")
+        g_stock_pool = get_stock_list(ContextInfo, validate=True)
+        if g_stock_pool:
+            try:
+                ContextInfo.set_universe(g_stock_pool)
+                print(f"[Pre-market] Stock pool updated: {len(g_stock_pool)} valid stocks")
+            except Exception as e:
+                print(f"[Warning] Failed to update stock pool: {e}")
+                # If validation failed, try without validation as fallback
+                print("[Fallback] Trying without validation...")
+                g_stock_pool = get_stock_list(ContextInfo, validate=False)
+                if g_stock_pool:
+                    try:
+                        ContextInfo.set_universe(g_stock_pool)
+                        print(f"[Pre-market] Stock pool updated (unvalidated): {len(g_stock_pool)} stocks")
+                    except Exception as e2:
+                        print(f"[Error] Failed to update stock pool even without validation: {e2}")
+        else:
+            print("[Warning] Stock pool is empty, keeping previous pool")
     
     # Risk control check (daily before close, around 14:50)
     if current_time >= '14:50:00':

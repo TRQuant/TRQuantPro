@@ -1,0 +1,262 @@
+[
+  {
+    "code": "002230.SZ",
+    "name": "科大讯飞",
+    "direction": "AI智能体",
+    "market": "A股",
+    "directions": [
+      "AI智能体",
+      "AI智能体"
+    ]
+  },
+  {
+    "code": "300418.SZ",
+    "name": "昆仑万维",
+    "direction": "AI智能体",
+    "market": "A股",
+    "directions": [
+      "AI智能体",
+      "AI办公"
+    ]
+  },
+  {
+    "code": "9988.HK",
+    "name": "9988.HK",
+    "direction": "AI智能体",
+    "market": "港股"
+  },
+  {
+    "code": "300058.SZ",
+    "name": "300058.SZ",
+    "direction": "AI智能体",
+    "market": "A股"
+  },
+  {
+    "code": "300071.SZ",
+    "name": "300071.SZ",
+    "direction": "AI智能体",
+    "market": "A股"
+  },
+  {
+    "code": "603598.SH",
+    "name": "因赛集团",
+    "direction": "AI智能体",
+    "market": "A股"
+  },
+  {
+    "code": "002400.SZ",
+    "name": "省广集团",
+    "direction": "AI智能体",
+    "market": "A股"
+  },
+  {
+    "code": "300781.SZ",
+    "name": "省广集团",
+    "direction": "AI智能体",
+    "market": "A股",
+    "directions": [
+      "AI智能体",
+      "AI办公"
+    ]
+  },
+  {
+    "code": "300612.SZ",
+    "name": "省广集团",
+    "direction": "AI智能体",
+    "market": "A股"
+  },
+  {
+    "code": "300253.SZ",
+    "name": "300253.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "300451.SZ",
+    "name": "300451.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "688271.SH",
+    "name": "东软集团",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "600718.SH",
+    "name": "600718.SH",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "300244.SZ",
+    "name": "300244.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "0020.HK",
+    "name": "商汤科技",
+    "direction": "AI医疗",
+    "market": "港股",
+    "directions": [
+      "AI医疗",
+      "数字营销"
+    ]
+  },
+  {
+    "code": "300010.SZ",
+    "name": "科大讯飞",
+    "direction": "AI教育",
+    "market": "A股"
+  },
+  {
+    "code": "002607.SZ",
+    "name": "等职业培训公司",
+    "direction": "AI教育",
+    "market": "A股"
+  },
+  {
+    "code": "600570.SH",
+    "name": "600570.SH",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "300033.SZ",
+    "name": "300033.SZ",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "300674.SZ",
+    "name": "宇信科技",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "002657.SZ",
+    "name": "宇信科技",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "0700.HK",
+    "name": "金融科技",
+    "direction": "AI金融",
+    "market": "港股"
+  },
+  {
+    "code": "300059.SZ",
+    "name": "金融科技",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "688111.SH",
+    "name": "688111.SH",
+    "direction": "AI办公",
+    "market": "A股",
+    "directions": [
+      "AI办公",
+      "AI办公"
+    ]
+  },
+  {
+    "code": "600588.SH",
+    "name": "600588.SH",
+    "direction": "AI办公",
+    "market": "A股"
+  },
+  {
+    "code": "300624.SZ",
+    "name": "万兴科技",
+    "direction": "AI办公",
+    "market": "A股"
+  },
+  {
+    "code": "688095.SH",
+    "name": "万兴科技",
+    "direction": "AI办公",
+    "market": "A股"
+  },
+  {
+    "code": "3896.HK",
+    "name": "3896.HK",
+    "direction": "AI办公",
+    "market": "港股"
+  },
+  {
+    "code": "688327.SH",
+    "name": "依图科技",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "002415.SZ",
+    "name": "002415.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "601360.SH",
+    "name": "安全及搜索公司",
+    "direction": "数字营销",
+    "market": "A股"
+  },
+  {
+    "code": "600556.SH",
+    "name": "因赛集团",
+    "direction": "AI办公",
+    "market": "A股"
+  },
+  {
+    "code": "002044.SZ",
+    "name": "002044.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "300359.SZ",
+    "name": "300359.SZ",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "600661.SH",
+    "name": "600661.SH",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "002362.SZ",
+    "name": "汉王科技",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "603123.SH",
+    "name": "翠微股份",
+    "direction": "AI医疗",
+    "market": "A股"
+  },
+  {
+    "code": "300348.SZ",
+    "name": "长亮科技",
+    "direction": "AI金融",
+    "market": "A股"
+  },
+  {
+    "code": "CRM.US",
+    "name": "Salesforce",
+    "direction": "AI智能体",
+    "market": "美股"
+  },
+  {
+    "code": "MSFT.US",
+    "name": "Microsoft",
+    "direction": "AI办公",
+    "market": "美股"
+  }
+]

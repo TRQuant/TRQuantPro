@@ -342,8 +342,6 @@ def before_market_open(context):
     
     # 每周更新股票池（周一）
     if context.trade_count % 5 == 1:
-        # 获取沪深300成分股（必须传递当前日期，确保获取历史成分股）
-        # 使用当前回测日期，确保获取正确的历史成分股
         _current_date = context.current_dt.strftime('%Y-%m-%d') if hasattr(context, 'current_dt') and context.current_dt else None
         if _current_date is None:
             log.error('[盘前] 无法获取当前日期，无法更新股票池')
@@ -351,14 +349,28 @@ def before_market_open(context):
             return
         
         try:
-            context.stock_pool = get_index_stocks('000300.XSHG', date=_current_date)
-            if not context.stock_pool or len(context.stock_pool) == 0:
-                log.error('[盘前] 获取指数成分股失败: 返回空列表，日期=' + str(_current_date))
-                context.stock_pool = []
-            else:
-                log.info(f'[盘前] 更新股票池: {{len(context.stock_pool)}}只，日期=' + str(_current_date))
+            # =====================================================================
+            # 获取全A股股票池（不限于指数成分股，覆盖更多高回报机会）
+            # =====================================================================
+            all_stocks_df = get_all_securities(types=['stock'], date=_current_date)
+            all_stocks = list(all_stocks_df.index)
+            
+            # 过滤ST和北交所股票
+            filtered_stocks = []
+            for stock in all_stocks:
+                # 排除ST股票
+                if 'ST' in all_stocks_df.loc[stock, 'display_name']:
+                    continue
+                # 排除北交所（8开头 or 430开头）
+                if stock.startswith('8') or stock.startswith('430'):
+                    continue
+                filtered_stocks.append(stock)
+            
+            context.stock_pool = filtered_stocks
+            log.info(f'[盘前] 全A股股票池: {{len(context.stock_pool)}}只 (排除ST/北交所)')
+            
         except Exception as e:
-            log.error('[盘前] 获取指数成分股失败: ' + str(e) + '，日期=' + str(_current_date))
+            log.error('[盘前] 获取股票池失败: ' + str(e) + '，日期=' + str(_current_date))
             raise  # 不兜底，明确报错
 
 
@@ -930,6 +942,16 @@ def after_market_close(context):
     """盘后处理"""
     # 清理无效持仓记录
     for stock in list(context.cost_prices.keys()):
+        # 修复：先检查股票是否在positions中（可能已在盘中卖出）
+        if stock not in context.portfolio.positions:
+            # 股票已不在持仓中，清理记录
+            context.cost_prices.pop(stock, None)
+            context.highest_prices.pop(stock, None)
+            context.entry_dates.pop(stock, None)
+            context.partial_profit_1_done.pop(stock, None)
+            continue
+        
+        # 检查持仓数量是否为0
         if context.portfolio.positions[stock].total_amount == 0:
             context.cost_prices.pop(stock, None)
             context.highest_prices.pop(stock, None)
@@ -950,3 +972,855 @@ def after_market_close(context):
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(code)
         logger.info(f"策略代码已保存: {output_path}")
+    
+    def generate_bull_market_strategy_code(self) -> str:
+        """
+        生成牛市极端高收益策略代码
+        
+        基于历史牛市数据挖掘，采用自适应机制在不同市场状态下切换选股逻辑：
+        - 牛市：追涨策略（涨停板、强动量、突破）
+        - 震荡市：低位布局（超卖反弹、放量底部）
+        
+        Returns:
+            策略代码字符串
+        """
+        code = '''# -*- coding: utf-8 -*-
+"""
+================================================================================
+牛市极端高收益策略 - BulletTrade版本
+================================================================================
+
+策略说明：
+  本策略基于历史牛市（2014-2015杠杆牛、2019-2021结构牛）的高回报案例挖掘，
+  采用自适应机制在不同市场状态下切换选股逻辑
+
+核心信号（牛市模式）：
+  1. 首板启动: 首次涨停+放量>3倍+突破60日高 → 评分75
+  2. 连板加速: 2连板或以上 → 评分60
+  3. 强势突破: 突破60日高>5%+5日动量>15%+量比>1.5 → 评分60
+  4. 量价齐升: 5日动量>20%+量比>1.5+成交额爆发>2倍 → 评分55
+
+核心信号（震荡市模式）：
+  - 低位反弹: 相对位置<50%+RSI<30+放量 → 评分70
+
+风控规则：
+  - 止损: -10%
+  - 止盈: +25%
+  - 最大持仓: 2只
+  - 单票仓位: 50%
+
+作者: TRQuant Team
+日期: 2026-01-10
+版本: 1.0
+================================================================================
+"""
+
+import numpy as np
+import pandas as pd
+import jqdatasdk
+from jqdatasdk import query, valuation, indicator, get_fundamentals
+
+# JQData认证
+try:
+    jqdatasdk.auth('13327806797', 'Taorui888')
+except:
+    pass
+
+# =============================================================================
+# 策略参数配置
+# =============================================================================
+
+# 信号参数
+SIGNAL_THRESHOLD = 60         # 信号评分阈值
+MAX_POSITIONS = 2             # 最大持仓数量
+
+# 风控参数
+STOP_LOSS_PCT = -10.0         # 止损比例 (%)
+TAKE_PROFIT_PCT = 25.0        # 止盈比例 (%)
+POSITION_SIZE_PCT = 50.0      # 单票最大仓位 (%)
+
+# 调仓参数
+REBALANCE_DAYS = 5            # 周频调仓
+
+# 因子阈值
+LIMIT_UP_THRESHOLD = 0.095    # 涨停判定阈值
+VOLUME_EXPLOSION_THRESHOLD = 3.0  # 量比爆发阈值
+MOMENTUM_5D_THRESHOLD = 10.0  # 5日动量阈值
+BREAKOUT_THRESHOLD = 5.0      # 突破幅度阈值 (%)
+REL_POSITION_LOW = 50.0       # 相对位置低位阈值
+RSI_OVERSOLD = 30.0           # RSI超卖阈值
+
+
+# =============================================================================
+# 初始化函数
+# =============================================================================
+
+def initialize(context):
+    """
+    策略初始化
+    
+    设置基准、滑点、手续费等基础参数
+    """
+    # 设置基准
+    set_benchmark('000300.XSHG')
+    
+    # 开启动态复权
+    set_option('use_real_price', True)
+    
+    # 设置滑点
+    set_slippage(FixedSlippage(0.002))
+    
+    # 设置手续费
+    set_order_cost(OrderCost(
+        open_tax=0,
+        close_tax=0.001,
+        open_commission=0.0003,
+        close_commission=0.0003,
+        min_commission=5
+    ), type='stock')
+    
+    # 策略变量
+    context.positions = {}        # 持仓记录
+    context.trade_count = 0       # 交易计数
+    context.rebalance_day = 0     # 调仓计数
+    context.market_state = 'NEUTRAL'  # 市场状态
+    context.cost_prices = {}      # 成本价
+    context.entry_dates = {}      # 买入日期
+    
+    # 定时任务
+    run_daily(before_trading_start, time='09:00')
+    run_daily(handle_data, time='09:35')
+    run_daily(check_risk_control, time='14:50')
+    
+    # 打印策略信息
+    log.info("=" * 60)
+    log.info("牛市极端高收益策略 v1.0 初始化完成")
+    log.info(f"信号阈值: {SIGNAL_THRESHOLD}")
+    log.info(f"最大持仓: {MAX_POSITIONS}")
+    log.info(f"止损/止盈: {STOP_LOSS_PCT}%/{TAKE_PROFIT_PCT}%")
+    log.info("=" * 60)
+
+
+# =============================================================================
+# 盘前处理
+# =============================================================================
+
+def before_trading_start(context):
+    """
+    盘前处理
+    
+    1. 获取全A股股票池（排除ST、停牌）
+    2. 检测市场状态
+    """
+    current_date = context.current_dt.strftime('%Y-%m-%d')
+    
+    # =====================================================================
+    # 获取全A股股票池（不限于指数成分股）
+    # =====================================================================
+    try:
+        # 获取全部A股
+        all_stocks_df = get_all_securities(types=['stock'], date=current_date)
+        all_stocks = list(all_stocks_df.index)
+        
+        # 过滤ST和退市股票
+        filtered_stocks = []
+        for stock in all_stocks:
+            # 排除ST股票
+            if 'ST' in all_stocks_df.loc[stock, 'display_name']:
+                continue
+            # 排除科创板（688开头）可选，牛市可以保留
+            # if stock.startswith('688'):
+            #     continue
+            # 排除北交所（8开头 or 430开头）
+            if stock.startswith('8') or stock.startswith('430'):
+                continue
+            filtered_stocks.append(stock)
+        
+        context.universe = filtered_stocks
+        log.info("[盘前] 全A股股票池: " + str(len(context.universe)) + "只 (排除ST/北交所)")
+    except Exception as e:
+        log.error("[盘前] 获取股票池失败: " + str(e))
+        context.universe = []
+    
+    # 检测市场状态
+    context.market_state = detect_market_state(context)
+    log.info("[盘前] 市场状态: " + str(context.market_state))
+
+
+# =============================================================================
+# 市场状态检测（多周期共振版）
+# =============================================================================
+
+def detect_market_state(context):
+    """
+    多周期共振市场状态检测（增强版）
+    
+    基于TRQuant MarketTrendAnalyzer设计，采用多周期共振+技术指标融合：
+    
+    周期定义（交易日）：
+    - 周线: 5日
+    - 月线: 21日  
+    - 季线: 63日
+    
+    判断逻辑：
+    1. 计算三个周期的趋势得分（动量+均线+波动率）
+    2. 多周期共振判断
+    3. 加权综合得分 → 市场状态
+    
+    Returns:
+        str: 'BULL' / 'NEUTRAL' / 'BEAR'
+    """
+    try:
+        # 获取指数数据（需要63+20=83天数据计算所有指标）
+        index_data = get_price(
+            '000300.XSHG',
+            end_date=context.current_dt,
+            frequency='daily',
+            fields=['close', 'high', 'low', 'volume'],
+            count=90,
+            fq='post'
+        )
+        
+        if len(index_data) < 63:
+            return 'NEUTRAL'
+        
+        close = index_data['close'].values
+        high = index_data['high'].values
+        low = index_data['low'].values
+        volume = index_data['volume'].values
+        
+        # =================================================================
+        # 1. 计算各周期趋势得分（-100 ~ +100）
+        # =================================================================
+        
+        def calc_period_score(period_days: int) -> float:
+            """计算单周期趋势得分"""
+            if len(close) < period_days:
+                return 0.0
+            
+            score = 0.0
+            
+            # (1) 动量得分（权重40%）
+            if len(close) >= period_days:
+                momentum = (close[-1] / close[-period_days] - 1) * 100
+                # 映射到-40~+40
+                if momentum > 15:
+                    score += 40
+                elif momentum > 10:
+                    score += 30
+                elif momentum > 5:
+                    score += 20
+                elif momentum > 0:
+                    score += 10
+                elif momentum > -5:
+                    score += 0
+                elif momentum > -10:
+                    score -= 10
+                elif momentum > -15:
+                    score -= 20
+                else:
+                    score -= 40
+            
+            # (2) 均线位置得分（权重30%）
+            ma = np.mean(close[-period_days:])
+            ma_dev = (close[-1] / ma - 1) * 100
+            if ma_dev > 5:
+                score += 30
+            elif ma_dev > 2:
+                score += 20
+            elif ma_dev > 0:
+                score += 10
+            elif ma_dev > -2:
+                score -= 0
+            elif ma_dev > -5:
+                score -= 10
+            else:
+                score -= 30
+            
+            # (3) 趋势方向得分（权重30%）
+            if len(close) >= period_days:
+                # 使用线性回归斜率判断趋势
+                x = np.arange(period_days)
+                y = close[-period_days:]
+                slope = np.polyfit(x, y, 1)[0]
+                slope_pct = slope / close[-period_days] * period_days * 100
+                
+                if slope_pct > 3:
+                    score += 30
+                elif slope_pct > 1:
+                    score += 20
+                elif slope_pct > 0:
+                    score += 10
+                elif slope_pct > -1:
+                    score -= 0
+                elif slope_pct > -3:
+                    score -= 10
+                else:
+                    score -= 30
+            
+            return np.clip(score, -100, 100)
+        
+        # 计算三个周期得分
+        week_score = calc_period_score(5)    # 周线
+        month_score = calc_period_score(21)  # 月线
+        quarter_score = calc_period_score(63)  # 季线
+        
+        # =================================================================
+        # 2. 多周期共振判断
+        # =================================================================
+        
+        all_bullish = week_score > 20 and month_score > 20 and quarter_score > 20
+        all_bearish = week_score < -20 and month_score < -20 and quarter_score < -20
+        
+        # 两周期共振
+        short_mid_bullish = week_score > 20 and month_score > 20
+        mid_long_bullish = month_score > 20 and quarter_score > 20
+        short_mid_bearish = week_score < -20 and month_score < -20
+        mid_long_bearish = month_score < -20 and quarter_score < -20
+        
+        # =================================================================
+        # 3. 综合得分计算（加权平均）
+        # =================================================================
+        
+        # 权重：周0.25, 月0.35, 季0.40
+        ensemble_score = week_score * 0.25 + month_score * 0.35 + quarter_score * 0.40
+        
+        # 共振加成
+        if all_bullish:
+            ensemble_score = min(100, ensemble_score * 1.3)
+            resonance = "全周期共振-牛"
+        elif all_bearish:
+            ensemble_score = max(-100, ensemble_score * 1.3)
+            resonance = "全周期共振-熊"
+        elif short_mid_bullish or mid_long_bullish:
+            ensemble_score = min(100, ensemble_score * 1.15)
+            resonance = "部分共振-牛"
+        elif short_mid_bearish or mid_long_bearish:
+            ensemble_score = max(-100, ensemble_score * 1.15)
+            resonance = "部分共振-熊"
+        else:
+            resonance = "周期分歧"
+        
+        # 记录详细信息
+        log.info("[市场状态] 周线:" + str(round(week_score)) + " 月线:" + str(round(month_score)) + " 季线:" + str(round(quarter_score)) + " 综合:" + str(round(ensemble_score)) + " " + resonance)
+        
+        # =================================================================
+        # 4. 最终状态判定（阈值更敏感以捕捉牛市启动）
+        # =================================================================
+        
+        # 降低牛市阈值，更容易触发追涨策略
+        if ensemble_score > 25 or all_bullish:
+            return 'BULL'
+        elif ensemble_score < -25 or all_bearish:
+            return 'BEAR'
+        else:
+            return 'NEUTRAL'
+            
+    except Exception as e:
+        log.warn("[市场状态] 检测失败: " + str(e))
+        return 'NEUTRAL'
+
+
+# =============================================================================
+# 每日交易处理
+# =============================================================================
+
+def handle_data(context):
+    """
+    每日交易主逻辑
+    
+    1. 周频调仓时生成信号
+    2. 执行买卖
+    """
+    context.rebalance_day += 1
+    
+    # 周频调仓
+    if context.rebalance_day % REBALANCE_DAYS != 0:
+        return
+    
+    log.info(f"[调仓日] 第{context.rebalance_day}天")
+    
+    # 生成信号
+    signals = generate_signals(context)
+    
+    if not signals:
+        log.info("[调仓] 无有效信号")
+        return
+    
+    log.info(f"[调仓] 有效信号: {len(signals)}个")
+    
+    # 执行调仓
+    execute_trades(context, signals)
+
+
+# =============================================================================
+# 信号生成
+# =============================================================================
+
+def generate_signals(context):
+    """
+    生成交易信号（优化版：两阶段筛选）
+    
+    阶段1: 快速预筛选（批量获取，只看昨日涨幅/涨停）
+    阶段2: 对预筛选股票计算详细因子
+    """
+    signals = []
+    current_date = context.current_dt.strftime('%Y-%m-%d')
+    
+    # =========================================================================
+    # 阶段1: 快速预筛选（只获取近2天数据，筛选强势股）
+    # =========================================================================
+    try:
+        # 批量获取前一天数据（只需要close）
+        quick_prices = get_price(
+            context.universe[:500],  # 限制数量避免超时
+            end_date=current_date,
+            count=3,
+            frequency='daily',
+            fields=['close', 'volume'],
+            panel=False,
+            fq='post'
+        )
+        
+        # 快速筛选：涨幅>5%或成交量放大
+        pre_filter_stocks = []
+        if quick_prices is not None and not quick_prices.empty:
+            for stock in context.universe[:500]:
+                stock_data = quick_prices[quick_prices['code'] == stock]
+                if len(stock_data) < 2:
+                    continue
+                
+                close_vals = stock_data['close'].values
+                vol_vals = stock_data['volume'].values
+                
+                # 昨日涨幅
+                if len(close_vals) >= 2:
+                    daily_return = (close_vals[-1] / close_vals[-2] - 1) * 100
+                    # 量比
+                    vol_ratio = vol_vals[-1] / vol_vals[-2] if vol_vals[-2] > 0 else 1
+                    
+                    # 预筛条件：涨幅>3% 或 涨停(>9.5%) 或 放量(量比>2)
+                    if daily_return > 3 or daily_return > 9.5 or vol_ratio > 2:
+                        pre_filter_stocks.append(stock)
+        
+        log.info("[信号生成] 预筛选: " + str(len(pre_filter_stocks)) + "只候选")
+        
+    except Exception as e:
+        log.warn("[信号生成] 预筛选失败: " + str(e) + ", 使用随机采样")
+        import random
+        pre_filter_stocks = random.sample(context.universe, min(100, len(context.universe)))
+    
+    # =========================================================================
+    # 阶段2: 对预筛选股票计算详细因子
+    # =========================================================================
+    for stock in pre_filter_stocks[:100]:  # 最多处理100只
+        try:
+            factors = calculate_extreme_factors(stock, current_date)
+            
+            if not factors or 'close' not in factors:
+                continue
+            
+            score, signal_type = score_extreme_signal(factors, context.market_state)
+            
+            if score >= SIGNAL_THRESHOLD and signal_type != 'NO_SIGNAL':
+                signals.append({
+                    'code': stock,
+                    'score': score,
+                    'signal_type': signal_type,
+                    'factors': factors
+                })
+                
+        except Exception as e:
+            continue
+    
+    signals.sort(key=lambda x: x['score'], reverse=True)
+    log.info("[信号生成] 最终有效信号: " + str(len(signals)) + "个")
+    
+    return signals[:MAX_POSITIONS * 2]
+
+
+# =============================================================================
+# 因子计算
+# =============================================================================
+
+def calculate_extreme_factors(stock, date_str):
+    """
+    计算极端信号因子
+    
+    包括：涨停特征、动量、量价、技术位置、RSI等
+    """
+    factors = {'code': stock, 'date': date_str}
+    
+    try:
+        # 获取历史数据
+        df = get_price(
+            stock,
+            end_date=date_str,
+            frequency='daily',
+            fields=['open', 'close', 'high', 'low', 'volume', 'money'],
+            count=65,
+            fq='post'
+        )
+        
+        if len(df) < 25:
+            return factors
+        
+        close = df['close'].values
+        high = df['high'].values
+        low = df['low'].values
+        volume = df['volume'].values
+        money = df['money'].values
+        
+        factors['close'] = close[-1]
+        
+        # =====================================================================
+        # 涨停特征
+        # =====================================================================
+        
+        # 近5日涨停计数
+        limit_up_count = 0
+        limit_up_recent = 0
+        for j in range(max(len(close)-5, 1), len(close)):
+            if j > 0 and close[j] / close[j-1] - 1 > LIMIT_UP_THRESHOLD:
+                limit_up_count += 1
+                if j >= len(close) - 2:
+                    limit_up_recent += 1
+        
+        factors['limit_up_count'] = limit_up_count
+        factors['limit_up_recent'] = limit_up_recent
+        
+        # 首板识别
+        is_first_limit_up = False
+        if len(close) >= 30:
+            if close[-1] / close[-2] - 1 > LIMIT_UP_THRESHOLD:
+                prev_limit_ups = sum(
+                    1 for j in range(len(close)-30, len(close)-1)
+                    if j > 0 and close[j] / close[j-1] - 1 > LIMIT_UP_THRESHOLD
+                )
+                if prev_limit_ups == 0:
+                    is_first_limit_up = True
+        
+        factors['is_first_limit_up'] = is_first_limit_up
+        
+        # =====================================================================
+        # 动量因子
+        # =====================================================================
+        
+        if len(close) >= 6:
+            factors['mom_5d'] = (close[-1] / close[-6] - 1) * 100
+        if len(close) >= 21:
+            factors['mom_20d'] = (close[-1] / close[-21] - 1) * 100
+        
+        # 动量加速度
+        if len(close) >= 11:
+            mom_5d_now = (close[-1] / close[-6] - 1) * 100
+            mom_5d_prev = (close[-6] / close[-11] - 1) * 100
+            factors['mom_acceleration'] = mom_5d_now - mom_5d_prev
+        
+        # =====================================================================
+        # 量价因子
+        # =====================================================================
+        
+        if len(volume) >= 20:
+            vol_1d = volume[-1]
+            vol_5d = np.mean(volume[-5:])
+            vol_20d = np.mean(volume[-20:])
+            factors['volume_ratio_1d'] = vol_1d / vol_20d if vol_20d > 0 else 1
+            factors['volume_ratio_5d'] = vol_5d / vol_20d if vol_20d > 0 else 1
+        
+        if len(money) >= 20:
+            money_1d = money[-1]
+            money_20d_avg = np.mean(money[-20:])
+            factors['money_explosion'] = money_1d / money_20d_avg if money_20d_avg > 0 else 1
+        
+        # =====================================================================
+        # 技术位置因子
+        # =====================================================================
+        
+        # 20日相对位置
+        if len(high) >= 20:
+            high_20 = np.max(high[-20:])
+            low_20 = np.min(low[-20:])
+            if high_20 > low_20:
+                factors['rel_position_20d'] = (close[-1] - low_20) / (high_20 - low_20) * 100
+        
+        # 突破新高
+        if len(high) >= 60:
+            high_60_prev = np.max(high[-60:-1])
+            factors['breakout_60d'] = close[-1] > high_60_prev
+            factors['breakout_ratio'] = (close[-1] / high_60_prev - 1) * 100 if high_60_prev > 0 else 0
+        
+        # =====================================================================
+        # RSI计算
+        # =====================================================================
+        
+        if len(close) >= 15:
+            deltas = np.diff(close[-15:])
+            gains = np.where(deltas > 0, deltas, 0)
+            losses = np.where(deltas < 0, -deltas, 0)
+            avg_gain = np.mean(gains)
+            avg_loss = np.mean(losses)
+            if avg_loss > 0:
+                rs = avg_gain / avg_loss
+                factors['rsi'] = 100 - (100 / (1 + rs))
+            else:
+                factors['rsi'] = 100
+        
+        # 均线偏离
+        if len(close) >= 20:
+            ma_20 = np.mean(close[-20:])
+            factors['ma_deviation'] = (close[-1] / ma_20 - 1) * 100
+        
+    except Exception as e:
+        pass
+    
+    return factors
+
+
+# =============================================================================
+# 信号评分
+# =============================================================================
+
+def score_extreme_signal(factors, market_state):
+    """
+    极端信号评分
+    
+    Args:
+        factors: 因子字典
+        market_state: 市场状态
+        
+    Returns:
+        Tuple[float, str]: (评分, 信号类型)
+    """
+    score = 0.0
+    signal_type = 'NO_SIGNAL'
+    
+    if market_state == 'BULL':
+        # =================================================================
+        # 牛市追涨策略评分
+        # =================================================================
+        
+        # 策略1: 首板启动（最强信号）
+        if factors.get('is_first_limit_up', False):
+            score = 50
+            signal_type = 'FIRST_LIMIT_UP'
+            
+            vol_ratio = factors.get('volume_ratio_1d', 1)
+            if vol_ratio > VOLUME_EXPLOSION_THRESHOLD:
+                score += 25
+            elif vol_ratio > 2:
+                score += 15
+            
+            if factors.get('breakout_60d', False):
+                score += 15
+            
+            return score, signal_type
+        
+        # 策略2: 连板加速
+        limit_up_recent = factors.get('limit_up_recent', 0)
+        limit_up_count = factors.get('limit_up_count', 0)
+        
+        if limit_up_recent >= 1:
+            score = 40
+            signal_type = 'CONSECUTIVE_LIMIT_UP'
+            
+            if limit_up_count >= 2:
+                score += 20
+            
+            return score, signal_type
+        
+        # 策略3: 强势突破
+        breakout_60d = factors.get('breakout_60d', False)
+        breakout_ratio = factors.get('breakout_ratio', 0)
+        mom_5d = factors.get('mom_5d', 0)
+        vol_ratio_5d = factors.get('volume_ratio_5d', 1)
+        
+        if (breakout_60d and 
+            breakout_ratio > BREAKOUT_THRESHOLD and
+            mom_5d > MOMENTUM_5D_THRESHOLD and
+            vol_ratio_5d > 1.5):
+            score = 60
+            signal_type = 'STRONG_BREAKOUT'
+            return score, signal_type
+        
+        # 策略4: 量价齐升
+        money_explosion = factors.get('money_explosion', 1)
+        
+        if mom_5d > 20 and vol_ratio_5d > 1.5 and money_explosion > 2:
+            score = 55
+            signal_type = 'VOLUME_PRICE_RISE'
+            return score, signal_type
+        
+        # 策略5: 动量加速
+        mom_acceleration = factors.get('mom_acceleration', 0)
+        
+        if mom_acceleration > 15 and mom_5d > 10:
+            score = 50
+            signal_type = 'VOLUME_PRICE_RISE'
+            return score, signal_type
+    
+    else:
+        # =================================================================
+        # 震荡市/熊市低位布局策略评分
+        # =================================================================
+        
+        score = 50.0
+        
+        # 相对位置（权重40%）
+        rel_pos = factors.get('rel_position_20d', 50)
+        if rel_pos < 20:
+            score += 25
+        elif rel_pos < 35:
+            score += 20
+        elif rel_pos < REL_POSITION_LOW:
+            score += 15
+        elif rel_pos > 80:
+            score -= 15
+        
+        # 量比（权重25%）
+        vol_ratio = factors.get('volume_ratio_5d', 1)
+        if vol_ratio > 1.5:
+            score += 15
+        elif vol_ratio > 1.2:
+            score += 10
+        elif vol_ratio > 1.0:
+            score += 5
+        
+        # RSI（权重20%）
+        rsi = factors.get('rsi', 50)
+        if rsi < RSI_OVERSOLD:
+            score += 15
+            signal_type = 'LOW_POSITION_REBOUND'
+        elif rsi < 40:
+            score += 10
+        elif rsi < 50:
+            score += 5
+        elif rsi > 75:
+            score -= 10
+        
+        # 均线偏离（权重15%）
+        ma_dev = factors.get('ma_deviation', 0)
+        if ma_dev < -15:
+            score += 12
+        elif ma_dev < -10:
+            score += 8
+        elif ma_dev < -5:
+            score += 5
+        elif ma_dev > 10:
+            score -= 5
+        
+        if signal_type == 'NO_SIGNAL' and score >= SIGNAL_THRESHOLD:
+            signal_type = 'LOW_POSITION_REBOUND'
+    
+    return score, signal_type
+
+
+# =============================================================================
+# 交易执行
+# =============================================================================
+
+def execute_trades(context, signals):
+    """
+    执行交易
+    
+    Args:
+        context: 上下文
+        signals: 信号列表
+    """
+    # 目标股票
+    target_stocks = [s['code'] for s in signals[:MAX_POSITIONS]]
+    
+    log.info(f"[交易] 目标股票: {target_stocks}")
+    
+    # 1. 卖出不在目标列表的股票
+    for stock in list(context.portfolio.positions.keys()):
+        pos = context.portfolio.positions[stock]
+        if pos.total_amount == 0:
+            continue
+        
+        if stock not in target_stocks:
+            order_target(stock, 0)
+            log.info(f"[卖出-轮动] {stock}")
+            context.cost_prices.pop(stock, None)
+            context.entry_dates.pop(stock, None)
+    
+    # 2. 计算可用资金和目标仓位
+    if not target_stocks:
+        return
+    
+    total_value = context.portfolio.total_value
+    per_stock_value = total_value * POSITION_SIZE_PCT / 100
+    
+    # 3. 买入目标股票
+    for stock in target_stocks:
+        if stock in context.portfolio.positions:
+            pos = context.portfolio.positions[stock]
+            if pos.total_amount > 0:
+                continue  # 已持有
+        
+        # 买入
+        order_value(stock, per_stock_value)
+        log.info(f"[买入] {stock} | 目标价值: {per_stock_value:.0f}")
+        
+        # 记录成本
+        try:
+            current_data = get_current_data()
+            if stock in current_data:
+                context.cost_prices[stock] = current_data[stock].last_price
+                context.entry_dates[stock] = context.current_dt.date()
+        except:
+            pass
+
+
+# =============================================================================
+# 风险控制
+# =============================================================================
+
+def check_risk_control(context):
+    """
+    检查止损止盈
+    """
+    for stock in list(context.portfolio.positions.keys()):
+        pos = context.portfolio.positions[stock]
+        if pos.total_amount == 0:
+            continue
+        
+        try:
+            current_data = get_current_data()
+            current_price = current_data[stock].last_price
+        except:
+            continue
+        
+        cost = context.cost_prices.get(stock, pos.avg_cost)
+        if cost <= 0:
+            continue
+        
+        pnl_pct = (current_price / cost - 1) * 100
+        
+        # 止损
+        if pnl_pct <= STOP_LOSS_PCT:
+            order_target(stock, 0)
+            log.warn(f"[止损] {stock}: {pnl_pct:.1f}%")
+            context.cost_prices.pop(stock, None)
+            context.entry_dates.pop(stock, None)
+        
+        # 止盈
+        elif pnl_pct >= TAKE_PROFIT_PCT:
+            order_target(stock, 0)
+            log.info(f"[止盈] {stock}: {pnl_pct:.1f}%")
+            context.cost_prices.pop(stock, None)
+            context.entry_dates.pop(stock, None)
+'''
+        return code
+    
+    def save_bull_market_strategy_code(self, output_path: str):
+        """
+        保存牛市策略代码到文件
+        
+        Args:
+            output_path: 输出文件路径
+        """
+        code = self.generate_bull_market_strategy_code()
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(code)
+        logger.info(f"牛市策略代码已保存: {output_path}")

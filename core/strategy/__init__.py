@@ -1,174 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Strategy Module - 策略模块
-=========================
+策略模块
 
-提供自适应策略管理：
-1. 市场环境感知
-2. 策略自动切换
-3. 仓位动态调整
-4. 多策略组合
+包含各种交易策略的实现
 """
 
-from .adaptive_strategy_manager import (
-    AdaptiveStrategyManager,
-    get_adaptive_strategy_manager,
-    StrategyType,
+from .bull_market_extreme_strategy import (
+    BullMarketExtremeStrategy,
     StrategyConfig,
-    PositionAdvice
+    MarketState,
+    Signal,
 )
 
 __all__ = [
-    'AdaptiveStrategyManager',
-    'get_adaptive_strategy_manager',
-    'StrategyType',
-    'StrategyConfig',
-    'PositionAdvice'
+    'BullMarketExtremeStrategy',
+    'StrategyConfig', 
+    'MarketState',
+    'Signal',
 ]
-
-
-# -*- coding: utf-8 -*-
-"""
-Strategy Module - 策略模块
-=========================
-
-提供自适应策略管理：
-1. 市场环境感知
-2. 策略自动切换
-3. 仓位动态调整
-4. 多策略组合
-"""
-
-from .adaptive_strategy_manager import (
-    AdaptiveStrategyManager,
-    get_adaptive_strategy_manager,
-    StrategyType,
-    StrategyConfig,
-    PositionAdvice
-)
-
-__all__ = [
-    'AdaptiveStrategyManager',
-    'get_adaptive_strategy_manager',
-    'StrategyType',
-    'StrategyConfig',
-    'PositionAdvice'
-]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -*- coding: utf-8 -*-
-"""
-Strategy Module - 策略模块
-=========================
-
-提供自适应策略管理：
-1. 市场环境感知
-2. 策略自动切换
-3. 仓位动态调整
-4. 多策略组合
-"""
-
-from .adaptive_strategy_manager import (
-    AdaptiveStrategyManager,
-    get_adaptive_strategy_manager,
-    StrategyType,
-    StrategyConfig,
-    PositionAdvice
-)
-
-__all__ = [
-    'AdaptiveStrategyManager',
-    'get_adaptive_strategy_manager',
-    'StrategyType',
-    'StrategyConfig',
-    'PositionAdvice'
-]
-
-
-# -*- coding: utf-8 -*-
-"""
-Strategy Module - 策略模块
-=========================
-
-提供自适应策略管理：
-1. 市场环境感知
-2. 策略自动切换
-3. 仓位动态调整
-4. 多策略组合
-"""
-
-from .adaptive_strategy_manager import (
-    AdaptiveStrategyManager,
-    get_adaptive_strategy_manager,
-    StrategyType,
-    StrategyConfig,
-    PositionAdvice
-)
-
-__all__ = [
-    'AdaptiveStrategyManager',
-    'get_adaptive_strategy_manager',
-    'StrategyType',
-    'StrategyConfig',
-    'PositionAdvice'
-]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

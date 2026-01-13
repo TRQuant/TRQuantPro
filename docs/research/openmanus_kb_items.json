@@ -1,0 +1,128 @@
+[
+  {
+    "title": "OpenManus - 开源AI Agent框架概述",
+    "content": "# OpenManus - 开源AI Agent框架\n\n## 项目概述\n\nOpenManus是一个开源的AI Agent框架，支持多Agent协作、任务分解、执行和验证。\n\n**核心特性**:\n- 多Agent协作框架\n- 工具调用系统（Tool Calling）\n- MCP（Model Context Protocol）支持\n- 浏览器自动化\n- 代码执行环境\n- 文件操作\n\n**项目来源**: MetaGPT团队\n**开源协议**: MIT License\n\n## 架构设计\n\nOpenManus采用模块化设计：\n\n1. **Agent层** (`app/agent/`)\n   - Manus: 通用Agent\n   - BrowserAgent: 浏览器专用Agent\n   - MCPAgent: MCP服务器Agent\n   - SandboxManus: 沙箱环境Agent\n   - DataAnalysisAgent: 数据分析Agent\n   - SWEAgent: 软件工程Agent\n\n2. **工具层** (`app/tool/`)\n   - BrowserUseTool: 浏览器自动化\n   - PythonExecute: Python代码执行\n   - StrReplaceEditor: 代码编辑器\n   - Bash: Shell命令执行\n   - MCP工具: MCP客户端工具\n   - Search工具: 网络搜索\n\n3. **MCP层** (`app/mcp/`)\n   - MCPServer: MCP服务器实现\n   - 工具注册和管理\n   - stdio/SSE传输支持\n\n4. **流程层** (`app/flow/`)\n   - FlowFactory: 工作流工厂\n   - PlanningFlow: 规划流程\n   - 多Agent协作流程\n\n## 在TRQuant中的应用\n\nOpenManus已集成到TRQuant系统，用于：\n- 浏览器自动化（财经网站数据抓取）\n- 数据收集（新闻、公告）\n- 工作流增强（R0数据源检测、R1市场趋势分析）\n\n**集成位置**:\n- Core模块: `core/automation/`, `core/data_collection/`\n- 工作流集成: `core/workflow/openmanus_integration.py`\n- MCP服务器: `~/.cursor/mcp.json` (openmanus配置)\n",
+    "type": "lesson",
+    "tags": [
+      "OpenManus",
+      "AI Agent",
+      "框架",
+      "架构",
+      "TRQuant集成"
+    ],
+    "source": "third_party/OpenManus/README.md"
+  },
+  {
+    "title": "OpenManus - Manus Agent核心类",
+    "content": "# Manus Agent - 通用AI Agent\n\n## 类定义\n\n```python\nfrom app.agent.manus import Manus\nfrom app.agent.toolcall import ToolCallAgent\n\nclass Manus(ToolCallAgent):\n    \"\"\"通用AI Agent，支持本地和MCP工具\"\"\"\n    \n    name: str = \"Manus\"\n    description: str = \"支持多种工具的通用Agent\"\n    \n    # MCP客户端\n    mcp_clients: MCPClients = Field(default_factory=MCPClients)\n    \n    # 可用工具\n    available_tools: ToolCollection = Field(\n        default_factory=lambda: ToolCollection(\n            PythonExecute(),\n            BrowserUseTool(),\n            StrReplaceEditor(),\n            AskHuman(),\n            Terminate(),\n        )\n    )\n```\n\n## 核心功能\n\n1. **工具调用**\n   - 支持本地工具（PythonExecute, BrowserUseTool等）\n   - 支持MCP工具（通过MCPClients）\n\n2. **MCP服务器管理**\n   - `connect_mcp_server()`: 连接MCP服务器\n   - `disconnect_mcp_server()`: 断开MCP服务器\n   - `initialize_mcp_servers()`: 初始化配置的MCP服务器\n\n3. **浏览器上下文管理**\n   - BrowserContextHelper: 浏览器上下文助手\n   - 自动管理浏览器生命周期\n\n## 使用示例\n\n```python\nfrom app.agent.manus import Manus\n\n# 创建Agent\nagent = await Manus.create()\n\n# 执行任务\nresult = await agent.run(\"访问网站并提取内容\")\n\n# 清理资源\nawait agent.cleanup()\n```\n\n## 在TRQuant中的使用\n\nTRQuant封装了Manus Agent为 `core.automation.OpenManusAgent`，提供统一的API接口。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "Manus",
+      "Agent",
+      "ToolCallAgent",
+      "API"
+    ],
+    "source": "third_party/OpenManus/app/agent/manus.py"
+  },
+  {
+    "title": "OpenManus - BrowserUseTool浏览器自动化工具",
+    "content": "# BrowserUseTool - 浏览器自动化工具\n\n## 类定义\n\n```python\nfrom app.tool.browser_use_tool import BrowserUseTool\nfrom app.tool.base import BaseTool\n\nclass BrowserUseTool(BaseTool):\n    \"\"\"浏览器自动化工具，基于Playwright\"\"\"\n    \n    name: str = \"browser\"\n    description: str = \"浏览器自动化工具\"\n```\n\n## 支持的操作\n\n1. **go_to_url** - 访问网页\n   - 参数: `url` (str)\n   - 功能: 导航到指定URL\n\n2. **click_element** - 点击元素\n   - 参数: `index` (int)\n   - 功能: 点击指定索引的元素\n\n3. **input_text** - 输入文本\n   - 参数: `index` (int), `text` (str), `submit` (bool)\n   - 功能: 在指定元素输入文本\n\n4. **extract_content** - 提取内容\n   - 参数: `goal` (str)\n   - 功能: 使用LLM提取页面内容（需要LLM API）\n\n5. **screenshot** - 截图\n   - 参数: `filename` (str)\n   - 功能: 截取页面截图\n\n6. **scroll_down/scroll_up** - 滚动\n7. **wait** - 等待\n8. **go_back** - 返回\n9. **refresh** - 刷新\n10. **switch_tab/open_tab/close_tab** - 标签管理\n\n## 使用示例\n\n```python\nfrom app.tool.browser_use_tool import BrowserUseTool\n\ntool = BrowserUseTool()\n\n# 访问网页\nresult = await tool.execute(\n    action=\"go_to_url\",\n    url=\"https://www.eastmoney.com\"\n)\n\n# 提取内容（需要LLM API）\nresult = await tool.execute(\n    action=\"extract_content\",\n    goal=\"获取页面标题和主要内容\"\n)\n```\n\n## 在TRQuant中的使用\n\nTRQuant封装为 `core.automation.BrowserAgent`，提供统一的浏览器操作API。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "BrowserUseTool",
+      "浏览器",
+      "Playwright",
+      "自动化"
+    ],
+    "source": "third_party/OpenManus/app/tool/browser_use_tool.py"
+  },
+  {
+    "title": "OpenManus - MCP服务器实现",
+    "content": "# OpenManus MCP服务器实现\n\n## MCPServer类\n\n```python\nfrom app.mcp.server import MCPServer\nfrom mcp.server.fastmcp import FastMCP\n\nclass MCPServer:\n    \"\"\"MCP服务器实现，工具注册和管理\"\"\"\n    \n    def __init__(self, name: str = \"openmanus\"):\n        self.server = FastMCP(name)\n        self.tools: Dict[str, BaseTool] = {}\n        \n        # 初始化标准工具\n        self.tools[\"bash\"] = Bash()\n        self.tools[\"browser\"] = BrowserUseTool()\n        self.tools[\"editor\"] = StrReplaceEditor()\n        self.tools[\"terminate\"] = Terminate()\n```\n\n## 注册的工具\n\n1. **bash** - Bash命令执行\n2. **browser** - 浏览器自动化\n3. **editor** - 代码编辑器\n4. **terminate** - 终止工具\n\n## 工具注册方法\n\n```python\ndef register_tool(self, tool: BaseTool, method_name: Optional[str] = None):\n    \"\"\"注册工具到MCP服务器\"\"\"\n    tool_name = method_name or tool.name\n    tool_param = tool.to_param()\n    tool_function = tool_param[\"function\"]\n    \n    # 定义异步函数\n    async def tool_method(**kwargs):\n        result = await tool.execute(**kwargs)\n        # 处理结果...\n        return result\n    \n    # 注册到服务器\n    self.server.tool()(tool_method)\n```\n\n## MCP配置\n\n在Cursor的 `~/.cursor/mcp.json` 中配置：\n\n```json\n{\n  \"mcpServers\": {\n    \"openmanus\": {\n      \"command\": \"/path/to/.venv/bin/python\",\n      \"args\": [\"-m\", \"app.mcp.server\"],\n      \"env\": {\n        \"PYTHONPATH\": \"/path/to/OpenManus\"\n      }\n    }\n  }\n}\n```\n\n## 在TRQuant中的应用\n\nOpenManus MCP服务器已配置到Cursor，可以通过Cursor Chat直接调用browser、bash、editor工具。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "MCP",
+      "服务器",
+      "FastMCP",
+      "工具注册"
+    ],
+    "source": "third_party/OpenManus/app/mcp/server.py"
+  },
+  {
+    "title": "OpenManus - BaseTool工具基类",
+    "content": "# BaseTool - 工具基类\n\n## 类定义\n\n```python\nfrom app.tool.base import BaseTool\nfrom app.schema import ToolResult\n\nclass BaseTool:\n    \"\"\"所有工具的基类\"\"\"\n    \n    name: str\n    description: str\n    \n    def to_param(self) -> Dict:\n        \"\"\"转换为工具参数格式\"\"\"\n        pass\n    \n    async def execute(self, **kwargs) -> ToolResult:\n        \"\"\"执行工具\"\"\"\n        pass\n```\n\n## 工具实现要求\n\n1. **name属性** - 工具名称\n2. **description属性** - 工具描述\n3. **to_param()方法** - 转换为参数格式（用于MCP注册）\n4. **execute()方法** - 执行工具逻辑（异步）\n\n## 工具参数格式\n\n```python\n{\n    \"type\": \"function\",\n    \"function\": {\n        \"name\": \"tool_name\",\n        \"description\": \"工具描述\",\n        \"parameters\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"param1\": {\n                    \"type\": \"string\",\n                    \"description\": \"参数描述\"\n                }\n            },\n            \"required\": [\"param1\"]\n        }\n    }\n}\n```\n\n## 工具结果格式\n\n```python\nfrom app.schema import ToolResult\n\nToolResult(\n    output=\"执行结果\",\n    error=None,\n    metadata={}\n)\n```\n\n## 实现示例\n\n参考 `BrowserUseTool`, `Bash`, `StrReplaceEditor` 等工具的实现。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "BaseTool",
+      "工具基类",
+      "API设计"
+    ],
+    "source": "third_party/OpenManus/app/tool/base.py"
+  },
+  {
+    "title": "OpenManus - ToolCallAgent工具调用Agent",
+    "content": "# ToolCallAgent - 工具调用Agent基类\n\n## 类定义\n\n```python\nfrom app.agent.toolcall import ToolCallAgent\nfrom app.agent.base import BaseAgent\n\nclass ToolCallAgent(BaseAgent):\n    \"\"\"支持工具调用的Agent基类\"\"\"\n    \n    available_tools: ToolCollection\n    max_steps: int = 20\n    max_observe: int = 10000\n```\n\n## 核心功能\n\n1. **工具管理**\n   - `available_tools`: 可用工具集合\n   - 工具选择和调用\n\n2. **思考循环**\n   - `think()`: 思考下一步行动\n   - `run()`: 执行任务循环\n   - `step()`: 执行单步\n\n3. **记忆管理**\n   - `memory`: Agent记忆\n   - 消息历史\n   - 工具调用历史\n\n## Agent工作流程\n\n1. **初始化** - 设置工具、提示词\n2. **思考** - 分析当前状态，选择工具\n3. **执行** - 调用工具执行任务\n4. **观察** - 获取工具执行结果\n5. **更新记忆** - 保存执行历史\n6. **判断终止** - 检查是否完成任务\n\n## 使用示例\n\n```python\nfrom app.agent.toolcall import ToolCallAgent\n\nclass MyAgent(ToolCallAgent):\n    available_tools = ToolCollection(\n        MyTool1(),\n        MyTool2()\n    )\n    \n    system_prompt = \"You are a helpful assistant\"\n    max_steps = 20\n\nagent = MyAgent()\nresult = await agent.run(\"执行任务\")\n```\n\n## 在TRQuant中的应用\n\nTRQuant的 `OpenManusAgent` 基于ToolCallAgent模式设计，但简化了实现，直接调用工具而不使用LLM推理。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "ToolCallAgent",
+      "Agent基类",
+      "工具调用"
+    ],
+    "source": "third_party/OpenManus/app/agent/toolcall.py"
+  },
+  {
+    "title": "OpenManus - MCP客户端工具集成",
+    "content": "# MCPClients - MCP客户端工具集成\n\n## 类定义\n\n```python\nfrom app.tool.mcp import MCPClients, MCPClientTool\n\nclass MCPClients:\n    \"\"\"MCP客户端集合，管理多个MCP服务器连接\"\"\"\n    \n    clients: List[MCPClient] = []\n    tools: List[MCPClientTool] = []\n```\n\n## 核心功能\n\n1. **连接管理**\n   - `connect_sse()`: 通过SSE连接MCP服务器\n   - `connect_stdio()`: 通过stdio连接MCP服务器\n   - `disconnect()`: 断开连接\n\n2. **工具管理**\n   - 自动发现MCP服务器的工具\n   - 将MCP工具封装为MCPClientTool\n   - 提供统一的工具接口\n\n3. **工具调用**\n   - 通过MCP协议调用远程工具\n   - 处理工具结果\n\n## MCPClientTool\n\nMCP工具封装类，将MCP服务器的工具封装为可调用的工具对象。\n\n## 在Agent中使用\n\n```python\nfrom app.agent.manus import Manus\n\nagent = Manus()\n\n# 连接MCP服务器\nawait agent.connect_mcp_server(\n    server_url=\"http://localhost:8000\",\n    server_id=\"my_server\"\n)\n\n# MCP工具会自动添加到available_tools\n# 可以在think()循环中使用\n```\n\n## 在TRQuant中的应用\n\nTRQuant的MCP客户端 (`core.mcp.client.MCPClient`) 独立实现，不直接使用OpenManus的MCPClients，但设计理念相似。\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "MCPClients",
+      "MCP客户端",
+      "工具集成"
+    ],
+    "source": "third_party/OpenManus/app/tool/mcp.py"
+  },
+  {
+    "title": "OpenManus在TRQuant中的集成方案",
+    "content": "# OpenManus在TRQuant中的集成\n\n## 集成架构\n\nTRQuant采用**封装式集成**，而不是直接使用OpenManus的Agent框架。\n\n### 架构设计\n\n```\nOpenManus源码 (third_party/OpenManus/)\n    ↓ 封装\nTRQuant Core模块 (core/automation/)\n    ↓ 使用\n工作流增强 (core/workflow/openmanus_integration.py)\n```\n\n### 核心模块\n\n1. **BrowserAgent** (`core/automation/browser_agent.py`)\n   - 封装Playwright浏览器操作\n   - 可选集成OpenManus的BrowserUseTool\n   - 提供统一的浏览器API\n\n2. **OpenManusAgent** (`core/automation/openmanus_agent.py`)\n   - 简化版Agent（不使用LLM推理）\n   - 直接工具调用\n   - 任务解析和执行\n\n3. **FinancialCollector** (`core/data_collection/financial_collector.py`)\n   - 财经数据收集\n   - 新闻和公告抓取\n   - MongoDB存储\n\n4. **WorkflowEnhancer** (`core/workflow/openmanus_integration.py`)\n   - R0数据源检测增强\n   - R1市场趋势分析增强（使用MarketTrendAnalyzer）\n   - R2主线轮动研究增强\n\n### 性能优化模块\n\n- **RequestCache** - 请求缓存\n- **BrowserPool** - 浏览器连接池\n- **ParallelExecutor** - 并行执行器\n- **PerformanceMonitor** - 性能监控\n\n### MCP服务器配置\n\nOpenManus MCP服务器已配置到Cursor (`~/.cursor/mcp.json`)，提供：\n- `browser` - 浏览器工具\n- `bash` - Shell命令\n- `editor` - 代码编辑器\n- `terminate` - 终止工具\n\n### 使用示例\n\n```python\n# 使用BrowserAgent\nfrom core.automation import BrowserAgent\n\nasync with BrowserAgent() as agent:\n    result = await agent.navigate(\"https://www.eastmoney.com\")\n    content = await agent.get_content()\n\n# 使用WorkflowEnhancer\nfrom core.workflow import WorkflowEnhancer\n\nasync with WorkflowEnhancer() as enhancer:\n    r1 = await enhancer.enhance_r1_market_trend(index_code=\"000300.XSHG\")\n    print(f\"市场趋势: {r1.data['trend_label']}\")\n```\n\n### 集成原则\n\n1. **不直接使用OpenManus Agent框架**（需要LLM API）\n2. **封装工具功能**（浏览器、数据收集）\n3. **统一API接口**（与TRQuant架构一致）\n4. **性能优化**（缓存、连接池、并行处理）\n5. **工作流增强**（R0/R1/R2步骤增强）\n\n### 文档位置\n\n- 集成计划: `docs/research/OPENMANUS_INTEGRATION_PLAN.md`\n- 完成报告: `docs/research/OPENMANUS_INTEGRATION_COMPLETE.md`\n- 状态文档: `docs/research/OPENMANUS_STATUS.md`\n",
+    "type": "lesson",
+    "tags": [
+      "OpenManus",
+      "TRQuant",
+      "集成",
+      "架构",
+      "设计"
+    ],
+    "source": "docs/research/OPENMANUS_INTEGRATION_COMPLETE.md"
+  },
+  {
+    "title": "OpenManus - 可用工具清单",
+    "content": "# OpenManus可用工具清单\n\n## 标准工具\n\n### 浏览器工具 (BrowserUseTool)\n- **go_to_url** - 访问网页\n- **click_element** - 点击元素\n- **input_text** - 输入文本\n- **extract_content** - 提取内容（需LLM API）\n- **screenshot** - 截图\n- **scroll_down/scroll_up** - 滚动\n- **wait** - 等待\n- **go_back** - 返回\n- **refresh** - 刷新\n- **switch_tab/open_tab/close_tab** - 标签管理\n\n### 代码执行 (PythonExecute)\n- 执行Python代码\n- 支持交互式执行\n- 结果捕获\n\n### 编辑器 (StrReplaceEditor)\n- 文件编辑\n- 字符串替换\n- 代码修改\n\n### Shell命令 (Bash)\n- 执行Shell命令\n- 命令输出捕获\n\n### 搜索工具\n- **GoogleSearch** - Google搜索\n- **BingSearch** - Bing搜索\n- **BaiduSearch** - 百度搜索\n- **DuckDuckGoSearch** - DuckDuckGo搜索\n\n### 其他工具\n- **AskHuman** - 询问用户\n- **Terminate** - 终止执行\n- **FileOperators** - 文件操作\n- **ComputerUseTool** - 计算机使用\n- **Crawl4AI** - 网页爬取\n\n## MCP工具\n\n通过MCP服务器提供的工具：\n- **browser** - 浏览器自动化\n- **bash** - Shell命令\n- **editor** - 代码编辑器\n- **terminate** - 终止工具\n\n## 在TRQuant中的使用\n\nTRQuant主要使用：\n1. **BrowserAgent** - 浏览器自动化（封装BrowserUseTool）\n2. **FinancialCollector** - 数据收集（使用BrowserAgent）\n3. **MCP工具** - 通过Cursor Chat调用\n\n## 工具选择建议\n\n- **基础操作** - BrowserUseTool, Bash\n- **代码编辑** - StrReplaceEditor\n- **数据提取** - BrowserUseTool.extract_content（需LLM API）\n- **批量操作** - 使用TRQuant的ParallelExecutor\n",
+    "type": "reference",
+    "tags": [
+      "OpenManus",
+      "工具",
+      "工具清单",
+      "API"
+    ],
+    "source": "third_party/OpenManus/app/tool/"
+  },
+  {
+    "title": "OpenManus - 配置和使用指南",
+    "content": "# OpenManus配置和使用指南\n\n## 安装\n\n### 方法1: 使用conda\n```bash\nconda create -n open_manus python=3.12\nconda activate open_manus\ngit clone https://github.com/FoundationAgents/OpenManus.git\ncd OpenManus\npip install -r requirements.txt\n```\n\n### 方法2: 使用uv（推荐）\n```bash\ncurl -LsSf https://astral.sh/uv/install.sh | sh\ngit clone https://github.com/FoundationAgents/OpenManus.git\ncd OpenManus\nuv venv --python 3.12\nsource .venv/bin/activate\nuv pip install -r requirements.txt\n```\n\n### 浏览器工具（可选）\n```bash\nplaywright install\n```\n\n## 配置\n\n### 1. 配置文件\n\n创建 `config/config.toml`:\n\n```toml\n# LLM配置\n[llm]\nmodel = \"claude-3-7-sonnet-20250219\"\nbase_url = \"https://api.anthropic.com/v1/\"\napi_key = \"YOUR_API_KEY\"\nmax_tokens = 8192\ntemperature = 0.0\n\n# MCP配置\n[mcp]\nserver_reference = \"app.mcp.server\"\n\n# Daytona配置（可选）\n[daytona]\ndaytona_api_key = \"\"\n```\n\n### 2. MCP服务器配置（Cursor）\n\n在 `~/.cursor/mcp.json` 中添加：\n\n```json\n{\n  \"mcpServers\": {\n    \"openmanus\": {\n      \"command\": \"/path/to/OpenManus/.venv/bin/python\",\n      \"args\": [\"-m\", \"app.mcp.server\"],\n      \"env\": {\n        \"PYTHONPATH\": \"/path/to/OpenManus\",\n        \"PYTHONIOENCODING\": \"utf-8\"\n      }\n    }\n  }\n}\n```\n\n## 使用方式\n\n### 1. 作为独立项目使用\n\n```python\nfrom app.agent.manus import Manus\n\nagent = await Manus.create()\nresult = await agent.run(\"访问网站并提取内容\")\nawait agent.cleanup()\n```\n\n### 2. 作为MCP服务器使用\n\n```bash\npython -m app.mcp.server\n```\n\n在Cursor Chat中使用：\n```\n\"使用browser工具访问 https://www.eastmoney.com\"\n```\n\n### 3. 在TRQuant中使用\n\n```python\nfrom core.automation import BrowserAgent, OpenManusAgent\nfrom core.workflow import WorkflowEnhancer\n\n# 使用BrowserAgent\nasync with BrowserAgent() as agent:\n    result = await agent.navigate(\"https://www.eastmoney.com\")\n\n# 使用WorkflowEnhancer\nasync with WorkflowEnhancer() as enhancer:\n    result = await enhancer.enhance_r1_market_trend()\n```\n\n## 注意事项\n\n1. **LLM API配置** - 某些功能（如extract_content）需要LLM API\n2. **浏览器安装** - BrowserUseTool需要安装Playwright浏览器\n3. **MCP服务器** - 需要重启Cursor才能加载MCP服务器配置\n4. **权限问题** - 确保有足够的权限执行命令和访问网络\n\n## TRQuant集成优势\n\n1. **无需LLM API** - TRQuant封装了工具功能，不需要LLM推理\n2. **统一接口** - 与TRQuant架构一致\n3. **性能优化** - 缓存、连接池、并行处理\n4. **工作流集成** - 直接集成到研究流程\n",
+    "type": "lesson",
+    "tags": [
+      "OpenManus",
+      "配置",
+      "使用指南",
+      "安装",
+      "TRQuant"
+    ],
+    "source": "third_party/OpenManus/README.md"
+  }
+]

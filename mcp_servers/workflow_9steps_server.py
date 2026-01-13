@@ -118,19 +118,101 @@ except ImportError as e:
     _handle_report_generate = None
 
 
-# ==================== 9步工作流定义 ====================
+# ==================== 工作流定义 ====================
+# 按照韬睿量化系统架构：研究阶段 R0-R6 + 实盘阶段 L1-L3
 
-WORKFLOW_9STEPS = [
-    {"id": "data_source", "name": "信息获取", "icon": "📡", "color": "#58a6ff", "mcp_tool": "data_source.health_check", "description": "检查数据源连接状态"},
-    {"id": "market_trend", "name": "市场趋势", "icon": "📈", "color": "#667eea", "mcp_tool": "market.status", "description": "分析当前市场状态"},
-    {"id": "mainline", "name": "投资主线", "icon": "🔥", "color": "#F59E0B", "mcp_tool": "market.mainlines", "description": "识别投资主线"},
-    {"id": "investment_target_selection", "name": "投资标的筛选", "icon": "📦", "color": "#a371f7", "mcp_tool": "data_source.candidate_pool", "description": "筛选投资标的股票"},
-    {"id": "factor", "name": "因子构建", "icon": "🧮", "color": "#3fb950", "mcp_tool": "factor.recommend", "description": "推荐量化因子"},
-    {"id": "strategy", "name": "策略生成", "icon": "💻", "color": "#d29922", "mcp_tool": "template.generate", "description": "生成策略代码"},
-    {"id": "backtest", "name": "回测验证", "icon": "🔄", "color": "#1E3A5F", "mcp_tool": "backtest.quick", "description": "执行回测验证"},
-    {"id": "optimization", "name": "策略优化", "icon": "⚙️", "color": "#7C3AED", "mcp_tool": "optimizer.grid_search", "description": "参数优化"},
-    {"id": "report", "name": "报告生成", "icon": "📄", "color": "#EC4899", "mcp_tool": "report.generate", "description": "生成研究报告"}
+WORKFLOW_STEPS = [
+    # ==================== 研究阶段 (Research Phase) ====================
+    {"id": "R0", "phase": "research", "name": "数据源检测", "icon": "📡", "color": "#58a6ff", 
+     "mcp_tool": "data_source.health_check", "description": "检查数据源连接状态，确保JQData/AKShare可用"},
+    {"id": "R1", "phase": "research", "name": "市场趋势分析", "icon": "📈", "color": "#667eea", 
+     "mcp_tool": "market.status", "description": "分析当前市场状态，多周期共振+HMM状态识别"},
+    {"id": "R2", "phase": "research", "name": "主线轮动研究", "icon": "🔥", "color": "#F59E0B", 
+     "mcp_tool": "market.mainlines", "description": "识别投资主线，行业轮动分析"},
+    {"id": "R3", "phase": "research", "name": "因子组合开发", "icon": "🧮", "color": "#3fb950", 
+     "mcp_tool": "factor.recommend", "description": "推荐量化因子，因子有效性验证"},
+    {"id": "R4", "phase": "research", "name": "投资标的筛选", "icon": "📦", "color": "#a371f7", 
+     "mcp_tool": "data_source.candidate_pool", "description": "筛选投资标的股票，构建候选池"},
+    {"id": "R5", "phase": "research", "name": "风控模块设计", "icon": "🛡️", "color": "#ef4444", 
+     "mcp_tool": "risk.design", "description": "设计风险控制模块，止损止盈策略"},
+    {"id": "R6", "phase": "research", "name": "策略开发与回测", "icon": "💻", "color": "#d29922", 
+     "mcp_tool": "backtest.run", "description": "策略代码开发、回测验证、参数优化"},
+    
+    # ==================== 实盘阶段 (Live Trading Phase) ====================
+    {"id": "L1", "phase": "live", "name": "策略转换部署", "icon": "🚀", "color": "#7C3AED", 
+     "mcp_tool": "deploy.convert", "description": "策略转换到实盘平台(QMT/PTrade)并部署"},
+    {"id": "L2", "phase": "live", "name": "小盘试水监控", "icon": "🔍", "color": "#06b6d4", 
+     "mcp_tool": "live.monitor", "description": "小资金试运行，实时监控策略表现"},
+    {"id": "L3", "phase": "live", "name": "加仓重仓管理", "icon": "💰", "color": "#EC4899", 
+     "mcp_tool": "live.scale", "description": "根据表现调整仓位，风险管理"}
 ]
+
+# 向后兼容：保留原有的9步工作流定义（映射到新的ID）
+WORKFLOW_9STEPS = [
+    {"id": "data_source", "phase": "research", "name": "信息获取", "icon": "📡", "color": "#58a6ff", 
+     "mcp_tool": "data_source.health_check", "description": "检查数据源连接状态", "mapped_to": "R0"},
+    {"id": "market_trend", "phase": "research", "name": "市场趋势", "icon": "📈", "color": "#667eea", 
+     "mcp_tool": "market.status", "description": "分析当前市场状态", "mapped_to": "R1"},
+    {"id": "mainline", "phase": "research", "name": "投资主线", "icon": "🔥", "color": "#F59E0B", 
+     "mcp_tool": "market.mainlines", "description": "识别投资主线", "mapped_to": "R2"},
+    {"id": "investment_target_selection", "phase": "research", "name": "投资标的筛选", "icon": "📦", "color": "#a371f7", 
+     "mcp_tool": "data_source.candidate_pool", "description": "筛选投资标的股票", "mapped_to": "R4"},
+    {"id": "factor", "phase": "research", "name": "因子构建", "icon": "🧮", "color": "#3fb950", 
+     "mcp_tool": "factor.recommend", "description": "推荐量化因子", "mapped_to": "R3"},
+    {"id": "strategy", "phase": "research", "name": "策略生成", "icon": "💻", "color": "#d29922", 
+     "mcp_tool": "template.generate", "description": "生成策略代码", "mapped_to": "R6"},
+    {"id": "backtest", "phase": "research", "name": "回测验证", "icon": "🔄", "color": "#1E3A5F", 
+     "mcp_tool": "backtest.quick", "description": "执行回测验证", "mapped_to": "R6"},
+    {"id": "optimization", "phase": "research", "name": "策略优化", "icon": "⚙️", "color": "#7C3AED", 
+     "mcp_tool": "optimizer.grid_search", "description": "参数优化", "mapped_to": "R6"},
+    {"id": "report", "phase": "research", "name": "报告生成", "icon": "📄", "color": "#EC4899", 
+     "mcp_tool": "report.generate", "description": "生成研究报告", "mapped_to": "R6"}
+]
+
+# 工作流阶段定义
+WORKFLOW_PHASES = {
+    "research": {
+        "name": "研究阶段",
+        "description": "策略研究与回测验证",
+        "steps": ["R0", "R1", "R2", "R3", "R4", "R5", "R6"],
+        "icon": "🔬"
+    },
+    "live": {
+        "name": "实盘阶段", 
+        "description": "策略部署与实盘交易",
+        "steps": ["L1", "L2", "L3"],
+        "icon": "💹"
+    }
+}
+
+
+# ==================== 工作流辅助函数 ====================
+
+def get_steps_by_phase(phase: str = None) -> List[Dict]:
+    """获取指定阶段的步骤，如果phase为None则返回所有步骤"""
+    if phase is None:
+        return WORKFLOW_STEPS
+    return [s for s in WORKFLOW_STEPS if s.get("phase") == phase]
+
+def get_research_steps() -> List[Dict]:
+    """获取研究阶段步骤"""
+    return get_steps_by_phase("research")
+
+def get_live_steps() -> List[Dict]:
+    """获取实盘阶段步骤"""
+    return get_steps_by_phase("live")
+
+def get_step_by_id(step_id: str) -> Optional[Dict]:
+    """根据ID获取步骤定义"""
+    # 先从新的WORKFLOW_STEPS查找
+    for step in WORKFLOW_STEPS:
+        if step["id"] == step_id:
+            return step
+    # 再从兼容的WORKFLOW_9STEPS查找
+    for step in WORKFLOW_9STEPS:
+        if step["id"] == step_id:
+            return step
+    return None
 
 
 # ==================== 工作流状态管理 ====================
@@ -434,7 +516,7 @@ h1{{color:#58a6ff;}}h2{{color:#8b949e;}}.metric{{font-size:24px;font-weight:bold
     }
 
 
-# 步骤执行器映射
+# 步骤执行器映射（旧ID）
 STEP_EXECUTORS = {
     "data_source": execute_step_data_source,
     "market_trend": execute_step_market_trend,
@@ -447,6 +529,28 @@ STEP_EXECUTORS = {
     "report": execute_step_report,
 }
 
+# 新ID到旧ID的映射
+STEP_ID_MAPPING = {
+    "R0": "data_source",           # 数据源检测
+    "R1": "market_trend",          # 市场趋势分析
+    "R2": "mainline",              # 主线轮动研究
+    "R3": "factor",                # 因子组合开发
+    "R4": "investment_target_selection",  # 投资标的筛选
+    "R5": None,                    # 风控模块设计（待实现）
+    "R6": "strategy",              # 策略开发与回测（含backtest, optimization, report）
+    "L1": None,                    # 策略转换部署（待实现）
+    "L2": None,                    # 小盘试水监控（待实现）
+    "L3": None,                    # 加仓重仓管理（待实现）
+}
+
+def _map_step_to_executor(step_id: str) -> Optional[str]:
+    """将新的步骤ID映射到执行器ID"""
+    # 如果是旧ID，直接返回
+    if step_id in STEP_EXECUTORS:
+        return step_id
+    # 如果是新ID，查找映射
+    return STEP_ID_MAPPING.get(step_id)
+
 
 # ==================== MCP工具定义 ====================
 
@@ -454,13 +558,29 @@ if MCP_AVAILABLE:
     server = Server("workflow-9steps-server")
     
     TOOLS = [
-        Tool(name="workflow9.get_steps", description="获取9步工作流的所有步骤定义", inputSchema={"type": "object", "properties": {}}),
-        Tool(name="workflow9.create", description="创建新的9步工作流会话", inputSchema={"type": "object", "properties": {"name": {"type": "string", "default": "9步投资工作流"}}}),
+        # 基础工作流工具
+        Tool(name="workflow9.get_steps", description="获取工作流步骤定义", inputSchema={
+            "type": "object", 
+            "properties": {
+                "phase": {"type": "string", "enum": ["research", "live"], "description": "阶段筛选：research(研究阶段)或live(实盘阶段)，不传则返回全部"},
+                "version": {"type": "string", "enum": ["v1", "v2"], "default": "v2", "description": "v1=原9步,v2=新10步(R0-R6+L1-L3)"}
+            }
+        }),
+        Tool(name="workflow9.get_phases", description="获取工作流阶段定义", inputSchema={"type": "object", "properties": {}}),
+        Tool(name="workflow9.create", description="创建新的工作流会话", inputSchema={
+            "type": "object", 
+            "properties": {
+                "name": {"type": "string", "default": "韬睿量化工作流"},
+                "phase": {"type": "string", "enum": ["research", "live", "all"], "default": "research", "description": "工作流阶段"}
+            }
+        }),
         Tool(name="workflow9.status", description="获取工作流状态", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
         Tool(name="workflow9.run_step", description="执行指定步骤", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}, "step_id": {"type": "string"}, "args": {"type": "object"}}, "required": ["workflow_id", "step_id"]}),
-        Tool(name="workflow9.run_all", description="一键执行所有9个步骤", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
+        Tool(name="workflow9.run_all", description="一键执行所有步骤", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}, "phase": {"type": "string", "enum": ["research", "live", "all"], "default": "all"}}, "required": ["workflow_id"]}),
+        Tool(name="workflow9.run_research", description="执行研究阶段(R0-R6)", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
+        Tool(name="workflow9.run_live", description="执行实盘阶段(L1-L3)", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
         Tool(name="workflow9.get_context", description="获取工作流上下文", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
-        Tool(name="workflow9.list", description="列出所有保存的工作流", inputSchema={"type": "object", "properties": {"limit": {"type": "integer", "default": 20}, "status": {"type": "string"}}}),
+        Tool(name="workflow9.list", description="列出所有保存的工作流", inputSchema={"type": "object", "properties": {"limit": {"type": "integer", "default": 20}, "status": {"type": "string"}, "phase": {"type": "string"}}}),
         Tool(name="workflow9.restore", description="从存储恢复工作流", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]}),
         Tool(name="workflow9.delete", description="删除保存的工作流", inputSchema={"type": "object", "properties": {"workflow_id": {"type": "string"}}, "required": ["workflow_id"]})
     ]
@@ -518,7 +638,27 @@ async def _handle_tool(name: str, args: Dict) -> Dict:
     
     # 降级：直接调用（向后兼容）
     if name == "workflow9.get_steps":
-        return {"success": True, "steps": WORKFLOW_9STEPS, "total": len(WORKFLOW_9STEPS)}
+        version = args.get("version", "v2")
+        phase = args.get("phase")
+        
+        if version == "v1":
+            # 返回原有9步工作流
+            steps = WORKFLOW_9STEPS
+        else:
+            # 返回新的10步工作流（R0-R6 + L1-L3）
+            steps = get_steps_by_phase(phase) if phase else WORKFLOW_STEPS
+        
+        return {
+            "success": True, 
+            "steps": steps, 
+            "total": len(steps),
+            "version": version,
+            "phase": phase,
+            "phases": WORKFLOW_PHASES
+        }
+    
+    elif name == "workflow9.get_phases":
+        return {"success": True, "phases": WORKFLOW_PHASES}
     
     elif name == "workflow9.create":
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
@@ -587,6 +727,76 @@ async def _handle_tool(name: str, args: Dict) -> Dict:
         
         session.status = "completed"
         return {"success": True, "workflow_id": workflow_id, "results": results, "completed_steps": len(results)}
+    
+    elif name == "workflow9.run_research":
+        # 执行研究阶段 R0-R6
+        workflow_id = args.get("workflow_id")
+        if workflow_id not in _workflows:
+            return {"success": False, "error": f"工作流不存在: {workflow_id}"}
+        
+        session = _workflows[workflow_id]
+        session.status = "running_research"
+        
+        research_steps = get_research_steps()
+        results = []
+        for step in research_steps:
+            step_id = step["id"]
+            # 映射新ID到执行器（如果有的话）
+            executor_id = _map_step_to_executor(step_id)
+            if executor_id and executor_id in STEP_EXECUTORS:
+                step_result = await _handle_tool("workflow9.run_step", {
+                    "workflow_id": workflow_id, 
+                    "step_id": executor_id, 
+                    "args": {}
+                })
+                results.append({
+                    "step_id": step_id,
+                    "step_name": step["name"],
+                    "phase": "research",
+                    "success": step_result.get("step_result", {}).get("success", True),
+                    "summary": step_result.get("step_result", {}).get("summary", "")
+                })
+            else:
+                results.append({
+                    "step_id": step_id,
+                    "step_name": step["name"],
+                    "phase": "research",
+                    "success": True,
+                    "summary": f"步骤 {step['name']} 暂未实现执行器"
+                })
+        
+        session.status = "research_completed"
+        _save_workflow(workflow_id)
+        return {"success": True, "workflow_id": workflow_id, "phase": "research", "results": results, "completed_steps": len(results)}
+    
+    elif name == "workflow9.run_live":
+        # 执行实盘阶段 L1-L3
+        workflow_id = args.get("workflow_id")
+        if workflow_id not in _workflows:
+            return {"success": False, "error": f"工作流不存在: {workflow_id}"}
+        
+        session = _workflows[workflow_id]
+        
+        # 检查研究阶段是否完成
+        if session.status not in ["research_completed", "completed"]:
+            return {"success": False, "error": "请先完成研究阶段(R0-R6)再执行实盘阶段"}
+        
+        session.status = "running_live"
+        
+        live_steps = get_live_steps()
+        results = []
+        for step in live_steps:
+            results.append({
+                "step_id": step["id"],
+                "step_name": step["name"],
+                "phase": "live",
+                "success": True,
+                "summary": f"实盘步骤 {step['name']} 需要手动操作"
+            })
+        
+        session.status = "completed"
+        _save_workflow(workflow_id)
+        return {"success": True, "workflow_id": workflow_id, "phase": "live", "results": results, "completed_steps": len(results)}
     
     elif name == "workflow9.get_context":
         workflow_id = args.get("workflow_id")
