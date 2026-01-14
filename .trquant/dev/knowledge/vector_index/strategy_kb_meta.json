@@ -1,0 +1,8 @@
+{
+  "items_count": 9,
+  "model": "paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_dim": 384,
+  "index_path": "/home/taotao/.cursor/worktrees/TRQuant/ope/.trquant/dev/knowledge/vector_index",
+  "collection_name": "strategy_knowledge_base",
+  "created": "{\"timestamp\": \"2026-01-14T15:27:42.563177\"}"
+}
