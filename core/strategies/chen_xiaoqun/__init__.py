@@ -17,7 +17,7 @@
     )
 """
 
-from .emotion_cycle import judge_emotion_cycle
+from .emotion_cycle import judge_emotion_cycle, judge_emotion_cycle_with_confirmation
 from .stock_selection import (
     select_first_board_stocks,
     select_dragon_stocks,
@@ -32,6 +32,7 @@ from .utils import convert_code_to_jq
 
 __all__ = [
     'judge_emotion_cycle',
+    'judge_emotion_cycle_with_confirmation',
     'select_first_board_stocks',
     'select_dragon_stocks',
     'identify_exchange_and_convert',
