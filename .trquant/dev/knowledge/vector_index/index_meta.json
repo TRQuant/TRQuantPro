@@ -1,5 +1,5 @@
 {
-  "items_count": 1307,
+  "items_count": 1880,
   "model": "paraphrase-multilingual-MiniLM-L12-v2",
   "embedding_dim": 384,
   "index_path": "/home/taotao/.cursor/worktrees/TRQuant/ope/.trquant/dev/knowledge/vector_index"

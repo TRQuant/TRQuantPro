@@ -5,15 +5,16 @@
 """
 
 import pandas as pd
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 def identify_top_themes(
-    limit_up_data: pd.DataFrame,
-    top_n: int = 3
+    limit_up_data: Union[pd.DataFrame, Dict],
+    top_n: int = 3,
+    df_key_candidates: Optional[List[str]] = None
 ) -> List[Dict]:
     """
     识别最强题材（涨停家数最多的板块）
@@ -21,8 +22,12 @@ def identify_top_themes(
     这是陈小群策略的核心要素：聚焦最强题材，避免杂毛股。
     
     Args:
-        limit_up_data: 涨停板数据（DataFrame，必须包含'所属行业'列）
+        limit_up_data: 涨停板数据
+            - DataFrame: 明细数据（必须包含'所属行业'列）
+            - Dict: 容器字典，会尝试从以下key提取DataFrame:
+                'limit_up_df', 'limit_up_detail', 'stocks_df', 'data', 'df'
         top_n: 返回前N个最强题材（默认3个）
+        df_key_candidates: 当输入为dict时，尝试提取DataFrame的key列表
     
     Returns:
         [
@@ -36,29 +41,62 @@ def identify_top_themes(
         ]
         按强度从高到低排序
     """
-    if limit_up_data is None or limit_up_data.empty:
-        logger.warning("涨停板数据为空，无法识别题材")
+    if df_key_candidates is None:
+        df_key_candidates = ["limit_up_df", "limit_up_detail", "stocks_df", "data", "df"]
+    
+    # 1) 统一抽取 DataFrame
+    if limit_up_data is None:
+        logger.debug("涨停板数据为None，返回空列表")
         return []
     
-    # 检查是否有'所属行业'列
-    if '所属行业' not in limit_up_data.columns:
-        logger.warning("涨停板数据缺少'所属行业'列，无法识别题材")
+    df = None
+    if isinstance(limit_up_data, dict):
+        # 尝试从dict中提取DataFrame
+        for k in df_key_candidates:
+            v = limit_up_data.get(k)
+            if isinstance(v, pd.DataFrame):
+                df = v
+                logger.debug(f"从dict中提取到DataFrame，key={k}")
+                break
+        if df is None:
+            logger.debug("limit_up_data为dict但未找到涨停明细DataFrame，跳过题材识别")
+            return []
+    elif isinstance(limit_up_data, pd.DataFrame):
+        df = limit_up_data
+    else:
+        logger.warning(f"limit_up_data类型异常: {type(limit_up_data)}，跳过题材识别")
         return []
     
-    # 按板块统计涨停家数
-    sector_counts = limit_up_data.groupby('所属行业').size().sort_values(ascending=False)
+    # 2) 空表保护
+    if df.empty:
+        logger.debug("涨停明细DataFrame为空，返回空列表")
+        return []
+    
+    # 3) 检查是否有题材字段（支持多种命名）
+    theme_col = None
+    for cand in ["所属行业", "板块", "题材", "概念", "industry", "theme", "concept", "sector"]:
+        if cand in df.columns:
+            theme_col = cand
+            break
+    
+    if theme_col is None:
+        logger.warning("涨停明细df缺少题材字段，跳过题材识别")
+        return []
+    
+    # 4) 按板块统计涨停家数
+    sector_counts = df.groupby(theme_col).size().sort_values(ascending=False)
     
     if sector_counts.empty:
         logger.warning("无法统计板块数据")
         return []
     
-    # 计算强度评分（涨停家数占比）
-    total_limit_up = len(limit_up_data)
+    # 5) 计算强度评分（涨停家数占比）
+    total_limit_up = len(df)
     
-    # 返回前N个最强题材
+    # 6) 返回前N个最强题材
     top_themes = []
     for sector, count in sector_counts.head(top_n).items():
-        sector_stocks = limit_up_data[limit_up_data['所属行业'] == sector]
+        sector_stocks = df[df[theme_col] == sector]
         
         # 计算强度评分（涨停家数占比 * 100）
         strength_score = (count / total_limit_up) * 100 if total_limit_up > 0 else 0

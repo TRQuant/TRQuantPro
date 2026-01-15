@@ -127,6 +127,14 @@ class KnowledgeBaseBuilder:
         try:
             from mcp_servers.knowledge_vector_index import build_vector_index
             result = build_vector_index(self.kb_file, force_rebuild=force_rebuild)
+            # 如果返回成功但items_count为0，尝试从元数据文件读取
+            if result.get('success') and result.get('items_count', 0) == 0:
+                index_meta_file = self.vector_dir / "index_meta.json"
+                if index_meta_file.exists():
+                    import json
+                    meta = json.loads(index_meta_file.read_text(encoding='utf-8'))
+                    result['items_count'] = meta.get('items_count', 0)
+                    result['vector_dim'] = meta.get('embedding_dim', 0)
             return result
         except Exception as e:
             logger.error(f"构建向量索引失败: {e}")
