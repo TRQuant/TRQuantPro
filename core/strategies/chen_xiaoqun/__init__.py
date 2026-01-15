@@ -39,6 +39,10 @@ from .theme_analyzer import (
     is_mainstream_theme,
     get_theme_priority
 )
+from .exit_decision import (
+    should_exit_position,
+    should_reduce_position
+)
 
 __all__ = [
     'judge_emotion_cycle',
@@ -56,4 +60,6 @@ __all__ = [
     'identify_top_themes',
     'is_mainstream_theme',
     'get_theme_priority',
+    'should_exit_position',
+    'should_reduce_position',
 ]

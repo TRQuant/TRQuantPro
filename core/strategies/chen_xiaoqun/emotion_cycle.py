@@ -102,12 +102,19 @@ def judge_emotion_cycle(
         confidence_score += 2.0
         factors.append(f"涨停家数{limit_up_count}只（50-80只，强加速期特征，权重40%）")
     elif limit_up_count < 100:
-        # 加速期：80-100只
-        cycle = "加速期"
-        position = "50%+"
-        strategy = "龙头战法（重仓持有）"
+        # 加速期：80-100只（但接近过热期，需要更谨慎）
+        # 如果连板高度>7板，可能已经接近过热期，降低仓位
+        if max_height > 7:
+            cycle = "弱过热期"  # 接近过热期，视为弱过热期
+            position = "20-30%"
+            strategy = "精选龙头（谨慎持有）"
+            factors.append(f"涨停家数{limit_up_count}只（80-100只）+ 连板{max_height}板（>7板，接近过热期，权重40%）")
+        else:
+            cycle = "加速期"
+            position = "50%+"
+            strategy = "龙头战法（重仓持有）"
+            factors.append(f"涨停家数{limit_up_count}只（80-100只，加速期特征，权重40%）")
         confidence_score += 2.0
-        factors.append(f"涨停家数{limit_up_count}只（80-100只，加速期特征，权重40%）")
     elif limit_up_count < 120:
         # 弱过热期：100-120只（允许交易）
         cycle = "弱过热期"
