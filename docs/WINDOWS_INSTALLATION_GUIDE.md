@@ -32,29 +32,31 @@
 
 ### 必需软件
 
-- **Python**: 3.9+ (推荐 3.11，QMT需要3.12以下)
+- **Python**: 3.12 (统一使用3.12版本)
 - **Git**: Git for Windows
 - **MongoDB**: 可选，如果需要本地数据库
 - **Node.js**: 18+ (如果使用Cursor扩展)
+
+⚠️ **重要**: 所有Python包都安装在venv虚拟环境中，不安装到系统Python。
 
 ---
 
 ## 🔧 环境准备
 
-### 步骤1: 安装Python
+### 步骤1: 安装Python 3.12
 
-1. 下载Python 3.11
+1. 下载Python 3.12
    - 访问: https://www.python.org/downloads/
-   - 选择: Python 3.11.x (64-bit)
+   - 选择: Python 3.12.x (64-bit)
    - ⚠️ **重要**: 安装时勾选 "Add Python to PATH"
 
 2. 验证安装
    ```powershell
    python --version
-   # 应该显示: Python 3.11.x
+   # 应该显示: Python 3.12.x
    
    pip --version
-   # 应该显示: pip 23.x.x
+   # 应该显示: pip 24.x.x
    ```
 
 ### 步骤2: 安装Git
@@ -114,27 +116,42 @@ Copy-Item -Path "C:\Temp\TRQuant\*" -Destination "C:\Users\Administrator\.cursor
 cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 ```
 
-### 步骤: 创建Python虚拟环境
+### 步骤: 创建Python虚拟环境（必须）
+
+⚠️ **重要**: 所有Python包必须安装在venv虚拟环境中，不要安装到系统Python。
 
 ```powershell
 # 进入项目目录
 cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 
-# 创建虚拟环境
+# 创建虚拟环境（使用Python 3.12）
 python -m venv venv
+
+# 如果遇到执行策略错误，先运行:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 # 激活虚拟环境
 .\venv\Scripts\Activate.ps1
 
-# 如果遇到执行策略错误，运行:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+# 验证虚拟环境中的Python版本
+python --version
+# 应该显示: Python 3.12.x
 
 # 升级pip
 python -m pip install --upgrade pip
 
-# 安装依赖
+# 安装依赖（所有包都安装在venv中）
 pip install -r requirements.txt
+
+# 验证安装
+pip list
 ```
+
+**重要提示**:
+- ✅ 所有Python包都安装在 `venv/` 目录中
+- ✅ 每次使用前必须激活虚拟环境: `.\venv\Scripts\Activate.ps1`
+- ❌ 不要使用系统Python安装包
+- ❌ 不要使用 `pip install --user` 安装到用户目录
 
 ---
 
@@ -265,8 +282,11 @@ python scripts\kb\kb_manager.py stats
 ### 步骤1: 测试Python环境
 
 ```powershell
-# 激活虚拟环境
+# 激活虚拟环境（必须）
 .\venv\Scripts\Activate.ps1
+
+# 验证Python版本（应该是3.12）
+python --version
 
 # 测试导入核心模块
 python -c "from core.market_trend_analyzer import MarketTrendAnalyzer; print('✅ 核心模块导入成功')"
@@ -302,7 +322,7 @@ python scripts\kb\kb_manager.py search "市场趋势分析" --limit 5
 ```powershell
 cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 
-# 1. 激活虚拟环境
+# 1. 激活虚拟环境（必须，每次使用前都要激活）
 .\venv\Scripts\Activate.ps1
 
 # 2. 拉取最新代码
@@ -329,8 +349,11 @@ python scripts\kb\kb_manager.py stats
 ### 运行Jupyter Notebook
 
 ```powershell
-# 激活虚拟环境
+# 激活虚拟环境（必须）
 .\venv\Scripts\Activate.ps1
+
+# 确保Jupyter安装在venv中
+pip install jupyter notebook
 
 # 启动Jupyter Notebook
 jupyter notebook notebooks\research\
@@ -359,8 +382,15 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 **解决方案**:
 ```powershell
+# 确保已激活虚拟环境
+.\venv\Scripts\Activate.ps1
+
 # 使用国内镜像源
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 验证包是否安装在venv中
+pip list
+# 应该显示所有已安装的包，路径应该在venv目录下
 ```
 
 ### 问题3: TA-Lib安装失败
@@ -368,9 +398,19 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 **错误**: `TA-Lib` 安装失败
 
 **解决方案**:
-1. 下载预编译版本: https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib
-2. 选择对应Python版本的.whl文件
-3. 安装: `pip install TA_Lib-0.4.xx-cp311-cp311-win_amd64.whl`
+```powershell
+# 确保已激活虚拟环境
+.\venv\Scripts\Activate.ps1
+
+# 下载预编译版本: https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib
+# 选择对应Python 3.12的.whl文件: TA_Lib-0.4.xx-cp312-cp312-win_amd64.whl
+
+# 安装（确保在venv中）
+pip install TA_Lib-0.4.xx-cp312-cp312-win_amd64.whl
+
+# 验证安装
+python -c "import talib; print('✅ TA-Lib安装成功')"
+```
 
 ### 问题4: Git推送失败（403错误）
 
@@ -387,8 +427,14 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 **解决方案**:
 ```powershell
-# 检查依赖
+# 确保已激活虚拟环境
+.\venv\Scripts\Activate.ps1
+
+# 检查依赖（确保安装在venv中）
 pip install chromadb sentence-transformers
+
+# 验证依赖
+pip list | findstr "chromadb sentence-transformers"
 
 # 手动重建
 python scripts\kb\kb_manager.py build-index
