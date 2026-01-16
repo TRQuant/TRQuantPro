@@ -64,9 +64,8 @@ chmod +x scripts/setup_git_sync.sh
 #### 选项1: 使用GitHub/GitLab
 
 ```bash
-# 在GitHub/GitLab创建新仓库
-# 然后添加远程仓库
-git remote add origin https://github.com/your-username/TRQuant_ope.git
+# 配置远程仓库（使用Token）
+git remote set-url origin https://[TOKEN]@github.com/TRQuant/TRQuantPro.git
 git push -u origin ope
 ```
 
@@ -111,8 +110,8 @@ git config user.email "zhutechllc@gmail.com"
 ### 步骤2: 配置远程仓库
 
 ```powershell
-# 添加远程仓库（与Ubuntu端相同）
-git remote add origin https://github.com/your-username/TRQuant_ope.git
+# 配置远程仓库（使用Token）
+git remote set-url origin https://[TOKEN]@github.com/TRQuant/TRQuantPro.git
 
 # 创建Windows分支
 git checkout -b windows

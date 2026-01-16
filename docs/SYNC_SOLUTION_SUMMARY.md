@@ -121,10 +121,10 @@ git push -u origin ope
 #### 初始化（一次性）
 
 ```powershell
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 git init
-git config user.name "TRQuant Windows"
-git config user.email "trquant@windows.local"
+git config user.name "TRQuant"
+git config user.email "zhutechllc@gmail.com"
 git remote add origin <远程仓库URL>
 git checkout -b windows
 git push -u origin windows
@@ -164,7 +164,7 @@ crontab -e
 3. 触发器: 每天9:00
 4. 操作: 启动程序
    - 程序: `powershell.exe`
-   - 参数: `-File "C:\TRQuantPro\ope\scripts\sync\sync_kb_daily.ps1"`
+   - 参数: `-File "C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope\scripts\sync\sync_kb_daily.ps1"`
 
 ---
 
