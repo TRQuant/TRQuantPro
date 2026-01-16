@@ -50,7 +50,7 @@ git remote -v
 ### Windows端（中国Windows系统）
 
 ```powershell
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 
 # 配置Git用户信息
 git config user.name "TRQuant"

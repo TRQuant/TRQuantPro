@@ -98,14 +98,14 @@ git push -u origin ope
 ### 步骤1: 初始化Git仓库
 
 ```powershell
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 
 # 初始化Git（如果还没有）
 git init
 
 # 配置用户信息
-git config user.name "TRQuant Windows"
-git config user.email "trquant@windows.local"
+git config user.name "TRQuant"
+git config user.email "zhutechllc@gmail.com"
 ```
 
 ### 步骤2: 配置远程仓库
@@ -127,7 +127,7 @@ git push -u origin windows
 
 ```powershell
 # 同步共用模块到Git（Windows端）
-$PROJECT_ROOT = "C:\TRQuantPro\ope"
+$PROJECT_ROOT = "C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope"
 Set-Location $PROJECT_ROOT
 
 # 共用模块列表
@@ -180,7 +180,7 @@ Write-Host "✅ 共用模块同步完成"
 
 ```powershell
 # 知识库同步脚本（Windows端）
-$PROJECT_ROOT = "C:\TRQuantPro\ope"
+$PROJECT_ROOT = "C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope"
 Set-Location $PROJECT_ROOT
 
 Write-Host "=========================================="
@@ -232,7 +232,7 @@ Write-Host "✅ 知识库同步完成"
 
 ```powershell
 # 从Git拉取共用模块更新（Windows端）
-$PROJECT_ROOT = "C:\TRQuantPro\ope"
+$PROJECT_ROOT = "C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope"
 Set-Location $PROJECT_ROOT
 
 Write-Host "=========================================="
@@ -418,7 +418,7 @@ crontab -e
 3. 触发器: 每天9:00
 4. 操作: 启动程序
    - 程序: `powershell.exe`
-   - 参数: `-File "C:\TRQuantPro\ope\scripts\sync\sync_kb_daily.ps1"`
+   - 参数: `-File "C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope\scripts\sync\sync_kb_daily.ps1"`
 5. 完成
 
 ---
@@ -460,7 +460,7 @@ cd /home/taotao/.cursor/worktrees/TRQuant/ope
 ### Windows端
 
 ```powershell
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 # 手动初始化Git（参考上面的步骤）
 ```
 

@@ -79,7 +79,7 @@ python scripts/kb/sync_knowledge_base.py pull
 
 ```powershell
 # 1. 从Git拉取最新知识库
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 git pull origin windows
 python scripts\kb\sync_knowledge_base.py pull
 
@@ -103,7 +103,7 @@ git push origin windows
 
 使用任务计划程序，每天9点运行：
 ```powershell
-C:\TRQuantPro\ope\scripts\kb\sync_kb_daily.ps1
+C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope\scripts\kb\sync_kb_daily.ps1
 ```
 
 ---
@@ -126,7 +126,7 @@ git push origin ope
 
 ```powershell
 # 在 platform\windows\ 目录下开发
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 mkdir -p platform\windows\scripts
 # 开发Windows特定功能
 git add platform\windows\
@@ -193,7 +193,7 @@ python scripts/kb/sync_knowledge_base.py pull
 ### Windows端初始化
 
 ```powershell
-cd C:\TRQuantPro\ope
+cd C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope
 git checkout windows
 python scripts\kb\sync_knowledge_base.py pull
 ```
