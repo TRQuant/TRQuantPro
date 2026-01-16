@@ -1,8 +1,9 @@
 # TRQuant 跨平台开发与同步指南
 
-> **版本**: v1.0  
+> **版本**: v1.1  
 > **更新**: 2026-01-15  
-> **目的**: Ubuntu和Windows双平台开发，保持共用模块一致
+> **目的**: Ubuntu和Windows双平台开发，保持共用模块一致  
+> **Token配置**: 参见 `docs/GIT_TOKEN_CONFIG.md`
 
 ---
 
