@@ -963,6 +963,13 @@ async def list_tools() -> List[Tool]:
         # Lavague工具
         Tool(name="crawler.lavague.execute", description="使用Lavague AI执行自然语言指令", inputSchema={"type": "object", "properties": {"instruction": {"type": "string"}, "url": {"type": "string"}, "max_actions": {"type": "integer", "default": 10}, "headless": {"type": "boolean", "default": True}}, "required": ["instruction"]}),
         Tool(name="crawler.lavague.extract", description="使用Lavague AI提取数据", inputSchema={"type": "object", "properties": {"description": {"type": "string"}, "url": {"type": "string"}}, "required": ["description"]}),
+        # 巨潮资讯网工具（使用现有cninfo_crawler）
+        Tool(name="crawler.cninfo.fetch", description="从巨潮资讯网爬取公告", inputSchema={"type": "object", "properties": {"stock_code": {"type": "string"}, "ann_type": {"type": "string"}, "start_date": {"type": "string"}, "end_date": {"type": "string"}, "page": {"type": "integer", "default": 1}, "days": {"type": "integer", "default": 90}}, "required": []}),
+        # Playwright智能爬虫工具（参考LaVague实现）
+        Tool(name="crawler.playwright.navigate", description="使用Playwright导航到URL（参考LaVague实现）", inputSchema={"type": "object", "properties": {"url": {"type": "string"}, "headless": {"type": "boolean", "default": True}}, "required": ["url"]}),
+        Tool(name="crawler.playwright.click", description="使用Playwright点击元素（参考LaVague实现）", inputSchema={"type": "object", "properties": {"selector": {"type": "string"}, "by": {"type": "string", "default": "css", "enum": ["css", "xpath"]}}, "required": ["selector"]}),
+        Tool(name="crawler.playwright.fill", description="使用Playwright填写输入框（参考LaVague实现）", inputSchema={"type": "object", "properties": {"selector": {"type": "string"}, "value": {"type": "string"}, "enter": {"type": "boolean", "default": False}}, "required": ["selector", "value"]}),
+        Tool(name="crawler.playwright.extract", description="使用Playwright提取文本（参考LaVague实现）", inputSchema={"type": "object", "properties": {"selector": {"type": "string"}}, "required": []}),
         # 代码分析 (code.* 3个)
         Tool(name="code.analyze", description="分析代码", inputSchema={"type": "object", "properties": {"file_path": {"type": "string"}, "analysis_type": {"type": "string", "default": "complexity"}}, "required": ["file_path"]}),
         Tool(name="code.convert", description="代码转换", inputSchema={"type": "object", "properties": {"code": {"type": "string"}, "from_lang": {"type": "string"}, "to_lang": {"type": "string"}}, "required": ["code", "from_lang", "to_lang"]}),
@@ -2672,12 +2679,35 @@ def crawler_selenium_extract(selector: str, attribute: str = None) -> Dict:
 
 # ==================== Lavague AI爬虫工具 ====================
 
-def crawler_lavague_execute(instruction: str, url: str = None, max_actions: int = 10, headless: bool = True) -> Dict:
+def crawler_lavague_execute(instruction: str, url: str = None, max_actions: int = 10, headless: bool = True, use_openai: bool = False) -> Dict:
     """使用Lavague AI执行自然语言指令"""
     try:
         from mcp_servers.crawlers.lavague_crawler import get_lavague_crawler
         
-        crawler = get_lavague_crawler(headless=headless)
+        # 尝试使用OpenAI模式（如果use_openai=True或环境变量设置了OPENAI_API_KEY）
+        import os
+        if not use_openai and os.getenv("OPENAI_API_KEY"):
+            use_openai = True
+            logger.info("检测到OPENAI_API_KEY，使用OpenAI模式")
+        
+        crawler = get_lavague_crawler(headless=headless, use_openai=use_openai)
+        
+        if not crawler.agent:
+            # 如果初始化失败，提供详细的错误信息
+            error_msg = "LaVague Agent未初始化"
+            hint = "请确保：\n"
+            hint += "1. 已安装LaVague: pip install lavague\n"
+            if not use_openai:
+                hint += "2. 设置OPENAI_API_KEY环境变量，或使用use_openai=True参数\n"
+                hint += "3. 在Cursor IDE中，LaVague需要LLM来工作，建议设置OPENAI_API_KEY"
+            else:
+                hint += "2. OPENAI_API_KEY已设置但可能无效，请检查"
+            
+            return {
+                "success": False,
+                "error": error_msg,
+                "hint": hint
+            }
         
         # 如果提供了URL，先导航
         if url:
@@ -2720,6 +2750,100 @@ def crawler_lavague_extract(description: str, url: str = None) -> Dict:
     except Exception as e:
         return {"success": False, "error": str(e), "description": description}
 
+# ==================== 巨潮资讯网工具 ====================
+
+def crawler_cninfo_fetch(
+    stock_code: str = None,
+    ann_type: str = None,
+    start_date: str = None,
+    end_date: str = None,
+    page: int = 1,
+    days: int = 90
+) -> Dict:
+    """从巨潮资讯网爬取公告（使用现有cninfo_crawler）"""
+    try:
+        from mcp_servers.crawlers.cninfo_crawler import get_cninfo_crawler
+        
+        crawler = get_cninfo_crawler()
+        
+        # 如果提供了days，计算日期范围
+        if days and not start_date and not end_date:
+            from datetime import datetime, timedelta
+            end_date = datetime.now().strftime("%Y-%m-%d")
+            start_date = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+        
+        announcements = crawler.fetch_announcements(
+            stock_code=stock_code,
+            ann_type=ann_type,
+            start_date=start_date,
+            end_date=end_date,
+            page=page
+        )
+        
+        return {
+            "success": True,
+            "source": "cninfo",
+            "stock_code": stock_code,
+            "count": len(announcements),
+            "announcements": announcements,
+            "stats": crawler.get_stats()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "stock_code": stock_code
+        }
+
+# ==================== Playwright智能爬虫工具（参考LaVague实现） ====================
+
+def crawler_playwright_navigate(url: str, headless: bool = True) -> Dict:
+    """使用Playwright导航到URL（参考LaVague实现）"""
+    try:
+        from core.crawlers.playwright_smart_crawler import get_playwright_smart_crawler
+        
+        crawler = get_playwright_smart_crawler(headless=headless)
+        result = crawler.navigate(url)
+        
+        return result
+    except ImportError:
+        return {
+            "success": False,
+            "error": "Playwright未安装，请运行: pip install playwright && playwright install chromium"
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e), "url": url}
+
+def crawler_playwright_click(selector: str, by: str = "css") -> Dict:
+    """使用Playwright点击元素（参考LaVague实现）"""
+    try:
+        from core.crawlers.playwright_smart_crawler import get_playwright_smart_crawler
+        
+        crawler = get_playwright_smart_crawler()
+        return crawler.click(selector, by=by)
+    except Exception as e:
+        return {"success": False, "error": str(e), "selector": selector}
+
+def crawler_playwright_fill(selector: str, value: str, enter: bool = False) -> Dict:
+    """使用Playwright填写输入框（参考LaVague实现）"""
+    try:
+        from core.crawlers.playwright_smart_crawler import get_playwright_smart_crawler
+        
+        crawler = get_playwright_smart_crawler()
+        return crawler.fill(selector, value, enter=enter)
+    except Exception as e:
+        return {"success": False, "error": str(e), "selector": selector}
+
+def crawler_playwright_extract(selector: str = None) -> Dict:
+    """使用Playwright提取文本（参考LaVague实现）"""
+    try:
+        from core.crawlers.playwright_smart_crawler import get_playwright_smart_crawler
+        
+        crawler = get_playwright_smart_crawler()
+        return crawler.extract_text(selector)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 # 更新工具注册
 TOOL_HANDLERS.update({
     "crawler.fetch": crawler_fetch,
@@ -2734,9 +2858,16 @@ TOOL_HANDLERS.update({
     # Lavague工具
     "crawler.lavague.execute": crawler_lavague_execute,
     "crawler.lavague.extract": crawler_lavague_extract,
+    # 巨潮资讯网工具
+    "crawler.cninfo.fetch": crawler_cninfo_fetch,
+    # Playwright智能爬虫工具（参考LaVague实现）
+    "crawler.playwright.navigate": crawler_playwright_navigate,
+    "crawler.playwright.click": crawler_playwright_click,
+    "crawler.playwright.fill": crawler_playwright_fill,
+    "crawler.playwright.extract": crawler_playwright_extract,
 })
 
-logger.info("网络爬虫工具已加载 (10个工具: 5个基础 + 3个Selenium + 2个Lavague)")
+logger.info("网络爬虫工具已加载 (15个工具: 5个基础 + 3个Selenium + 2个Lavague + 1个Cninfo + 4个Playwright)")
 
 # ==================== QMT/PTrade策略工具 ====================
 
