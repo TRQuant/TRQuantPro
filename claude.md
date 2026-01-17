@@ -186,13 +186,78 @@ pivot = price_data.pivot(index='date', columns='code', values='close')
 
 ---
 
+## 🔧 Python环境管理规则（重要）
+
+### ⚠️ 统一使用 venv Python 环境
+
+**核心规则**: 所有 Python 操作（运行脚本、安装依赖、导入模块）必须使用项目根目录下的 `venv` 虚拟环境。
+
+### ⚠️ 路径处理规则（重要）
+
+**核心规则**: 避免创建临时目录，直接使用项目根目录，使用相对路径。
+
+#### Cursor工作区机制注意
+
+1. **工作目录**: 当前已在 `ope/` 目录中，直接创建文件
+2. **路径引用**: 使用相对路径，不要使用绝对路径或临时路径
+3. **避免临时文件夹**: 不要依赖Cursor生成的三个字母临时文件夹（如 `guf/`）
+
+#### 正确做法
+
+```python
+# ✅ 正确：使用相对路径，基于脚本位置
+from pathlib import Path
+TRQUANT_ROOT = Path(__file__).parent.parent  # 从scripts/向上两级到ope/
+# 或
+TRQUANT_ROOT = Path.cwd()  # 当前工作目录（ope/）
+
+# ❌ 错误：使用绝对路径或临时路径
+TRQUANT_ROOT = Path("C:/Users/Administrator/.cursor/worktrees/ope/guf/")
+```
+
+#### 规则说明
+
+1. **项目根目录**: `ope/` 目录
+   - Linux/Mac: `/path/to/TRQuant/ope/`
+   - Windows: `C:\path\to\TRQuant\ope\`
+
+2. **venv Python 路径**:
+   - Linux/Mac: `{project_root}/venv/bin/python3`
+   - Windows: `{project_root}/venv/Scripts\python.exe`
+
+3. **执行 Python 命令时**:
+   ```bash
+   # ❌ 错误：使用系统 Python
+   python script.py
+   
+   # ✅ 正确：使用 venv Python
+   ./venv/bin/python3 script.py        # Linux/Mac
+   .\venv\Scripts\python.exe script.py  # Windows
+   ```
+
+4. **安装依赖时**:
+   ```bash
+   # ❌ 错误：使用系统 pip
+   pip install package_name
+   
+   # ✅ 正确：使用 venv pip
+   ./venv/bin/pip install package_name        # Linux/Mac
+   .\venv\Scripts\pip.exe install package_name  # Windows
+   ```
+
+5. **在 Cursor Chat 中使用 run_terminal_cmd 时**:
+   - **Linux/Mac**: 使用 `./venv/bin/python3` 或 `./venv/bin/pip`
+   - **Windows**: 使用 `.\venv\Scripts\python.exe` 或 `.\venv\Scripts\pip.exe`
+
+---
+
 ## 🔧 MCP配置和Python路径
 
 ### MCP Python路径配置
 
-**工作目录**: `/home/taotao/.cursor/worktrees/TRQuant/ope`  
-**venv Python路径**: `/home/taotao/.cursor/worktrees/TRQuant/ope/venv/bin/python3`  
-**MCP安装路径**: `/home/taotao/.cursor/worktrees/TRQuant/ope/venv/lib/python3.12/site-packages/mcp/`
+**工作目录**: `/home/taotao/.cursor/worktrees/TRQuant/ope` (Linux) / `C:\Users\Administrator\.cursor\worktrees\TRQuantPro\ope` (Windows)  
+**venv Python路径**: `{project_root}/venv/bin/python3` (Linux) / `{project_root}\venv\Scripts\python.exe` (Windows)  
+**MCP安装路径**: `{project_root}/venv/lib/python3.12/site-packages/mcp/`
 
 ### MCPClient自动查找逻辑
 
@@ -338,4 +403,4 @@ python core/data_mining/momentum_strategy_screener.py --date 2026-01-09
 
 ---
 
-**最后更新**: 2026-01-10
+**最后更新**: 2026-01-16

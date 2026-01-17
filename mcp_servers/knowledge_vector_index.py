@@ -40,16 +40,27 @@ def build_vector_index(kb_file: Path, force_rebuild: bool = False) -> Dict:
     try:
         # 检查索引是否存在
         index_meta_file = VECTOR_INDEX_DIR / "index_meta.json"
+        
+        # 自动检测：如果知识库文件比索引新，需要重建
         if index_meta_file.exists() and not force_rebuild:
-            logger.info("向量索引已存在，跳过构建")
-            meta = json.loads(index_meta_file.read_text(encoding='utf-8'))
-            return {
-                "success": True,
-                "message": "索引已存在",
-                "items_count": meta.get("items_count", 0),
-                "model": meta.get("model", ""),
-                "index_path": str(VECTOR_INDEX_DIR)
-            }
+            # 检查文件修改时间
+            kb_mtime = kb_file.stat().st_mtime
+            idx_mtime = index_meta_file.stat().st_mtime
+            
+            if kb_mtime > idx_mtime:
+                logger.info(f"检测到知识库文件比向量索引新，自动重建索引...")
+                # 继续执行重建逻辑（不返回，继续往下执行）
+                force_rebuild = True
+            else:
+                logger.info("向量索引已存在且是最新的，跳过构建")
+                meta = json.loads(index_meta_file.read_text(encoding='utf-8'))
+                return {
+                    "success": True,
+                    "message": "索引已存在且是最新的",
+                    "items_count": meta.get("items_count", 0),
+                    "model": meta.get("model", ""),
+                    "index_path": str(VECTOR_INDEX_DIR)
+                }
         
         # 导入依赖
         try:
