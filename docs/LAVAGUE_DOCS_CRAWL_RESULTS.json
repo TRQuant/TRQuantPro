@@ -1,0 +1,117 @@
+{
+  "crawl_time": "2026-01-17T13:38:10.953151",
+  "sources": [
+    {
+      "url": "https://www.lavague.ai",
+      "type": "homepage",
+      "content_length": 3079,
+      "title": "LaVague"
+    },
+    {
+      "url": "https://docs.lavague.ai",
+      "type": "docs_homepage",
+      "content_length": 8076,
+      "title": "LaVague"
+    },
+    {
+      "url": "https://docs.lavague.ai/en/latest/docs/get-started/quick-tour/",
+      "type": "quick_start",
+      "content_length": 9773,
+      "title": "Quick tour - LaVague",
+      "text": "Quick tour - LaVague\nSkip to content\nLaVague\nQuick tour\nType to start searching\nlavague-ai/LaVague\n6.3k\n573\nLaVague\nlavague-ai/LaVague\n6.3k\n573\n🏠 Home\n⚡ Getting Started\n⚡ Getting Started\nInstallation\nQuick tour\nQuick tour\nTable of contents\nInstallation\nFull code example\nGradio interface\nLaVague Chrome Extension\nKey features\nContexts\nLavague-tests\nTokenCounter\nLogging\nDebugging Tools\nKey components explained\nDriver\nManual login\n🍪 Plugging in an existing browser session\nAction Engine\nWorld Model\nWeb Agent\nLearn\nChanging models\nTools & interfaces\nTools & interfaces\nChrome Extension\nGradio\nTokenCounter tool\nBenchmarking tool\nSupport\nSupport\nTroubleshooting\nFAQs\nLaVague QA\nLaVague QA\nQuick tour\nInstallation and usage\nExamples\n🤝 Integrations\n🤝 Integrations\nAnthropic\nAzure\nFireworks\nGemini\nOpenai\nContribute\n📚 Learn\n📚 Learn\nArchitecture\nDebugging agents\nDebugging agents\nEnd-to-end debugging\nDebug tools\nCustom actions\n✅ Quick examples\n✅ Quick examples\nKnowledge Retrieval\nKnowledge Retrieval\nNavigate through Notion\nData Entry\nData Entry\nFill out forms\n📝 End to end examples\n📝 End to end examples\nKnowledge Retrieval\nKnowledge Retrieval\nHF papers retrieval\nData Entry\nData Entry\nAutomated job application\nMedical appointment booking\n🧩 Module Guides\n🧩 Module Guides\nWeb Agents\nWorld Model\nAction Engine\nAction Engine\nOverview\nNavigation Engine\nEvaluator\nDrivers\nLogger\n🤗 Contributing\n🤗 Contributing\nHome\nGeneral guidelines\nDocumentation\n🛠️ API reference\n🛠️ API reference\nTable of contents\nInstallation\nFull code example\nGradio interface\nLaVague Chrome Extension\nKey features\nContexts\nLavague-tests\nTokenCounter\nLogging\nDebugging Tools\nKey components explained\nDriver\nManual login\n🍪 Plugging in an existing browser session\nAction Engine\nWorld Model\nWeb Agent\nLearn\nQuick Tour\nPre-requisites\nWe use OpenAI's models, for the embedding, LLM and Vision model. You will need to set the OPENAI_API_KEY variable in your local environment with a valid API key for this example to work.\nIf you don't have an OpenAI API key, please get one\nhere\nOur package currently only supports python versions 3.10 or greater. Please upgrade your python version if you are using a version below this.\nInstallation\nWe start by downloading LaVague.\npip\ninstall\nlavague\nOPENAI_API_KEY\nIf you haven't already set a valid OpenAI API Key as the\nOPENAI_API_KEY\nenvironment variable in your local environment, you will need to do that now.\nFull code example\nHere is a full code example to create and run your agent using LaVague.\nWe will go over what is happening in this code in the following sections below.\n# Install necessary elements\nfrom\nlavague.drivers.selenium\nimport\nSeleniumDriver\nfrom\nlavague.core\nimport\nActionEngine\n,\nWorldModel\nfrom\nlavague.core.agents\nimport\nWebAgent\n# Set up our three key components: Driver, Action Engine, World Model\ndriver\n=\nSeleniumDriver\n(\nheadless\n=\nFalse\n)\naction_engine\n=\nActionEngine\n(\ndriver\n)\nworld_model\n=\nWorldModel\n()\n# Create Web Agent\nagent\n=\nWebAgent\n(\nworld_model\n,\naction_engine\n)\n# Set URL\nagent\n.\nget\n(\n\"https://huggingface.co/docs\"\n)\n# Run agent with a specific objective\nagent\n.\nrun\n(\n\"Go on the quicktour of PEFT\"\n)\nGradio interface\nYou can also use LaVague to launch an interactive Gradio interface for using the agent with the\nagent.demo()\nmethod.\ndriver\n=\nSeleniumDriver\n(\nheadless\n=\nTrue\n)\naction_engine\n=\nActionEngine\n(\ndriver\n)\nworld_model\n=\nWorldModel\n()\n# Create Web Agent\nagent\n=\nWebAgent\n(\nworld_model\n,\naction_engine\n)\n# Set URL\nagent\n.\nget\n(\n\"https://huggingface.co/docs\"\n)\n# Launch the agent in the Agent Gradio Demo mode\nagent\n.\ndemo\n(\n\"Go on the quicktour of PEFT\"\n)\nYou can take a quick look at the\ndemo\nfeature in the video below:\nLaVague Chrome Extension\nYou can also run LaVague in-browser with our LaVague Chrome Extension:\nTo learn how to install and get started with the Chrome extension, see our\nLaVague extension docs\nKey features\nContexts\nBy default, we use the OpenAI models defined in our\nOpenaiContext\nmodule, found in our\nlavague-contexts-openai\npackage.\nWe have several other built-in contexts that can be used to set your models to default models from other major AI Providers:\nGeminiContext\nAzureOpenaiContext (part of the lavague-contexts-openai package)\nFireworksContext\nTo use these, you first need to install the relevant context package:\npip\ninstall\nlavague-contexts-fireworks\nThe packages are always named lavague-contexts-[name of context]\nThen you can initialize your context and pass it to your ActionEngine and WorldModel using the\nfrom_context()\ninitialization methods:\nfrom\nlavague.core\nimport\nWorldModel\n,\nActionEngine\nfrom\nlavague.core.agents\nimport\nWebAgent\nfrom\nlavague.drivers.selenium\nimport\nSeleniumDriver\nfrom\nlavague.contexts.fireworks\nimport\nFireworksContext\n# Initialize Context\ncontext\n=\nFireworksContext\n()\nselenium_driver\n=\nSeleniumDriver\n()\n# Build AE and WM from Context\naction_engine\n=\nActionEngine\n.\nfrom_context\n(\ncontext\n,\nselenium_driver\n)\nworld_model\n=\nWorldModel\n.\nfrom_context\n(\ncontext\n)\nagent\n=\nWebAg"
+    },
+    {
+      "url": "https://docs.lavague.ai/en/latest/docs/get-started/installation/",
+      "type": "quick_start",
+      "content_length": 2419,
+      "title": "Installation - LaVague",
+      "text": "Installation - LaVague\nSkip to content\nLaVague\nInstallation\nType to start searching\nlavague-ai/LaVague\n6.3k\n573\nLaVague\nlavague-ai/LaVague\n6.3k\n573\n🏠 Home\n⚡ Getting Started\n⚡ Getting Started\nInstallation\nInstallation\nTable of contents\nInstalling the latest release\nInstalling from source\nDev environment\nQuick tour\nChanging models\nTools & interfaces\nTools & interfaces\nChrome Extension\nGradio\nTokenCounter tool\nBenchmarking tool\nSupport\nSupport\nTroubleshooting\nFAQs\nLaVague QA\nLaVague QA\nQuick tour\nInstallation and usage\nExamples\n🤝 Integrations\n🤝 Integrations\nAnthropic\nAzure\nFireworks\nGemini\nOpenai\nContribute\n📚 Learn\n📚 Learn\nArchitecture\nDebugging agents\nDebugging agents\nEnd-to-end debugging\nDebug tools\nCustom actions\n✅ Quick examples\n✅ Quick examples\nKnowledge Retrieval\nKnowledge Retrieval\nNavigate through Notion\nData Entry\nData Entry\nFill out forms\n📝 End to end examples\n📝 End to end examples\nKnowledge Retrieval\nKnowledge Retrieval\nHF papers retrieval\nData Entry\nData Entry\nAutomated job application\nMedical appointment booking\n🧩 Module Guides\n🧩 Module Guides\nWeb Agents\nWorld Model\nAction Engine\nAction Engine\nOverview\nNavigation Engine\nEvaluator\nDrivers\nLogger\n🤗 Contributing\n🤗 Contributing\nHome\nGeneral guidelines\nDocumentation\n🛠️ API reference\n🛠️ API reference\nTable of contents\nInstalling the latest release\nInstalling from source\nDev environment\nInstallation\nInstalling the latest release\nYou can install the latest release of\nlavague\nwith the following command:\npip install lavague\nThis will install a core bundle of lavague packages required for usage of lavague with default configurations - you can see which packages are included in this bundle in out\npyproject.toml\nfile at the root of our repo.\nOptional lavague packages\nIf you want to use packages not included in our default bundle, you will need to manually install the relevant package.\nFor example, if you want to use a non-default context such as the Gemini context. You would need to run:\npip\ninstall\nlavague.contexts.gemini\nInstalling from source\nIf you want to install from source, you can do so by cloning the repo and running the following command from the root of the repo:\npip\ninstall\n-e\n.\nDev environment\nIf you plan to modify local files, we recommend you follow our\ndev environment guidelines\nReach the right audience\non a privacy-first ad network only for software devs:\nEthicalAds\nAds by EthicalAds\nMade with\nMaterial for MkDocs"
+    },
+    {
+      "url": "https://docs.lavague.ai/en/latest/docs/get-started/troubleshoot/",
+      "type": "quick_start",
+      "content_length": 10000,
+      "title": "Troubleshooting - LaVague",
+      "text": "Troubleshooting - LaVague\nSkip to content\nLaVague\nTroubleshooting\nType to start searching\nlavague-ai/LaVague\n6.3k\n573\nLaVague\nlavague-ai/LaVague\n6.3k\n573\n🏠 Home\n⚡ Getting Started\n⚡ Getting Started\nInstallation\nQuick tour\nChanging models\nTools & interfaces\nTools & interfaces\nChrome Extension\nGradio\nTokenCounter tool\nBenchmarking tool\nSupport\nSupport\nTroubleshooting\nTroubleshooting\nTable of contents\nInstallation issues\nWebDriver exceptions\nErrors when using LaVague with custom models\nGetting blocked by CAPTCHAs or pop-ups\nUsing Chrome debug tools\nPlugging in an existing browser session\nManual interactions for handling CAPTCHAs or pop-ups\nTruncated output\nFurther support\nFAQs\nLaVague QA\nLaVague QA\nQuick tour\nInstallation and usage\nExamples\n🤝 Integrations\n🤝 Integrations\nAnthropic\nAzure\nFireworks\nGemini\nOpenai\nContribute\n📚 Learn\n📚 Learn\nArchitecture\nDebugging agents\nDebugging agents\nEnd-to-end debugging\nDebug tools\nCustom actions\n✅ Quick examples\n✅ Quick examples\nKnowledge Retrieval\nKnowledge Retrieval\nNavigate through Notion\nData Entry\nData Entry\nFill out forms\n📝 End to end examples\n📝 End to end examples\nKnowledge Retrieval\nKnowledge Retrieval\nHF papers retrieval\nData Entry\nData Entry\nAutomated job application\nMedical appointment booking\n🧩 Module Guides\n🧩 Module Guides\nWeb Agents\nWorld Model\nAction Engine\nAction Engine\nOverview\nNavigation Engine\nEvaluator\nDrivers\nLogger\n🤗 Contributing\n🤗 Contributing\nHome\nGeneral guidelines\nDocumentation\n🛠️ API reference\n🛠️ API reference\nTable of contents\nInstallation issues\nWebDriver exceptions\nErrors when using LaVague with custom models\nGetting blocked by CAPTCHAs or pop-ups\nUsing Chrome debug tools\nPlugging in an existing browser session\nManual interactions for handling CAPTCHAs or pop-ups\nTruncated output\nFurther support\nTroubleshooting common issues\nThis troubleshooting guide is based on the issues reported back to us from the community and will be updated regularly.\nYou can use this guide to look for possible solutions if you experience any issues running LaVague.\nLaVague latest version\nOne of the most common causes of issues using LaVague is outdated packages. We regularly update and patch our packages.\nIf you are having issues with LaVague, please first try running\npip install --upgrade lavague\n(or\npip install --upgrade [package_name]\nfor any other lavague packages).\nInstallation issues\nIf your Python script using LaVague is still returning errors such as\nModuleNotFoundError: No module named 'lavague'\nafter you have installed our pypi package or you have dependency conflicts in your environment, try running LaVague in a virtual environment.\nAnd even without these issues - installing and using LaVague within a virtual env is good practice.\npython\n-\nm\nvenv\nmy_env\nsource\nmy_env\n/\nbin\n/\nactivate\npip\ninstall\nlavague\npython\ntest\n.\npy\nWebDriver exceptions\nIt is important to note that if you use LaVague with the Driver option\nheadless=false\n, your environment will need to support GUI.\nIn practice, this means that in environments such as\nGoogle Colab notebooks\n,\nreplit.com\nor on VMs without a GUI, you will need to ensure you use\nnon-headless mode\n.\nIf you have errors in your trace relating back to\nselenium.common.exceptions\nand\nDevToolsActivePort\n, this should be due to errors using the Selenium Web Driver in your environment.\nAn example of a Selenium error message that could be caused by trying to use\nnon-headless\nmode in an incompatible environment would be:\nselenium.common.exceptions.SessionNotCreatedException:\nMessage:\nsession\nnot\ncreated:\nChrome\nfailed\nto\nstart:\nexited\nnormally.\n(\nsession\nnot\ncreated:\nDevToolsActivePort\nfile\ndoesn\n'\nt\nexist\n)\n(\nThe\nprocess\nstarted\nfrom\nchrome\nlocation\n/home/user/.cache/selenium/chrome/linux64/126.0.6478.55/chrome\nis\nno\nlonger\nrunning,\nso\nChromeDriver\nis\nassuming\nthat\nChrome\nhas\ncrashed.\n)\nBy default, our Drivers should run in\nheadless\nmode, but you can verify that this is not overruled by the\nheadless\noption in your code:\nCommand\nEnvironment Support\ndriver = SeleniumDriver(headless=True)\n✅ Supported in all environments\ndriver = SeleniumDriver()\n✅ Supported in all environments\ndriver = SeleniumDriver(headless=False)\n❌ GUI environments only\nDisplay option\nWhen using\nheadless\nmode, you can activate the Agent\ndisplay\nmode option to display real-time updated screenshots of the agent's progress. This is recommended to provide a visual display when using LaVague in a Google Colab.\nagent\n.\nrun\n(\n\"Print out the name of this week's top trending model\"\n,\ndisplay\n=\nTrue\n)\nRunning LaVague on Windows Subsystem for Linux 1\nLaVague may be incompatible with WSL1 due to its compatibility issues with GUI applications.\nThis can be resolved by\nupdating to WSL2\n.\nRunning LaVague with replit.com\nTo get LaVague working in a\nreplit.com\nenvironment, you will need to add the following packages to the replit.nix file:\n{pkgs}: {\ndeps = [\n    pkgs.geckodriver\n        pkgs.python38Full\n        pkgs.chromium\n        pkgs.chromedriver\n];\n}\nTo access the replit.nix file, yo"
+    },
+    {
+      "query": "lavague features capabilities",
+      "type": "search",
+      "results_count": 10,
+      "results": [
+        {
+          "title": "LaVague",
+          "snippet": "For an end-to-end example ofLaVaguein a Google Colab, see our quick-tour notebook KeyFeaturesBuilt-in Contexts (aka. configurations) Customizable configuration A test runner for testing and benchmarking the performance ofLaVagueA Token Counter for estimating token usage and costs Logging tools",
+          "url": "docs.lavague.ai/en/latest/"
+        },
+        {
+          "title": "Quick tour - LaVague",
+          "snippet": "To learn how to install and get started with the Chrome extension, see ourLaVagueextension docs KeyfeaturesContexts By default, we use the OpenAI models defined in our OpenaiContext module, found in ourlavague-contexts-openai package.",
+          "url": "docs.lavague.ai/en/latest/docs/get-started/quick-tour/"
+        },
+        {
+          "title": "FAQs - LaVague",
+          "snippet": "FAQs Can I runLaVaguewith open-source local/remote models?LaVague'sagents use three models: a multi-modal model the Action Engine's LLM the embedding model Each of these can be replaced with any llama-index compatible alternative with a sufficiently large context window, including open-source ones, with local or remote inference. See our customization guide for more details on how to do this.",
+          "url": "docs.lavague.ai/en/latest/docs/get-started/FAQs/"
+        },
+        {
+          "title": "Architecture - LaVague",
+          "snippet": "LaVagueArchitecture & Workflow Definitions Let's first define some of the key elements in ourLaVagueAgent architecture: Objective: The objective is the global goal that the user wants the Web Agent to achieve. For example: \"Log into my account and change my username to The WaveHunter.\" Instruction: An instruction is the a smaller step needed to move towards achieving the user's objective ...",
+          "url": "docs.lavague.ai/en/latest/docs/learn/architecture/"
+        },
+        {
+          "title": "Changing models - LaVague",
+          "snippet": "Customization By default,LaVagueuses the configuration defined in our OpenAIContext which uses gpt-4o and text-embedding-3-small for the LLMs and embedding models respectively. However, you can replace these models with the models of your choice. 🦙LaVagueis compatible with all LlamaIndex llms, multi-modal-llms and embeddings models. Note that performance will vary with models and ...",
+          "url": "docs.lavague.ai/en/latest/docs/get-started/customization/"
+        }
+      ]
+    },
+    {
+      "query": "lavague use cases examples",
+      "type": "search",
+      "results_count": 10,
+      "results": [
+        {
+          "title": "Examples - LaVague",
+          "snippet": "We will periodically addexamplesin our repository. In this section, we will go over each of the Gherkin files and showcase the generated code. All commands shown in this documentation assume you're running them from theLaVaguerepository in order tousethe providedexamples.",
+          "url": "docs.lavague.ai/en/latest/docs/lavague-qa/examples/"
+        },
+        {
+          "title": "Navigate through Notion - LaVague",
+          "snippet": "For now we suggest running this code in a Jupyter Notebook while we work on ways to improve the experience when runningLaVaguelocally. Tell us more about yourusecases! Discover communityusecasesand share yours on our product feedback space. We review your ideas daily to continuously improveLaVague'sperformance and accuracy on a wide range of tasks. You can also drop a message on our ...",
+          "url": "docs.lavague.ai/en/latest/docs/use-cases/notion/"
+        },
+        {
+          "title": "Generate automated tests - LaVague",
+          "snippet": "QA Automation withLaVagueand PytestUsecaseLaVagueis a great tool to help you write and maintain automated tests more efficiently. Writing test scripts manually is time consuming, using recorders can help but scripts can break if the page structure changes.LaVaguecan generate reusable pytest-bdd code from a testcasedescription written in Gherkin. If the page changes, simply re-run ...",
+          "url": "docs.lavague.ai/en/docs-updates/docs/examples/qa-automation/"
+        },
+        {
+          "title": "LaVague",
+          "snippet": "For more information on thisexampleand how touseLaVague, see our quick-tour. Note, theseexamplesuseour default OpenAI API configuration and you will need to set the OPENAI_API_KEY variable in your local environment with a valid API key for these to work.",
+          "url": "docs.lavague.ai/en/latest/"
+        },
+        {
+          "title": "Fill out forms - LaVague",
+          "snippet": "Fill out formsLaVaguecan be used to fill out simple forms automatically! Just provide the necessary information and askLaVagueto fill event registration forms, job applications, etc. We have created a sample job application form you canuseto try thisusecase.",
+          "url": "docs.lavague.ai/en/latest/docs/use-cases/forms/"
+        }
+      ]
+    },
+    {
+      "query": "lavague ActionEngine WorldModel",
+      "type": "search",
+      "results_count": 0,
+      "results": []
+    },
+    {
+      "query": "lavague web automation",
+      "type": "search",
+      "results_count": 0,
+      "results": []
+    }
+  ],
+  "features": [],
+  "use_cases": [],
+  "trquant_applications": []
+}
