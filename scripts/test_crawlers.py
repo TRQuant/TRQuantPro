@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 import json
 from datetime import datetime
+import time
 
 # 项目根目录
 TRQUANT_ROOT = Path(__file__).parent.parent
@@ -27,10 +28,15 @@ test_results = {
     "passed": 0,
     "failed": 0,
     "skipped": 0,
-    "details": []
+    "details": [],
+    "timings": []  # 性能分析数据
 }
 
-def test_result(name: str, success: bool, message: str = "", error: str = None):
+# 性能分析
+start_time = time.time()
+section_times = {}
+
+def test_result(name: str, success: bool, message: str = "", error: str = None, elapsed: float = None):
     """记录测试结果"""
     test_results["total"] += 1
     if success:
@@ -48,9 +54,12 @@ def test_result(name: str, success: bool, message: str = "", error: str = None):
         "name": name,
         "status": status,
         "message": message,
-        "error": error
+        "error": error,
+        "elapsed": elapsed
     })
-    print(f"{status} - {name}")
+    
+    time_str = f" ({elapsed:.2f}s)" if elapsed is not None else ""
+    print(f"{status} - {name}{time_str}")
     if message:
         print(f"      {message}")
     if error:
@@ -58,67 +67,84 @@ def test_result(name: str, success: bool, message: str = "", error: str = None):
     print()
 
 # ==================== 1. 基础爬虫工具测试 ====================
+section_start = time.time()
 print("【1. 基础爬虫工具测试】")
 print("-" * 80)
 
 # 1.1 测试 crawler.fetch
 try:
+    import_start = time.time()
     from mcp_servers.unified_dev_server import crawler_fetch
+    import_time = time.time() - import_start
+    
+    test_start = time.time()
     result = crawler_fetch("https://www.example.com", extract_text=True, extract_links=False)
+    test_time = time.time() - test_start
+    
     if result.get("success"):
-        test_result("crawler.fetch", True, f"成功抓取，内容长度: {len(result.get('content', ''))} 字符")
+        test_result("crawler.fetch", True, f"成功抓取，内容长度: {len(result.get('content', ''))} 字符", elapsed=test_time)
+        if import_time > 0.5:
+            print(f"      ⚠️ 模块导入耗时: {import_time:.2f}s")
     else:
-        test_result("crawler.fetch", False, error=result.get("error", "未知错误"))
+        test_result("crawler.fetch", False, error=result.get("error", "未知错误"), elapsed=test_time)
 except Exception as e:
     test_result("crawler.fetch", False, error=str(e))
 
 # 1.2 测试 crawler.search_docs
 try:
+    test_start = time.time()
     from mcp_servers.unified_dev_server import crawler_search_docs
     result = crawler_search_docs("Python requests", site=None)
+    test_time = time.time() - test_start
     if result.get("success"):
-        test_result("crawler.search_docs", True, f"搜索成功，找到 {len(result.get('results', []))} 个结果")
+        test_result("crawler.search_docs", True, f"搜索成功，找到 {len(result.get('results', []))} 个结果", elapsed=test_time)
     else:
-        test_result("crawler.search_docs", False, error=result.get("error", "未知错误"))
+        test_result("crawler.search_docs", False, error=result.get("error", "未知错误"), elapsed=test_time)
 except Exception as e:
     test_result("crawler.search_docs", False, error=str(e))
 
 # 1.3 测试 crawler.download
 try:
+    test_start = time.time()
     from mcp_servers.unified_dev_server import crawler_download
     # 测试下载一个真实存在的小文件（使用Python官网的favicon）
     result = crawler_download("https://www.python.org/static/favicon.ico", filename="test_favicon.ico")
+    test_time = time.time() - test_start
     if result.get("success"):
-        test_result("crawler.download", True, f"下载成功: {result.get('filename')}")
+        test_result("crawler.download", True, f"下载成功: {result.get('filename')}", elapsed=test_time)
         # 清理测试文件
         test_file = Path(result.get('filename', 'test_favicon.ico'))
         if test_file.exists():
             test_file.unlink()
     else:
-        test_result("crawler.download", False, error=result.get("error", "未知错误"))
+        test_result("crawler.download", False, error=result.get("error", "未知错误"), elapsed=test_time)
 except Exception as e:
     test_result("crawler.download", False, error=str(e))
 
 # 1.4 测试 crawler.extract_code
 try:
+    test_start = time.time()
     from mcp_servers.unified_dev_server import crawler_extract_code
     # 测试从GitHub提取代码
     result = crawler_extract_code("https://github.com/scrapy/scrapy", language="python")
+    test_time = time.time() - test_start
     if result.get("success"):
-        test_result("crawler.extract_code", True, f"提取成功，找到 {len(result.get('code_blocks', []))} 个代码块")
+        test_result("crawler.extract_code", True, f"提取成功，找到 {len(result.get('code_blocks', []))} 个代码块", elapsed=test_time)
     else:
-        test_result("crawler.extract_code", False, error=result.get("error", "未知错误"))
+        test_result("crawler.extract_code", False, error=result.get("error", "未知错误"), elapsed=test_time)
 except Exception as e:
     test_result("crawler.extract_code", False, error=str(e))
 
 # 1.5 测试 crawler.api_docs
 try:
+    test_start = time.time()
     from mcp_servers.unified_dev_server import crawler_api_docs
     result = crawler_api_docs("requests.get", framework="python")
+    test_time = time.time() - test_start
     if result.get("success"):
-        test_result("crawler.api_docs", True, f"获取API文档成功")
+        test_result("crawler.api_docs", True, f"获取API文档成功", elapsed=test_time)
     else:
-        test_result("crawler.api_docs", False, error=result.get("error", "未知错误"))
+        test_result("crawler.api_docs", False, error=result.get("error", "未知错误"), elapsed=test_time)
 except Exception as e:
     test_result("crawler.api_docs", False, error=str(e))
 
@@ -138,12 +164,15 @@ except ImportError:
 # 2.2 测试 crawler.selenium.fetch
 if selenium_available:
     try:
+        test_start = time.time()
         from mcp_servers.unified_dev_server import crawler_selenium_fetch
-        result = crawler_selenium_fetch("https://www.example.com", wait_time=3, headless=True)
+        # 优化：减少等待时间（从3秒降到1秒，测试环境不需要等待太久）
+        result = crawler_selenium_fetch("https://www.example.com", wait_time=1, headless=True)
+        test_time = time.time() - test_start
         if result.get("success"):
-            test_result("crawler.selenium.fetch", True, f"成功抓取动态页面，标题: {result.get('title', 'N/A')}")
+            test_result("crawler.selenium.fetch", True, f"成功抓取动态页面，标题: {result.get('title', 'N/A')}", elapsed=test_time)
         else:
-            test_result("crawler.selenium.fetch", False, error=result.get("error", "未知错误"))
+            test_result("crawler.selenium.fetch", False, error=result.get("error", "未知错误"), elapsed=test_time)
     except Exception as e:
         test_result("crawler.selenium.fetch", False, error=str(e))
 else:
@@ -302,6 +331,7 @@ for dep, (import_name, desc, optional) in dependencies.items():
             test_result(f"依赖: {dep}", False, error=f"{dep}未安装")
 
 # ==================== 测试总结 ====================
+total_time = time.time() - start_time
 print("\n" + "=" * 80)
 print("测试总结")
 print("=" * 80)
@@ -314,6 +344,30 @@ core_total = test_results['total'] - test_results['skipped']
 core_pass_rate = (test_results['passed'] / core_total * 100) if core_total > 0 else 100.0
 print(f"通过率: {test_results['passed'] / test_results['total'] * 100:.1f}% (总体)")
 print(f"核心功能通过率: {core_pass_rate:.1f}% ({test_results['passed']}/{core_total})")
+print(f"\n⏱️  总耗时: {total_time:.2f}秒")
+
+# 性能分析
+print("\n" + "=" * 80)
+print("性能分析")
+print("=" * 80)
+timings = [(d['name'], d.get('elapsed', 0)) for d in test_results['details'] if d.get('elapsed') is not None]
+if timings:
+    timings.sort(key=lambda x: x[1], reverse=True)
+    print("最耗时的测试（Top 5）:")
+    for i, (name, elapsed) in enumerate(timings[:5], 1):
+        percentage = (elapsed / total_time * 100) if total_time > 0 else 0
+        print(f"  {i}. {name}: {elapsed:.2f}s ({percentage:.1f}%)")
+    
+    # 计算各阶段耗时
+    section_times = {}
+    for name, elapsed in timings:
+        section = name.split('.')[0] if '.' in name else name.split()[0]
+        section_times[section] = section_times.get(section, 0) + elapsed
+    
+    print("\n各阶段耗时:")
+    for section, elapsed in sorted(section_times.items(), key=lambda x: x[1], reverse=True):
+        percentage = (elapsed / total_time * 100) if total_time > 0 else 0
+        print(f"  - {section}: {elapsed:.2f}s ({percentage:.1f}%)")
 print()
 
 # 保存测试结果
