@@ -1,0 +1,8 @@
+{
+  "anchor_id": "期权持仓类别",
+  "title": "opthold_type -- 期权持仓类别",
+  "content": "opthold_type -- 期权持仓类别\n\n0 -- 对手方最优价格\n1 -- 最优五档即时成交剩余转限价\n2 -- 本方最优价格\n3 -- 即时成交剩余撤销\n4 -- 最优五档即时成交剩余撤销\n5 -- 全额成交或撤单\n\n0 -- 上证普通代码\n1 -- 上证科创板代码\n2 -- 深证普通代码\n3 -- 深证创业板代码\n4 -- 可转债代码",
+  "code_blocks": [],
+  "content_length": 174,
+  "url": "https://ptradeapi.com/#期权持仓类别"
+}

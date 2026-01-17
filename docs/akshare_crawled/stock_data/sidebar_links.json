@@ -1,0 +1,289 @@
+[
+  {
+    "url": "https://akshare.akfamily.xyz/index.html",
+    "text": "AKShare",
+    "href": "../../index.html",
+    "parentText": "AKShare\n          \n              \n                \n    \n      \n        \n              latest",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/introduction.html",
+    "text": "AKShare 项目概览",
+    "href": "../../introduction.html",
+    "parentText": "AKShare 项目概览",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/installation.html",
+    "text": "AKShare 安装指导",
+    "href": "../../installation.html",
+    "parentText": "AKShare 安装指导",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/index.html",
+    "text": "AKShare 数据字典",
+    "href": "../index.html",
+    "parentText": "AKShare 数据字典\nAKShare 股票数据\nA股\n股票市场总貌\n个股信息查询-东财\n个股信息查询-雪球\n行情报价\n实时行情数据\n历史行情数据\n历史分笔数据\n同行比较\n\n\nA股-CDR\n历史行情数据\n\n\nB股\n实时行情数据\n历史行情数据\n\n\n次新股\n股市日历\n公司动态\n\n\n风险警示板\n新股\n新股上市首日\nIPO 受益股\n两网及退市\n科创板\n实时行情数据\n历史行情数据\n科创板公告\n\n\nA+H股",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/futures/futures.html",
+    "text": "AKShare 期货数据",
+    "href": "../futures/futures.html",
+    "parentText": "AKShare 期货数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/bond/bond.html",
+    "text": "AKShare 债券数据",
+    "href": "../bond/bond.html",
+    "parentText": "AKShare 债券数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/option/option.html",
+    "text": "AKShare 期权数据",
+    "href": "../option/option.html",
+    "parentText": "AKShare 期权数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/fx/fx.html",
+    "text": "AKShare 外汇数据",
+    "href": "../fx/fx.html",
+    "parentText": "AKShare 外汇数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/currency/currency.html",
+    "text": "AKShare 货币数据",
+    "href": "../currency/currency.html",
+    "parentText": "AKShare 货币数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/spot/spot.html",
+    "text": "AKShare 现货数据",
+    "href": "../spot/spot.html",
+    "parentText": "AKShare 现货数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/interest_rate/interest_rate.html",
+    "text": "AKShare 利率数据",
+    "href": "../interest_rate/interest_rate.html",
+    "parentText": "AKShare 利率数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/fund/fund_private.html",
+    "text": "AKShare 私募基金数据",
+    "href": "../fund/fund_private.html",
+    "parentText": "AKShare 私募基金数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/fund/fund_public.html",
+    "text": "AKShare 公募基金数据",
+    "href": "../fund/fund_public.html",
+    "parentText": "AKShare 公募基金数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/index/index.html",
+    "text": "AKShare 指数数据",
+    "href": "../index/index.html",
+    "parentText": "AKShare 指数数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/macro/macro.html",
+    "text": "AKShare 宏观数据",
+    "href": "../macro/macro.html",
+    "parentText": "AKShare 宏观数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/dc/dc.html",
+    "text": "AKShare 加密货币数据",
+    "href": "../dc/dc.html",
+    "parentText": "AKShare 加密货币数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/bank/bank.html",
+    "text": "AKShare 银行数据",
+    "href": "../bank/bank.html",
+    "parentText": "AKShare 银行数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/article/article.html",
+    "text": "AKShare 波动率数据",
+    "href": "../article/article.html",
+    "parentText": "AKShare 波动率数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/energy/energy.html",
+    "text": "AKShare 能源数据",
+    "href": "../energy/energy.html",
+    "parentText": "AKShare 能源数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/event/event.html",
+    "text": "AKShare 迁徙数据",
+    "href": "../event/event.html",
+    "parentText": "AKShare 迁徙数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/hf/hf.html",
+    "text": "AKShare 高频数据",
+    "href": "../hf/hf.html",
+    "parentText": "AKShare 高频数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/nlp/nlp.html",
+    "text": "AKShare 自然语言处理",
+    "href": "../nlp/nlp.html",
+    "parentText": "AKShare 自然语言处理",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/qdii/qdii.html",
+    "text": "AKShare QDII 数据",
+    "href": "../qdii/qdii.html",
+    "parentText": "AKShare QDII 数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/others/others.html",
+    "text": "AKShare 另类数据",
+    "href": "../others/others.html",
+    "parentText": "AKShare 另类数据",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/qhkc/index.html",
+    "text": "AKShare 奇货可查",
+    "href": "../qhkc/index.html",
+    "parentText": "AKShare 奇货可查",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data/tool/tool.html",
+    "text": "AKShare 工具箱",
+    "href": "../tool/tool.html",
+    "parentText": "AKShare 工具箱",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/indicator.html",
+    "text": "AKShare 指标计算",
+    "href": "../../indicator.html",
+    "parentText": "AKShare 指标计算",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/data_tips.html",
+    "text": "AKShare 数据说明",
+    "href": "../../data_tips.html",
+    "parentText": "AKShare 数据说明",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/trade.html",
+    "text": "AKShare 实盘交易",
+    "href": "../../trade.html",
+    "parentText": "AKShare 实盘交易",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/answer.html",
+    "text": "AKShare 答疑专栏",
+    "href": "../../answer.html",
+    "parentText": "AKShare 答疑专栏",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/tutorial.html",
+    "text": "AKShare 快速入门",
+    "href": "../../tutorial.html",
+    "parentText": "AKShare 快速入门",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/articles.html",
+    "text": "AKShare 相关文章",
+    "href": "../../articles.html",
+    "parentText": "AKShare 相关文章",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/anaconda.html",
+    "text": "AKShare 环境配置",
+    "href": "../../anaconda.html",
+    "parentText": "AKShare 环境配置",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/platform.html",
+    "text": "AKShare 量化专题",
+    "href": "../../platform.html",
+    "parentText": "AKShare 量化专题",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/demo.html",
+    "text": "AKShare 策略示例",
+    "href": "../../demo.html",
+    "parentText": "AKShare 策略示例",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/changelog.html",
+    "text": "AKShare 版本更新",
+    "href": "../../changelog.html",
+    "parentText": "AKShare 版本更新",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/contributing.html",
+    "text": "AKShare 贡献源码",
+    "href": "../../contributing.html",
+    "parentText": "AKShare 贡献源码",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/dependency.html",
+    "text": "AKShare 依赖说明",
+    "href": "../../dependency.html",
+    "parentText": "AKShare 依赖说明",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/deploy_http.html",
+    "text": "AKShare HTTP 部署",
+    "href": "../../deploy_http.html",
+    "parentText": "AKShare HTTP 部署",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/akdocker/akdocker.html",
+    "text": "AKShare Docker 部署",
+    "href": "../../akdocker/akdocker.html",
+    "parentText": "AKShare Docker 部署",
+    "isInSidebar": true
+  },
+  {
+    "url": "https://akshare.akfamily.xyz/special.html",
+    "text": "AKShare 特别说明",
+    "href": "../../special.html",
+    "parentText": "AKShare 特别说明",
+    "isInSidebar": true
+  }
+]

@@ -1,0 +1,5 @@
+# Cursor IDE 忽略文件配置
+# 排除已归档的计划文件，避免在计划面板中显示
+
+# 排除归档目录（已移动到.cursor/archived_plans/，不在plans目录下，无需在此排除）
+# plans/archived/  # 已移除，归档目录现在在.cursor/archived_plans/

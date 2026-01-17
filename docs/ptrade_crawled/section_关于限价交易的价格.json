@@ -1,0 +1,8 @@
+{
+  "anchor_id": "关于限价交易的价格",
+  "title": "关于限价交易的价格",
+  "content": "关于限价交易的价格\n\n用户在使用限价单委托（如order()入参limit_price）和市价委托保护限价（order_market()入参limit_price）的场景时务必要对入参价格的小数点位数进行处理，否则会导致委托失败。",
+  "code_blocks": [],
+  "content_length": 115,
+  "url": "https://ptradeapi.com/#关于限价交易的价格"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "create_dir",
+  "title": "create_dir-创建文件目录路径",
+  "content": "create_dir-创建文件目录路径\n\n由于ptrade引擎禁用了os模块，因此用户无法在策略中通过编写代码实现子目录创建。用户可以通过此接口来创建文件的子目录路径。",
+  "code_blocks": [],
+  "content_length": 84,
+  "url": "https://ptradeapi.com/#create_dir"
+}

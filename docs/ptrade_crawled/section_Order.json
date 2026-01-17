@@ -1,0 +1,8 @@
+{
+  "anchor_id": "Order",
+  "title": "Order",
+  "content": "Order\n\nid -- 订单号\ndt -- 订单产生时间\nlimit -- 指定价格\nsymbol -- 标的代码(备注：标的代码尾缀为四位，上证为XSHG，深圳为XSHE，如需对应到代码请做代码尾缀兼容)\namount -- 下单数量，买入是正数，卖出是负数\ncreated -- 订单生成时间, datetime.date对象\nfilled -- 成交数量，买入时为正数，卖出时为负数\nentrust_no -- 委托编号\npriceGear -- 盘口档位\nstatus -- 订单状态(str)，该字段取值范围：\n    '0' -- \"未报\"\n    '1' -- \"待报\"\n    '2' -- \"已报\"\n    '3' -- \"已报待撤\"\n    '4' -- \"部成待撤\"\n    '5' -- \"部撤\"\n    '6' -- \"已撤\"\n    '7' -- \"部成\"\n    '8' -- \"已成\"\n    '9' -- \"废单\"\n    '+' -- \"已受理\"\n    '-' -- \"已确认\"\n    'V' -- \"已确认\"",
+  "code_blocks": [],
+  "content_length": 476,
+  "url": "https://ptradeapi.com/#Order"
+}

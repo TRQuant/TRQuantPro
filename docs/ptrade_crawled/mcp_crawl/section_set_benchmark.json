@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_benchmark",
+  "title": "set_benchmark-设置基准",
+  "content": "set_benchmark-设置基准\n\n如果不做基准设置，默认选定沪深300指数(000300.SS)的每日价格作为判断策略好坏和一系列风险值计算的基准。如果要指定其他股票/指数/ETF的价格作为基准，就需要使用set_benchmark。\n\ndef initialize(context):\n    g.security = '000001.SZ'\n    set_universe(g.security)\n    #将上证50（000016.SS）设置为参考基准\n    set_benchmark('000016.SS')\n\ndef handle_data(context, data):\n    order('000001.SZ',100)\n\nset_commission(commission_ratio=0.0003, min_commission=5.0, type=\"STOCK\")",
+  "code_blocks": [],
+  "content_length": 399,
+  "url": "https://ptradeapi.com/#set_benchmark"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_stock_name",
+  "title": "get_stock_name - 获取股票名称",
+  "content": "get_stock_name - 获取股票名称\n\n股票名称字典，dict类型，key为股票代码，value为股票名称，当没有查询到相关数据或者输入有误时value为None(dict[str:str])；\n\ndef initialize(context):\n    g.security = ['600570.SS', '600571.SS']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #获取600570.SS股票名称\n    stock_name = get_stock_name(g.security[0])\n    log.info(stock_name)\n    #获取股票池所有的股票名称\n    stock_names = get_stock_name(g.security)\n    log.info(stock_names)",
+  "code_blocks": [],
+  "content_length": 416,
+  "url": "https://ptradeapi.com/#get_stock_name"
+}

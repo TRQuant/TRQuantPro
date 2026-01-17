@@ -1,0 +1,191 @@
+[
+  {
+    "id": "hmm_kb_001",
+    "title": "HMM知识库: 📚 目录",
+    "content": "1. [理论基础](#理论基础)\n2. [金融应用](#金融应用)\n3. [TRQuant实现](#trquant实现)\n4. [参数优化](#参数优化)\n5. [交叉验证机制](#交叉验证机制)\n6. [最佳实践](#最佳实践)\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "机器学习",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#📚 目录",
+    "created_at": "2026-01-02T21:25:24.483186",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_002",
+    "title": "HMM知识库: 理论基础",
+    "content": "### 1.1 HMM核心概念\n\n**隐马尔可夫模型(Hidden Markov Model, HMM)** 是一种统计模型，用于描述一个含有隐含未知参数的马尔可夫过程。\n\n#### 基本组件\n\n1. **隐藏状态(States)**: 不可直接观测的状态\n   - 在金融中：牛市、熊市、震荡市场\n   - 在TRQuant中：`MarketState.BULL`, `MarketState.BEAR`, `MarketState.SIDEWAYS`\n\n2. **观测变量(Observations)**: 可观测的数据\n   - 在金融中：价格、成交量、波动率\n   - 在TRQuant中：价格变化率、成交量变化率、波动率\n\n3. **状态转移矩阵(Transition Matrix)**: 描述状态之间的转换概率\n   ```\n   P(state_t+1 | state_t)\n   ```\n\n4. **发射概率(Emission Probability)**: 给定状态下的观测概率\n   ```\n   P(observation_t | state_t)\n   ```\n\n#### 数学形式化\n\n对于状态序列 $S = \\{s_1, s_2, ..., s_T\\}$ 和观测序列 $O = \\{o_1, o_2, ..., o_T\\}$：\n\n**状态转移概率**:\n$$P(s_{t+1} = j | s_t = i) = a_{ij}$$\n\n**发射概率**:\n$$P(o_t | s_t = i) = b_i(o_t)$$\n\n**初始状态概率**:\n$$P(s_1 = i) = \\pi_i$$\n\n### 1.2 三个核心问题\n\n#### 问题1: 评估问题 (Evaluation Problem)\n给定模型参数和观测序列，计算观测序列的概率：\n$$P(O | \\lambda) = \\sum_S P(O, S | \\lambda)$$\n\n**解决方案**: Forward算法 / Forward-Backward算法\n\n#### 问题2: 解码问题 (Decoding Problem)\n给定模型参数和观测序列，找出最可能的状态序列：\n$$\\hat{S} = \\arg\\max_S P(S | O, \\lambda)$$\n\n**解决方案**: Viterbi算法 (TRQuant使用)\n\n#### 问题3: 学习问题 (Learning Problem)\n给定观测序列，估计模型参数 $\\lambda = (A, B, \\pi)$\n\n**解决方案**: Baum-Welch算法 (EM算法)\n\n### 1.3 Hamilton(1989)核心贡献\n\nJames D. Hamilton在1989年提出的**制度转换模型(Regime Switching Model)**是HMM在经济学中的经典应用：\n\n1. **状态识别**: 识别经济周期（扩张/衰退）\n2. **平滑概率**: 计算各状态的概率\n3. **预测**: 预测未来状态转换\n\n**关键公式**:\n- 平滑概率: $P(s_t = i | O_1^T)$\n- 预测概率: $P(s_{t+1} = i | O_1^t)$\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "算法原理",
+      "数学",
+      "机器学习",
+      "Hamilton模型",
+      "知识库",
+      "理论基础",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "制度转换",
+      "经典论文"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#理论基础",
+    "created_at": "2026-01-02T21:25:24.483199",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_003",
+    "title": "HMM知识库: 金融应用",
+    "content": "### 2.1 市场状态识别\n\nHMM在金融市场中的核心应用是识别市场的隐藏状态：\n\n#### 三种经典状态\n\n| 状态 | 特征 | 市场表现 |\n|------|------|----------|\n| **牛市(Bull)** | 价格上升趋势 | 持续上涨，成交量放大 |\n| **熊市(Bear)** | 价格下降趋势 | 持续下跌，恐慌性抛售 |\n| **震荡(Sideways)** | 横盘整理 | 价格波动小，成交量萎缩 |\n\n#### 观测指标选择\n\n**价格指标**:\n- 收益率 (Returns)\n- 价格动量 (Momentum)\n- 相对强度 (Relative Strength)\n\n**成交量指标**:\n- 成交量变化率\n- 量价关系 (Volume-Price Relationship)\n\n**波动率指标**:\n- 历史波动率 (Historical Volatility)\n- 隐含波动率 (Implied Volatility, 如果有期权数据)\n\n### 2.2 状态转移规律\n\n根据金融市场经验，状态转移具有以下特点：\n\n1. **持续性**: 市场状态倾向于保持\n   - 牛市→牛市: 高概率 (~85%)\n   - 熊市→熊市: 高概率 (~80%)\n   - 震荡→震荡: 中等概率 (~60%)\n\n2. **转换概率不对称**:\n   - 从震荡转为牛市/熊市的概率通常较低\n   - 极端状态(牛市/熊市)之间的直接转换概率很低\n\n3. **周期性**: 市场状态转换遵循一定的周期规律\n\n### 2.3 参数估计方法\n\n#### 方法1: 基于历史数据 (TRQuant当前方法)\n- **优点**: 快速，无需训练\n- **缺点**: 参数固定，无法自适应\n\n#### 方法2: Baum-Welch算法 (EM算法)\n- **优点**: 基于数据自动学习参数\n- **缺点**: 需要充足的历史数据，计算复杂\n\n#### 方法3: 贝叶斯方法\n- **优点**: 可以结合先验知识\n- **缺点**: 计算复杂度高\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "金融应用",
+      "机器学习",
+      "市场分析",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "量化交易"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#金融应用",
+    "created_at": "2026-01-02T21:25:24.483203",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_004",
+    "title": "HMM知识库: TRQuant实现",
+    "content": "### 3.1 SimpleHMM架构\n\n**位置**: `core/trend_ml.py`\n\n```python\nclass SimpleHMM:\n    \"\"\"简化版隐马尔可夫模型\"\"\"\n    \n    # 状态定义\n    states = [MarketState.BULL, MarketState.BEAR, MarketState.SIDEWAYS]\n    \n    # 状态转移矩阵 (基于经验)\n    TRANSITION_MATRIX = np.array([\n        [0.85, 0.05, 0.10],  # Bull -> Bull/Bear/Sideways\n        [0.05, 0.80, 0.15],  # Bear -> Bull/Bear/Sideways\n        [0.20, 0.20, 0.60],  # Sideways -> Bull/Bear/Sideways\n    ])\n```\n\n### 3.2 观测变量计算\n\n```python\ndef _calculate_observations(self, df: pd.DataFrame) -> List[Dict[str, float]]:\n    \"\"\"\n    计算观测变量序列\n    \n    观测变量:\n    1. price_change: 价格变化率 (%) \n       - 计算公式: (close_t - close_{t-1}) / close_{t-1} * 100\n       \n    2. volume_change: 成交量变化率 (%)\n       - 计算公式: (volume_t - volume_{t-1}) / volume_{t-1} * 100\n       \n    3. volatility: 波动率 (%)\n       - 计算公式: std(returns, window=20) * sqrt(252) * 100\n    \"\"\"\n```\n\n#### 各状态下的观测分布\n\n**牛市(BULL)**:\n```python\nEMISSION_PARAMS = {\n    \"price_change\": (0.5, 1.5),    # 均值0.5%, 标准差1.5% (正收益)\n    \"volume_change\": (0.2, 0.5),   # 均值0.2%, 标准差0.5% (放量)\n    \"volatility\": (15, 8),         # 均值15%, 标准差8% (适中波动)\n}\n```\n\n**熊市(BEAR)**:\n```python\nEMISSION_PARAMS = {\n    \"price_change\": (-0.5, 1.5),   # 均值-0.5%, 标准差1.5% (负收益)\n    \"volume_change\": (0.3, 0.6),   # 均值0.3%, 标准差0.6% (恐慌放量)\n    \"volatility\": (25, 10),        # 均值25%, 标准差10% (高波动)\n}\n```\n\n**震荡(SIDEWAYS)**:\n```python\nEMISSION_PARAMS = {\n    \"price_change\": (0, 0.8),      # 均值0%, 标准差0.8% (小幅波动)\n    \"volume_change\": (-0.1, 0.3),  # 均值-0.1%, 标准差0.3% (缩量)\n    \"volatility\": (12, 5),         # 均值12%, 标准差5% (低波动)\n}\n```\n\n### 3.3 Viterbi算法实现\n\n**目标**: 找到最可能的状态序列\n\n```python\ndef _viterbi(self, observations: List[Dict[str, float]]) -> List[MarketState]:\n    \"\"\"\n    Viterbi算法: 动态规划找最优路径\n    \n    算法步骤:\n    1. 初始化: V[0, i] = log(π_i) + log(b_i(o_0))\n    2. 递推: V[t, j] = max_i(V[t-1, i] + log(a_{ij})) + log(b_j(o_t))\n    3. 回溯: 找到最优路径\n    \"\"\"\n```\n\n**时间复杂度**: O(T * N²), 其中T是序列长度，N是状态数\n\n### 3.4 状态概率计算\n\n```python\ndef _calculate_state_probabilities(self, observation: Dict[str, float]) -> Dict[str, float]:\n    \"\"\"\n    计算当前观测下各状态的后验概率\n    \n    使用贝叶斯公式:\n    P(state | observation) = P(observation | state) * P(state) / P(observation)\n    \n    返回归一化后的概率分布\n    \"\"\"\n```\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "系统集成",
+      "机器学习",
+      "代码实现",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "API文档"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#TRQuant实现",
+    "created_at": "2026-01-02T21:25:24.483207",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_005",
+    "title": "HMM知识库: 参数优化",
+    "content": "### 4.1 转移矩阵优化\n\n#### 当前参数 (基于经验)\n\n```python\nTRANSITION_MATRIX = [\n    [0.85, 0.05, 0.10],  # Bull状态转移\n    [0.05, 0.80, 0.15],  # Bear状态转移\n    [0.20, 0.20, 0.60],  # Sideways状态转移\n]\n```\n\n#### 优化方向\n\n1. **基于历史回测优化**:\n   - 使用过去10年的市场数据\n   - 统计实际状态转换频率\n   - 计算最大似然估计\n\n2. **分市场周期优化**:\n   - 牛市周期参数\n   - 熊市周期参数\n   - 震荡周期参数\n\n3. **动态调整**:\n   - 根据市场波动率调整\n   - 根据成交量水平调整\n\n### 4.2 发射概率参数优化\n\n#### 当前参数问题\n\n1. **参数固定**: 无法适应市场变化\n2. **基于经验**: 可能不够精确\n3. **正态分布假设**: 实际分布可能偏离\n\n#### 优化方法\n\n1. **历史数据拟合**:\n   ```python\n   # 对于每个状态，统计历史观测值的分布\n   for state in [BULL, BEAR, SIDEWAYS]:\n       state_data = historical_data[historical_states == state]\n       mean = np.mean(state_data)\n       std = np.std(state_data)\n   ```\n\n2. **非参数方法**:\n   - 使用核密度估计(KDE)\n   - 避免分布假设\n\n3. **滚动窗口更新**:\n   - 使用最近N个月的数据\n   - 定期更新参数\n\n### 4.3 优化目标函数\n\n#### 准确率目标\n\n```python\n# 最大化状态识别准确率\naccuracy = correct_predictions / total_predictions\n\n# 最大化状态转换预测准确率\ntransition_accuracy = correct_transitions / total_transitions\n```\n\n#### 其他目标\n\n1. **最小化预测延迟**: 尽早识别状态转换\n2. **最大化信号稳定性**: 减少状态频繁切换\n3. **平衡召回率和精确率**: F1-score\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "性能优化",
+      "金融模型",
+      "市场状态识别",
+      "机器学习",
+      "模型调优",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "参数优化"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#参数优化",
+    "created_at": "2026-01-02T21:25:24.483210",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_006",
+    "title": "HMM知识库: 交叉验证机制",
+    "content": "### 5.1 多模型集成\n\nTRQuant使用**5个独立信号源**进行交叉验证：\n\n1. **HMM隐马尔可夫模型** (权重: 1.0)\n2. **IBD反转信号** (权重: 1.5 - 权重较高)\n3. **短期技术指标** (5日, 权重: 0.8)\n4. **中期技术指标** (20日, 权重: 1.0)\n5. **长期技术指标** (60日, 权重: 1.2 - 权重最高)\n\n### 5.2 投票机制\n\n```python\n# 计算多模型共识\nbullish_votes = 0\nbearish_votes = 0\n\n# HMM投票\nif hmm_state == 'bull':\n    bullish_votes += 1.0\nelif hmm_state == 'bear':\n    bearish_votes += 1.0\n\n# IBD投票 (权重较高)\nif ibd_status == 'confirmed_uptrend':\n    bullish_votes += 1.5\nelif ibd_status == 'market_in_correction':\n    bearish_votes += 1.5\n\n# 三周期技术指标投票\nif short_signal == BULLISH:\n    bullish_votes += 0.8\nif medium_signal == BULLISH:\n    bullish_votes += 1.0\nif long_signal == BULLISH:\n    bullish_votes += 1.2  # 长期权重最高\n```\n\n### 5.3 置信度分级\n\n**高置信度** (≥4票):\n- 多个模型强共识\n- 信号可靠性高\n- 适合重仓操作\n\n**中置信度** (≥2.5票, <4票):\n- 部分模型共识\n- 信号可靠性中等\n- 适合中等仓位\n\n**低置信度** (<2.5票):\n- 模型分歧较大\n- 信号可靠性低\n- 适合轻仓或观望\n\n### 5.4 对齐验证\n\n**HMM对齐信号**:\n- 当HMM状态与综合信号方向一致时\n- 例如: HMM=bull 且 综合信号=BULLISH\n\n**IBD对齐信号**:\n- 当IBD状态与综合信号方向一致时\n- 例如: IBD=confirmed_uptrend 且 综合信号=BULLISH\n\n**统计意义**:\n- 对齐信号的准确率通常高于整体平均\n- 可用于筛选高质量信号\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "模型评估",
+      "交叉验证",
+      "信号验证",
+      "机器学习",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#交叉验证机制",
+    "created_at": "2026-01-02T21:25:24.483212",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_007",
+    "title": "HMM知识库: 最佳实践",
+    "content": "### 6.1 数据要求\n\n1. **最少数据量**: 至少60个交易日的数据\n2. **数据质量**: 确保价格和成交量数据准确\n3. **数据频率**: 日线数据，避免使用分钟数据（噪声大）\n\n### 6.2 参数选择建议\n\n1. **初始状态概率**:\n   ```python\n   # 如果市场处于均衡状态\n   INITIAL_PROB = [0.33, 0.33, 0.34]\n   \n   # 如果已知当前市场状态\n   INITIAL_PROB = [0.8, 0.1, 0.1]  # 例如: 已知是牛市\n   ```\n\n2. **观测窗口长度**:\n   - 推荐: 120个交易日 (~6个月)\n   - 太短: 噪声大，不稳定\n   - 太长: 反应滞后，无法捕捉短期变化\n\n### 6.3 模型评估指标\n\n1. **状态识别准确率**:\n   ```python\n   accuracy = correct_state_identifications / total_identifications\n   ```\n\n2. **转换预测准确率**:\n   ```python\n   transition_accuracy = correct_transition_predictions / total_transitions\n   ```\n\n3. **信号质量指标**:\n   - 高置信度信号准确率\n   - 对齐信号准确率\n   - 夏普比率改善\n\n### 6.4 模型更新策略\n\n1. **定期回测**: 每季度重新评估参数\n2. **滚动优化**: 使用滚动窗口更新参数\n3. **A/B测试**: 对比不同参数配置的效果\n4. **模型集成**: 结合多个HMM模型的预测\n\n### 6.5 常见问题与解决\n\n#### 问题1: 状态频繁切换\n\n**原因**: 观测噪声大，转移概率设置不合理\n\n**解决**:\n- 增加观测窗口长度\n- 调整转移矩阵，增加状态持续性\n- 使用状态平滑技术\n\n#### 问题2: 预测滞后\n\n**原因**: 观测窗口过长，参数更新不及时\n\n**解决**:\n- 缩短观测窗口\n- 使用实时参数更新\n- 结合短期指标\n\n#### 问题3: 状态识别不准确\n\n**原因**: 发射概率参数不准确\n\n**解决**:\n- 基于历史数据重新拟合参数\n- 使用非参数方法\n- 增加观测变量维度\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "最佳实践",
+      "金融模型",
+      "市场状态识别",
+      "机器学习",
+      "开发规范",
+      "知识库",
+      "TRQuant",
+      "使用指南",
+      "隐马尔可夫模型"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#最佳实践",
+    "created_at": "2026-01-02T21:25:24.483215",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_008",
+    "title": "HMM知识库: 参考资料",
+    "content": "### 学术论文\n\n1. **Hamilton, J. D. (1989)**: \"A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle\"\n   - 制度转换模型的经典论文\n   - 位置: `docs/HMM/Hamilton1989.pdf`\n\n2. **Regime Switching Models**:\n   - 制度转换模型综述\n   - 位置: `docs/HMM/regime changes.pdf`\n\n3. **Palgrave Encyclopedia**:\n   - HMM在金融中的应用\n   - 位置: `docs/HMM/palgrav1.pdf`\n\n### 代码实现\n\n- **SimpleHMM**: `core/trend_ml.py`\n- **信号回测**: `core/signal_backtest.py`\n- **市场环境评估**: `core/market_environment_evaluator.py`\n\n### 相关文档\n\n- **市场趋势算法**: `docs/MARKET_TREND_ALGORITHMS.md`\n- **IBD反转分析**: `docs/IBD_REVERSAL_ANALYSIS.md`\n\n---",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "机器学习",
+      "Hamilton模型",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "制度转换",
+      "经典论文"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#参考资料",
+    "created_at": "2026-01-02T21:25:24.483217",
+    "useful_count": 0
+  },
+  {
+    "id": "hmm_kb_009",
+    "title": "HMM知识库: 更新日志",
+    "content": "### v1.0 (2025-01-02)\n- 初始版本\n- 基于Hamilton(1989)理论基础\n- TRQuant SimpleHMM实现文档\n- 交叉验证机制说明\n\n---\n\n*本文档将随着HMM模型优化和实际应用经验持续更新。*",
+    "type": "reference",
+    "tags": [
+      "HMM",
+      "金融模型",
+      "市场状态识别",
+      "机器学习",
+      "Hamilton模型",
+      "知识库",
+      "TRQuant",
+      "隐马尔可夫模型",
+      "制度转换",
+      "经典论文"
+    ],
+    "source": "docs/HMM/HMM_KNOWLEDGE_BASE.md#更新日志",
+    "created_at": "2026-01-02T21:25:24.483219",
+    "useful_count": 0
+  }
+]

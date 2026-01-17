@@ -1,0 +1,8 @@
+{
+  "anchor_id": "sell_close",
+  "title": "sell_close - 多平",
+  "content": "sell_close - 多平\n\nsell_close\n(\ncontract\n,\namount\n,\nlimit_price\n=\nNone\n,\nclose_today\n=\nFalse\n)",
+  "code_blocks": [],
+  "content_length": 92,
+  "url": "https://ptradeapi.com#sell_close"
+}

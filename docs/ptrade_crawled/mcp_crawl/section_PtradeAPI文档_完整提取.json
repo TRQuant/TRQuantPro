@@ -1,0 +1,7 @@
+{
+  "anchor_id": "PtradeAPI文档",
+  "title": "Ptrade API文档 - 完整内容",
+  "content": "Ptrade API文档\n\n如需开通Ptrade权限的券商，请关注公众号并后台留言：\nptrade开通\n或者\nptrade试用，市面上支持ptrade的券商均可开通\n\n目前支持券商有\n国盛证券(SZ002670)\n，\n国金证券(SH600109)\n，东莞证券，\n湘财证券(大智慧)\n，\n长江证券\n，\n国泰君安-海通\n等\n\nPtrade试用账号：55010687，登录密码：259800\n(下载国金Ptrade测试版登录，下面有链接)\n\n同时Ptrade提供代码加密下载与上传功能，加密策略对方只能运行，无法查看具体源码，可保证源代码不泄密.\n\n券商实盘版无法盘中回测，可盘后回测；部分券商实盘版不支持回测。（盘中回测消耗服务器资源导致实盘运行的策略变慢，以至于大部分券商停掉盘中回测功能）",
+  "content_length": 344,
+  "url": "https://ptradeapi.com/#PtradeAPI%E6%96%87%E6%A1%A3"
+}

@@ -1,0 +1,135 @@
+{
+  "total_items": 9,
+  "by_type": {
+    "case_study": 2,
+    "strategy": 6,
+    "position_management": 1
+  },
+  "top_tags": {
+    "trading_method": 9,
+    "chen_xiaoqun": 9,
+    "strategy": 9,
+    "dragon_tiger_list": 2,
+    "risk_control": 2,
+    "discipline": 2,
+    "dragon_stock": 2,
+    "trend_following": 2,
+    "case_study": 2,
+    "quantitative_application": 1,
+    "dtl_analysis": 1,
+    "trading_habits": 1,
+    "mindset": 1,
+    "market_emotion": 1,
+    "concept_stocks": 1
+  },
+  "recent_items": [
+    {
+      "id": "cxq_0009",
+      "title": "陈小群策略优化建议 - 提升回报率的关键",
+      "type": "strategy",
+      "tags": [
+        "return_improvement",
+        "chen_xiaoqun",
+        "risk_control",
+        "strategy_optimization",
+        "strategy"
+      ]
+    },
+    {
+      "id": "cxq_0008",
+      "title": "陈小群交易逻辑详解 - 题材驱动与情绪把控",
+      "type": "strategy",
+      "tags": [
+        "trading_logic",
+        "theme_driven",
+        "case_study",
+        "chen_xiaoqun",
+        "emotion_control"
+      ]
+    },
+    {
+      "id": "cxq_0007",
+      "title": "陈小群投资策略核心 - 情绪周期+龙头战法",
+      "type": "strategy",
+      "tags": [
+        "emotion_cycle",
+        "chen_xiaoqun",
+        "growth_timeline",
+        "investment_strategy",
+        "dragon_stock"
+      ]
+    },
+    {
+      "id": "cxq_0006",
+      "title": "陈小群策略 - 30万到10亿投资智慧",
+      "type": "strategy",
+      "tags": [
+        "trading_method",
+        "chen_xiaoqun",
+        "growth_story",
+        "discipline",
+        "investment_wisdom"
+      ]
+    },
+    {
+      "id": "cxq_0005",
+      "title": "陈小群策略 - 华胜天成",
+      "type": "case_study",
+      "tags": [
+        "trading_method",
+        "case_study",
+        "chen_xiaoqun",
+        "ai_computing",
+        "2026"
+      ]
+    },
+    {
+      "id": "cxq_0004",
+      "title": "陈小群策略 - 持仓",
+      "type": "position_management",
+      "tags": [
+        "trading_method",
+        "concept_stocks",
+        "chen_xiaoqun",
+        "position_management",
+        "holding_strategy"
+      ]
+    },
+    {
+      "id": "cxq_0003",
+      "title": "陈小群策略 - 顺势而为",
+      "type": "strategy",
+      "tags": [
+        "trading_method",
+        "dragon_stock",
+        "chen_xiaoqun",
+        "market_emotion",
+        "trend_following"
+      ]
+    },
+    {
+      "id": "cxq_0002",
+      "title": "陈小群策略 - 游资思维习惯",
+      "type": "strategy",
+      "tags": [
+        "trading_method",
+        "risk_control",
+        "trading_habits",
+        "chen_xiaoqun",
+        "discipline"
+      ]
+    },
+    {
+      "id": "cxq_0001",
+      "title": "陈小群策略 - 龙虎榜复盘",
+      "type": "case_study",
+      "tags": [
+        "quantitative_application",
+        "trading_method",
+        "chen_xiaoqun",
+        "dtl_analysis",
+        "dragon_tiger_list"
+      ]
+    }
+  ]
+}

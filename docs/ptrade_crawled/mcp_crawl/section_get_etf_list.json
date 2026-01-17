@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_list",
+  "title": "get_etf_list - 获取ETF代码",
+  "content": "get_etf_list - 获取ETF代码\n\n正常返回一个list类型对象，包含所有ETF代码。异常返回空list，如[](list[str,...])。\n\n['510010.SS', '510020.SS', '510030.SS', '510050.SS', '510060.SS', '510180.SS', '510300.SS', '510310.SS', '510330.SS', '511800.SS', '511810.SS', '511820.SS', '511830.SS', '511880.SS', '511990.SS', '512010.SS',\n '512510.SS', '159001.SZ', '159003.SZ', '159005.SZ', '159901.SZ', '159903.SZ', '159905.SZ', '159906.SZ', '159909.SZ', '159910.SZ', '159919.SZ', '159923.SZ', '159923.SZ', '159924.SZ', '159925.SZ', '159927.SZ',\n '159928.SZ', '159929.SZ']\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #ETF代码列表\n    etf_code_list = get_etf_list()\n    log.info('ETF列表为%s' % etf_code_list)",
+  "code_blocks": [],
+  "content_length": 730,
+  "url": "https://ptradeapi.com/#get_etf_list"
+}

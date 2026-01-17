@@ -1,0 +1,8 @@
+{
+  "anchor_id": "技术指标计算函数",
+  "title": "技术指标计算函数",
+  "content": "技术指标计算函数\n\nget_MACD\n(\nclose\n,\nshort\n=\n12\n,\nlong\n=\n26\n,\nm\n=\n9\n)",
+  "code_blocks": [],
+  "content_length": 61,
+  "url": "https://ptradeapi.com#技术指标计算函数"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_KDJ",
+  "title": "get_KDJ - 随机指标",
+  "content": "get_KDJ - 随机指标\n\nget_KDJ\n(\nhigh\n,\nlow\n,\nclose\n,\nn\n=\n9\n,\nm1\n=\n3\n,\nm2\n=\n3\n)",
+  "code_blocks": [],
+  "content_length": 72,
+  "url": "https://ptradeapi.com#get_KDJ"
+}

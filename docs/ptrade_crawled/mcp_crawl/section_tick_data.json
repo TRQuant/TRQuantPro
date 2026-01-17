@@ -1,0 +1,8 @@
+{
+  "anchor_id": "tick_data",
+  "title": "tick_data（可选）",
+  "content": "tick_data（可选）\n\n该函数可以用于处理tick级别策略的交易逻辑，每隔3秒执行一次，如无tick处理需求，该函数可以在策略中不做定义。",
+  "code_blocks": [],
+  "content_length": 72,
+  "url": "https://ptradeapi.com#tick_data"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trade_name",
+  "title": "get_trade_name – 获取交易名称",
+  "content": "get_trade_name – 获取交易名称\n\ndef initialize(context):\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    name = get_trade_name()\n\nget_lucky_info - 获取历史中签信息\nget_lucky_info(start_date, end_date)\n使用场景\n\n该函数仅在交易模块使用，对接jz_ufx不支持该函数\n\n接口说明\n\n该接口用于获取指定时间范围内的中签信息。\n\n注意事项：\n\n为减小对柜台压力，该函数在股票交易模块中同一分钟内多次调用返回当前分钟首次查询的缓存数据。\n参数\n\nstart_date：开始日期(str)，输入形式仅支持\"YYYYmmdd\"，如\"20220928\"。\n\nend_date：结束日期(str)，输入形式仅支持\"YYYYmmdd\"，如\"20220929\"。\n\n返回\n\n正常返回一个列表套字典数据，异常或无中签信息时返回一个空列表。\n\n返回的数据格式如下：\n\n[{'stock_code': 证券代码(str), 'occur_amount': 发生数量(float), 'business_price': 成交价格(float), 'stock_name': 证券名称(str), 'init_date': 交易日期(int)}, ...]\n\n[{'stock_code': '371002.SZ', 'occur_amount': 10.0, 'business_price': 100.0, 'stock_name': '崧盛发债', 'init_date': 20220928}, ...]\n\n示例\ndef initialize(context):\n    # 初始化策略\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    pre_date = str(get_trading_day(-1)).replace(\"-\", \"\")\n    current_date = context.blotter.current_dt.strftime(\"%Y%m%d\")\n    # 获取上一交易日至今天中签信息\n    lucky_info = get_lucky_info(pre_date, current_date)\n    log.info(lucky_info)\n\ndef handle_data(context, data):\n    pass\n\n注意：代码精度位为3位小数的类型(后台已保护为3位)，如ETF、国债；代码精度为2位小数类型，需要在传参时限制价格参数的精度，如股票。",
+  "code_blocks": [],
+  "content_length": 1250,
+  "url": "https://ptradeapi.com/#get_trade_name"
+}

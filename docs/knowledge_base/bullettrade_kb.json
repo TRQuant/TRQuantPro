@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "name": "BulletTrade知识库",
+    "source": "https://bullettrade.cn/docs/",
+    "created_at": "2026-01-08T14:02:07.074074",
+    "total_items": 7,
+    "mcp_tool_used": true
+  },
+  "items": [
+    {
+      "title": "BulletTrade 回测引擎概述",
+      "content": "BulletTrade 是兼容聚宽API的量化研究与交易框架，支持多数据源、多券商接入。\n\n**核心特点**:\n- ✅ **100%兼容聚宽API**: 聚宽策略可以在BulletTrade中无修改运行\n- ✅ **多数据源支持**: JQData、MiniQMT、Tushare、本地缓存\n- ✅ **多券商支持**: 本地QMT、远程QMT server、模拟券商\n- ✅ **本地回测**: 无需联网，本地执行回测\n- ✅ **实盘交易**: 支持实盘交易接口\n\n**官方文档**: https://bullettrade.cn/docs/\n**GitHub**: https://github.com/BulletTrade/bullet-trade\n\n**与聚宽的关系**:\n- BulletTrade完全兼容聚宽API\n- 聚宽策略只需添加 `from jqdata import *` 即可在BulletTrade运行\n- 无需任何代码转换\n\n**适用场景**:\n- 策略研究和开发\n- 本地回测验证\n- 实盘交易部署\n- 多数据源测试",
+      "type": "api_reference",
+      "tags": [
+        "BulletTrade",
+        "回测引擎",
+        "聚宽兼容",
+        "量化框架",
+        "回测系统"
+      ],
+      "source": "https://bullettrade.cn/docs/"
+    },
+    {
+      "title": "BulletTrade 安装和配置方法",
+      "content": "**安装方法**:\n```bash\n# 安装BulletTrade\npip install bullet-trade\n```\n\n**环境配置 (.env)**:\n```bash\nDEFAULT_DATA_PROVIDER=jqdata\nJQDATA_USERNAME=your_username\nJQDATA_PASSWORD=your_password\nDEFAULT_BROKER=simulator\n```\n\n**数据源配置**:\n- jqdata: 聚宽数据（需要账号）\n- miniqmt: 券商QMT免费行情\n- tushare: Tushare数据（需要Token）\n- mock: 模拟数据（用于测试）",
+      "type": "tutorial",
+      "tags": [
+        "BulletTrade",
+        "安装",
+        "配置",
+        "环境设置",
+        "数据源"
+      ],
+      "source": "https://bullettrade.cn/docs/"
+    },
+    {
+      "title": "BulletTrade 回测使用指南",
+      "content": "**命令行回测**:\n```bash\nbullet-trade backtest strategies/bullettrade/my_strategy.py \\\n  --start 2024-01-01 \\\n  --end 2024-12-31 \\\n  --cash 1000000 \\\n  --benchmark 000300.XSHG \\\n  --output backtest_results/my_backtest \\\n  --auto-report\n```\n\n**回测参数说明**:\n- --start: 回测开始日期\n- --end: 回测结束日期\n- --cash: 初始资金（默认100万）\n- --benchmark: 基准指数\n- --output: 输出目录\n- --auto-report: 自动生成HTML报告\n\n**策略文件要求**:\n```python\nfrom jqdata import *\n\ndef initialize(context):\n    set_benchmark('000300.XSHG')\n    set_slippage(FixedSlippage(0.001))\n```",
+      "type": "guide",
+      "tags": [
+        "BulletTrade",
+        "回测",
+        "使用指南",
+        "回测参数",
+        "命令行"
+      ],
+      "source": "docs/07_workflow/BULLETTRADE_BACKTEST_GUIDE.md"
+    },
+    {
+      "title": "BulletTrade Python API 参考",
+      "content": "**Python API使用**:\n\n```python\nfrom core.bullettrade import BulletTradeEngine, BTConfig\n\nconfig = BTConfig(\n    start_date=\"2024-01-01\",\n    end_date=\"2024-12-31\",\n    initial_capital=1000000,\n    data_provider=\"jqdata\"\n)\n\nengine = BulletTradeEngine(config)\nresult = engine.run_backtest(strategy_path=\"strategies/bullettrade/my_strategy.py\")\n\nprint(f\"总收益率: {result.total_return:.2f}%\")\nprint(f\"夏普比率: {result.sharpe_ratio:.2f}\")\n```\n\n**BTConfig 配置类**:\n- start_date: 回测开始日期\n- end_date: 回测结束日期\n- initial_capital: 初始资金\n- commission_rate: 佣金率\n- data_provider: 数据源\n- benchmark: 基准指数",
+      "type": "api_reference",
+      "tags": [
+        "BulletTrade",
+        "Python API",
+        "BulletTradeEngine",
+        "BTConfig",
+        "BTResult"
+      ],
+      "source": "core/bullettrade/__init__.py"
+    },
+    {
+      "title": "BulletTrade 与聚宽 API 兼容性",
+      "content": "**核心结论**: BulletTrade和聚宽API **100%兼容**，无需转换！\n\n**API对比**:\n- from jqdata import *: ✅ 完全相同\n- get_price(): ✅ 完全相同\n- get_current_data(): ✅ 完全相同\n- set_order_cost(): ✅ 完全相同\n- order_target_value(): ✅ 完全相同\n\n**转换关系**:\n```\n聚宽策略 → BulletTrade策略 ✅ 完全兼容，无需转换\nBulletTrade策略 → PTrade策略 ⚠️ 需要转换\n```\n\n**使用示例**:\n```python\n# 聚宽策略（可直接在BulletTrade运行）\nfrom jqdata import *\n\ndef initialize(context):\n    set_benchmark('000300.XSHG')\n```",
+      "type": "reference",
+      "tags": [
+        "BulletTrade",
+        "聚宽",
+        "API兼容",
+        "策略迁移",
+        "无需转换"
+      ],
+      "source": "docs/07_workflow/BULLETTRADE_OFFICIAL_DOCS_ANALYSIS.md"
+    },
+    {
+      "title": "BulletTrade 在 TRQuant 项目中的集成",
+      "content": "**项目中的使用位置**:\n\n1. **核心模块**: core/bullettrade/\n   - engine.py - BulletTrade引擎封装\n   - config.py - 配置类\n   - result.py - 结果类\n\n2. **MCP服务器集成**: mcp_servers/backtest_server_v2.py\n   - backtest.bullettrade - BulletTrade回测工具\n\n3. **工作流集成**: core/workflow_orchestrator.py\n   - 步骤7（回测验证）自动使用BulletTrade\n\n**使用示例**:\n```python\nfrom core.bullettrade import BulletTradeEngine, BTConfig\n\nconfig = BTConfig(start_date=\"2024-01-01\", end_date=\"2024-12-31\")\nengine = BulletTradeEngine(config)\nresult = engine.run_backtest(strategy_code)\n```",
+      "type": "integration",
+      "tags": [
+        "BulletTrade",
+        "TRQuant",
+        "项目集成",
+        "MCP服务器",
+        "工作流"
+      ],
+      "source": "core/bullettrade/"
+    },
+    {
+      "title": "BulletTrade 策略转换指南",
+      "content": "**转换关系**:\n\n1. 聚宽 ↔ BulletTrade: ✅ 无需转换，完全兼容\n2. BulletTrade/聚宽 → PTrade: ⚠️ 需要转换\n\n**必须转换的差异**:\n- 删除 from jqdata import *\n- get_price() -> get_history()\n- get_current_data() -> get_snapshot(stocks)\n- set_order_cost() -> set_commission(PerTrade(...))\n\n**转换器使用**:\n```bash\npython core/comprehensive_strategy_converter.py \\\n    strategies/bullettrade/my_strategy.py \\\n    strategies/ptrade/my_strategy_ptrade.py\n```",
+      "type": "guide",
+      "tags": [
+        "BulletTrade",
+        "策略转换",
+        "PTrade",
+        "聚宽",
+        "转换器"
+      ],
+      "source": "docs/07_workflow/CORRECTED_CONVERSION_GUIDE.md"
+    }
+  ],
+  "results": {
+    "success": 7,
+    "failed": 0,
+    "errors": [],
+    "knowledge_ids": [
+      "kb_20260108_140207",
+      "kb_20260108_140207",
+      "kb_20260108_140207",
+      "kb_20260108_140207",
+      "kb_20260108_140207",
+      "kb_20260108_140207",
+      "kb_20260108_140207"
+    ]
+  }
+}

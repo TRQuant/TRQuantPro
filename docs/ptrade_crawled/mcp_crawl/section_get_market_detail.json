@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_market_detail",
+  "title": "get_market_detail-获取市场详细信息",
+  "content": "get_market_detail-获取市场详细信息\n\nfinance_mic: 市场代码，相关市场编码参考get_market_list返回信息(str)。\n\n      hq_type_code prod_code prod_name  trade_time_rule\n0              MRI    000001      上证指数                0\n1              MRI    000002      Ａ股指数                0\n2              MRI    000003      Ｂ股指数                0\n3              MRI    000004      工业指数                0\n4              MRI    000005      商业指数                0\n5              MRI    000006      地产指数                0\n6              MRI    000007      公用指数                0\n7              MRI    000008      综合指数                0\n\n# 获取上海证券交易所相关信息 'XSHG'/'SS'\nget_market_detail('XSHG')",
+  "code_blocks": [],
+  "content_length": 639,
+  "url": "https://ptradeapi.com/#get_market_detail"
+}

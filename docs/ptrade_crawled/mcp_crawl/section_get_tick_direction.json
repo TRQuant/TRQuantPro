@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_tick_direction",
+  "title": "get_tick_direction– 获取分时成交行情",
+  "content": "get_tick_direction– 获取分时成交行情\n\nget_tick_direction\n(\nsymbols\n=\nNone\n,\nquery_date\n=\n0\n,\nstart_pos\n=\n0\n,\nsearch_direction\n=\n1\n,\ndata_count\n=\n50\n)",
+  "code_blocks": [],
+  "content_length": 141,
+  "url": "https://ptradeapi.com#get_tick_direction"
+}

@@ -1,0 +1,233 @@
+# 研究环境统一配置文件
+# ========================
+# 
+# 此文件包含所有研究 notebook 和脚本的通用配置
+# 支持环境变量覆盖: ${ENV_VAR_NAME}
+# 
+# 使用方式:
+#   from notebooks.lib.research_init import setup_research_environment
+#   env = setup_research_environment()
+#   config = env.config
+
+# ============================
+# 数据源配置
+# ============================
+data:
+  # 默认指数代码
+  default_index: "000001.XSHG"
+  
+  # 可用的指数列表
+  indices:
+    shanghai: "000001.XSHG"    # 上证指数
+    shenzhen: "399001.XSHE"   # 深证成指
+    csi300: "000300.XSHG"     # 沪深300
+    csi500: "000905.XSHG"     # 中证500
+    gem: "399006.XSHE"        # 创业板指
+    star50: "000688.XSHG"     # 科创50
+  
+  # 数据时间范围
+  default_lookback_days: 365
+  max_lookback_days: 1095  # 3年
+  
+  # 数据频率
+  default_frequency: "daily"
+  
+  # 缓存设置
+  cache:
+    enabled: true
+    ttl_hours: 24  # 缓存有效期（小时）
+    max_size_mb: 500  # 最大缓存大小
+
+# ============================
+# 分析参数配置
+# ============================
+analysis:
+  # 趋势分析
+  trend:
+    # 多周期配置
+    periods:
+      short:
+        days: 40
+        ma_fast: 5
+        ma_slow: 20
+        weight: 0.2
+      medium:
+        days: 120
+        ma_fast: 20
+        ma_slow: 60
+        weight: 0.3
+      long:
+        days: 240
+        ma_fast: 60
+        ma_slow: 250
+        weight: 0.5
+    
+    # 指标权重
+    indicator_weights:
+      ma: 0.20
+      macd: 0.18
+      rsi: 0.10
+      bollinger: 0.10
+      volume: 0.12
+      kdj: 0.10
+      adx: 0.10
+      capital_flow: 0.10
+  
+  # IBD分析
+  ibd:
+    distribution_day_threshold: -0.002  # 分布日跌幅阈值
+    follow_through_gain: 0.017          # 跟踪日涨幅阈值
+    volume_increase_ratio: 1.1          # 成交量放大比例
+    lookback_days: 60
+  
+  # 市场环境检测
+  regime:
+    scoring_weights:
+      macro: 0.25
+      market: 0.25
+      sentiment: 0.25
+      technical: 0.25
+
+# ============================
+# 回测配置
+# ============================
+backtest:
+  # 默认回测参数
+  default_start_date: "2023-01-01"
+  default_end_date: "2025-12-31"
+  initial_capital: 1000000
+  
+  # 交易成本
+  commission_rate: 0.0003  # 佣金率
+  slippage: 0.001          # 滑点
+  stamp_tax: 0.001         # 印花税（卖出）
+  
+  # 风险控制
+  max_position: 0.95       # 最大仓位
+  single_stock_limit: 0.10 # 单只股票上限
+  sector_limit: 0.25       # 行业上限
+  stop_loss: 0.08          # 止损线
+  take_profit: 0.20        # 止盈线
+  
+  # Walk-Forward验证
+  walk_forward:
+    train_window: 252      # 训练窗口（交易日）
+    test_window: 63        # 测试窗口
+    step: 21               # 滚动步长
+
+# ============================
+# 可视化配置
+# ============================
+visualization:
+  # 颜色方案
+  colors:
+    bullish: "#26a69a"     # 看涨颜色（绿色）
+    bearish: "#ef5350"     # 看跌颜色（红色）
+    neutral: "#78909c"     # 中性颜色（灰色）
+    background: "#fafafa"
+    grid: "#e0e0e0"
+  
+  # 图表默认大小
+  figure_size:
+    width: 14
+    height: 8
+  
+  # 字体设置
+  font:
+    family: "Microsoft YaHei"  # 支持中文
+    size: 12
+  
+  # 交互式图表设置
+  plotly:
+    theme: "plotly_white"
+    show_rangeslider: true
+
+# ============================
+# 输出配置
+# ============================
+output:
+  # 输出目录
+  base_dir: "output"
+  
+  # 子目录
+  subdirs:
+    reports: "reports"
+    charts: "charts"
+    data: "data"
+    logs: "logs"
+  
+  # 文件格式
+  report_format: "html"  # html, pdf, md
+  data_format: "csv"     # csv, json, parquet
+  chart_format: "png"    # png, svg, html
+  
+  # 文件命名
+  include_timestamp: true
+  timestamp_format: "%Y%m%d_%H%M%S"
+
+# ============================
+# 日志配置
+# ============================
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # 文件日志
+  file:
+    enabled: true
+    max_size_mb: 10
+    backup_count: 5
+
+# ============================
+# 性能配置
+# ============================
+performance:
+  # 并发设置
+  max_workers: 4
+  
+  # 批量处理
+  batch_size: 100
+  
+  # 内存限制
+  max_memory_mb: 2048
+  
+  # 进度显示
+  show_progress: true
+  progress_update_interval: 1.0  # 秒
+
+# ============================
+# 研究特定配置
+# ============================
+research:
+  # Notebook 特定设置
+  notebooks:
+    # 01_market_trend_comprehensive
+    market_trend:
+      auto_save_results: true
+      show_all_signals: true
+    
+    # 02_ibd_reversal_analysis
+    ibd_analysis:
+      highlight_ftd: true
+      highlight_distribution: true
+    
+    # 03_multi_period_resonance
+    resonance:
+      show_heatmap: true
+      correlation_threshold: 0.7
+    
+    # 04_risk_assessment
+    risk:
+      var_confidence: 0.95
+      stress_scenarios: ["2015_crash", "2018_bear", "2020_covid"]
+    
+    # 05_comprehensive_dashboard
+    dashboard:
+      refresh_interval: 60  # 秒
+      layout: "grid"  # grid, tabs
+    
+    # 06_market_visualization
+    visualization:
+      interactive: true
+      export_static: false
+

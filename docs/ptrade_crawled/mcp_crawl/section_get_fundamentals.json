@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_fundamentals",
+  "title": "get_fundamentals-获取财务数据",
+  "content": "get_fundamentals-获取财务数据\n\nget_fundamentals\n(\nsecurity\n,\ntable\n,\nfields\n=\nNone\n,\ndate\n=\nNone\n,\nstart_year\n=\nNone\n,\nend_year\n=\nNone\n,\nreport_types\n=\nNone\n,\ndate_type\n=\nNone\n,\nmerge_type\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 191,
+  "url": "https://ptradeapi.com#get_fundamentals"
+}

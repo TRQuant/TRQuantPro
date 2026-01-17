@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_individual_entrust",
+  "title": "get_individual_entrust - 获取逐笔委托行情",
+  "content": "get_individual_entrust - 获取逐笔委托行情\n\nget_individual_entrust\n(\nstocks\n=\nNone\n,\ndata_count\n=\n50\n,\nstart_pos\n=\n0\n,\nsearch_direction\n=\n1\n,\nis_dict\n=\nFalse\n)",
+  "code_blocks": [],
+  "content_length": 150,
+  "url": "https://ptradeapi.com#get_individual_entrust"
+}

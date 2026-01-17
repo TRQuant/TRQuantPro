@@ -1,0 +1,8 @@
+{
+  "anchor_id": "实用的策略",
+  "title": "实用的策略",
+  "content": "实用的策略\n\ndef\ninitialize\n(\ncontext\n):\ng\n.\nsecurity\n=\n'600570.SS'\nset_universe\n(\ng\n.\nsecurity\n)\ndef\nhandle_data\n(\ncontext\n,\ndata\n):\nsecurity\n=\ng\n.\nsecurity\n    sid\n=\ng\n.\nsecurity\n# 取得过去五天的历史价格\ndf\n=\nget_history\n(\n5\n,\n'1d'\n,\n'close'\n,\nsecurity\n,\nfq\n=\nNone\n,\ninclude\n=\nFalse\n)\n# 取得过去五天的平均价格\naverage_price\n=\nround\n(\ndf\n[\n'close'\n][-\n5\n:].\nmean\n(),\n3\n)\n# 取得上一时间点价格\ncurrent_price\n=\ndata\n[\nsid\n][\n'close'\n]\n# 取得当前的现金\ncash\n=\ncontext\n.\nportfolio\n.\ncash\n# 如果上一时间点价格高出五天平均价1%, 则全仓买入\nif\ncurrent_price\n>\n1.01\n*\naverage_price\n:\n# 用所有 cash 买入股票\norder_value\n(\ng\n.\nsecurity\n,\ncash\n)\nlog\n.\ninfo\n(\n'buy %s'\n%\ng\n.\nsecurity\n)\n# 如果上一时间点价格低于五天平均价, 则空仓卖出\nelif\ncurrent_price\n<\naverage_price\nand\nget_position\n(\nsecurity\n).\namount\n>\n0\n:\n# 卖出所有股票,使这只股票的最终持有量为0\norder_target\n(\ng\n.\nsecurity\n,\n0\n)\nlog\n.\ninfo\n(\n'sell %s'\n%\ng\n.\nsecurity\n)",
+  "code_blocks": [],
+  "content_length": 802,
+  "url": "https://ptradeapi.com#实用的策略"
+}

@@ -1,0 +1,17 @@
+{
+  "evidence": [
+    {
+      "id": "ev_20260109_105942",
+      "decision": "使用知识库存储调试经验",
+      "reason": "便于后续遇到类似问题时快速查找解决方案",
+      "data": {
+        "kb_entries": 5,
+        "categories": [
+          "bulletrade_debug",
+          "jqdata_api"
+        ]
+      },
+      "timestamp": "2026-01-09T10:59:42.053886"
+    }
+  ]
+}

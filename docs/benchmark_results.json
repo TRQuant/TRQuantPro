@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-12-17 20:41:14",
+  "results": [
+    {
+      "step": "data_source",
+      "avg_ms": 553.51,
+      "min_ms": 0.06,
+      "max_ms": 1660.36,
+      "runs": 3,
+      "ok": true
+    },
+    {
+      "step": "market_trend",
+      "avg_ms": 0.56,
+      "min_ms": 0.2,
+      "max_ms": 1.29,
+      "runs": 3,
+      "ok": true
+    },
+    {
+      "step": "mainline",
+      "avg_ms": 16.63,
+      "min_ms": 0.06,
+      "max_ms": 49.71,
+      "runs": 3,
+      "ok": true
+    },
+    {
+      "step": "factor",
+      "avg_ms": 0.15,
+      "min_ms": 0.04,
+      "max_ms": 0.36,
+      "runs": 3,
+      "ok": true
+    },
+    {
+      "step": "strategy",
+      "avg_ms": 0.94,
+      "min_ms": 0.05,
+      "max_ms": 2.69,
+      "runs": 3,
+      "ok": true
+    }
+  ]
+}

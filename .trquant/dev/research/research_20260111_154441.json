@@ -1,0 +1,36 @@
+{
+  "id": "research_20260111_154441",
+  "topic": "追涨策略递归迭代优化",
+  "module_name": "chase_rise_strategy",
+  "objectives": [
+    "了解追涨策略的信号类型",
+    "确认参数优化方法",
+    "检查已有实现"
+  ],
+  "kb_results_count": 9,
+  "kb_results_summary": [
+    {
+      "title": "V4.0系统生成聚宽策略代码指南",
+      "type": "guide"
+    },
+    {
+      "title": "聚宽策略程序架构",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽回测过程说明",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽数据获取函数 - get_price, history, get_fundamentals",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽交易函数 - order_target, order_value, order_target_percent",
+      "type": "reference"
+    }
+  ],
+  "web_search_suggestions": [],
+  "status": "completed",
+  "created_at": "2026-01-11T15:44:49.847899"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "新建交易",
+  "title": "新建交易",
+  "content": "新建交易\n\n交易界面点击新增按键进行新增交易操作，策略方案中的对象为所有策略列表中的策略，给本次交易设定名称并点击确定后系统就开始运行交易了。\n\n交易支持日线级别、分钟级别、tick级别运行，日线级别和分钟级别详见handle_data方法，tick级别运行详见run_interval和tick_data方法。",
+  "code_blocks": [],
+  "content_length": 156,
+  "url": "https://ptradeapi.com/#新建交易"
+}

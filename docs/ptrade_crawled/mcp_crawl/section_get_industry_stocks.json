@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_industry_stocks",
+  "title": "get_industry_stocks- 获取行业成份股",
+  "content": "get_industry_stocks- 获取行业成份股\n\nindustry_code: 行业编码，尾缀必须是.XBHS 如农业股：A01000.XBHS(str)\n\n['300970.SZ', '300087.SZ', '300972.SZ', '002772.SZ', '000998.SZ', '002041.SZ', '600598.SS', '600371.SS', '600506.SS', '300511.SZ', '600359.SS', '600354.SS', '601118.SS', '600540.SS', '300189.SZ',\n '600313.SS', '600108.SS'] \n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    # 获取农业的股票, 设为股票池\n    stocks = get_industry_stocks('A01000.XBHS')\n    set_universe(stocks)\n    log.info(stocks)\n\ndef handle_data(context, data):\n    pass\n\nget_fundamentals(security, table, fields = None, date = None, start_year = None, end_year = None, report_types = None, date_type = None, merge_type = None)",
+  "code_blocks": [],
+  "content_length": 747,
+  "url": "https://ptradeapi.com/#get_industry_stocks"
+}

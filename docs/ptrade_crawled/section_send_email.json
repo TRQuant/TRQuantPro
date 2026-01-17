@@ -1,0 +1,8 @@
+{
+  "anchor_id": "send_email",
+  "title": "send_email - 发送邮箱信息",
+  "content": "send_email - 发送邮箱信息\n\nsend_email(send_email_info, get_email_info, smtp_code, info='', path='', subject='')",
+  "code_blocks": [],
+  "content_length": 105,
+  "url": "https://ptradeapi.com/#send_email"
+}

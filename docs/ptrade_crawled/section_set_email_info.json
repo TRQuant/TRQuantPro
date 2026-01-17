@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_email_info",
+  "title": "set_email_info-设置邮件信息",
+  "content": "set_email_info-设置邮件信息\n\nset_email_info(email_address, smtp_code, email_subject)",
+  "code_blocks": [],
+  "content_length": 78,
+  "url": "https://ptradeapi.com/#set_email_info"
+}

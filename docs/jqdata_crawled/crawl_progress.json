@@ -1,0 +1,24 @@
+{
+  "visited_urls": [
+    "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10746",
+    "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9842",
+    "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10243",
+    "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10268",
+    "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10244"
+  ],
+  "failed_urls": [],
+  "stats": {
+    "total_links": 0,
+    "crawled": 0,
+    "success": 0,
+    "failed": 0,
+    "skipped": 0,
+    "retried": 0,
+    "saved_to_kb": 0,
+    "duplicates_skipped": 0,
+    "sidebar_cache_hits": 0,
+    "start_time": "2026-01-01T14:40:06.513439",
+    "last_progress_save": null
+  },
+  "timestamp": "2026-01-01T14:40:06.723018"
+}

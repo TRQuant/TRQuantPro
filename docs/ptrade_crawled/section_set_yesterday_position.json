@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_yesterday_position",
+  "title": "set_yesterday_position – 设置底仓",
+  "content": "set_yesterday_position – 设置底仓\n\nposlist：list类型数据，该list中是字典类型的元素，参数不能为空(list[dict[str:str],...])；",
+  "code_blocks": [],
+  "content_length": 95,
+  "url": "https://ptradeapi.com/#set_yesterday_position"
+}

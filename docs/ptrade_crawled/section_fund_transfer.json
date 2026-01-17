@@ -1,0 +1,8 @@
+{
+  "anchor_id": "fund_transfer",
+  "title": "fund_transfer-资金调拨",
+  "content": "fund_transfer-资金调拨\n\nfund_transfer(trans_direction, occur_balance, exchange_type=\"1\")\n\n如要使用该函数，需咨询券商当前柜台是否支持。\n当前仅支持UF20柜台与ATP柜台、UF20柜台与ATP柜台双中心资金调拨。\n如果是UF20与ATP柜台，exchange_type可不传。\n如果是UF20与ATP柜台双中心，exchange_type为必传字段。",
+  "code_blocks": [],
+  "content_length": 216,
+  "url": "https://ptradeapi.com/#fund_transfer"
+}

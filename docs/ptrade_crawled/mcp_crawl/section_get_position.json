@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_position",
+  "title": "get_position - 获取持仓信息",
+  "content": "get_position - 获取持仓信息\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    position = get_position(g.security)\n    log.info(position)\n\nmargin_trade(security, amount, limit_price=None, market_type=None)",
+  "code_blocks": [],
+  "content_length": 269,
+  "url": "https://ptradeapi.com/#get_position"
+}

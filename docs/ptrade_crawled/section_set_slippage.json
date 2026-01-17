@@ -1,0 +1,8 @@
+{
+  "anchor_id": "set_slippage",
+  "title": "set_slippage-设置滑点",
+  "content": "set_slippage-设置滑点\n\n该函数用于设置滑点比例，滑点在真实交易场景是不可避免的，因此回测中设置合理的滑点有利于让回测逼近真实场景。\n\nslippage：滑点比例，委托价格与最后的成交价格的价差设置，这个价差是当时价格的一个百分比(比如0.2%，撮合成交时委托价格加减当时价格的0.1%)。最终成交价格=委托价格±委托价格*slippage(float)/2，默认滑点比例为0.1。",
+  "code_blocks": [],
+  "content_length": 197,
+  "url": "https://ptradeapi.com/#set_slippage"
+}

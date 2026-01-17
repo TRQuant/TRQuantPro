@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_user_name",
+  "title": "get_user_name – 获取登录终端的资金账号",
+  "content": "get_user_name – 获取登录终端的资金账号\n\n返回登录终端的资金账号(str)或者None。如果查询成功登录终端的资金账号(str)，失败则返回None。\n\ndef initialize(context):\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n    g.user_name = get_user_name()\n\ndef before_trading_start(context, data):\n    g.flag = False\n\ndef handle_data(context, data):\n    # 账号为123456789且当日未委托过，买入100股\n    if g.user_name == \"123456789\" and not g.flag:\n        # 买入100股\n        order(g.security, 100)\n        g.flag = True\n\n该函数仅在交易模块使用；仅支持before_trading_start和after_trading_end阶段调用",
+  "code_blocks": [],
+  "content_length": 507,
+  "url": "https://ptradeapi.com/#get_user_name"
+}

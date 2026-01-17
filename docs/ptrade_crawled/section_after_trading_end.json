@@ -1,0 +1,8 @@
+{
+  "anchor_id": "after_trading_end",
+  "title": "after_trading_end（可选）",
+  "content": "after_trading_end（可选）\n\n该函数会在每天交易结束之后调用，用于处理每天收盘后的操作，如无盘后处理需求，该函数可以在策略中不做定义。\n\nget_trades_file(回测)\tget_stock_info(研究/回测/交易)\tget_open_orders(回测/交易)\nget_all_trades_days(研究/回测/交易)\tget_trade_days(研究/回测/交易)\tget_history(回测/交易)\nget_price(研究/回测/交易)\tget_individual_entrust(交易)\tget_individual_transcation(交易)\nget_Ashares(研究/回测/交易)\tget_stock_name(研究/回测/交易)\tget_stock_status(研究/回测/交易)\nget_stock_exrights(研究/回测/交易)\tget_stock_blocks(研究/回测/交易)\tget_index_stocks(研究/回测/交易)\nget_industry_stocks(研究/回测/交易)\tget_fundamentals(研究/回测/交易)\tget_user_name(回测/交易)\nget_cb_list(交易)\tget_deliver(交易)\tget_fundjour(交易)\nget_research_path(回测/交易)\tget_trade_name(交易)\tget_market_list(研究/回测/交易)\nget_market_detail(研究/回测/交易)\tpermission_test(交易)\tget_tick_direction(交易)\nget_sort_msg(交易)\tget_margin_rate(回测(期货))\tget_margin_rate(回测(期货))\nget_instruments(回测/交易(期货))\tget_MACD(回测/交易)\tget_KDJ(回测/交易)\nget_RSI(回测/交易)\tget_CCI(回测/交易)\tcreate_dir(回测/交易)",
+  "code_blocks": [],
+  "content_length": 892,
+  "url": "https://ptradeapi.com/#after_trading_end"
+}

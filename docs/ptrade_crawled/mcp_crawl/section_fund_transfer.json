@@ -1,0 +1,8 @@
+{
+  "anchor_id": "fund_transfer",
+  "title": "fund_transfer-资金调拨",
+  "content": "fund_transfer-资金调拨\n\nfund_transfer\n(\ntrans_direction\n,\noccur_balance\n,\nexchange_type\n=\n\"1\"\n)",
+  "code_blocks": [],
+  "content_length": 91,
+  "url": "https://ptradeapi.com#fund_transfer"
+}

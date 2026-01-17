@@ -1,0 +1,2007 @@
+{
+  "title": "十倍股早期识别报告 - 完整评估",
+  "generated_at": "2025-12-20T13:52:05.413469",
+  "version": "v2",
+  "run_id": "run_20251220_135205_d8aabd",
+  "consistency": {
+    "is_valid": true,
+    "warnings": []
+  },
+  "metadata": {
+    "thresholds": {
+      "l1_threshold": 50,
+      "l2_threshold": 70
+    },
+    "stats": {
+      "total_evaluated": 15,
+      "recommended": 0,
+      "rejected": 0,
+      "by_level": {
+        "S+": 0,
+        "S": 0,
+        "A": 0,
+        "B": 1,
+        "C": 11,
+        "D": 3,
+        "REJECTED": 0
+      },
+      "by_stage": {
+        "S0": 1,
+        "S1": 14,
+        "S2": 0,
+        "S3": 0,
+        "S4": 0,
+        "S5": 0
+      },
+      "funnel_stats": {
+        "l0_input": 15,
+        "l0_passed": 15,
+        "l1_passed": 7,
+        "l2_passed": 4,
+        "rejected": 8,
+        "l0_pass_rate": "100.0%",
+        "l1_pass_rate": "46.7%",
+        "l2_pass_rate": "26.7%",
+        "target_pass_rate": "15.0%",
+        "pass_rate_status": "过高，需收紧"
+      },
+      "rule_engine_stats": {
+        "total_checked": 15,
+        "vetoed": 0,
+        "passed": 15,
+        "veto_rate": "0.0%",
+        "top_triggered_rules": [
+          [
+            "st_delisting",
+            0
+          ],
+          [
+            "major_violation",
+            0
+          ],
+          [
+            "cash_flow_negative",
+            0
+          ],
+          [
+            "high_leverage_short_debt",
+            0
+          ],
+          [
+            "goodwill_dominant",
+            0
+          ]
+        ],
+        "rule_count": 10
+      },
+      "pass_rate_stats": {
+        "total_evaluated": 15,
+        "l0_passed": 15,
+        "l1_passed": 7,
+        "l2_passed": 4,
+        "rejected": 0
+      }
+    }
+  },
+  "reports": [
+    {
+      "report_id": "tb2_20251220_135205_6cd1e7",
+      "symbol": "300002.XSHE",
+      "name": "神州泰岳",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 37.46,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_788dc5",
+        "symbol": "300002.XSHE",
+        "total_score": 43.26,
+        "adjusted_score": 33.65,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": -12.99,
+            "score": 23.7625,
+            "weight": 0.18,
+            "weighted": 4.2772499999999996,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -19.5,
+            "score": 20.5,
+            "weight": 0.18,
+            "weighted": 3.69,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 58.4,
+            "score": 100,
+            "weight": 0.12,
+            "weighted": 12.0,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 3.71,
+            "score": 41.129999999999995,
+            "weight": 0.1,
+            "weighted": 4.1129999999999995,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分37.5，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412088",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_5ac4a7",
+      "symbol": "000063.XSHE",
+      "name": "中兴通讯",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 36.92,
+      "funnel_level": "L1",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_9605a4",
+        "symbol": "000063.XSHE",
+        "total_score": 48.13,
+        "adjusted_score": 37.44,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 20.92,
+            "score": 66.15,
+            "weight": 0.18,
+            "weighted": 11.907,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -12.1,
+            "score": 27.9,
+            "weight": 0.18,
+            "weighted": 5.021999999999999,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 30.9,
+            "score": 66.35,
+            "weight": 0.12,
+            "weighted": 7.961999999999999,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 3.54,
+            "score": 40.620000000000005,
+            "weight": 0.1,
+            "weighted": 4.062,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分36.9，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412170",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_e93081",
+      "symbol": "000301.XSHE",
+      "name": "东方盛虹",
+      "is_recommended": false,
+      "recommendation_level": "D",
+      "final_score": 33.7,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_148e5c",
+        "symbol": "000301.XSHE",
+        "total_score": 31.19,
+        "adjusted_score": 24.26,
+        "grade": "D",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": -15.2,
+            "score": 21.0,
+            "weight": 0.18,
+            "weighted": 3.78,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -34.88,
+            "score": 5.119999999999997,
+            "weight": 0.18,
+            "weighted": 0.9215999999999995,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 10.39,
+            "score": 35.585,
+            "weight": 0.12,
+            "weighted": 4.2702,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 0.13,
+            "score": 30.39,
+            "weight": 0.1,
+            "weighted": 3.039,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：D级，评分33.7，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412239",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_c7f264",
+      "symbol": "000100.XSHE",
+      "name": "TCL科技",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 36.22,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_3c5df9",
+        "symbol": "000100.XSHE",
+        "total_score": 39.29,
+        "adjusted_score": 30.56,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 12.82,
+            "score": 56.025,
+            "weight": 0.18,
+            "weighted": 10.0845,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -30.7,
+            "score": 9.3,
+            "weight": 0.18,
+            "weighted": 1.6740000000000002,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 13.68,
+            "score": 40.519999999999996,
+            "weight": 0.12,
+            "weighted": 4.862399999999999,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 1.63,
+            "score": 34.89,
+            "weight": 0.1,
+            "weighted": 3.4890000000000003,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分36.2，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412290",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_dc398f",
+      "symbol": "300012.XSHE",
+      "name": "华测检测",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 40.72,
+      "funnel_level": "L2",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_2244e5",
+        "symbol": "300012.XSHE",
+        "total_score": 52.35,
+        "adjusted_score": 40.72,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 4.62,
+            "score": 45.775,
+            "weight": 0.18,
+            "weighted": 8.2395,
+            "percentile": 40.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 8.62,
+            "score": 48.62,
+            "weight": 0.18,
+            "weighted": 8.7516,
+            "percentile": 80.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 52.14,
+            "score": 98.21000000000001,
+            "weight": 0.12,
+            "weighted": 11.7852,
+            "percentile": 60.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 4.64,
+            "score": 43.92,
+            "weight": 0.1,
+            "weighted": 4.392,
+            "percentile": 80.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分40.7，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412350",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_f39589",
+      "symbol": "300003.XSHE",
+      "name": "乐普医疗",
+      "is_recommended": false,
+      "recommendation_level": "B",
+      "final_score": 50.01,
+      "funnel_level": "L2",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "基本面: 利润高增长63.3%"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_28f5fd",
+        "symbol": "300003.XSHE",
+        "total_score": 62.61,
+        "adjusted_score": 48.7,
+        "grade": "B",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 11.72,
+            "score": 54.65,
+            "weight": 0.18,
+            "weighted": 9.837,
+            "percentile": 50.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 63.32,
+            "score": 100,
+            "weight": 0.18,
+            "weighted": 18.0,
+            "percentile": 83.33333333333334,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 64.51,
+            "score": 100,
+            "weight": 0.12,
+            "weighted": 12.0,
+            "percentile": 66.66666666666666,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 1.99,
+            "score": 35.97,
+            "weight": 0.1,
+            "weighted": 3.597,
+            "percentile": 33.33333333333333,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：B级，评分50.0，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412411",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_40b21a",
+      "symbol": "000166.XSHE",
+      "name": "申万宏源",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 44.72,
+      "funnel_level": "L2",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "基本面: 利润高增长112.0%"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_005650",
+        "symbol": "000166.XSHE",
+        "total_score": 54.84,
+        "adjusted_score": 42.66,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 19.64,
+            "score": 64.55,
+            "weight": 0.18,
+            "weighted": 11.619,
+            "percentile": 71.42857142857143,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 111.96,
+            "score": 100,
+            "weight": 0.18,
+            "weighted": 18.0,
+            "percentile": 71.42857142857143,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 0.0,
+            "score": 20.0,
+            "weight": 0.12,
+            "weighted": 2.4,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 2.15,
+            "score": 36.45,
+            "weight": 0.1,
+            "weighted": 3.6450000000000005,
+            "percentile": 42.857142857142854,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分44.7，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412465",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_f6bd43",
+      "symbol": "000333.XSHE",
+      "name": "美的集团",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 38.71,
+      "funnel_level": "L1",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "基本面: 利润增长14.8%",
+        "资金: 价格突破信号"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_b8556b",
+        "symbol": "000333.XSHE",
+        "total_score": 50.64,
+        "adjusted_score": 39.39,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 10.9,
+            "score": 53.625,
+            "weight": 0.18,
+            "weighted": 9.6525,
+            "percentile": 37.5,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 14.84,
+            "score": 54.84,
+            "weight": 0.18,
+            "weighted": 9.8712,
+            "percentile": 62.5,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 26.17,
+            "score": 59.255,
+            "weight": 0.12,
+            "weighted": 7.1106,
+            "percentile": 37.5,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 6.1,
+            "score": 48.3,
+            "weight": 0.1,
+            "weighted": 4.83,
+            "percentile": 87.5,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分38.7，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412520",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_ecea62",
+      "symbol": "300001.XSHE",
+      "name": "特锐德",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 47.8,
+      "funnel_level": "L2",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "基本面: 利润高增长83.9%"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_4ba7d4",
+        "symbol": "300001.XSHE",
+        "total_score": 58.09,
+        "adjusted_score": 45.18,
+        "grade": "B",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 10.37,
+            "score": 52.9625,
+            "weight": 0.18,
+            "weighted": 9.533249999999999,
+            "percentile": 33.33333333333333,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 83.92,
+            "score": 100,
+            "weight": 0.18,
+            "weighted": 18.0,
+            "percentile": 66.66666666666666,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 27.42,
+            "score": 61.13,
+            "weight": 0.12,
+            "weighted": 7.3356,
+            "percentile": 44.44444444444444,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 3.46,
+            "score": 40.379999999999995,
+            "weight": 0.1,
+            "weighted": 4.037999999999999,
+            "percentile": 44.44444444444444,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分47.8，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412573",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_74e94f",
+      "symbol": "000002.XSHE",
+      "name": "万科A",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 38.12,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "基本面: 利润高增长49.7%",
+        "资金: 均线多头排列, 价格突破信号"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_b06607",
+        "symbol": "000002.XSHE",
+        "total_score": 45.4,
+        "adjusted_score": 35.31,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": -17.07,
+            "score": 18.6625,
+            "weight": 0.18,
+            "weighted": 3.3592500000000003,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": 49.73,
+            "score": 89.72999999999999,
+            "weight": 0.18,
+            "weighted": 16.1514,
+            "percentile": 60.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 12.15,
+            "score": 38.225,
+            "weight": 0.12,
+            "weighted": 4.587,
+            "percentile": 20.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": -2.94,
+            "score": 21.18,
+            "weight": 0.1,
+            "weighted": 2.118,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分38.1，未达到早期识别标准",
+      "risk_warnings": [],
+      "timestamp": "2025-12-20T13:52:05.412623",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_a4db55",
+      "symbol": "300024.XSHE",
+      "name": "机器人",
+      "is_recommended": false,
+      "recommendation_level": "D",
+      "final_score": 34.94,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_0e3c06",
+        "symbol": "300024.XSHE",
+        "total_score": 35.17,
+        "adjusted_score": 27.35,
+        "grade": "D",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 4.73,
+            "score": 45.9125,
+            "weight": 0.18,
+            "weighted": 8.26425,
+            "percentile": 36.36363636363637,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -66.48,
+            "score": 0,
+            "weight": 0.18,
+            "weighted": 0.0,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 14.61,
+            "score": 41.915,
+            "weight": 0.12,
+            "weighted": 5.0298,
+            "percentile": 36.36363636363637,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": -1.03,
+            "score": 26.91,
+            "weight": 0.1,
+            "weighted": 2.6910000000000003,
+            "percentile": 9.090909090909092,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [
+          "现金流/利润方差过低(0.0)"
+        ],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：D级，评分34.9，未达到早期识别标准",
+      "risk_warnings": [
+        "现金流/利润方差过低(0.0)"
+      ],
+      "timestamp": "2025-12-20T13:52:05.412700",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_6d5650",
+      "symbol": "000001.XSHE",
+      "name": "平安银行",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 35.75,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_e4d963",
+        "symbol": "000001.XSHE",
+        "total_score": 37.76,
+        "adjusted_score": 29.37,
+        "grade": "D",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": -7.0,
+            "score": 31.25,
+            "weight": 0.18,
+            "weighted": 5.625,
+            "percentile": 25.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -1.58,
+            "score": 38.42,
+            "weight": 0.18,
+            "weighted": 6.9156,
+            "percentile": 41.66666666666667,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 0.0,
+            "score": 20.0,
+            "weight": 0.12,
+            "weighted": 2.4,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 2.12,
+            "score": 36.36,
+            "weight": 0.1,
+            "weighted": 3.636,
+            "percentile": 41.66666666666667,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [
+          "现金流/利润方差过低(0.0)"
+        ],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分35.7，未达到早期识别标准",
+      "risk_warnings": [
+        "现金流/利润方差过低(0.0)"
+      ],
+      "timestamp": "2025-12-20T13:52:05.412759",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_1c9435",
+      "symbol": "300014.XSHE",
+      "name": "亿纬锂能",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 36.7,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [
+        "资金: 相对强度93.6531884932609"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_be2bf6",
+        "symbol": "300014.XSHE",
+        "total_score": 40.84,
+        "adjusted_score": 31.76,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 24.56,
+            "score": 70.7,
+            "weight": 0.18,
+            "weighted": 12.726,
+            "percentile": 92.3076923076923,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -47.07,
+            "score": 0,
+            "weight": 0.18,
+            "weighted": 0.0,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 17.46,
+            "score": 46.19,
+            "weight": 0.12,
+            "weighted": 5.5428,
+            "percentile": 46.15384615384615,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 1.3,
+            "score": 33.9,
+            "weight": 0.1,
+            "weighted": 3.39,
+            "percentile": 23.076923076923077,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [
+          "现金流/利润方差过低(0.0)"
+        ],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分36.7，未达到早期识别标准",
+      "risk_warnings": [
+        "现金流/利润方差过低(0.0)"
+      ],
+      "timestamp": "2025-12-20T13:52:05.412816",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_b44fb0",
+      "symbol": "000157.XSHE",
+      "name": "中联重科",
+      "is_recommended": false,
+      "recommendation_level": "D",
+      "final_score": 30.47,
+      "funnel_level": "L0",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S0",
+      "stage_confidence": 0.35,
+      "stage_evidence": [
+        "资金: 均线多头排列, 价格突破信号"
+      ],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_d5aa1c",
+        "symbol": "000157.XSHE",
+        "total_score": 42.98,
+        "adjusted_score": 33.43,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": -0.19,
+            "score": 39.7625,
+            "weight": 0.18,
+            "weighted": 7.15725,
+            "percentile": 28.57142857142857,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -9.07,
+            "score": 30.93,
+            "weight": 0.18,
+            "weighted": 5.5674,
+            "percentile": 42.857142857142854,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 27.64,
+            "score": 61.46,
+            "weight": 0.12,
+            "weighted": 7.3751999999999995,
+            "percentile": 64.28571428571429,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 2.35,
+            "score": 37.05,
+            "weight": 0.1,
+            "weighted": 3.705,
+            "percentile": 57.14285714285714,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [
+          "现金流/利润方差过低(0.0)"
+        ],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：D级，评分30.5，未达到早期识别标准",
+      "risk_warnings": [
+        "现金流/利润方差过低(0.0)",
+        "阶段判定置信度较低(35.0%)"
+      ],
+      "timestamp": "2025-12-20T13:52:05.412870",
+      "version": "v2"
+    },
+    {
+      "report_id": "tb2_20251220_135205_1ef93e",
+      "symbol": "300015.XSHE",
+      "name": "爱尔眼科",
+      "is_recommended": false,
+      "recommendation_level": "C",
+      "final_score": 36.09,
+      "funnel_level": "L1",
+      "is_vetoed": false,
+      "veto_reasons": [],
+      "stage": "S1",
+      "stage_confidence": 0.6,
+      "stage_evidence": [],
+      "scorecard": {
+        "card_id": "scv2_20251220_135205_484df3",
+        "symbol": "300015.XSHE",
+        "total_score": 47.1,
+        "adjusted_score": 36.63,
+        "grade": "C",
+        "factors": [
+          {
+            "factor_id": "revenue_growth",
+            "name": "营收增速",
+            "raw_value": 2.47,
+            "score": 43.0875,
+            "weight": 0.18,
+            "weighted": 7.755749999999999,
+            "percentile": 33.33333333333333,
+            "is_missing": false
+          },
+          {
+            "factor_id": "profit_growth",
+            "name": "利润增速",
+            "raw_value": -14.81,
+            "score": 25.189999999999998,
+            "weight": 0.18,
+            "weighted": 4.534199999999999,
+            "percentile": 33.33333333333333,
+            "is_missing": false
+          },
+          {
+            "factor_id": "gross_margin",
+            "name": "毛利率",
+            "raw_value": 49.15,
+            "score": 93.725,
+            "weight": 0.12,
+            "weighted": 11.246999999999998,
+            "percentile": 73.33333333333333,
+            "is_missing": false
+          },
+          {
+            "factor_id": "roe",
+            "name": "ROE",
+            "raw_value": 4.6,
+            "score": 43.8,
+            "weight": 0.1,
+            "weighted": 4.38,
+            "percentile": 80.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "cash_flow_ratio",
+            "name": "现金流/利润",
+            "raw_value": 0,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 0.0,
+            "is_missing": false
+          },
+          {
+            "factor_id": "market_cap_small",
+            "name": "小市值",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.12,
+            "weighted": 5.3999999999999995,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "pe_ratio_reasonable",
+            "name": "PE合理性",
+            "raw_value": null,
+            "score": 45,
+            "weight": 0.08,
+            "weighted": 3.6,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "volume_trend",
+            "name": "成交量趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          },
+          {
+            "factor_id": "price_trend",
+            "name": "价格趋势",
+            "raw_value": null,
+            "score": 47,
+            "weight": 0.07,
+            "weighted": 3.2900000000000005,
+            "percentile": 50.0,
+            "is_missing": true
+          }
+        ],
+        "missing_ratio": 0.44,
+        "confidence": 0.78,
+        "quality_flag": "warning",
+        "distribution_warnings": [
+          "现金流/利润方差过低(0.0)"
+        ],
+        "version": "v2"
+      },
+      "data_quality": 0.78,
+      "quality_flag": "warning",
+      "recommendation_reason": "暂不推荐：C级，评分36.1，未达到早期识别标准",
+      "risk_warnings": [
+        "现金流/利润方差过低(0.0)"
+      ],
+      "timestamp": "2025-12-20T13:52:05.413028",
+      "version": "v2"
+    }
+  ],
+  "summary": {
+    "total_evaluated": 15,
+    "recommended": 0,
+    "pass_rate": "0.0%",
+    "by_level": {
+      "S+": 0,
+      "S": 0,
+      "A": 0,
+      "B": 1,
+      "C": 11,
+      "D": 3,
+      "REJECTED": 0
+    },
+    "by_stage": {
+      "S0": 1,
+      "S1": 14,
+      "S2": 0,
+      "S3": 0,
+      "S4": 0,
+      "S5": 0
+    }
+  }
+}

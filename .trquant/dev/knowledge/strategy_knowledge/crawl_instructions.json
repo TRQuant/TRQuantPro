@@ -1,0 +1,62 @@
+{
+  "crawl_urls": [
+    {
+      "url": "https://www.guminchaguan.com/youziwudao/2388.html",
+      "title": "陈小群游资之道 - 股民茶馆",
+      "tags": [
+        "web_crawl",
+        "trading_method",
+        "growth_story"
+      ]
+    },
+    {
+      "url": "https://finance.sina.com.cn/jjxw/2025-12-26/doc-inheautr2809070.shtml",
+      "title": "陈小群投资策略 - 新浪财经",
+      "tags": [
+        "web_crawl",
+        "investment_strategy",
+        "news"
+      ]
+    },
+    {
+      "url": "https://news.hexun.com/2025-11-02/222108378.html",
+      "title": "陈小群投资风格演变 - 和讯网",
+      "tags": [
+        "web_crawl",
+        "trading_style",
+        "evolution"
+      ]
+    }
+  ],
+  "search_keywords": [
+    "陈小群 情绪周期 龙头战法",
+    "陈小群 首板卡位术 选股技巧",
+    "陈小群 仓位管理 止损止盈",
+    "陈小群 游资席位 大连黄河路",
+    "陈小群 情绪合力 市场共振"
+  ],
+  "mcp_tools": {
+    "crawler_fetch": {
+      "description": "基础网页爬取工具",
+      "usage": "在Cursor Chat中: 请使用crawler_fetch工具爬取 {url}",
+      "example": "请使用crawler_fetch工具爬取 https://www.guminchaguan.com/youziwudao/2388.html"
+    },
+    "crawler_selenium_fetch": {
+      "description": "Selenium爬取工具（支持JavaScript）",
+      "usage": "在Cursor Chat中: 请使用crawler_selenium_fetch工具爬取 {url}",
+      "example": "请使用crawler_selenium_fetch工具爬取 https://finance.sina.com.cn/jjxw/2025-12-26/doc-inheautr2809070.shtml"
+    },
+    "web_search": {
+      "description": "网络搜索工具",
+      "usage": "在Cursor Chat中: 请使用web_search搜索 {keyword}",
+      "example": "请使用web_search搜索 陈小群 情绪周期 龙头战法"
+    }
+  },
+  "instructions": [
+    "1. 使用crawler_fetch或crawler_selenium_fetch爬取URL列表中的网页",
+    "2. 提取网页中的关键信息（策略、案例、方法等）",
+    "3. 使用add_crawled_content函数添加到知识库",
+    "4. 使用web_search搜索关键词列表中的内容",
+    "5. 整理搜索结果，提取有价值的信息添加到知识库"
+  ]
+}

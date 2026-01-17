@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_industry_stocks",
+  "title": "get_industry_stocks- 获取行业成份股",
+  "content": "get_industry_stocks- 获取行业成份股\n\nindustry_code: 行业编码，尾缀必须是.XBHS 如农业股：A01000.XBHS(str)",
+  "code_blocks": [],
+  "content_length": 82,
+  "url": "https://ptradeapi.com/#get_industry_stocks"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "ipo_stocks_order",
+  "title": "ipo_stocks_order - 新股一键申购",
+  "content": "ipo_stocks_order - 新股一键申购\n\nipo_stocks_order(market_type=None, black_stocks=None)\n\n申购黑名单的股票代码必须为申购代码，代码可以是6位数（不带尾缀），也可以带尾缀入参,比如：black_stocks='787001'或black_stocks='787001.SS'。",
+  "code_blocks": [],
+  "content_length": 174,
+  "url": "https://ptradeapi.com/#ipo_stocks_order"
+}

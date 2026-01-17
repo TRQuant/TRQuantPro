@@ -1,0 +1,8 @@
+{
+  "anchor_id": "模拟盘和实盘注意事项",
+  "title": "模拟盘和实盘注意事项",
+  "content": "模拟盘和实盘注意事项\n\n服务器异常、策略优化等诸多场景，都会使得正在进行的模拟盘和实盘策略存在中断后再重启的需求，但是一旦交易中止后，策略中存储在内存中的全局变量就清空了，因此通过持久化处理为量化交易保驾护航必不可少。\n\n框架会在before_trading_start（隔日开始）、handle_data、after_trading_end事件后触发持久化信息更新及保存操作；\n券商升级/环境重启后恢复交易时，框架会先执行策略initialize函数再执行持久化信息恢复操作。如果持久化信息保存有策略定义的全局对象g中的变量，将会以持久化信息中的变量覆盖掉initialize函数中初始化的该变量。\n全局变量g中不能被序列化的变量将不会被保存。您可在initialize中初始化该变量时名字以'__'开头；\n涉及到IO(打开的文件，实例化的类对象等)的对象是不能被序列化的；\n全局变量g中以'__'开头的变量为私有变量，持久化时将不会被保存；\n\nclass Test(object):\n    count = 5\n\n    def print_info(self):\n        self.count += 1\n        log.info(\"a\" * self.count)\n\n\ndef initialize(context):\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n    # 初始化无法被序列化类对象，并赋值为私有变量，落地持久化信息时跳过保存该变量\n    g.__test_class = Test()\n\ndef handle_data(context, data):\n    # 调用私有变量中定义的方法\n    g.__test_class.print_info()",
+  "code_blocks": [],
+  "content_length": 784,
+  "url": "https://ptradeapi.com/#模拟盘和实盘注意事项"
+}

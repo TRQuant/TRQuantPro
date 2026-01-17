@@ -1,0 +1,8 @@
+{
+  "anchor_id": "after_trading_order",
+  "title": "after_trading_order - 盘后固定价委托(股票)",
+  "content": "after_trading_order - 盘后固定价委托(股票)\n\nafter_trading_order\n(\nsecurity\n,\namount\n,\nentrust_price\n)",
+  "code_blocks": [],
+  "content_length": 92,
+  "url": "https://ptradeapi.com#after_trading_order"
+}

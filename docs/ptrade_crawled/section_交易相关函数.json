@@ -1,0 +1,8 @@
+{
+  "anchor_id": "交易相关函数",
+  "title": "交易相关函数",
+  "content": "交易相关函数\n\n注意：代码精度位为3位小数的类型(后台已保护为3位)，如ETF、国债；代码精度为2位小数类型，需要在传参时限制价格参数的精度，如股票。",
+  "code_blocks": [],
+  "content_length": 75,
+  "url": "https://ptradeapi.com/#交易相关函数"
+}

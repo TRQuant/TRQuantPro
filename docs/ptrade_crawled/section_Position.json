@@ -1,0 +1,8 @@
+{
+  "anchor_id": "Position",
+  "title": "Position",
+  "content": "Position\n\nsid 标的代码\nenable_amount 可用数量\namount 总持仓数量\nlast_sale_price 最新价格\ncost_basis 持仓成本价格(期货不支持)\ntoday_amount 今日开仓数量(期货不支持，且仅回测有效)\n期货专用字段：\ndelivery_date 交割日，期货使用\ntoday_short_amount 空头今仓数量\ntoday_long_amount 多头今仓数量\nlong_cost_basis 多头持仓成本\nshort_cost_basis 空头持仓成本\nmargin_rate 保证金比例\ncontract_multiplier 合约乘数\nlong_amount 多头总持仓量\nshort_amount 空头总持仓量\nlong_pnl 多头浮动盈亏\nshort_pnl 空头浮动盈亏\nlong_enable_amount 多头可用数量\nshort_enable_amount 多空头可用数量\nbusiness_type 业务类型",
+  "code_blocks": [],
+  "content_length": 447,
+  "url": "https://ptradeapi.com/#Position"
+}

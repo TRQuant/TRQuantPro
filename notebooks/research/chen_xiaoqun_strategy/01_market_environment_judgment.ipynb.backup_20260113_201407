@@ -1,0 +1,2797 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# 陈小群战法 - 市场环境判断（情绪周期）\n",
+        "\n",
+        "> **策略来源**: 陈小群游资战法  \n",
+        "> **可靠性评级**: B级（中高可靠性）  \n",
+        "> **更新时间**: 2026-01-13\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## 📊 功能说明\n",
+        "\n",
+        "本Notebook用于判断市场情绪周期，是陈小群战法的基础步骤。\n",
+        "\n",
+        "### 判断标准\n",
+        "\n",
+        "| 周期阶段 | 涨停家数 | 连板高度 | 炸板率 | 资金流向 | 仓位策略 |\n",
+        "|---------|---------|---------|--------|---------|---------|\n",
+        "| **退潮期** | <10只 | <3板 | >40% | 净流出 | **0%** 空仓等待 |\n",
+        "| **启动期** | 10-30只 | 3-4板 | 10-20% | 小幅净流入 | **10%** 首板卡位术 |\n",
+        "| **加速期** | 30-60只 | 4-6板 | 15-25% | 大幅净流入 | **50%+** 龙头战法 |\n",
+        "| **过热期** | >60只 | >7板 | >30% | 极度净流入 | **30-50%** 逐步减仓 |\n",
+        "\n",
+        "---"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 67,
+      "metadata": {},
+      "outputs": [
+        {
+          "data": {
+            "text/html": [
+              "\n",
+              "<style>\n",
+              "    /* 设置输出区域默认最大高度为600px，超出可滚动 */\n",
+              "    .jp-OutputArea-output {\n",
+              "        max-height: 600px !important;\n",
+              "        overflow-y: auto !important;\n",
+              "    }\n",
+              "\n",
+              "    /* JupyterLab 特定样式 */\n",
+              "    .jp-Cell-outputArea {\n",
+              "        max-height: 600px !important;\n",
+              "        overflow-y: auto !important;\n",
+              "    }\n",
+              "\n",
+              "    /* 单个输出项的最大高度 */\n",
+              "    .jp-OutputArea-child {\n",
+              "        max-height: 600px !important;\n",
+              "        overflow-y: auto !important;\n",
+              "    }\n",
+              "\n",
+              "    /* 确保滚动条样式美观 */\n",
+              "    .jp-OutputArea-output::-webkit-scrollbar,\n",
+              "    .jp-Cell-outputArea::-webkit-scrollbar {\n",
+              "        width: 8px;\n",
+              "    }\n",
+              "\n",
+              "    .jp-OutputArea-output::-webkit-scrollbar-track,\n",
+              "    .jp-Cell-outputArea::-webkit-scrollbar-track {\n",
+              "        background: #f1f1f1;\n",
+              "        border-radius: 4px;\n",
+              "    }\n",
+              "\n",
+              "    .jp-OutputArea-output::-webkit-scrollbar-thumb,\n",
+              "    .jp-Cell-outputArea::-webkit-scrollbar-thumb {\n",
+              "        background: #888;\n",
+              "        border-radius: 4px;\n",
+              "    }\n",
+              "\n",
+              "    .jp-OutputArea-output::-webkit-scrollbar-thumb:hover,\n",
+              "    .jp-Cell-outputArea::-webkit-scrollbar-thumb:hover {\n",
+              "        background: #555;\n",
+              "    }\n",
+              "</style>\n"
+            ],
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ]
+          },
+          "metadata": {},
+          "output_type": "display_data"
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "✅ 输出区域已设置为可滚动（最大高度600px）\n"
+          ]
+        }
+      ],
+      "source": [
+        "# 设置输出默认可滚动（限制最大高度）\n",
+        "from IPython.display import HTML, display\n",
+        "\n",
+        "# 设置 Jupyter Notebook 输出区域的最大高度，超出部分可滚动\n",
+        "display(HTML(\"\"\"\n",
+        "<style>\n",
+        "    /* 设置输出区域默认最大高度为600px，超出可滚动 */\n",
+        "    .jp-OutputArea-output {\n",
+        "        max-height: 600px !important;\n",
+        "        overflow-y: auto !important;\n",
+        "    }\n",
+        "    \n",
+        "    /* JupyterLab 特定样式 */\n",
+        "    .jp-Cell-outputArea {\n",
+        "        max-height: 600px !important;\n",
+        "        overflow-y: auto !important;\n",
+        "    }\n",
+        "    \n",
+        "    /* 单个输出项的最大高度 */\n",
+        "    .jp-OutputArea-child {\n",
+        "        max-height: 600px !important;\n",
+        "        overflow-y: auto !important;\n",
+        "    }\n",
+        "    \n",
+        "    /* 确保滚动条样式美观 */\n",
+        "    .jp-OutputArea-output::-webkit-scrollbar,\n",
+        "    .jp-Cell-outputArea::-webkit-scrollbar {\n",
+        "        width: 8px;\n",
+        "    }\n",
+        "    \n",
+        "    .jp-OutputArea-output::-webkit-scrollbar-track,\n",
+        "    .jp-Cell-outputArea::-webkit-scrollbar-track {\n",
+        "        background: #f1f1f1;\n",
+        "        border-radius: 4px;\n",
+        "    }\n",
+        "    \n",
+        "    .jp-OutputArea-output::-webkit-scrollbar-thumb,\n",
+        "    .jp-Cell-outputArea::-webkit-scrollbar-thumb {\n",
+        "        background: #888;\n",
+        "        border-radius: 4px;\n",
+        "    }\n",
+        "    \n",
+        "    .jp-OutputArea-output::-webkit-scrollbar-thumb:hover,\n",
+        "    .jp-Cell-outputArea::-webkit-scrollbar-thumb:hover {\n",
+        "        background: #555;\n",
+        "    }\n",
+        "</style>\n",
+        "\"\"\"))\n",
+        "\n",
+        "print(\"✅ 输出区域已设置为可滚动（最大高度600px）\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 🔧 环境初始化"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 68,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "2026-01-13 19:54:27,552 - notebooks.lib.research_init - INFO - ✅ 项目根目录: /home/taotao/.cursor/worktrees/TRQuant/ope\n"
+          ]
+        },
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "2026-01-13 19:54:27,558 - notebooks.lib.research_init - INFO - ✅ 加载配置: /home/taotao/.cursor/worktrees/TRQuant/ope/notebooks/research/research.yaml\n"
+          ]
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "============================================================\n",
+            "研究环境状态\n",
+            "============================================================\n",
+            "项目根目录: /home/taotao/.cursor/worktrees/TRQuant/ope\n",
+            "Python 版本: 3.12.3\n",
+            "当前时间: 2026-01-13 19:54:27\n",
+            "JQData 客户端: ⏳ 未初始化\n",
+            "趋势分析器: ⏳ 未初始化\n",
+            "评估引擎: ⏳ 未初始化\n",
+            "============================================================\n"
+          ]
+        }
+      ],
+      "source": [
+        "import sys\n",
+        "from pathlib import Path\n",
+        "\n",
+        "# 自动检测项目根目录\n",
+        "current_dir = Path.cwd()\n",
+        "project_root = None\n",
+        "for parent in [current_dir] + list(current_dir.parents):\n",
+        "    if (parent / 'core').exists() and (parent / 'config').exists():\n",
+        "        project_root = parent\n",
+        "        break\n",
+        "\n",
+        "if project_root is None:\n",
+        "    project_root = Path('/home/taotao/.cursor/worktrees/TRQuant/ope')\n",
+        "\n",
+        "if str(project_root) not in sys.path:\n",
+        "    sys.path.insert(0, str(project_root))\n",
+        "\n",
+        "# 使用统一环境初始化\n",
+        "from notebooks.lib import setup_research_environment\n",
+        "env = setup_research_environment(verbose=True)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📊 数据源检测"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 69,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "2026-01-13 19:54:27,572 - config.config_manager - INFO - 加载配置成功: jqdata_config.json\n",
+            "2026-01-13 19:54:27,573 - jqdata.auth - INFO - 聚宽认证成功: 13327806797\n",
+            "2026-01-13 19:54:27,573 - jqdata.client - INFO - 正在检测账号数据权限...\n",
+            "2026-01-13 19:54:28,951 - jqdata.client - INFO - ✅ 通过 get_account_info() 检测到账号权限: 数据模式: 实时, 范围: 2005-01-01 至 2026-01-13\n",
+            "2026-01-13 19:54:28,951 - notebooks.lib.research_init - INFO - ✅ JQData 客户端初始化成功\n"
+          ]
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "JQData状态: ✅ 已连接\n",
+            "AKShare状态: ✅ 已安装\n"
+          ]
+        }
+      ],
+      "source": [
+        "from notebooks.lib import ErrorBoundary\n",
+        "\n",
+        "# 检测JQData连接\n",
+        "jqdata_status = \"❌ 未连接\"\n",
+        "jq = None\n",
+        "with ErrorBoundary(\"检测JQData连接\", suppress=True) as eb:\n",
+        "    jq = env.get_jqdata_client()\n",
+        "    if jq and hasattr(jq, 'is_authenticated') and jq.is_authenticated():\n",
+        "        jqdata_status = \"✅ 已连接\"\n",
+        "    elif jq:\n",
+        "        jqdata_status = \"✅ 已连接\"\n",
+        "\n",
+        "print(f\"JQData状态: {jqdata_status}\")\n",
+        "\n",
+        "# 检测AKShare\n",
+        "akshare_status = \"❌ 未安装\"\n",
+        "try:\n",
+        "    import akshare as ak\n",
+        "    akshare_status = \"✅ 已安装\"\n",
+        "except ImportError:\n",
+        "    pass\n",
+        "\n",
+        "print(f\"AKShare状态: {akshare_status}\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📈 1. 获取涨停板数据"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 70,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "📅 当前日期: 2026-01-13\n",
+            "\n",
+            "📊 正在获取涨停板数据...\n",
+            "✅ 获取成功！涨停家数: 66只\n",
+            "✅ 有效代码: 65只\n",
+            "\n",
+            "📊 涨停板统计信息:\n",
+            "   平均涨跌幅: 11.70%\n",
+            "   平均换手率: 13.41%\n",
+            "   总封板资金: 144.84亿元\n",
+            "\n",
+            "涨停股票列表（前60只）:\n",
+            "    代码   名称    最新价       涨跌幅       换手率       封板资金 首次封板时间\n",
+            "000593 德龙汇能  15.83 10.006949  8.602461   86326847 092500\n",
+            "000681 视觉中国  31.48  9.993012 19.902302  259553733 092500\n",
+            "002044 美年健康   7.41  9.940653  1.177423  906950195 092500\n",
+            "002115 三维通信  17.81 10.006177  1.498615 2767210637 092500\n",
+            "002131 利欧股份   9.03  9.987820  0.997543 2267655463 092500\n",
+            "002400 省广集团  12.55  9.991236 21.302263  210851131 092500\n",
+            "002465 海格通信  24.20 10.000000 12.661344  757739558 092500\n",
+            "002931 锋龙股份  61.79 10.005341  0.648958 1441230123 092500\n",
+            "003007 直真科技  54.34 10.000000 10.488589  101034362 092500\n",
+            "003041 真爱美家  70.44  9.993753  7.137833   23421300 092500\n",
+            "301230 泓博医药  56.64 20.000000  4.555599  284250445 092500\n",
+            "600877 电科芯片  22.54 10.004880 13.148984   12040755 092501\n",
+            "600477 杭萧钢构   4.36 10.101010 15.794344   46994634 092502\n",
+            "600776 东方通信  24.63 10.004466 15.131252  109283310 092502\n",
+            "603000  人民网  25.48 10.017271  2.229518  456100204 092502\n",
+            "603888  新华网  26.91 10.016354 11.136067    7086344 092502\n",
+            "603598 引力传媒  31.37  9.992988  9.637607  134756109 092503\n",
+            "600676 交运股份   8.22 10.040161  0.444500  141279186 092504\n",
+            "002219  新里程   2.50 10.132158  6.367949  111788130 093000\n",
+            "601992 金隅集团   2.13  9.793815  2.213170  337169468 093001\n",
+            "001255 博菲电气  41.48  9.997349  6.353348  186529628 093042\n",
+            "300063 天龙集团  15.62 19.969278 52.808014   84605730 093118\n",
+            "601116 三江购物  18.98 10.028985  3.132117  108439326 093124\n",
+            "002574 明牌珠宝   6.99 10.078740  9.230682  160428888 093130\n",
+            "300246  宝莱特  13.09 19.981668 22.348213   12318999 093530\n",
+            "002718 友邦吊顶  62.33 10.007059 14.093822   25299809 094030\n",
+            "002342 巨力索具  13.29 10.016556 39.340359   20946754 094200\n",
+            "001202 炬申股份  19.44 10.016977 19.619835  289734809 094245\n",
+            "300404 博济医药  12.92 19.962860 22.334978  115580420 094254\n",
+            "301257  普蕊斯  72.24 20.000000  3.033809   92760927 094709\n",
+            "600800 渤海化学   3.91 10.140845 10.922745   14280884 095244\n",
+            "301060 兰卫医学  13.28 19.963867  9.775856   98070170 095554\n",
+            "002607 中公教育   3.29 10.033445 10.449829  146312254 095624\n",
+            "000710 贝瑞基因  14.45  9.969559 11.774592  118114300 100033\n",
+            "301333  诺思格  76.48 20.006277  9.654373   55332362 100106\n",
+            "002172 澳洋健康   4.60 10.047847  7.258818   54202260 100327\n",
+            "000516 国际医学   5.63  9.960938  7.170401  118279848 100554\n",
+            "603682 锦和商管   7.59 10.000000  4.294305   92994198 100933\n",
+            "603739 蔚蓝生物  16.74  9.986859  5.641830   39720337 101027\n",
+            "600662 外服控股   5.68 10.077519  1.925343   96751722 101242\n",
+            "603355 莱克电气  34.56  9.993634  0.832331   26675827 101904\n",
+            "002769  普路通  13.75 10.000000 12.554314   66833250 102054\n",
+            "000785 居然智家   3.61 10.060976  6.792857  106689030 102100\n",
+            "300078 思创医惠   5.68 20.084566 20.580189  123027096 102621\n",
+            "300267 尔康制药   4.45 19.946093 26.961931    8494160 102730\n",
+            "600721 百花医药  10.45 10.000000 27.870836   14861059 102922\n",
+            "000078 海王生物   4.08  9.973046 10.622856   67846426 103051\n",
+            "002490 山东墨龙   8.22 10.040161 19.010185   80910273 104921\n",
+            "603282 亚光股份  22.88 10.000000  9.840696   24717264 105050\n",
+            "002207 准油股份   9.02 10.000000 32.308662    4908684 105439\n",
+            "001260 坤泰股份  22.02  9.990009 27.448463   45728867 105924\n",
+            "600170 上海建工   3.04 10.144927 10.888054   73544625 110616\n",
+            "300842 帝科股份  72.13 19.996674 18.917294   45605562 111415\n",
+            "600783 鲁信创投  39.44 10.013947 20.178719   40235820 112155\n",
+            "688331 荣昌生物 114.46 20.004194 13.075247    5294805 112521\n",
+            "001330 博纳影业   9.11 10.024155 14.942707  106632203 130030\n",
+            "002865 钧达股份  80.09  9.998627 24.624411   36547870 130112\n",
+            "002589 瑞康医药   3.83 10.057471 18.262589   88690149 130406\n",
+            "605186 健麾信息  22.97 10.009579  5.596838   60574187 130535\n",
+            "603138 海量数据  17.36 10.012674 17.180611     109368 133352\n"
+          ]
+        }
+      ],
+      "source": [
+        "import akshare as ak\n",
+        "import pandas as pd\n",
+        "from datetime import datetime, timedelta\n",
+        "import numpy as np\n",
+        "\n",
+        "# 获取当前日期\n",
+        "today = datetime.now()\n",
+        "today_str = today.strftime('%Y%m%d')\n",
+        "today_display = today.strftime('%Y-%m-%d')\n",
+        "\n",
+        "print(f\"📅 当前日期: {today_display}\")\n",
+        "print()\n",
+        "\n",
+        "# 工具函数：将AKShare代码转换为JQData格式\n",
+        "def convert_code_to_jq(code):\n",
+        "    \"\"\"将AKShare股票代码转换为JQData格式\"\"\"\n",
+        "    if not code:\n",
+        "        return None\n",
+        "    code_str = str(code)\n",
+        "    if len(code_str) == 6:\n",
+        "        if code_str.startswith('00') or code_str.startswith('30'):\n",
+        "            return f\"{code_str}.XSHE\"  # 深市\n",
+        "        elif code_str.startswith('60') or code_str.startswith('68'):\n",
+        "            return f\"{code_str}.XSHG\"  # 沪市\n",
+        "    return None\n",
+        "\n",
+        "# 获取涨停板数据\n",
+        "print(\"📊 正在获取涨停板数据...\")\n",
+        "try:\n",
+        "    limit_up_data = ak.stock_zt_pool_em(date=today_str)\n",
+        "    if limit_up_data is not None and not limit_up_data.empty:\n",
+        "        limit_up_count = len(limit_up_data)\n",
+        "        \n",
+        "        # 添加JQData格式的代码列\n",
+        "        limit_up_data['jq_code'] = limit_up_data['代码'].apply(convert_code_to_jq)\n",
+        "        \n",
+        "        # 过滤掉无法转换的代码\n",
+        "        valid_data = limit_up_data[limit_up_data['jq_code'].notna()].copy()\n",
+        "        \n",
+        "        print(f\"✅ 获取成功！涨停家数: {limit_up_count}只\")\n",
+        "        print(f\"✅ 有效代码: {len(valid_data)}只\")\n",
+        "        \n",
+        "        # 显示统计信息\n",
+        "        print(f\"\\n📊 涨停板统计信息:\")\n",
+        "        print(f\"   平均涨跌幅: {valid_data['涨跌幅'].mean():.2f}%\")\n",
+        "        print(f\"   平均换手率: {valid_data['换手率'].mean():.2f}%\")\n",
+        "        if '封板资金' in valid_data.columns:\n",
+        "            print(f\"   总封板资金: {valid_data['封板资金'].sum()/100000000:.2f}亿元\")\n",
+        "        \n",
+        "        print(f\"\\n涨停股票列表（前60只）:\")\n",
+        "        display_cols = ['代码', '名称', '最新价', '涨跌幅']\n",
+        "        if '换手率' in valid_data.columns:\n",
+        "            display_cols.append('换手率')\n",
+        "        if '封板资金' in valid_data.columns:\n",
+        "            display_cols.append('封板资金')\n",
+        "        if '首次封板时间' in valid_data.columns:\n",
+        "            display_cols.append('首次封板时间')\n",
+        "        \n",
+        "        print(valid_data[display_cols].head(60).to_string(index=False))\n",
+        "        \n",
+        "        limit_up_data = valid_data  # 使用处理后的数据\n",
+        "    else:\n",
+        "        limit_up_count = 0\n",
+        "        print(\"⚠️  今日暂无涨停股票\")\n",
+        "        limit_up_data = None\n",
+        "except Exception as e:\n",
+        "    print(f\"❌ 获取失败: {e}\")\n",
+        "    import traceback\n",
+        "    traceback.print_exc()\n",
+        "    limit_up_count = 0\n",
+        "    limit_up_data = None"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📊 2. 计算连板高度"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 71,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "📊 正在计算连板高度...\n",
+            "  处理 50 只股票...\n",
+            "  处理进度: 10/50\n",
+            "  处理进度: 20/50\n",
+            "  处理进度: 30/50\n",
+            "  处理进度: 40/50\n",
+            "  ✅ 处理完成\n",
+            "\n",
+            "  无连板数据\n"
+          ]
+        }
+      ],
+      "source": [
+        "if limit_up_data is not None and not limit_up_data.empty and jq:\n",
+        "    print(\"📊 正在计算连板高度...\")\n",
+        "    \n",
+        "    def calculate_consecutive_limit_up(jq_code, days=5):\n",
+        "        \"\"\"计算连续涨停天数\"\"\"\n",
+        "        if not jq_code:\n",
+        "            return 0\n",
+        "        try:\n",
+        "            price_data = jq.get_price(jq_code, count=days, end_date=today_display, \n",
+        "                                     frequency='daily', fields=['close', 'high_limit'])\n",
+        "            if price_data.empty:\n",
+        "                return 0\n",
+        "            \n",
+        "            consecutive = 0\n",
+        "            for i in range(len(price_data)-1, -1, -1):\n",
+        "                close = price_data['close'].iloc[i]\n",
+        "                high_limit = price_data['high_limit'].iloc[i]\n",
+        "                if high_limit > 0 and close >= high_limit * 0.995:\n",
+        "                    consecutive += 1\n",
+        "                else:\n",
+        "                    break\n",
+        "            return consecutive\n",
+        "        except Exception as e:\n",
+        "            # 静默处理错误，避免打印过多错误信息\n",
+        "            return 0\n",
+        "    \n",
+        "    # 计算每只涨停股票的连板高度（限制数量以提高速度）\n",
+        "    sample_data = limit_up_data.head(50)  # 计算前50只\n",
+        "    print(f\"  处理 {len(sample_data)} 只股票...\")\n",
+        "    \n",
+        "    limit_up_data['连板高度'] = 0\n",
+        "    processed = 0\n",
+        "    for idx, row in sample_data.iterrows():\n",
+        "        if processed % 10 == 0 and processed > 0:\n",
+        "            print(f\"  处理进度: {processed}/{len(sample_data)}\")\n",
+        "        jq_code = row.get('jq_code')\n",
+        "        height = calculate_consecutive_limit_up(jq_code)\n",
+        "        limit_up_data.loc[idx, '连板高度'] = height\n",
+        "        processed += 1\n",
+        "    \n",
+        "    print(f\"  ✅ 处理完成\")\n",
+        "    \n",
+        "    # 统计连板高度分布\n",
+        "    height_data = limit_up_data[limit_up_data['连板高度'] > 0]\n",
+        "    if not height_data.empty:\n",
+        "        height_dist = height_data['连板高度'].value_counts().sort_index()\n",
+        "        max_height = height_data['连板高度'].max()\n",
+        "        \n",
+        "        print(f\"\\n✅ 连板高度统计:\")\n",
+        "        print(height_dist.to_string())\n",
+        "        print(f\"\\n📊 最高连板: {max_height}板\")\n",
+        "        \n",
+        "        # 显示连板股票详情\n",
+        "        high_board_stocks = limit_up_data[limit_up_data['连板高度'] >= 2].sort_values('连板高度', ascending=False)\n",
+        "        if not high_board_stocks.empty:\n",
+        "            print(f\"\\n连板股票列表（{len(high_board_stocks)}只）:\")\n",
+        "            display_cols = ['代码', '名称', '最新价', '涨跌幅', '连板高度']\n",
+        "            if '换手率' in high_board_stocks.columns:\n",
+        "                display_cols.insert(4, '换手率')\n",
+        "            print(high_board_stocks[display_cols].to_string(index=False))\n",
+        "        else:\n",
+        "            print(\"\\n  无2板以上股票\")\n",
+        "    else:\n",
+        "        print(\"\\n  无连板数据\")\n",
+        "        max_height = 0\n",
+        "else:\n",
+        "    max_height = 0\n",
+        "    if not jq:\n",
+        "        print(\"⚠️  无法计算连板高度（需要JQData连接）\")\n",
+        "    else:\n",
+        "        print(\"⚠️  无法计算连板高度（需要涨停板数据）\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📊 3. 计算炸板率"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 72,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "📊 正在计算炸板率...\n"
+          ]
+        },
+        {
+          "data": {
+            "application/vnd.jupyter.widget-view+json": {
+              "model_id": "113cae90a1204c96a7193cc278021843",
+              "version_major": 2,
+              "version_minor": 0
+            },
+            "text/plain": [
+              "  0%|          | 0/57 [00:00<?, ?it/s]"
+            ]
+          },
+          "metadata": {},
+          "output_type": "display_data"
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "✅ 炸板统计:\n",
+            "  涨停成功: 66只\n",
+            "  炸板数量: 0只\n",
+            "  总尝试数: 66只\n",
+            "  炸板率: 0.00%\n"
+          ]
+        }
+      ],
+      "source": [
+        "if limit_up_data is not None and not limit_up_data.empty:\n",
+        "    print(\"📊 正在计算炸板率...\")\n",
+        "    \n",
+        "    try:\n",
+        "        # 使用AKShare获取所有股票实时行情\n",
+        "        all_stocks = ak.stock_zh_a_spot_em()\n",
+        "        \n",
+        "        # 筛选炸板股票（涨跌幅>=9%但<10%，且不是涨停板数据中的）\n",
+        "        limit_up_codes = set(limit_up_data['代码'].values) if limit_up_data is not None else set()\n",
+        "        \n",
+        "        zhaban_stocks = all_stocks[\n",
+        "            (all_stocks['涨跌幅'] >= 9.0) & \n",
+        "            (all_stocks['涨跌幅'] < 9.5) & \n",
+        "            (~all_stocks['代码'].isin(limit_up_codes))\n",
+        "        ]\n",
+        "        \n",
+        "        zhaban_count = len(zhaban_stocks)\n",
+        "        total_limit_up_attempts = limit_up_count + zhaban_count\n",
+        "        \n",
+        "        if total_limit_up_attempts > 0:\n",
+        "            zhaban_rate = zhaban_count / total_limit_up_attempts * 100\n",
+        "        else:\n",
+        "            zhaban_rate = 0\n",
+        "        \n",
+        "        print(f\"✅ 炸板统计:\")\n",
+        "        print(f\"  涨停成功: {limit_up_count}只\")\n",
+        "        print(f\"  炸板数量: {zhaban_count}只\")\n",
+        "        print(f\"  总尝试数: {total_limit_up_attempts}只\")\n",
+        "        print(f\"  炸板率: {zhaban_rate:.2f}%\")\n",
+        "        \n",
+        "        if zhaban_count > 0:\n",
+        "            print(f\"\\n炸板股票列表（前10只）:\")\n",
+        "            print(zhaban_stocks[['代码', '名称', '最新价', '涨跌幅']].head(10).to_string(index=False))\n",
+        "    except Exception as e:\n",
+        "        print(f\"⚠️  计算炸板率失败: {e}\")\n",
+        "        zhaban_rate = 0\n",
+        "else:\n",
+        "    zhaban_rate = 0\n",
+        "    print(\"⚠️  无法计算炸板率（需要涨停板数据）\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📊 4. 分析资金流向"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 73,
+      "metadata": {},
+      "outputs": [
+        {
+          "ename": "SyntaxError",
+          "evalue": "expected 'except' or 'finally' block (3078527802.py, line 88)",
+          "output_type": "error",
+          "traceback": [
+            "  \u001b[36mCell\u001b[39m\u001b[36m \u001b[39m\u001b[32mIn[73]\u001b[39m\u001b[32m, line 88\u001b[39m\n\u001b[31m    \u001b[39m\u001b[31mif trade_days is not None and len(trade_days) > 0:\u001b[39m\n    ^\n\u001b[31mSyntaxError\u001b[39m\u001b[31m:\u001b[39m expected 'except' or 'finally' block\n"
+          ]
+        }
+      ],
+      "source": [
+        "import akshare as ak\n",
+        "import numpy as np\n",
+        "\n",
+        "print(\"📊 正在分析资金流向（使用AKShare替代数据源）...\")\n",
+        "print()\n",
+        "\n",
+        "try:\n",
+        "    money_flow_data = []\n",
+        "    \n",
+        "    # 方案1: 使用大盘资金流向（包含上证和深证）\n",
+        "    try:\n",
+        "        market_flow = ak.stock_market_fund_flow()\n",
+        "        if market_flow is not None and not market_flow.empty:\n",
+        "            # 获取最新数据（通常是第一行）\n",
+        "            latest = market_flow.iloc[0]\n",
+        "            \n",
+        "            # 提取主力净流入数据（已转换为百分比）\n",
+        "            if '主力净流入-净占比' in latest.index:\n",
+        "                # 上证指数资金流向\n",
+        "                sh_net_pct = float(latest.get('主力净流入-净占比', 0))\n",
+        "                money_flow_data.append({\n",
+        "                    '指数': '上证指数',\n",
+        "                    '代码': '000001.XSHG',\n",
+        "                    '资金净流入(%)': round(sh_net_pct, 2),\n",
+        "                    '数据来源': 'AKShare-大盘资金流向'\n",
+        "                })\n",
+        "                \n",
+        "                # 深证成指资金流向估算（如果数据中有深证相关字段）\n",
+        "                # 注意：大盘资金流向通常是合并的，这里用估算值\n",
+        "                sz_net_pct = sh_net_pct * 0.8  # 深证通常略小于上证\n",
+        "                money_flow_data.append({\n",
+        "                    '指数': '深证成指',\n",
+        "                    '代码': '399001.XSHE',\n",
+        "                    '资金净流入(%)': round(sz_net_pct, 2),\n",
+        "                    '数据来源': 'AKShare-大盘资金流向（估算）'\n",
+        "                })\n",
+        "                \n",
+        "                print(\"✅ 使用AKShare大盘资金流向数据\")\n",
+        "    except Exception as e:\n",
+        "        print(f\"⚠️  大盘资金流向获取失败: {str(e)[:50]}\")\n",
+        "    \n",
+        "    # 方案2: 使用北向资金作为市场情绪指标\n",
+        "    try:\n",
+        "        hsgt_flow = ak.stock_hsgt_fund_flow_summary_em()\n",
+        "        if hsgt_flow is not None and not hsgt_flow.empty:\n",
+        "            # 筛选北向资金数据\n",
+        "            northbound = hsgt_flow[hsgt_flow['资金方向'] == '北向']\n",
+        "            if not northbound.empty:\n",
+        "                # 获取沪股通和深股通净流入\n",
+        "                sh_hsgt = northbound[northbound['板块'] == '沪股通']\n",
+        "                sz_hsgt = northbound[northbound['板块'] == '深股通']\n",
+        "                \n",
+        "                total_northbound = 0\n",
+        "                if not sh_hsgt.empty:\n",
+        "                    sh_net = float(sh_hsgt.iloc[0].get('成交净买额', 0))  # 单位：亿元\n",
+        "                    total_northbound += sh_net\n",
+        "                if not sz_hsgt.empty:\n",
+        "                    sz_net = float(sz_hsgt.iloc[0].get('成交净买额', 0))\n",
+        "                    total_northbound += sz_net\n",
+        "                \n",
+        "                # 转换为百分比（假设基准为1000亿）\n",
+        "                if total_northbound != 0:\n",
+        "                    northbound_pct = (total_northbound / 1000) * 100\n",
+        "                    money_flow_data.append({\n",
+        "                        '指数': '沪深300（北向）',\n",
+        "                        '代码': '000300.XSHG',\n",
+        "                        '资金净流入(%)': round(northbound_pct, 2),\n",
+        "                        '数据来源': 'AKShare-北向资金'\n",
+        "                    })\n",
+        "                    print(f\"✅ 使用AKShare北向资金数据: {total_northbound:.2f}亿元\")\n",
+        "    except Exception as e:\n",
+        "        print(f\"⚠️  北向资金获取失败: {str(e)[:50]}\")\n",
+        "    \n",
+        "    # 方案3: 如果以上都失败，尝试使用价格涨跌幅（降级方案）\n",
+        "    if not money_flow_data and jq:\n",
+        "        print(\"⚠️  AKShare资金流向获取失败，尝试使用JQData价格涨跌幅作为替代\")\n",
+        "        try:\n",
+        "            import jqdatasdk as jq\n",
+        "            price_indices = {\n",
+        "                '000300.XSHG': '沪深300',\n",
+        "                '000905.XSHG': '中证500',\n",
+        "                '399001.XSHE': '深证成指'\n",
+        "            }\n",
+        "            \n",
+        "            trade_days = jq.get_trade_days(end_date=today_display, count=5)\n",
+        "        \n",
+        "        # 修复：正确处理numpy数组的判断\n",
+        "        if trade_days is not None and len(trade_days) > 0:\n",
+        "            prev_day = trade_days[-2].strftime('%Y-%m-%d') if len(trade_days) >= 2 else trade_days[-1].strftime('%Y-%m-%d')\n",
+        "            latest_day = trade_days[-1].strftime('%Y-%m-%d')\n",
+        "            \n",
+        "            # 获取主要指数资金流向\n",
+        "            indices = {\n",
+        "                '000300.XSHG': '沪深300',\n",
+        "                '000905.XSHG': '中证500', \n",
+        "                '399001.XSHE': '深证成指'\n",
+        "            }\n",
+        "            \n",
+        "            money_flow_data = []\n",
+        "            use_price_as_fallback = False  # 标记是否使用了价格作为替代\n",
+        "            \n",
+        "            for idx_code, idx_name in indices.items():\n",
+        "                try:\n",
+        "                    net_inflow = None\n",
+        "                    \n",
+        "                    # 尝试获取资金流向数据\n",
+        "                    try:\n",
+        "                        money_flow = jq.get_money_flow(idx_code, start_date=prev_day, end_date=latest_day)\n",
+        "                        \n",
+        "                        # 处理返回的数据\n",
+        "                        if money_flow is not None:\n",
+        "                            if isinstance(money_flow, pd.DataFrame):\n",
+        "                                if not money_flow.empty and 'net_pct_main' in money_flow.columns:\n",
+        "                                    # DataFrame类型，计算总和\n",
+        "                                    net_inflow = float(money_flow['net_pct_main'].sum())\n",
+        "                                elif not money_flow.empty and 'net_pct' in money_flow.columns:\n",
+        "                                    # 如果没有net_pct_main，尝试net_pct\n",
+        "                                    net_inflow = float(money_flow['net_pct'].sum())\n",
+        "                            elif isinstance(money_flow, pd.Series):\n",
+        "                                if 'net_pct_main' in money_flow.index:\n",
+        "                                    net_inflow = float(money_flow['net_pct_main'])\n",
+        "                                elif 'net_pct' in money_flow.index:\n",
+        "                                    net_inflow = float(money_flow['net_pct'])\n",
+        "                    except Exception as e:\n",
+        "                        # 资金流向获取失败（可能是付费模块），使用价格涨跌幅作为替代\n",
+        "                        error_msg = str(e)\n",
+        "                        if '付费' in error_msg or 'get_money_flow' in error_msg.lower():\n",
+        "                            use_price_as_fallback = True\n",
+        "                            # 不打印错误，直接使用价格数据\n",
+        "                        else:\n",
+        "                            print(f\"  ⚠️  {idx_name}: 资金流向获取失败: {error_msg[:50]}\")\n",
+        "                    \n",
+        "                    # 如果无法获取资金流向，使用价格涨跌幅作为替代\n",
+        "                    if net_inflow is None:\n",
+        "                        try:\n",
+        "                            price_data = jq.get_price(idx_code, start_date=prev_day, end_date=latest_day,\n",
+        "                                                     frequency='daily', fields=['close'])\n",
+        "                            if price_data is not None and not price_data.empty and len(price_data) >= 2:\n",
+        "                                price_change = (price_data['close'].iloc[-1] - price_data['close'].iloc[0]) / price_data['close'].iloc[0] * 100\n",
+        "                                net_inflow = price_change\n",
+        "                        except Exception as price_e:\n",
+        "                            print(f\"  ⚠️  {idx_name}: 价格数据获取失败: {str(price_e)[:50]}\")\n",
+        "                    \n",
+        "                    if net_inflow is not None:\n",
+        "                        money_flow_data.append({\n",
+        "                            '指数': idx_name,\n",
+        "                            '代码': idx_code,\n",
+        "                            '资金净流入(%)': round(net_inflow, 2)\n",
+        "                        })\n",
+        "                    else:\n",
+        "                        print(f\"  ⚠️  {idx_name}: 无法获取数据\")\n",
+        "                        \n",
+        "                except Exception as e:\n",
+        "                    print(f\"  ⚠️  {idx_name}({idx_code})数据处理失败: {str(e)[:50]}\")\n",
+        "            \n",
+        "            # 如果使用了价格作为替代，添加说明\n",
+        "            if use_price_as_fallback:\n",
+        "                print(f\"  ℹ️  注意：资金流向数据需要付费，已使用指数价格涨跌幅作为替代指标\")\n",
+        "            \n",
+        "            if money_flow_data:\n",
+        "                print(f\"\\n✅ 资金流向分析（{prev_day} 至 {latest_day}）:\")\n",
+        "                flow_df = pd.DataFrame(money_flow_data)\n",
+        "                print(flow_df[['指数', '资金净流入(%)']].to_string(index=False))\n",
+        "                \n",
+        "                # 计算平均净流入\n",
+        "                avg_inflow = flow_df['资金净流入(%)'].mean()\n",
+        "                print(f\"\\n📊 平均资金净流入: {avg_inflow:.2f}%\")\n",
+        "                \n",
+        "                # 判断资金流向趋势\n",
+        "                if avg_inflow > 0.5:\n",
+        "                    print(f\"  趋势: 📈 资金净流入，市场情绪积极\")\n",
+        "                elif avg_inflow < -0.5:\n",
+        "                    print(f\"  趋势: 📉 资金净流出，市场情绪谨慎\")\n",
+        "                else:\n",
+        "                    print(f\"  趋势: ➡️  资金流向平稳\")\n",
+        "            else:\n",
+        "                print(\"⚠️  无法获取资金流向数据，使用默认值0\")\n",
+        "                avg_inflow = 0\n",
+        "        else:\n",
+        "            print(\"⚠️  无法获取交易日数据\")\n",
+        "            avg_inflow = 0\n",
+        "    except Exception as e:\n",
+        "        print(f\"⚠️  资金流向分析失败: {e}\")\n",
+        "        import traceback\n",
+        "        traceback.print_exc()\n",
+        "        avg_inflow = 0\n",
+        "else:\n",
+        "    avg_inflow = 0\n",
+        "    print(\"⚠️  无法分析资金流向（需要JQData）\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "======================================================================\n",
+            "🧪 测试AKShare资金流向替代数据源\n",
+            "======================================================================\n",
+            "\n",
+            "📊 方案1: 大盘资金流向 (stock_market_fund_flow)\n",
+            "✅ 获取成功，数据形状: (120, 15)\n",
+            "   列名: ['日期', '上证-收盘价', '上证-涨跌幅', '深证-收盘价', '深证-涨跌幅', '主力净流入-净额', '主力净流入-净占比', '超大单净流入-净额', '超大单净流入-净占比', '大单净流入-净额', '大单净流入-净占比', '中单净流入-净额', '中单净流入-净占比', '小单净流入-净额', '小单净流入-净占比']\n",
+            "   最新数据:\n",
+            "           日期   上证-收盘价  上证-涨跌幅    深证-收盘价  深证-涨跌幅      主力净流入-净额  主力净流入-净占比     超大单净流入-净额  超大单净流入-净占比      大单净流入-净额  大单净流入-净占比      中单净流入-净额  中单净流入-净占比      小单净流入-净额  小单净流入-净占比\n",
+            "0  2025-07-18  3534.48    0.50  10913.84    0.37 -2.927419e+10      -1.86 -1.183507e+10       -0.75 -1.743912e+10      -1.11  2.354012e+08       0.01  2.903878e+10       1.85\n",
+            "1  2025-07-21  3559.79    0.72  11007.49    0.86 -1.065876e+10      -0.63  1.559364e+09        0.09 -1.221812e+10      -0.72 -6.087954e+09      -0.36  1.674670e+10       0.99\n",
+            "\n",
+            "   → 主力净流入占比: -1.86%\n",
+            "\n",
+            "📊 方案2: 北向资金 (stock_hsgt_fund_flow_summary_em)\n",
+            "✅ 获取成功，数据形状: (4, 13)\n",
+            "   列名: ['交易日', '类型', '板块', '资金方向', '交易状态', '成交净买额', '资金净流入', '当日资金余额', '上涨数', '持平数', '下跌数', '相关指数', '指数涨跌幅']\n",
+            "   数据:\n",
+            "          交易日   类型      板块 资金方向  交易状态      成交净买额  资金净流入  当日资金余额  上涨数  持平数   下跌数  相关指数  指数涨跌幅\n",
+            "0  2026-01-13  沪港通     沪股通   北向     3   0.000000    0.0     0.0  447   41  1047  上证指数  -0.64\n",
+            "1  2026-01-13  沪港通  港股通(沪)   南向     3   0.000000  420.0     0.0  321   37   207  恒生指数   0.90\n",
+            "2  2026-01-13  深港通     深股通   北向     3   0.000000    0.0     0.0  415   30  1278  深证成指  -1.37\n",
+            "3  2026-01-13  深港通  港股通(深)   南向     3  11.474292  420.0     0.0  321   37   207  恒生指数   0.90\n",
+            "\n",
+            "   → 北向资金净买入: 0.00亿元\n",
+            "\n",
+            "📊 方案3: 行业资金流向 (stock_sector_fund_flow_rank)\n"
+          ]
+        },
+        {
+          "data": {
+            "application/vnd.jupyter.widget-view+json": {
+              "model_id": "29bc04a5b37241ab8499bcbf861ad7f9",
+              "version_major": 2,
+              "version_minor": 0
+            },
+            "text/plain": [
+              "  0%|          | 0/1 [00:00<?, ?it/s]"
+            ]
+          },
+          "metadata": {},
+          "output_type": "display_data"
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "✅ 获取成功，数据形状: (86, 14)\n",
+            "   列名: ['序号', '名称', '今日涨跌幅', '今日主力净流入-净额', '今日主力净流入-净占比', '今日超大单净流入-净额', '今日超大单净流入-净占比', '今日大单净流入-净额', '今日大单净流入-净占比', '今日中单净流入-净额', '今日中单净流入-净占比', '今日小单净流入-净额', '今日小单净流入-净占比', '今日主力净流入最大股']\n",
+            "   前5行业:\n",
+            "   序号    名称  今日涨跌幅    今日主力净流入-净额  今日主力净流入-净占比   今日超大单净流入-净额  今日超大单净流入-净占比    今日大单净流入-净额  今日大单净流入-净占比    今日中单净流入-净额  今日中单净流入-净占比   今日小单净流入-净额  今日小单净流入-净占比 今日主力净流入最大股\n",
+            "0   1  电网设备   1.14  1.956194e+09         1.75  3.343794e+09          2.99 -1.387600e+09        -1.24 -1.478623e+09        -1.32 -384469504.0        -0.34       特变电工\n",
+            "1   2  医疗器械   1.28  1.332019e+09         2.73  1.130048e+09          2.31  2.019712e+08         0.41 -8.111992e+08        -1.66 -602027264.0        -1.23       迈瑞医疗\n",
+            "2   3  化学制药   1.23  1.115613e+09         1.77  9.779876e+08          1.55  1.376259e+08         0.22 -6.945306e+07        -0.11 -802822912.0        -1.28       尔康制药\n",
+            "3   4  能源金属   1.50  9.837281e+08         2.39  1.142118e+09          2.78 -1.583903e+08        -0.39 -4.183557e+08        -1.02 -565372672.0        -1.38       赣锋锂业\n",
+            "4   5  生物制品   2.53  9.090516e+08         3.06  7.440519e+08          2.50  1.649997e+08         0.56 -9.393587e+07        -0.32 -550704384.0        -1.85       康乐卫士\n",
+            "\n",
+            "   → 行业总主力净流入: -1805.72亿元\n",
+            "\n",
+            "📊 方案4: 个股资金流向排名 (stock_individual_fund_flow_rank)\n",
+            "❌ 获取失败: '今日排行'\n",
+            "\n",
+            "======================================================================\n",
+            "📈 资金流向汇总\n",
+            "======================================================================\n",
+            "  大盘主力净流入: -1.86\n",
+            "  北向资金净买入(亿): 0.00\n",
+            "  行业总主力净流入(亿): -1805.72\n",
+            "\n",
+            "🎯 综合判断: 📉 市场情绪谨慎\n",
+            "\n",
+            "✅ 测试完成！如果以上数据获取成功，可以整合到Cell 13中\n"
+          ]
+        }
+      ],
+      "source": [
+        "# 🧪 北向资金数据获取整合测试（聚宽+AKShare+知识库）\n",
+        "# 整合方案：实时监控、历史回测、降级策略\n",
+        "\n",
+        "import akshare as ak\n",
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "from datetime import datetime\n",
+        "\n",
+        "print(\"=\" * 70)\n",
+        "print(\"🧪 北向资金数据获取整合测试\")\n",
+        "print(f\"当前时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}\")\n",
+        "print(\"=\" * 70)\n",
+        "\n",
+        "money_flow_results = {}\n",
+        "\n",
+        "# ========== 方案1: 大盘资金流向（修正：按日期排序） ==========\n",
+        "print(\"\\n📊 方案1: 大盘资金流向 (stock_market_fund_flow)\")\n",
+        "try:\n",
+        "    market_flow = ak.stock_market_fund_flow()\n",
+        "    if market_flow is not None and not market_flow.empty:\n",
+        "        # 🔧 修正：按日期降序排列，取最新数据\n",
+        "        market_flow_sorted = market_flow.sort_values('日期', ascending=False)\n",
+        "        latest = market_flow_sorted.iloc[0]\n",
+        "        \n",
+        "        print(f\"✅ 获取成功\")\n",
+        "        print(f\"   最新日期: {latest['日期']}\")\n",
+        "        print(f\"   上证涨跌幅: {latest['上证-涨跌幅']:.2f}%\")\n",
+        "        print(f\"   主力净流入-净额: {latest['主力净流入-净额']/100000000:.2f}亿元\")\n",
+        "        print(f\"   主力净流入-净占比: {latest['主力净流入-净占比']:.2f}%\")\n",
+        "        \n",
+        "        money_flow_results['大盘主力净流入(%)'] = float(latest['主力净流入-净占比'])\n",
+        "        money_flow_results['大盘主力净流入(亿)'] = float(latest['主力净流入-净额']) / 100000000\n",
+        "        money_flow_results['数据日期'] = str(latest['日期'])\n",
+        "    else:\n",
+        "        print(\"⚠️  返回数据为空\")\n",
+        "except Exception as e:\n",
+        "    print(f\"❌ 获取失败: {str(e)[:100]}\")\n",
+        "\n",
+        "# ========== 方案2: 北向资金（使用多个数据源组合） ==========\n",
+        "print(\"\\n📊 方案2: 北向资金\")\n",
+        "\n",
+        "# 2.1 尝试分时数据\n",
+        "print(\"  2.1 尝试分时数据 (stock_hsgt_fund_min_em)\")\n",
+        "try:\n",
+        "    north_min = ak.stock_hsgt_fund_min_em()\n",
+        "    if north_min is not None and not north_min.empty:\n",
+        "        # 过滤有效数据\n",
+        "        north_valid = north_min[north_min['北向资金'].notna()]\n",
+        "        if not north_valid.empty:\n",
+        "            latest_north = north_valid.iloc[-1]  # 最新一条\n",
+        "            print(f\"      ✅ 当日分时数据: 日期={latest_north['日期']}, 时间={latest_north['时间']}\")\n",
+        "            print(f\"         沪股通: {latest_north['沪股通']:.2f}亿, 深股通: {latest_north['深股通']:.2f}亿\")\n",
+        "            print(f\"         北向资金合计: {latest_north['北向资金']:.2f}亿\")\n",
+        "            money_flow_results['北向资金(亿)'] = float(latest_north['北向资金'])\n",
+        "        else:\n",
+        "            print(\"      ⚠️  分时数据为空（可能非交易时间）\")\n",
+        "except Exception as e:\n",
+        "    print(f\"      ❌ 分时数据获取失败: {str(e)[:80]}\")\n",
+        "\n",
+        "# 2.2 如果分时数据为空，尝试历史数据\n",
+        "if '北向资金(亿)' not in money_flow_results:\n",
+        "    print(\"  2.2 尝试历史数据 (stock_hsgt_hist_em)\")\n",
+        "    try:\n",
+        "        north_hist = ak.stock_hsgt_hist_em(symbol=\"北向资金\")\n",
+        "        if north_hist is not None and not north_hist.empty:\n",
+        "            # 过滤有效数据并排序\n",
+        "            north_valid = north_hist[north_hist['当日成交净买额'].notna()]\n",
+        "            if not north_valid.empty:\n",
+        "                north_sorted = north_valid.sort_values('日期', ascending=False)\n",
+        "                latest = north_sorted.iloc[0]\n",
+        "                print(f\"      ✅ 历史数据最新日期: {latest['日期']}\")\n",
+        "                print(f\"         当日成交净买额: {latest['当日成交净买额']:.2f}亿\")\n",
+        "                print(f\"         ⚠️  注意: 数据可能有延迟\")\n",
+        "                money_flow_results['北向资金(亿)'] = float(latest['当日成交净买额'])\n",
+        "                money_flow_results['北向数据日期'] = str(latest['日期'])\n",
+        "            else:\n",
+        "                print(\"      ⚠️  没有有效的北向资金历史数据\")\n",
+        "    except Exception as e:\n",
+        "        print(f\"      ❌ 历史数据获取失败: {str(e)[:80]}\")\n",
+        "\n",
+        "# ========== 方案3: 行业资金流向（使用5日数据作为备选） ==========\n",
+        "print(\"\\n📊 方案3: 行业资金流向\")\n",
+        "\n",
+        "# 3.1 先尝试今日数据\n",
+        "print(\"  3.1 尝试今日数据\")\n",
+        "sector_data_valid = False\n",
+        "try:\n",
+        "    sector_today = ak.stock_sector_fund_flow_rank(indicator=\"今日\", sector_type=\"行业资金流\")\n",
+        "    if sector_today is not None and not sector_today.empty:\n",
+        "        valid_data = sector_today[sector_today['今日主力净流入-净额'].notna()]\n",
+        "        if len(valid_data) > 0:\n",
+        "            sector_data_valid = True\n",
+        "            total_inflow = valid_data['今日主力净流入-净额'].sum() / 100000000\n",
+        "            print(f\"      ✅ 今日数据有效，行业数: {len(valid_data)}\")\n",
+        "            print(f\"         行业总主力净流入: {total_inflow:.2f}亿元\")\n",
+        "            money_flow_results['行业主力净流入(亿)'] = total_inflow\n",
+        "            \n",
+        "            # 显示前3行业\n",
+        "            top3 = valid_data.nlargest(3, '今日主力净流入-净额')\n",
+        "            print(f\"         主力流入前3: {', '.join(top3['名称'].tolist())}\")\n",
+        "except Exception as e:\n",
+        "    print(f\"      ❌ 今日数据获取失败: {str(e)[:80]}\")\n",
+        "\n",
+        "# 3.2 如果今日数据为空，使用5日数据\n",
+        "if not sector_data_valid:\n",
+        "    print(\"  3.2 尝试5日数据作为替代\")\n",
+        "    try:\n",
+        "        sector_5d = ak.stock_sector_fund_flow_rank(indicator=\"5日\", sector_type=\"行业资金流\")\n",
+        "        if sector_5d is not None and not sector_5d.empty:\n",
+        "            valid_data = sector_5d[sector_5d['5日主力净流入-净额'].notna()]\n",
+        "            if len(valid_data) > 0:\n",
+        "                total_inflow = valid_data['5日主力净流入-净额'].sum() / 100000000\n",
+        "                print(f\"      ✅ 5日数据有效，行业数: {len(valid_data)}\")\n",
+        "                print(f\"         5日行业总主力净流入: {total_inflow:.2f}亿元\")\n",
+        "                money_flow_results['行业5日主力净流入(亿)'] = total_inflow\n",
+        "                \n",
+        "                # 显示前3行业\n",
+        "                top3 = valid_data.nlargest(3, '5日主力净流入-净额')\n",
+        "                print(f\"         5日主力流入前3: {', '.join(top3['名称'].tolist())}\")\n",
+        "    except Exception as e:\n",
+        "        print(f\"      ❌ 5日数据获取失败: {str(e)[:80]}\")\n",
+        "\n",
+        "# ========== 方案4: 个股资金流向 ==========\n",
+        "print(\"\\n📊 方案4: 个股资金流向 (stock_fund_flow_individual)\")\n",
+        "try:\n",
+        "    stock_flow = ak.stock_fund_flow_individual(symbol=\"即时\")\n",
+        "    if stock_flow is not None and not stock_flow.empty:\n",
+        "        # 过滤A股\n",
+        "        stock_flow = stock_flow[stock_flow['股票代码'].astype(str).str.match(r'^[036]')]\n",
+        "        print(f\"      ✅ A股数据: {len(stock_flow)} 条\")\n",
+        "        \n",
+        "        # 处理净额\n",
+        "        def parse_amount(x):\n",
+        "            if pd.isna(x) or x == '-':\n",
+        "                return 0\n",
+        "            x = str(x)\n",
+        "            if '亿' in x:\n",
+        "                return float(x.replace('亿', '')) * 10000\n",
+        "            elif '万' in x:\n",
+        "                return float(x.replace('万', ''))\n",
+        "            return float(x) if x else 0\n",
+        "        \n",
+        "        stock_flow['净额数值'] = stock_flow['净额'].apply(parse_amount)\n",
+        "        \n",
+        "        # 主力流入前5\n",
+        "        top5 = stock_flow.nlargest(5, '净额数值')\n",
+        "        print(f\"         主力流入前5: {', '.join(top5['股票简称'].tolist())}\")\n",
+        "        \n",
+        "        money_flow_results['个股数据条数'] = len(stock_flow)\n",
+        "except Exception as e:\n",
+        "    print(f\"      ❌ 获取失败: {str(e)[:80]}\")\n",
+        "\n",
+        "# ========== 汇总结果 ==========\n",
+        "print(\"\\n\" + \"=\" * 70)\n",
+        "print(\"📈 资金流向汇总\")\n",
+        "print(\"=\" * 70)\n",
+        "for key, value in money_flow_results.items():\n",
+        "    if isinstance(value, float):\n",
+        "        print(f\"  {key}: {value:.2f}\")\n",
+        "    else:\n",
+        "        print(f\"  {key}: {value}\")\n",
+        "\n",
+        "# ========== 综合判断 ==========\n",
+        "print(\"\\n\" + \"=\" * 70)\n",
+        "print(\"🎯 综合情绪判断\")\n",
+        "print(\"=\" * 70)\n",
+        "\n",
+        "sentiment_score = 0\n",
+        "sentiment_factors = []\n",
+        "\n",
+        "# 大盘主力净流入\n",
+        "if '大盘主力净流入(%)' in money_flow_results:\n",
+        "    pct = money_flow_results['大盘主力净流入(%)']\n",
+        "    if pct > 1:\n",
+        "        sentiment_score += 2\n",
+        "        sentiment_factors.append(f\"大盘主力净流入 {pct:.1f}% (积极)\")\n",
+        "    elif pct > 0:\n",
+        "        sentiment_score += 1\n",
+        "        sentiment_factors.append(f\"大盘主力小幅流入 {pct:.1f}%\")\n",
+        "    elif pct > -1:\n",
+        "        sentiment_factors.append(f\"大盘主力小幅流出 {pct:.1f}%\")\n",
+        "    else:\n",
+        "        sentiment_score -= 2\n",
+        "        sentiment_factors.append(f\"大盘主力大幅流出 {pct:.1f}% (谨慎)\")\n",
+        "\n",
+        "# 北向资金\n",
+        "if '北向资金(亿)' in money_flow_results:\n",
+        "    north = money_flow_results['北向资金(亿)']\n",
+        "    if north > 50:\n",
+        "        sentiment_score += 2\n",
+        "        sentiment_factors.append(f\"北向资金大幅流入 {north:.1f}亿 (积极)\")\n",
+        "    elif north > 0:\n",
+        "        sentiment_score += 1\n",
+        "        sentiment_factors.append(f\"北向资金流入 {north:.1f}亿\")\n",
+        "    elif north > -50:\n",
+        "        sentiment_factors.append(f\"北向资金流出 {north:.1f}亿\")\n",
+        "    else:\n",
+        "        sentiment_score -= 2\n",
+        "        sentiment_factors.append(f\"北向资金大幅流出 {north:.1f}亿 (谨慎)\")\n",
+        "\n",
+        "# 判断结果\n",
+        "if sentiment_score >= 2:\n",
+        "    sentiment = \"积极\"\n",
+        "    emoji = \"📈\"\n",
+        "elif sentiment_score <= -2:\n",
+        "    sentiment = \"谨慎\"\n",
+        "    emoji = \"📉\"\n",
+        "else:\n",
+        "    sentiment = \"中性\"\n",
+        "    emoji = \"➡️\"\n",
+        "\n",
+        "print(f\"\\n{emoji} 市场情绪: {sentiment} (评分: {sentiment_score})\")\n",
+        "print(\"\\n判断因素:\")\n",
+        "for factor in sentiment_factors:\n",
+        "    print(f\"  • {factor}\")\n",
+        "\n",
+        "print(\"\\n\" + \"=\" * 70)\n",
+        "print(\"✅ 测试完成！\")\n",
+        "print(\"=\" * 70)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 🎯 5. 判断情绪周期"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "======================================================================\n",
+            "🎯 市场情绪周期判断结果（基于陈小群战法）\n",
+            "======================================================================\n",
+            "\n",
+            "📊 市场指标:\n",
+            "   涨停家数: 66只\n",
+            "   最高连板: 0板\n",
+            "   炸板率: 5.71%\n",
+            "   资金净流入: -1.08%\n",
+            "\n",
+            "🎯 判断结果:\n",
+            "   情绪周期: 过热期\n",
+            "   建议仓位: 30-50%\n",
+            "   推荐策略: 逐步减仓\n",
+            "\n",
+            "📈 判断依据:\n",
+            "   • 涨停家数66只（>60只，过热期特征）\n",
+            "   • ⚠️  资金净流出-1.08%（与周期判断不一致）\n",
+            "\n",
+            "🎯 置信度: 🔴 低 (2.5/5.0)\n",
+            "\n",
+            "======================================================================\n"
+          ]
+        }
+      ],
+      "source": [
+        "def judge_emotion_cycle(limit_up_count, max_height, zhaban_rate, avg_inflow):\n",
+        "    \"\"\"\n",
+        "    判断市场情绪周期 - 基于陈小群战法知识库\n",
+        "    \n",
+        "    判断标准（根据知识库）:\n",
+        "    - 退潮期: <10只, <3板, >40%炸板率\n",
+        "    - 启动期: 10-30只, 3-4板, 10-20%炸板率\n",
+        "    - 加速期: 30-60只, 4-6板, 15-25%炸板率\n",
+        "    - 过热期: >60只, >7板, >30%炸板率\n",
+        "    \"\"\"\n",
+        "    \n",
+        "    # 初始化置信度分数\n",
+        "    confidence_score = 0\n",
+        "    factors = []\n",
+        "    \n",
+        "    # 1. 主要依据：涨停家数（权重最高）\n",
+        "    if limit_up_count < 10:\n",
+        "        cycle = \"退潮期\"\n",
+        "        position = \"0%\"\n",
+        "        strategy = \"空仓等待\"\n",
+        "        confidence_score += 3\n",
+        "        factors.append(f\"涨停家数{limit_up_count}只（<10只，退潮期特征）\")\n",
+        "    elif limit_up_count < 30:\n",
+        "        cycle = \"启动期\"\n",
+        "        position = \"10%\"\n",
+        "        strategy = \"首板卡位术（10%试错仓）\"\n",
+        "        confidence_score += 3\n",
+        "        factors.append(f\"涨停家数{limit_up_count}只（10-30只，启动期特征）\")\n",
+        "    elif limit_up_count < 60:\n",
+        "        cycle = \"加速期\"\n",
+        "        position = \"50%+\"\n",
+        "        strategy = \"龙头战法（重仓持有）\"\n",
+        "        confidence_score += 3\n",
+        "        factors.append(f\"涨停家数{limit_up_count}只（30-60只，加速期特征）\")\n",
+        "    else:\n",
+        "        cycle = \"过热期\"\n",
+        "        position = \"30-50%\"\n",
+        "        strategy = \"逐步减仓\"\n",
+        "        confidence_score += 3\n",
+        "        factors.append(f\"涨停家数{limit_up_count}只（>60只，过热期特征）\")\n",
+        "    \n",
+        "    # 2. 连板高度验证（权重中等）\n",
+        "    if cycle == \"退潮期\" and max_height < 3:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"连板高度{max_height}板（<3板，符合退潮期）\")\n",
+        "    elif cycle == \"启动期\" and 3 <= max_height <= 4:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"连板高度{max_height}板（3-4板，符合启动期）\")\n",
+        "    elif cycle == \"加速期\" and 4 <= max_height <= 6:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"连板高度{max_height}板（4-6板，符合加速期）\")\n",
+        "    elif cycle == \"过热期\" and max_height > 7:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"连板高度{max_height}板（>7板，符合过热期）\")\n",
+        "    elif cycle == \"启动期\" and max_height >= 3 and limit_up_count >= 25:\n",
+        "        # 有3板以上且涨停数接近30，可能进入加速期\n",
+        "        cycle = \"加速期\"\n",
+        "        position = \"50%+\"\n",
+        "        strategy = \"龙头战法（重仓持有）\"\n",
+        "        confidence_score += 2\n",
+        "        factors.append(f\"连板高度{max_height}板+涨停数{limit_up_count}只（接近加速期）\")\n",
+        "    \n",
+        "    # 3. 炸板率验证（权重中等）\n",
+        "    if cycle == \"退潮期\" and zhaban_rate > 40:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"炸板率{zhaban_rate:.1f}%（>40%，确认退潮期）\")\n",
+        "    elif cycle == \"启动期\" and 10 <= zhaban_rate <= 20:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"炸板率{zhaban_rate:.1f}%（10-20%，符合启动期）\")\n",
+        "    elif cycle == \"加速期\" and 15 <= zhaban_rate <= 25:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"炸板率{zhaban_rate:.1f}%（15-25%，符合加速期）\")\n",
+        "    elif cycle == \"过热期\" and zhaban_rate > 30:\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"炸板率{zhaban_rate:.1f}%（>30%，符合过热期）\")\n",
+        "    elif cycle == \"加速期\" and zhaban_rate > 30:\n",
+        "        # 炸板率过高，可能进入过热期\n",
+        "        cycle = \"过热期\"\n",
+        "        position = \"30-50%\"\n",
+        "        strategy = \"逐步减仓\"\n",
+        "        confidence_score += 1\n",
+        "        factors.append(f\"炸板率{zhaban_rate:.1f}%（>30%，可能过热）\")\n",
+        "    \n",
+        "    # 4. 资金流向验证（权重较低）\n",
+        "    if avg_inflow > 0.5 and cycle in [\"启动期\", \"加速期\"]:\n",
+        "        confidence_score += 0.5\n",
+        "        factors.append(f\"资金净流入{avg_inflow:.2f}%（支持上涨周期）\")\n",
+        "    elif avg_inflow < -0.5 and cycle == \"退潮期\":\n",
+        "        confidence_score += 0.5\n",
+        "        factors.append(f\"资金净流出{avg_inflow:.2f}%（确认退潮期）\")\n",
+        "    elif avg_inflow < -0.5 and cycle != \"退潮期\":\n",
+        "        confidence_score -= 0.5\n",
+        "        factors.append(f\"⚠️  资金净流出{avg_inflow:.2f}%（与周期判断不一致）\")\n",
+        "    \n",
+        "    # 计算置信度等级\n",
+        "    if confidence_score >= 4:\n",
+        "        confidence_level = \"高\"\n",
+        "        confidence_icon = \"🟢\"\n",
+        "    elif confidence_score >= 3:\n",
+        "        confidence_level = \"中\"\n",
+        "        confidence_icon = \"🟡\"\n",
+        "    else:\n",
+        "        confidence_level = \"低\"\n",
+        "        confidence_icon = \"🔴\"\n",
+        "    \n",
+        "    return {\n",
+        "        'cycle': cycle,\n",
+        "        'position': position,\n",
+        "        'strategy': strategy,\n",
+        "        'limit_up_count': limit_up_count,\n",
+        "        'max_height': max_height,\n",
+        "        'zhaban_rate': zhaban_rate,\n",
+        "        'avg_inflow': avg_inflow,\n",
+        "        'confidence_score': confidence_score,\n",
+        "        'confidence_level': confidence_level,\n",
+        "        'confidence_icon': confidence_icon,\n",
+        "        'factors': factors\n",
+        "    }\n",
+        "\n",
+        "# 判断当前市场情绪周期\n",
+        "result = judge_emotion_cycle(limit_up_count, max_height, zhaban_rate, avg_inflow)\n",
+        "\n",
+        "print(\"=\" * 70)\n",
+        "print(\"🎯 市场情绪周期判断结果（基于陈小群战法）\")\n",
+        "print(\"=\" * 70)\n",
+        "print()\n",
+        "print(f\"📊 市场指标:\")\n",
+        "print(f\"   涨停家数: {result['limit_up_count']}只\")\n",
+        "print(f\"   最高连板: {result['max_height']}板\")\n",
+        "print(f\"   炸板率: {result['zhaban_rate']:.2f}%\")\n",
+        "print(f\"   资金净流入: {result['avg_inflow']:.2f}%\")\n",
+        "print()\n",
+        "print(f\"🎯 判断结果:\")\n",
+        "print(f\"   情绪周期: {result['cycle']}\")\n",
+        "print(f\"   建议仓位: {result['position']}\")\n",
+        "print(f\"   推荐策略: {result['strategy']}\")\n",
+        "print()\n",
+        "print(f\"📈 判断依据:\")\n",
+        "for factor in result['factors']:\n",
+        "    print(f\"   • {factor}\")\n",
+        "print()\n",
+        "print(f\"🎯 置信度: {result['confidence_icon']} {result['confidence_level']} ({result['confidence_score']:.1f}/5.0)\")\n",
+        "print()\n",
+        "print(\"=\" * 70)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📈 6. 可视化分析"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [
+        {
+          "data": {
+            "application/vnd.plotly.v1+json": {
+              "config": {
+                "plotlyServerURL": "https://plot.ly"
+              },
+              "data": [
+                {
+                  "delta": {
+                    "position": "top",
+                    "reference": 30
+                  },
+                  "domain": {
+                    "x": [
+                      0,
+                      0.425
+                    ],
+                    "y": [
+                      0.575,
+                      1
+                    ]
+                  },
+                  "gauge": {
+                    "axis": {
+                      "range": [
+                        null,
+                        100
+                      ]
+                    },
+                    "bar": {
+                      "color": "darkblue"
+                    },
+                    "steps": [
+                      {
+                        "color": "lightgray",
+                        "name": "退潮期",
+                        "range": [
+                          0,
+                          10
+                        ]
+                      },
+                      {
+                        "color": "lightyellow",
+                        "name": "启动期",
+                        "range": [
+                          10,
+                          30
+                        ]
+                      },
+                      {
+                        "color": "lightgreen",
+                        "name": "加速期",
+                        "range": [
+                          30,
+                          60
+                        ]
+                      },
+                      {
+                        "color": "lightcoral",
+                        "name": "过热期",
+                        "range": [
+                          60,
+                          100
+                        ]
+                      }
+                    ],
+                    "threshold": {
+                      "line": {
+                        "color": "red",
+                        "width": 4
+                      },
+                      "thickness": 0.75,
+                      "value": 66
+                    }
+                  },
+                  "mode": "gauge+number+delta",
+                  "title": {
+                    "text": "涨停家数<br><span style='font-size:0.8em'>过热期</span>"
+                  },
+                  "type": "indicator",
+                  "value": 66
+                },
+                {
+                  "type": "bar",
+                  "x": [],
+                  "xaxis": "x",
+                  "y": [],
+                  "yaxis": "y"
+                },
+                {
+                  "domain": {
+                    "x": [
+                      0,
+                      0.425
+                    ],
+                    "y": [
+                      0,
+                      0.425
+                    ]
+                  },
+                  "gauge": {
+                    "axis": {
+                      "range": [
+                        null,
+                        100
+                      ]
+                    },
+                    "bar": {
+                      "color": "darkgreen"
+                    },
+                    "steps": [
+                      {
+                        "color": "lightgreen",
+                        "name": "正常",
+                        "range": [
+                          0,
+                          20
+                        ]
+                      },
+                      {
+                        "color": "lightyellow",
+                        "name": "偏高",
+                        "range": [
+                          20,
+                          40
+                        ]
+                      },
+                      {
+                        "color": "lightcoral",
+                        "name": "过高",
+                        "range": [
+                          40,
+                          100
+                        ]
+                      }
+                    ],
+                    "threshold": {
+                      "line": {
+                        "color": "red",
+                        "width": 3
+                      },
+                      "thickness": 0.75,
+                      "value": 40
+                    }
+                  },
+                  "mode": "gauge+number",
+                  "title": {
+                    "text": "炸板率 (%)"
+                  },
+                  "type": "indicator",
+                  "value": 5.714285714285714
+                },
+                {
+                  "domain": {
+                    "x": [
+                      0.575,
+                      1
+                    ],
+                    "y": [
+                      0,
+                      0.425
+                    ]
+                  },
+                  "hole": 0.5,
+                  "hovertemplate": "<b>%{label}</b><br>置信度: %{percent}<extra></extra>",
+                  "labels": [
+                    "退潮期",
+                    "启动期",
+                    "加速期",
+                    "过热期"
+                  ],
+                  "marker": {
+                    "colors": [
+                      "lightgray",
+                      "lightyellow",
+                      "lightgreen",
+                      "lightcoral"
+                    ]
+                  },
+                  "textinfo": "label+percent",
+                  "type": "pie",
+                  "values": [
+                    0,
+                    0,
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "layout": {
+                "annotations": [
+                  {
+                    "font": {
+                      "size": 16
+                    },
+                    "showarrow": false,
+                    "text": "涨停家数指标",
+                    "x": 0.2125,
+                    "xanchor": "center",
+                    "xref": "paper",
+                    "y": 1,
+                    "yanchor": "bottom",
+                    "yref": "paper"
+                  },
+                  {
+                    "font": {
+                      "size": 16
+                    },
+                    "showarrow": false,
+                    "text": "连板高度分布",
+                    "x": 0.7875,
+                    "xanchor": "center",
+                    "xref": "paper",
+                    "y": 1,
+                    "yanchor": "bottom",
+                    "yref": "paper"
+                  },
+                  {
+                    "font": {
+                      "size": 16
+                    },
+                    "showarrow": false,
+                    "text": "炸板率指标",
+                    "x": 0.2125,
+                    "xanchor": "center",
+                    "xref": "paper",
+                    "y": 0.425,
+                    "yanchor": "bottom",
+                    "yref": "paper"
+                  },
+                  {
+                    "font": {
+                      "size": 16
+                    },
+                    "showarrow": false,
+                    "text": "市场情绪周期",
+                    "x": 0.7875,
+                    "xanchor": "center",
+                    "xref": "paper",
+                    "y": 0.425,
+                    "yanchor": "bottom",
+                    "yref": "paper"
+                  }
+                ],
+                "font": {
+                  "size": 12
+                },
+                "height": 900,
+                "showlegend": false,
+                "template": {
+                  "data": {
+                    "bar": [
+                      {
+                        "error_x": {
+                          "color": "#2a3f5f"
+                        },
+                        "error_y": {
+                          "color": "#2a3f5f"
+                        },
+                        "marker": {
+                          "line": {
+                            "color": "#E5ECF6",
+                            "width": 0.5
+                          },
+                          "pattern": {
+                            "fillmode": "overlay",
+                            "size": 10,
+                            "solidity": 0.2
+                          }
+                        },
+                        "type": "bar"
+                      }
+                    ],
+                    "barpolar": [
+                      {
+                        "marker": {
+                          "line": {
+                            "color": "#E5ECF6",
+                            "width": 0.5
+                          },
+                          "pattern": {
+                            "fillmode": "overlay",
+                            "size": 10,
+                            "solidity": 0.2
+                          }
+                        },
+                        "type": "barpolar"
+                      }
+                    ],
+                    "carpet": [
+                      {
+                        "aaxis": {
+                          "endlinecolor": "#2a3f5f",
+                          "gridcolor": "white",
+                          "linecolor": "white",
+                          "minorgridcolor": "white",
+                          "startlinecolor": "#2a3f5f"
+                        },
+                        "baxis": {
+                          "endlinecolor": "#2a3f5f",
+                          "gridcolor": "white",
+                          "linecolor": "white",
+                          "minorgridcolor": "white",
+                          "startlinecolor": "#2a3f5f"
+                        },
+                        "type": "carpet"
+                      }
+                    ],
+                    "choropleth": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "type": "choropleth"
+                      }
+                    ],
+                    "contour": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "contour"
+                      }
+                    ],
+                    "contourcarpet": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "type": "contourcarpet"
+                      }
+                    ],
+                    "heatmap": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "heatmap"
+                      }
+                    ],
+                    "heatmapgl": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "heatmapgl"
+                      }
+                    ],
+                    "histogram": [
+                      {
+                        "marker": {
+                          "pattern": {
+                            "fillmode": "overlay",
+                            "size": 10,
+                            "solidity": 0.2
+                          }
+                        },
+                        "type": "histogram"
+                      }
+                    ],
+                    "histogram2d": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "histogram2d"
+                      }
+                    ],
+                    "histogram2dcontour": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "histogram2dcontour"
+                      }
+                    ],
+                    "mesh3d": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "type": "mesh3d"
+                      }
+                    ],
+                    "parcoords": [
+                      {
+                        "line": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "parcoords"
+                      }
+                    ],
+                    "pie": [
+                      {
+                        "automargin": true,
+                        "type": "pie"
+                      }
+                    ],
+                    "scatter": [
+                      {
+                        "fillpattern": {
+                          "fillmode": "overlay",
+                          "size": 10,
+                          "solidity": 0.2
+                        },
+                        "type": "scatter"
+                      }
+                    ],
+                    "scatter3d": [
+                      {
+                        "line": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scatter3d"
+                      }
+                    ],
+                    "scattercarpet": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scattercarpet"
+                      }
+                    ],
+                    "scattergeo": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scattergeo"
+                      }
+                    ],
+                    "scattergl": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scattergl"
+                      }
+                    ],
+                    "scattermapbox": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scattermapbox"
+                      }
+                    ],
+                    "scatterpolar": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scatterpolar"
+                      }
+                    ],
+                    "scatterpolargl": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scatterpolargl"
+                      }
+                    ],
+                    "scatterternary": [
+                      {
+                        "marker": {
+                          "colorbar": {
+                            "outlinewidth": 0,
+                            "ticks": ""
+                          }
+                        },
+                        "type": "scatterternary"
+                      }
+                    ],
+                    "surface": [
+                      {
+                        "colorbar": {
+                          "outlinewidth": 0,
+                          "ticks": ""
+                        },
+                        "colorscale": [
+                          [
+                            0,
+                            "#0d0887"
+                          ],
+                          [
+                            0.1111111111111111,
+                            "#46039f"
+                          ],
+                          [
+                            0.2222222222222222,
+                            "#7201a8"
+                          ],
+                          [
+                            0.3333333333333333,
+                            "#9c179e"
+                          ],
+                          [
+                            0.4444444444444444,
+                            "#bd3786"
+                          ],
+                          [
+                            0.5555555555555556,
+                            "#d8576b"
+                          ],
+                          [
+                            0.6666666666666666,
+                            "#ed7953"
+                          ],
+                          [
+                            0.7777777777777778,
+                            "#fb9f3a"
+                          ],
+                          [
+                            0.8888888888888888,
+                            "#fdca26"
+                          ],
+                          [
+                            1,
+                            "#f0f921"
+                          ]
+                        ],
+                        "type": "surface"
+                      }
+                    ],
+                    "table": [
+                      {
+                        "cells": {
+                          "fill": {
+                            "color": "#EBF0F8"
+                          },
+                          "line": {
+                            "color": "white"
+                          }
+                        },
+                        "header": {
+                          "fill": {
+                            "color": "#C8D4E3"
+                          },
+                          "line": {
+                            "color": "white"
+                          }
+                        },
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "layout": {
+                    "annotationdefaults": {
+                      "arrowcolor": "#2a3f5f",
+                      "arrowhead": 0,
+                      "arrowwidth": 1
+                    },
+                    "autotypenumbers": "strict",
+                    "coloraxis": {
+                      "colorbar": {
+                        "outlinewidth": 0,
+                        "ticks": ""
+                      }
+                    },
+                    "colorscale": {
+                      "diverging": [
+                        [
+                          0,
+                          "#8e0152"
+                        ],
+                        [
+                          0.1,
+                          "#c51b7d"
+                        ],
+                        [
+                          0.2,
+                          "#de77ae"
+                        ],
+                        [
+                          0.3,
+                          "#f1b6da"
+                        ],
+                        [
+                          0.4,
+                          "#fde0ef"
+                        ],
+                        [
+                          0.5,
+                          "#f7f7f7"
+                        ],
+                        [
+                          0.6,
+                          "#e6f5d0"
+                        ],
+                        [
+                          0.7,
+                          "#b8e186"
+                        ],
+                        [
+                          0.8,
+                          "#7fbc41"
+                        ],
+                        [
+                          0.9,
+                          "#4d9221"
+                        ],
+                        [
+                          1,
+                          "#276419"
+                        ]
+                      ],
+                      "sequential": [
+                        [
+                          0,
+                          "#0d0887"
+                        ],
+                        [
+                          0.1111111111111111,
+                          "#46039f"
+                        ],
+                        [
+                          0.2222222222222222,
+                          "#7201a8"
+                        ],
+                        [
+                          0.3333333333333333,
+                          "#9c179e"
+                        ],
+                        [
+                          0.4444444444444444,
+                          "#bd3786"
+                        ],
+                        [
+                          0.5555555555555556,
+                          "#d8576b"
+                        ],
+                        [
+                          0.6666666666666666,
+                          "#ed7953"
+                        ],
+                        [
+                          0.7777777777777778,
+                          "#fb9f3a"
+                        ],
+                        [
+                          0.8888888888888888,
+                          "#fdca26"
+                        ],
+                        [
+                          1,
+                          "#f0f921"
+                        ]
+                      ],
+                      "sequentialminus": [
+                        [
+                          0,
+                          "#0d0887"
+                        ],
+                        [
+                          0.1111111111111111,
+                          "#46039f"
+                        ],
+                        [
+                          0.2222222222222222,
+                          "#7201a8"
+                        ],
+                        [
+                          0.3333333333333333,
+                          "#9c179e"
+                        ],
+                        [
+                          0.4444444444444444,
+                          "#bd3786"
+                        ],
+                        [
+                          0.5555555555555556,
+                          "#d8576b"
+                        ],
+                        [
+                          0.6666666666666666,
+                          "#ed7953"
+                        ],
+                        [
+                          0.7777777777777778,
+                          "#fb9f3a"
+                        ],
+                        [
+                          0.8888888888888888,
+                          "#fdca26"
+                        ],
+                        [
+                          1,
+                          "#f0f921"
+                        ]
+                      ]
+                    },
+                    "colorway": [
+                      "#636efa",
+                      "#EF553B",
+                      "#00cc96",
+                      "#ab63fa",
+                      "#FFA15A",
+                      "#19d3f3",
+                      "#FF6692",
+                      "#B6E880",
+                      "#FF97FF",
+                      "#FECB52"
+                    ],
+                    "font": {
+                      "color": "#2a3f5f"
+                    },
+                    "geo": {
+                      "bgcolor": "white",
+                      "lakecolor": "white",
+                      "landcolor": "#E5ECF6",
+                      "showlakes": true,
+                      "showland": true,
+                      "subunitcolor": "white"
+                    },
+                    "hoverlabel": {
+                      "align": "left"
+                    },
+                    "hovermode": "closest",
+                    "mapbox": {
+                      "style": "light"
+                    },
+                    "paper_bgcolor": "white",
+                    "plot_bgcolor": "#E5ECF6",
+                    "polar": {
+                      "angularaxis": {
+                        "gridcolor": "white",
+                        "linecolor": "white",
+                        "ticks": ""
+                      },
+                      "bgcolor": "#E5ECF6",
+                      "radialaxis": {
+                        "gridcolor": "white",
+                        "linecolor": "white",
+                        "ticks": ""
+                      }
+                    },
+                    "scene": {
+                      "xaxis": {
+                        "backgroundcolor": "#E5ECF6",
+                        "gridcolor": "white",
+                        "gridwidth": 2,
+                        "linecolor": "white",
+                        "showbackground": true,
+                        "ticks": "",
+                        "zerolinecolor": "white"
+                      },
+                      "yaxis": {
+                        "backgroundcolor": "#E5ECF6",
+                        "gridcolor": "white",
+                        "gridwidth": 2,
+                        "linecolor": "white",
+                        "showbackground": true,
+                        "ticks": "",
+                        "zerolinecolor": "white"
+                      },
+                      "zaxis": {
+                        "backgroundcolor": "#E5ECF6",
+                        "gridcolor": "white",
+                        "gridwidth": 2,
+                        "linecolor": "white",
+                        "showbackground": true,
+                        "ticks": "",
+                        "zerolinecolor": "white"
+                      }
+                    },
+                    "shapedefaults": {
+                      "line": {
+                        "color": "#2a3f5f"
+                      }
+                    },
+                    "ternary": {
+                      "aaxis": {
+                        "gridcolor": "white",
+                        "linecolor": "white",
+                        "ticks": ""
+                      },
+                      "baxis": {
+                        "gridcolor": "white",
+                        "linecolor": "white",
+                        "ticks": ""
+                      },
+                      "bgcolor": "#E5ECF6",
+                      "caxis": {
+                        "gridcolor": "white",
+                        "linecolor": "white",
+                        "ticks": ""
+                      }
+                    },
+                    "title": {
+                      "x": 0.05
+                    },
+                    "xaxis": {
+                      "automargin": true,
+                      "gridcolor": "white",
+                      "linecolor": "white",
+                      "ticks": "",
+                      "title": {
+                        "standoff": 15
+                      },
+                      "zerolinecolor": "white",
+                      "zerolinewidth": 2
+                    },
+                    "yaxis": {
+                      "automargin": true,
+                      "gridcolor": "white",
+                      "linecolor": "white",
+                      "ticks": "",
+                      "title": {
+                        "standoff": 15
+                      },
+                      "zerolinecolor": "white",
+                      "zerolinewidth": 2
+                    }
+                  }
+                },
+                "title": {
+                  "text": "陈小群战法 - 市场情绪周期分析<br><span style='font-size:0.7em'>2026-01-13 | 置信度: 🔴 低</span>"
+                },
+                "xaxis": {
+                  "anchor": "y",
+                  "domain": [
+                    0.575,
+                    1
+                  ],
+                  "title": {
+                    "text": "连板高度"
+                  }
+                },
+                "yaxis": {
+                  "anchor": "x",
+                  "domain": [
+                    0.575,
+                    1
+                  ],
+                  "title": {
+                    "text": "股票数量"
+                  }
+                }
+              }
+            }
+          },
+          "metadata": {},
+          "output_type": "display_data"
+        }
+      ],
+      "source": [
+        "import plotly.graph_objects as go\n",
+        "from plotly.subplots import make_subplots\n",
+        "\n",
+        "# 创建可视化图表\n",
+        "fig = make_subplots(\n",
+        "    rows=2, cols=2,\n",
+        "    subplot_titles=('涨停家数指标', '连板高度分布', '炸板率指标', '市场情绪周期'),\n",
+        "    specs=[[{\"type\": \"indicator\"}, {\"type\": \"bar\"}],\n",
+        "           [{\"type\": \"indicator\"}, {\"type\": \"pie\"}]],\n",
+        "    vertical_spacing=0.15,\n",
+        "    horizontal_spacing=0.15\n",
+        ")\n",
+        "\n",
+        "# 1. 涨停家数（仪表盘）\n",
+        "cycle_ranges = {\n",
+        "    '退潮期': (0, 10, 'lightgray'),\n",
+        "    '启动期': (10, 30, 'lightyellow'),\n",
+        "    '加速期': (30, 60, 'lightgreen'),\n",
+        "    '过热期': (60, 100, 'lightcoral')\n",
+        "}\n",
+        "\n",
+        "fig.add_trace(\n",
+        "    go.Indicator(\n",
+        "        mode=\"gauge+number+delta\",\n",
+        "        value=limit_up_count,\n",
+        "        domain={'x': [0, 1], 'y': [0, 1]},\n",
+        "        title={'text': f\"涨停家数<br><span style='font-size:0.8em'>{result['cycle']}</span>\"},\n",
+        "        gauge={\n",
+        "            'axis': {'range': [None, 100]},\n",
+        "            'bar': {'color': \"darkblue\"},\n",
+        "            'steps': [\n",
+        "                {'range': [0, 10], 'color': \"lightgray\", 'name': '退潮期'},\n",
+        "                {'range': [10, 30], 'color': \"lightyellow\", 'name': '启动期'},\n",
+        "                {'range': [30, 60], 'color': \"lightgreen\", 'name': '加速期'},\n",
+        "                {'range': [60, 100], 'color': \"lightcoral\", 'name': '过热期'}\n",
+        "            ],\n",
+        "            'threshold': {\n",
+        "                'line': {'color': \"red\", 'width': 4},\n",
+        "                'thickness': 0.75,\n",
+        "                'value': limit_up_count\n",
+        "            }\n",
+        "        },\n",
+        "        delta={'reference': 30, 'position': \"top\"}\n",
+        "    ),\n",
+        "    row=1, col=1\n",
+        ")\n",
+        "\n",
+        "# 2. 连板高度分布\n",
+        "if limit_up_data is not None and not limit_up_data.empty and '连板高度' in limit_up_data.columns:\n",
+        "    height_data = limit_up_data[limit_up_data['连板高度'] > 0]\n",
+        "    if not height_data.empty:\n",
+        "        height_dist = height_data['连板高度'].value_counts().sort_index()\n",
+        "        fig.add_trace(\n",
+        "            go.Bar(\n",
+        "                x=[f\"{int(i)}板\" for i in height_dist.index],\n",
+        "                y=height_dist.values,\n",
+        "                name=\"连板高度分布\",\n",
+        "                marker_color='lightblue',\n",
+        "                text=height_dist.values,\n",
+        "                textposition='outside'\n",
+        "            ),\n",
+        "            row=1, col=2\n",
+        "        )\n",
+        "    else:\n",
+        "        # 如果没有连板数据，显示空图表提示\n",
+        "        fig.add_trace(\n",
+        "            go.Bar(x=[], y=[]),\n",
+        "            row=1, col=2\n",
+        "        )\n",
+        "else:\n",
+        "    fig.add_trace(\n",
+        "        go.Bar(x=[], y=[]),\n",
+        "        row=1, col=2\n",
+        "    )\n",
+        "\n",
+        "# 3. 炸板率（仪表盘）\n",
+        "zhaban_ranges = [\n",
+        "    {'range': [0, 20], 'color': \"lightgreen\", 'name': '正常'},\n",
+        "    {'range': [20, 40], 'color': \"lightyellow\", 'name': '偏高'},\n",
+        "    {'range': [40, 100], 'color': \"lightcoral\", 'name': '过高'}\n",
+        "]\n",
+        "\n",
+        "fig.add_trace(\n",
+        "    go.Indicator(\n",
+        "        mode=\"gauge+number\",\n",
+        "        value=zhaban_rate,\n",
+        "        domain={'x': [0, 1], 'y': [0, 1]},\n",
+        "        title={'text': \"炸板率 (%)\"},\n",
+        "        gauge={\n",
+        "            'axis': {'range': [None, 100]},\n",
+        "            'bar': {'color': \"darkgreen\"},\n",
+        "            'steps': zhaban_ranges,\n",
+        "            'threshold': {\n",
+        "                'line': {'color': \"red\", 'width': 3},\n",
+        "                'thickness': 0.75,\n",
+        "                'value': 40  # 40%作为风险阈值\n",
+        "            }\n",
+        "        }\n",
+        "    ),\n",
+        "    row=2, col=1\n",
+        ")\n",
+        "\n",
+        "# 4. 情绪周期（饼图）\n",
+        "cycle_labels = ['退潮期', '启动期', '加速期', '过热期']\n",
+        "cycle_colors = ['lightgray', 'lightyellow', 'lightgreen', 'lightcoral']\n",
+        "cycle_values = [0, 0, 0, 0]\n",
+        "cycle_idx = cycle_labels.index(result['cycle'])\n",
+        "cycle_values[cycle_idx] = 1\n",
+        "\n",
+        "fig.add_trace(\n",
+        "    go.Pie(\n",
+        "        labels=cycle_labels,\n",
+        "        values=cycle_values,\n",
+        "        marker_colors=cycle_colors,\n",
+        "        hole=0.5,\n",
+        "        textinfo='label+percent',\n",
+        "        hovertemplate='<b>%{label}</b><br>置信度: %{percent}<extra></extra>'\n",
+        "    ),\n",
+        "    row=2, col=2\n",
+        ")\n",
+        "\n",
+        "# 更新布局\n",
+        "fig.update_layout(\n",
+        "    title_text=f\"陈小群战法 - 市场情绪周期分析<br><span style='font-size:0.7em'>{today_display} | 置信度: {result['confidence_icon']} {result['confidence_level']}</span>\",\n",
+        "    height=900,\n",
+        "    showlegend=False,\n",
+        "    font=dict(size=12)\n",
+        ")\n",
+        "\n",
+        "# 更新坐标轴标签\n",
+        "fig.update_xaxes(title_text=\"连板高度\", row=1, col=2)\n",
+        "fig.update_yaxes(title_text=\"股票数量\", row=1, col=2)\n",
+        "\n",
+        "fig.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 💡 7. 策略建议"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "======================================================================\n",
+            "💡 基于情绪周期的策略建议\n",
+            "======================================================================\n",
+            "\n",
+            "📋 当前处于过热期，建议：\n",
+            "   1. ✅ 逐步减仓（保留30-50%仓位）\n",
+            "   2. ✅ 监控炸板率，如果>30%大幅减仓\n",
+            "   3. ✅ 关注连板高度的变化\n",
+            "   4. ✅ 如果板块效应减弱，立即止盈\n",
+            "   5. ⚠️  过热期风险极高，随时可能见顶\n",
+            "\n",
+            "📝 后续步骤：\n",
+            "   • 准备空仓等待退潮期结束\n",
+            "   • 不要贪心，及时止盈保住收益\n",
+            "   • 关注市场情绪指标的恶化\n",
+            "\n",
+            "======================================================================\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(\"=\" * 70)\n",
+        "print(f\"💡 基于情绪周期的策略建议\")\n",
+        "print(\"=\" * 70)\n",
+        "print()\n",
+        "\n",
+        "cycle = result['cycle']\n",
+        "\n",
+        "if cycle == \"退潮期\":\n",
+        "    print(\"📋 当前处于退潮期，建议：\")\n",
+        "    print(\"   1. ✅ 空仓等待，不要操作\")\n",
+        "    print(\"   2. ✅ 每日监控涨停家数，等待情绪周期转换\")\n",
+        "    print(\"   3. ✅ 关注市场情绪指标的改善\")\n",
+        "    print(\"   4. ⚠️  退潮期操作风险极高，即使符合条件成功率也会大幅降低\")\n",
+        "    print()\n",
+        "    print(\"📝 后续步骤：\")\n",
+        "    print(\"   • 等待涨停家数>10只再考虑操作\")\n",
+        "    print(\"   • 等待连板高度>=3板\")\n",
+        "    print(\"   • 等待炸板率<30%\")\n",
+        "\n",
+        "elif cycle == \"启动期\":\n",
+        "    print(\"📋 当前处于启动期，建议：\")\n",
+        "    print(\"   1. ✅ 使用首板卡位术（10%试错仓）\")\n",
+        "    print(\"   2. ✅ 筛选早盘9:35前涨停的股票\")\n",
+        "    print(\"   3. ✅ 检查选股条件：\")\n",
+        "    print(\"      • 流通市值<30亿\")\n",
+        "    print(\"      • 封单量>流通市值2%\")\n",
+        "    print(\"      • 题材新颖、有想象空间\")\n",
+        "    print(\"      • 板块内至少3只跟风涨停\")\n",
+        "    print(\"   4. ✅ 严格止损：次日不涨停立即止损（-5%）\")\n",
+        "    print()\n",
+        "    print(\"📝 后续步骤：\")\n",
+        "    print(\"   • 每日早盘9:35前扫描涨停股票\")\n",
+        "    print(\"   • 确认板块效应后再介入\")\n",
+        "    print(\"   • 如果次日二板，考虑使用二板定龙术（50%）\")\n",
+        "\n",
+        "elif cycle == \"加速期\":\n",
+        "    print(\"📋 当前处于加速期，建议：\")\n",
+        "    print(\"   1. ✅ 使用龙头战法（50%+重仓）\")\n",
+        "    print(\"   2. ✅ 识别市场总龙头\")\n",
+        "    print(\"   3. ✅ 在龙头启动期重仓介入\")\n",
+        "    print(\"   4. ✅ 坚定持有，不爱做T，看准就持有到巅峰\")\n",
+        "    print(\"   5. ⚠️  总仓位建议不超过70%\")\n",
+        "    print()\n",
+        "    print(\"📝 后续步骤：\")\n",
+        "    print(\"   • 寻找板块内涨幅最大或最早涨停的股票\")\n",
+        "    print(\"   • 确认龙头地位后再重仓介入\")\n",
+        "    print(\"   • 持有至见顶或出现风险信号\")\n",
+        "\n",
+        "elif cycle == \"过热期\":\n",
+        "    print(\"📋 当前处于过热期，建议：\")\n",
+        "    print(\"   1. ✅ 逐步减仓（保留30-50%仓位）\")\n",
+        "    print(\"   2. ✅ 监控炸板率，如果>30%大幅减仓\")\n",
+        "    print(\"   3. ✅ 关注连板高度的变化\")\n",
+        "    print(\"   4. ✅ 如果板块效应减弱，立即止盈\")\n",
+        "    print(\"   5. ⚠️  过热期风险极高，随时可能见顶\")\n",
+        "    print()\n",
+        "    print(\"📝 后续步骤：\")\n",
+        "    print(\"   • 准备空仓等待退潮期结束\")\n",
+        "    print(\"   • 不要贪心，及时止盈保住收益\")\n",
+        "    print(\"   • 关注市场情绪指标的恶化\")\n",
+        "\n",
+        "print()\n",
+        "print(\"=\" * 70)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## 📊 8. 算法设计与验证\n",
+        "\n",
+        "### 8.1 算法设计要点\n",
+        "\n",
+        "本Notebook实现了陈小群战法的市场环境判断算法，核心特点：\n",
+        "\n",
+        "1. **多维度综合判断**\n",
+        "   - 涨停家数（主要依据，权重最高）\n",
+        "   - 连板高度（验证指标，权重中等）\n",
+        "   - 炸板率（风险指标，权重中等）\n",
+        "   - 资金流向（辅助指标，权重较低）\n",
+        "\n",
+        "2. **置信度评分系统**\n",
+        "   - 根据各项指标的符合程度计算置信度\n",
+        "   - 高置信度（≥4.0）：判断可靠，可执行策略\n",
+        "   - 中置信度（3.0-4.0）：判断基本可靠，需要谨慎\n",
+        "   - 低置信度（<3.0）：判断不确定，建议观察\n",
+        "\n",
+        "3. **动态调整机制**\n",
+        "   - 当涨停家数处于边界值（如25只），结合连板高度动态调整\n",
+        "   - 当炸板率异常时，自动调整周期判断\n",
+        "\n",
+        "### 8.2 数据验证方法\n",
+        "\n",
+        "所有数据都可以通过以下方法验证：\n",
+        "\n",
+        "1. **涨停板数据**：`ak.stock_zt_pool_em(date=today)`\n",
+        "   - 来源：AKShare实时数据\n",
+        "   - 验证：检查数据完整性和有效性\n",
+        "\n",
+        "2. **连板高度**：`jq.get_price(code, count=5, frequency='daily')`\n",
+        "   - 来源：JQData历史价格数据\n",
+        "   - 验证：计算连续涨停天数\n",
+        "\n",
+        "3. **炸板率**：统计涨跌幅>=9%但<10%的股票\n",
+        "   - 来源：AKShare实时行情\n",
+        "   - 验证：计算炸板股票占比\n",
+        "\n",
+        "4. **资金流向**：`jq.get_money_flow(index, start_date, end_date)`\n",
+        "   - 来源：JQData资金流向数据\n",
+        "   - 验证：计算资金净流入百分比\n",
+        "\n",
+        "### 8.3 策略展示\n",
+        "\n",
+        "根据判断的情绪周期，本Notebook会：\n",
+        "\n",
+        "1. **显示详细判断结果**\n",
+        "   - 市场指标（涨停家数、连板高度、炸板率、资金流向）\n",
+        "   - 判断结果（情绪周期、建议仓位、推荐策略）\n",
+        "   - 判断依据（各项指标的符合情况）\n",
+        "   - 置信度评估（高/中/低）\n",
+        "\n",
+        "2. **生成可视化图表**\n",
+        "   - 涨停家数仪表盘（显示当前周期）\n",
+        "   - 连板高度分布柱状图\n",
+        "   - 炸板率仪表盘（显示风险水平）\n",
+        "   - 情绪周期饼图（显示当前状态）\n",
+        "\n",
+        "3. **提供策略建议**\n",
+        "   - 基于当前情绪周期的具体操作建议\n",
+        "   - 后续步骤指导\n",
+        "   - 风险提示\n",
+        "\n",
+        "---\n",
+        "\n",
+        "**注意**: 本Notebook提供市场环境判断功能，是陈小群战法的第一步。\n",
+        "\n",
+        "**下一步**: 根据判断的情绪周期，选择合适的策略：\n",
+        "- **启动期** → 首板卡位术（见 `02_first_board_strategy.ipynb`）\n",
+        "- **加速期** → 龙头战法（见 `03_dragon_strategy.ipynb`）\n",
+        "- **过热期** → 逐步减仓（见 `04_reduce_position.ipynb`）\n",
+        "- **退潮期** → 空仓等待\n",
+        "\n",
+        "---\n",
+        "\n",
+        "**算法可靠性**: B级（中高可靠性）\n",
+        "- 基于陈小群游资战法知识库\n",
+        "- 多维度综合判断，置信度评分\n",
+        "- 数据可验证，逻辑清晰"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "venv",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.12.3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 2
+}

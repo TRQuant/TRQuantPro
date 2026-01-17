@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trading_day",
+  "title": "get_trading_day - 获取交易日期",
+  "content": "get_trading_day - 获取交易日期\n\n1、默认情况下，回测中当前时间为策略中调用该接口的回测日日期(context.blotter.current_dt)。",
+  "code_blocks": [],
+  "content_length": 85,
+  "url": "https://ptradeapi.com/#get_trading_day"
+}

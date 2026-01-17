@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trade_days",
+  "title": "get_trade_days - 获取指定范围交易日期",
+  "content": "get_trade_days - 获取指定范围交易日期\n\nget_trade_days\n(\nstart_date\n=\nNone\n,\nend_date\n=\nNone\n,\ncount\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 98,
+  "url": "https://ptradeapi.com#get_trade_days"
+}

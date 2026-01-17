@@ -1,0 +1,8 @@
+{
+  "anchor_id": "before_trading_start",
+  "title": "before_trading_start（可选）",
+  "content": "before_trading_start（可选）\n\n该函数在每天开始交易前被调用一次，用于添加每天都要初始化的信息，如无盘前初始化需求，该函数可以在策略中不做定义。",
+  "code_blocks": [],
+  "content_length": 82,
+  "url": "https://ptradeapi.com#before_trading_start"
+}

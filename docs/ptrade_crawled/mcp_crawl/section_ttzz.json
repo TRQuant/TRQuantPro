@@ -1,0 +1,8 @@
+{
+  "anchor_id": "ttzz",
+  "title": "ttzz",
+  "content": "\n\nvar _hmt = _hmt || [];\n        (function() {\n          var hm = document.createElement(\"script\");\n          hm.src = \"https://hm.baidu.com/hm.js?c6fa3c08c4e229c334e4253cecc4e811\";\n          var s = document.getElementsByTagName(\"script\")[0]; \n          s.parentNode.insertBefore(hm, s);\n        })();\n\n(function(){\nvar el = document.createElement(\"script\");\nel.src = \"https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?8f9f098f5bb405646775c4e283a268bba50f858ecedddc8b89acd17a578f5b243d72cd14f8a76432df3935ab77ec54f830517b3cb210f7fd334f50ccb772134a\";\nel.id = \"ttzz\";\nvar s = document.getElementsByTagName(\"script\")[0];\ns.parentNode.insertBefore(el, s);\n})(window)",
+  "code_blocks": [],
+  "content_length": 666,
+  "url": "https://ptradeapi.com#ttzz"
+}

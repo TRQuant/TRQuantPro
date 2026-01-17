@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "xuanyuan": {
+      "command": "/home/taotao/.cursor/worktrees/TRQuant/ope/venv/bin/python",
+      "args": [
+        "/home/taotao/.cursor/worktrees/TRQuant/ope/mcp_servers/xuanyuan_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "TRQUANT_ROOT": "/home/taotao/.cursor/worktrees/TRQuant/ope"
+      },
+      "description": "🐉 轩辕剑灵开发助手"
+    }
+  }
+}
+
+
+
+
+

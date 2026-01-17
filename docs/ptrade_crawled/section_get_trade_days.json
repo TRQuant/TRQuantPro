@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trade_days",
+  "title": "get_trade_days - 获取指定范围交易日期",
+  "content": "get_trade_days - 获取指定范围交易日期\n\nget_trade_days(start_date=None, end_date=None, count=None)\n\n1、默认情况下，回测中end_date为策略中调用该接口的回测日日期(context.blotter.current_dt)。",
+  "code_blocks": [],
+  "content_length": 152,
+  "url": "https://ptradeapi.com/#get_trade_days"
+}

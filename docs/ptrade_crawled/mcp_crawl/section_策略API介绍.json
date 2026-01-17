@@ -1,0 +1,8 @@
+{
+  "anchor_id": "策略API介绍",
+  "title": "策略API介绍",
+  "content": "策略API介绍\n\n股票策略中，该函数只用于设定get_history函数的默认security_list入参, 除此之外并无其他用处，因此为非必须设定的函数。\n\ndef initialize(context):\n    g.security = ['600570.SS','600571.SS']\n    # 将g.security中的股票设置为股票池\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    # 获取初始化设定的股票池行情数据\n    his = get_history(5, '1d', 'close', security_list=None)",
+  "code_blocks": [],
+  "content_length": 320,
+  "url": "https://ptradeapi.com/#策略API介绍"
+}

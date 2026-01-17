@@ -1,0 +1,8 @@
+{
+  "anchor_id": "after_trading_end",
+  "title": "after_trading_end（可选）",
+  "content": "after_trading_end（可选）\n\n该函数会在每天交易结束之后调用，用于处理每天收盘后的操作，如无盘后处理需求，该函数可以在策略中不做定义。",
+  "code_blocks": [],
+  "content_length": 75,
+  "url": "https://ptradeapi.com#after_trading_end"
+}

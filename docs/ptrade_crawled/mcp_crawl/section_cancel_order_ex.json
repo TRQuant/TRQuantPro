@@ -1,0 +1,8 @@
+{
+  "anchor_id": "cancel_order_ex",
+  "title": "cancel_order_ex - 撤单",
+  "content": "cancel_order_ex - 撤单\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n    g.count = 0\n\ndef handle_data(context, data):\n    if g.count == 0:\n        log.info(\"当日全部订单为：%s\" % get_all_orders())\n        # 遍历账户当日全部订单，对已报、部成状态订单进行撤单操作\n        for _order in get_all_orders():\n            if _order['status'] in ['2', '7']:\n                cancel_order_ex(_order)\n    if g.count == 1:\n        # 查看撤单是否成功\n        log.info(\"当日全部订单为：%s\" % get_all_orders())\n    g.count += 1",
+  "code_blocks": [],
+  "content_length": 496,
+  "url": "https://ptradeapi.com/#cancel_order_ex"
+}

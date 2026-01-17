@@ -1,0 +1,8 @@
+{
+  "anchor_id": "融资融券交易类函数",
+  "title": "融资融券交易类函数",
+  "content": "融资融券交易类函数\n\nmargin_trade(security, amount, limit_price=None, market_type=None)",
+  "code_blocks": [],
+  "content_length": 77,
+  "url": "https://ptradeapi.com/#融资融券交易类函数"
+}

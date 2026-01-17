@@ -1,0 +1,8 @@
+{
+  "anchor_id": "策略运行周期",
+  "title": "策略运行周期",
+  "content": "策略运行周期\n\n交易支持日线级别、分钟级别、tick级别运行，日线级别和分钟级别详见handle_data方法，tick级别运行详见run_interval和tick_data方法。\n\n当选择日线频率时，回测和交易都是每天运行一次，回测运行时间为每个交易日的15:00，交易运行时间为尾盘固定时间(允许券商可配)，默认为14:50分。",
+  "code_blocks": [],
+  "content_length": 167,
+  "url": "https://ptradeapi.com/#策略运行周期"
+}

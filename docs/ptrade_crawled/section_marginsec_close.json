@@ -1,0 +1,8 @@
+{
+  "anchor_id": "marginsec_close",
+  "title": "marginsec_close - 买券还券",
+  "content": "marginsec_close - 买券还券\n\nmarginsec_close(security, amount, limit_price=None)",
+  "code_blocks": [],
+  "content_length": 75,
+  "url": "https://ptradeapi.com/#marginsec_close"
+}

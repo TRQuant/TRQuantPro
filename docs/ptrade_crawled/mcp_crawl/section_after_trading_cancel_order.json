@@ -1,0 +1,8 @@
+{
+  "anchor_id": "after_trading_cancel_order",
+  "title": "after_trading_cancel_order - 盘后固定价委托撤单(股票)",
+  "content": "after_trading_cancel_order - 盘后固定价委托撤单(股票)\n\nimport time\n\ndef initialize(context):\n    g.security = \"300001.SZ\"\n    set_universe(g.security)\n    # 15:00-15:30期间使用run_daily进行盘后固定价委托、盘后固定价委托撤单\n    run_daily(context, order_test, time=\"15:15\")\n    g.flag = False\n\ndef order_test(context):\n    snapshot = get_snapshot(g.security)\n    if snapshot is not None:\n        last_px = snapshot[g.security].get(\"last_px\", 0)\n        if last_px > 0:\n            order_id = after_trading_order(g.security, 200, float(last_px))\n            time.sleep(5)\n            after_trading_cancel_order(order_id)\n\n\ndef handle_data(context, data):\n    if not g.flag:\n        snapshot = get_snapshot(g.security)\n        if snapshot is not None:\n            last_px = snapshot[g.security].get(\"last_px\", 0)\n            if last_px > 0:\n                order_id = after_trading_order(g.security, 200, float(last_px))\n                time.sleep(5)\n                after_trading_cancel_order(order_id)\n                g.flag = True\n\netf_basket_order(etf_code ,amount, price_style=None, position=True, info=None)",
+  "code_blocks": [],
+  "content_length": 1076,
+  "url": "https://ptradeapi.com/#after_trading_cancel_order"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_target",
+  "title": "order_target - 指定目标数量买卖",
+  "content": "order_target - 指定目标数量买卖\n\norder_target\n(\nsecurity\n,\namount\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 80,
+  "url": "https://ptradeapi.com#order_target"
+}

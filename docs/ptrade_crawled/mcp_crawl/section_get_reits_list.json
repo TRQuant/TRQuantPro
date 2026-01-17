@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_reits_list",
+  "title": "get_reits_list - 获取基础设施公募REITs基金代码列表",
+  "content": "get_reits_list - 获取基础设施公募REITs基金代码列表\n\n在回测中，date不入参默认取回测日期，默认值会随着回测日期变化而变化，等于context.current_dt。\n在研究中，date不入参默认取当天日期。\n在交易中，date不入参默认取当天日期。\n\n['180101.SZ', '180102.SZ', '180103.SZ', '180201.SZ', '180202.SZ', '180301.SZ', '180401.SZ', '180501.SZ', '180801.SZ', '508000.SS', '508001.SS', '508006.SS', '508008.SS', '508009.SS', '508018.SS', '508021.SS',\n'508027.SS', '508028.SS', '508056.SS', '508058.SS', '508066.SS', '508068.SS', '508077.SS', '508088.SS', '508096.SS', '508098.SS', '508099.SS'] \n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    # 公募REITs基金代码\n    ashares = get_reits_list()\n    log.info('%s 公募REITs基金数量为%s' % (context.blotter.current_dt,len(ashares)))\n    ashares = get_reits_list('20230403')\n    log.info('20230403 公募REITs基金数量为%s'%len(ashares))",
+  "code_blocks": [],
+  "content_length": 829,
+  "url": "https://ptradeapi.com/#get_reits_list"
+}

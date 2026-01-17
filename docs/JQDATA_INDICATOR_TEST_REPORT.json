@@ -1,0 +1,11 @@
+{
+  "test_date": "2025-09-18",
+  "test_symbol": "000001.XSHE",
+  "summary": {
+    "total": 36,
+    "success": 36,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "note": "详细数据请查看HTML报告"
+}

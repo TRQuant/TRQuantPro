@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_stock_info",
+  "title": "get_stock_info - 获取股票基础信息",
+  "content": "get_stock_info - 获取股票基础信息\n\nstock_name -- 股票代码对应公司名(str:str)；\nlisted_date -- 股票上市日期(str:str)；\nde_listed_date -- 股票退市日期，若未退市，返回2900-01-01(str:str)；\n注意，如果field=None，或者不填，是不会返回上市和退市日期，只会返回股票名字。\n\n嵌套dict类型，包含内容为field中指定内容，若field=None，返回股票基础信息仅包含对应公司名(dict[str:dict[str:str,...],...])\n\n{'600570.SS': {'stock_name': '恒生电子', 'listed_date': '2003-12-16', 'de_listed_date': '2900-01-01'}}\n\ndef initialize(context):\n    g.security = ['600570.SS', '600571.SS']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    #获取单支股票的基础信息\n    stock_info = get_stock_info(g.security[0])\n    log.info(stock_info)\n    #获取多支股票的基础信息\n    stock_infos = get_stock_info(g.security, ['stock_name','listed_date','de_listed_date'])\n    log.info(stock_infos)\n\nLISTED_DAY = 90\ndef filter_new_stock(market_code):\n    filtered_new_stock_list = []\n    stock_info_dict = get_stock_info(market_code,field=['listed_date'])\n    for code, info in stock_info_dict.items():\n        old_date = stock_info_dict[code]['listed_date']\n        if not date_diff(old_date):\n            filtered_new_stock_list.append(code)\n\n    return filtered_new_stock_list\n\ndef date_diff(old_date):\n    today = datetime.datetime.now()\n    delta_day = (today - datetime.datetime.strptime(old_date, '%Y-%m%d')).days\n    if delta_day < LISTED_DAY:\n        return True\n    else:\n        return False\n",
+  "code_blocks": [],
+  "content_length": 1338,
+  "url": "https://ptradeapi.com/#get_stock_info"
+}

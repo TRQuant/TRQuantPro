@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_history",
+  "title": "get_history - 获取历史行情",
+  "content": "get_history - 获取历史行情\n\nget_history\n(\ncount\n,\nfrequency\n=\n'1d'\n,\nfield\n=\n'close'\n,\nsecurity_list\n=\nNone\n,\nfq\n=\nNone\n,\ninclude\n=\nFalse\n,\nfill\n=\n'nan'\n,\nis_dict\n=\nFalse\n)",
+  "code_blocks": [],
+  "content_length": 166,
+  "url": "https://ptradeapi.com#get_history"
+}

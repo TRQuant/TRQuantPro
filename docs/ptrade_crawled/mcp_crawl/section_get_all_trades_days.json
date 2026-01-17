@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_all_trades_days",
+  "title": "get_all_trades_days - 获取全部交易日期",
+  "content": "get_all_trades_days - 获取全部交易日期\n\n1、默认情况下，回测中date为策略中调用该接口的回测日日期(context.blotter.current_dt)。\n\ndef initialize(context):\n    # 获取当前回测日期之前的所有交易日\n    all_trades_days = get_all_trades_days()\n    log.info(all_trades_days)\n    all_trades_days_date = get_all_trades_days('20150312')\n    log.info(all_trades_days_date)\n    g.security = ['600570.SS', '000001.SZ']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    pass\n\nget_trade_days(start_date=None, end_date=None, count=None)",
+  "code_blocks": [],
+  "content_length": 483,
+  "url": "https://ptradeapi.com/#get_all_trades_days"
+}

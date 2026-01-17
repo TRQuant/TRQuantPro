@@ -1,0 +1,6 @@
+URL: https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10746
+标题: JQData使用说明
+爬取时间: 2026-01-01T12:10:31.757792
+======================================================================
+
+返回 目录 JQData试用及购买 JQData使用指南 JQData安装/登录/流量查询/查看账号权限 JQData常见报错 JQData数据范围及更新时间 JQData数据处理规则 ⭐ 全市场通用 ⭐ 沪深A股 股票交易标的列表 股票标的交易信息 融资融券信息 交易统计数据 行业概念及成分股数据 沪股通，深股通和港股通(市场通数据） 批量查询数据库（新） 股票量价信息 各量价接口的差异说明 获取股票当日盘前交易信息（新） get_price 移动窗口 get_bars 固定窗口 获取集合竞价数据 get_ticks 股票-单季度/年度财务数据（含新接口） 股票-报告期财务数据⭐ 上市公司相关信息 期货 期权 基金 指数⭐ 债券（含可转债⭐） Tick数据 资金流因子 舆情数据 风险模型 - 风格因子（CNE5）⭐ 风险模型-风格因子pro（CNE6）⭐ 聚宽因子⭐ alpha101和alpha191 技术指标 宏观数据 获取股票当日盘前交易信息 历史范围：当天；更新时间：盘前交易日 09:15 后可获取 get_preopen_infos(security, fields=( "paused" , "factor" , "high_limit" , "low_limit" )) 描述 获取股票当日盘前交易信息, 盘前交易日 09:15 后可获取到数据 返回 DataFrame : index 为标的列表, columns 为字段名 注意 在盘前更新中，聚宽单季度财务 估值表 于08:30更新当日最新的总股本与流通股本数据。 参数 参数 备注 security 股票代码或者股票代码的 list fields 请求字段, 默认为全部: paused(停牌标志), factor(后复权因子), high_limit(涨停价), low_limit(跌停价) 代码示例 # 获取单季度某张表中的字段信息 stocks = get_index_stocks( '000300.XSHG' ) get_preopen_infos(stocks, fields=( "paused" , "factor" , "high_limit" , "low_limit" )) paused factor high_limit low_limit 000001. XSHE 0.0 135.995625 11.01 9.01 000002. XSHE 0.0 168.875961 7.57 6.19 000063. XSHE 0.0 18.066363 28.11 23.00 000100. XSHE 0.0 3.723823 4.04 3.30 000157. XSHE 0.0 87.370424 7.12 5.82 在线客服

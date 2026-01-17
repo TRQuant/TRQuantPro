@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trading_day",
+  "title": "get_trading_day - 获取交易日期",
+  "content": "get_trading_day - 获取交易日期\n\n1、默认情况下，回测中当前时间为策略中调用该接口的回测日日期(context.blotter.current_dt)。\n\nday：表示天数，正的为数天后，负的为数天前，day取0表示获取当前交易日，如果当前日期为非交易日则返回下一交易日的日期。day默认取值为0，不建议获取交易所还未公布的交易日期(int)；\n\ndate：datetime.date日期对象, 格式：2025-11-18 , previous_date.strftime('%Y%m%d') 转为 20251118\n\ndef initialize(context):\n    g.security = ['600670.SS', '000001.SZ']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    # 获取后一天的交易日期\n    previous_trading_date = get_trading_day(1)\n    log.info(previous_trading_date)\n    # 获取前一天的交易日期\n    next_trading_date = get_trading_day(-1)\n    log.info(next_trading_date)",
+  "code_blocks": [],
+  "content_length": 592,
+  "url": "https://ptradeapi.com/#get_trading_day"
+}

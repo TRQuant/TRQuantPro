@@ -1,0 +1,8 @@
+{
+  "anchor_id": "盘后逆回购",
+  "title": "盘后逆回购",
+  "content": "盘后逆回购\n\n盘后进行逆回购，只能使用run_daily 设定在3点之后执行，handle_data 无法在点之后运行\n\ndef\nbefore_trading_start\n(\ncontext\n,\ndata\n):\nimport\ndatetime\n    current\n=\ndatetime\n.\ndatetime\n.\nnow\n().\nstrftime\n(\n'%Y-%m-%d'\n)\nlog\n.\ninfo\n(\ncurrent\n)\ndef\nreverse_repurchase\n(\ncontext\n):\ncash\n=\ncontext\n.\nportfolio\n.\ncash\n    cash\n=\ncash\n-\n1010\n# 保留1000元，新债中签 可以有钱缴费\namount\n=\nint\n(\ncash\n/\n1000\n)*\n10\nlog\n.\ninfo\n(\namount\n)\norder\n(\n'131810.SZ'\n,\n-\n1\n*\namount\n)\ndef\ninitialize\n(\ncontext\n):\nrun_daily\n(\ncontext\n,\nreverse_repurchase\n,\n'15:10'\n)\ndef\nhandle_data\n(\ncontext\n,\ndata\n):\npass\ndef\non_order_response\n(\ncontext\n,\norder_list\n):\n# 该函数会在委托回报返回时响应\nlog\n.\ninfo\n(\norder_list\n)\n\n2022\n-\n11\n-\n25\n09\n:\n10\n:\n01\n-\nINFO\n-\nDone\n2022\n-\n11\n-\n25\n13\n:\n30\n:\n00\n-\nINFO\n-\n代码【\n754809\n】申购成功，委托编号【\n51153\n】\n2022\n-\n11\n-\n25\n14\n:\n57\n:\n00\n-\nINFO\n-\n3630\n2022\n-\n11\n-\n25\n14\n:\n57\n:\n00\n-\nINFO\n-\n生成订单，订单号：\ne75dd8cd89cf432fa16abb48d003b97b\n股票代码：\n131810.XSHE\n数量：卖出\n3630\n2022\n-\n11\n-\n25\n14\n:\n57\n:\n00\n-\nINFO\n-\n[{\n'entrust_type'\n:\n'0'\n,\n'stock_code'\n:\n'131810.SZ'\n,\n'entrust_no'\n:\n66219\n,\n'order_time'\n:\n'2022-11-25 14:57:01.769'\n,\n'business_amount'\n:\n0.0\n,\n'status'\n:\n'2'\n,\n'entrust_prop'\n:\n'4'\n,\n'amount'\n:\n-\n3630\n,\n'price'\n:\n1.875\n,\n'error_info'\n:\n''\n,\n'order_id'\n:\n'e75dd8cd89cf432fa1xxxxxxxxxx'\n}]",
+  "code_blocks": [],
+  "content_length": 1223,
+  "url": "https://ptradeapi.com#盘后逆回购"
+}

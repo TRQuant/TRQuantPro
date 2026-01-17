@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_trades_file",
+  "title": "get_trades_file – 获取对账数据文件",
+  "content": "get_trades_file – 获取对账数据文件\n\n导出数据格式的说明:\n交易数据文件的组织格式为csv文件，表头信息为：\n订单编号，成交编号，委托编号，标的代码，交易类型，成交数量，成交价，成交金额，交易费用，交易时间，对应的表头字段为：\n[order_id,trading_id,entrust_id,security_code,order_type,volume,price,total_money,trading_fee, trade_time]\n\n2、类似a6fbc145958843cc86639b23fbcfdc4c的字符串，通过平台委托的成交数据；",
+  "code_blocks": [],
+  "content_length": 284,
+  "url": "https://ptradeapi.com/#get_trades_file"
+}

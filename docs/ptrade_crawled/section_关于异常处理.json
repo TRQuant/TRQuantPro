@@ -1,0 +1,8 @@
+{
+  "anchor_id": "关于异常处理",
+  "title": "关于异常处理",
+  "content": "关于异常处理\n\n交易场景数据缺失等原因会导致策略运行过程中常规的处理出现语法错误，导致策略终止，所以需要做一些异常处理的保护。以下是一些基本的处理方法介绍。\n\ntry:\n    # 尝试执行的代码\n    print(a)\nexcept:\n    # 如果在try块执行异常\n    # 则执行except块代码\n    a = 1\n    print(a)\n\ntry:\n    # 尝试执行的代码\n    print(a)\nexcept Exception as e:\n    # 使用as关键字可以获取异常的实例\n    print(\"出现异常，error为: %s\" % e)\n    a = 1\n    print(a)\n\ntry:\n    a = 1\n    print(a)\nexcept:\n    print(a)\nelse:\n    # 如果try块成功执行，没有引发异常，可以选择性地添加一个else块。\n    print('执行正常')\n\ntry:\n    a = 1\n    print(a)\nexcept:\n    print(a)\nfinally:\n    # 无论是否发生异常，finally块中的代码都将被执行。这可以用来执行一些清理工作，比如关闭文件或释放资源。\n    print('执行完毕')",
+  "code_blocks": [],
+  "content_length": 566,
+  "url": "https://ptradeapi.com/#关于异常处理"
+}

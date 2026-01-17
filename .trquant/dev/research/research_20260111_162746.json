@@ -1,0 +1,32 @@
+{
+  "id": "research_20260111_162746",
+  "topic": "牛市极端高收益策略 网格搜索优化 BulletTrade回测",
+  "module_name": "bull_market_optimization",
+  "objectives": [],
+  "kb_results_count": 9,
+  "kb_results_summary": [
+    {
+      "title": "聚宽数据获取函数 - get_price, history, get_fundamentals",
+      "type": "reference"
+    },
+    {
+      "title": "V4.0系统生成聚宽策略代码指南",
+      "type": "guide"
+    },
+    {
+      "title": "聚宽回测过程说明",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽交易函数 - order_target, order_value, order_target_percent",
+      "type": "reference"
+    },
+    {
+      "title": "聚宽多因子策略完整模板",
+      "type": "code_example"
+    }
+  ],
+  "web_search_suggestions": [],
+  "status": "completed",
+  "created_at": "2026-01-11T16:27:50.968811"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_instruments",
+  "title": "get_instruments- 获取合约信息",
+  "content": "get_instruments- 获取合约信息\n\ncontract_code -- 合约代码，str类型；\ncontract_name -- 合约名称，str类型；\nexchange -- 交易所：大商所、郑商所、上期所、中金所，str类型；\ntrade_unit -- 交易单位，int类型；\ncontract_multiplier -- 合约乘数，float类型；\ndelivery_date -- 交割日期，str类型；\nlisting_date -- 上市日期，str类型；\ntrade_code -- 交易代码，str类型；\nmargin_rate -- 保证金比例，float类型；",
+  "code_blocks": [],
+  "content_length": 297,
+  "url": "https://ptradeapi.com/#get_instruments"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_price",
+  "title": "get_price - 获取历史数据",
+  "content": "get_price - 获取历史数据\n\nget_price\n(\nsecurity\n,\nstart_date\n=\nNone\n,\nend_date\n=\nNone\n,\nfrequency\n=\n'1d'\n,\nfields\n=\nNone\n,\nfq\n=\nNone\n,\ncount\n=\nNone\n,\nis_dict\n=\nFalse\n)\n\n该接口用于获取指定日期前N条的历史行情K线数据或者指定时间段内的历史行情K线数据。支持多股票、多行情字段获取。",
+  "code_blocks": [],
+  "content_length": 217,
+  "url": "https://ptradeapi.com#get_price"
+}

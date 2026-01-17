@@ -1,0 +1,8 @@
+{
+  "anchor_id": "margincash_close",
+  "title": "margincash_close - 卖券还款",
+  "content": "margincash_close - 卖券还款\n\nmargincash_close\n(\nsecurity\n,\namount\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 84,
+  "url": "https://ptradeapi.com#margincash_close"
+}

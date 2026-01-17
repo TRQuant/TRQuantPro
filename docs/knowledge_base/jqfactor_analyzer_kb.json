@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "name": "jqfactor-analyzer知识库",
+    "source": "https://pypi.org/project/jqfactor-analyzer/",
+    "created_at": "2026-01-08T00:12:13.805210",
+    "total_items": 6,
+    "mcp_tool_used": true
+  },
+  "items": [
+    {
+      "title": "jqfactor-analyzer 聚宽因子分析器概述",
+      "content": "\njqfactor-analyzer 是聚宽（JoinQuant）提供的因子分析工具库，用于量化投资中的因子构建、分析和评估。\n\n**基本信息**:\n- 包名: jqfactor-analyzer\n- 版本: 1.1.0\n- 来源: PyPI (https://pypi.org/project/jqfactor-analyzer/)\n- 安装: pip install jqfactor-analyzer\n\n**主要功能**:\n1. 因子构建和计算\n2. 因子有效性分析\n3. 因子相关性分析\n4. 因子IC分析（信息系数）\n5. 因子收益分析\n6. 因子可视化\n\n**依赖库**:\n- jqdatasdk: 聚宽数据SDK\n- pandas: 数据处理\n- numpy: 数值计算\n- scipy: 科学计算\n- statsmodels: 统计模型\n- matplotlib: 数据可视化\n- seaborn: 统计可视化\n\n**适用场景**:\n- 量化因子研究\n- 因子有效性验证\n- 因子组合优化\n- 多因子模型构建\n            ",
+      "type": "api_reference",
+      "tags": [
+        "聚宽",
+        "因子分析",
+        "量化投资",
+        "jqfactor-analyzer",
+        "因子工程"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    },
+    {
+      "title": "jqfactor-analyzer 安装和使用方法",
+      "content": "\n**安装方法**:\n```bash\n# 在虚拟环境中安装\npip install jqfactor-analyzer\n\n# 或指定版本\npip install jqfactor-analyzer==1.1.0\n```\n\n**基本使用流程**:\n1. 导入库\n```python\nimport jqdatasdk as jq\nfrom jqfactor_analyzer import FactorAnalyzer\n```\n\n2. 连接聚宽数据\n```python\njq.auth('username', 'password')\n```\n\n3. 获取因子数据\n```python\n# 使用聚宽现成因子\nfactors = jq.get_factor_values(\n    securities=['000001.XSHE', '000002.XSHE'],\n    factors=['size', 'beta', 'momentum'],\n    count=1,\n    end_date='2025-01-01'\n)\n```\n\n4. 因子分析\n```python\n# 使用jqfactor-analyzer进行因子分析\nanalyzer = FactorAnalyzer(factor_data)\nresults = analyzer.analyze()\n```\n\n**与聚宽其他工具的集成**:\n- 与jqdatasdk配合使用获取数据\n- 与聚宽回测引擎配合验证因子有效性\n- 与聚宽因子库结合使用\n            ",
+      "type": "tutorial",
+      "tags": [
+        "聚宽",
+        "因子分析",
+        "安装",
+        "使用方法",
+        "jqfactor-analyzer"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    },
+    {
+      "title": "聚宽因子类型和CNE风格因子",
+      "content": "\n**聚宽提供的现成因子类型**:\n\n1. **CNE5风格因子** (5个):\n   - size: 市值因子\n   - beta: 贝塔因子（市场风险）\n   - momentum: 动量因子\n   - reversal: 反转因子\n   - volatility: 波动率因子\n\n2. **CNE6风格因子Pro** (7个):\n   - 包含CNE5的所有因子\n   - growth: 成长因子\n   - earnings_yield: 盈利收益率因子\n\n**获取方法**:\n```python\nimport jqdatasdk as jq\n\n# 获取CNE5因子\ncne5_factors = ['size', 'beta', 'momentum', 'reversal', 'volatility']\nvalues = jq.get_factor_values(\n    securities=stocks,\n    factors=cne5_factors,\n    count=1,\n    end_date=date\n)\n\n# 获取CNE6因子\ncne6_factors = ['size', 'beta', 'momentum', 'reversal', 'volatility', 'growth', 'earnings_yield']\nvalues = jq.get_factor_values(\n    securities=stocks,\n    factors=cne6_factors,\n    count=1,\n    end_date=date\n)\n```\n\n**因子标准化**:\n```python\n# 因子值通常需要标准化\nnormalized = (values - values.mean()) / values.std()\n```\n\n**因子组合**:\n```python\n# 多因子组合（等权）\ncombined = normalized.mean(axis=1)\n\n# 多因子组合（加权）\nweights = [0.2, 0.2, 0.2, 0.2, 0.2]  # CNE5等权\ncombined = (normalized * weights).sum(axis=1)\n```\n            ",
+      "type": "api_reference",
+      "tags": [
+        "聚宽",
+        "因子",
+        "CNE5",
+        "CNE6",
+        "风格因子",
+        "因子组合"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    },
+    {
+      "title": "jqfactor-analyzer 因子分析功能",
+      "content": "\n**jqfactor-analyzer 提供的分析功能**:\n\n1. **因子IC分析** (Information Coefficient):\n   - 计算因子值与未来收益的相关性\n   - IC均值、IC标准差\n   - IC胜率（IC>0的比例）\n   - IC衰减分析\n\n2. **因子收益分析**:\n   - 因子分组收益（按因子值分组）\n   - 多空收益（做多高因子值，做空低因子值）\n   - 因子收益稳定性\n\n3. **因子相关性分析**:\n   - 因子间相关性矩阵\n   - 因子冗余度分析\n   - 因子正交化\n\n4. **因子有效性评估**:\n   - 因子信息比率（IR）\n   - 因子夏普比率\n   - 因子最大回撤\n\n**使用示例**:\n```python\nfrom jqfactor_analyzer import FactorAnalyzer\n\n# 创建分析器\nanalyzer = FactorAnalyzer(\n    factor_data=factor_values,\n    price_data=price_data,\n    groupby='date'\n)\n\n# IC分析\nic_result = analyzer.ic_analysis()\n\n# 收益分析\nreturn_result = analyzer.return_analysis()\n\n# 相关性分析\ncorr_result = analyzer.correlation_analysis()\n```\n\n**输出结果**:\n- 统计报告\n- 可视化图表\n- 因子排名\n            ",
+      "type": "api_reference",
+      "tags": [
+        "因子分析",
+        "IC分析",
+        "因子收益",
+        "因子评估",
+        "jqfactor-analyzer"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    },
+    {
+      "title": "jqfactor-analyzer 使用最佳实践",
+      "content": "\n**因子构建最佳实践**:\n\n1. **数据准备**:\n   - 确保数据完整性（处理缺失值）\n   - 数据标准化（Z-score或分位数标准化）\n   - 异常值处理（Winsorize）\n\n2. **因子选择**:\n   - 优先使用聚宽现成因子（CNE5/CNE6）\n   - 结合技术指标（ta-lib）\n   - 添加自定义因子（基于业务逻辑）\n\n3. **因子分析流程**:\n   ```\n   数据获取 → 因子计算 → IC分析 → 收益分析 → 因子选择 → 因子组合\n   ```\n\n4. **因子有效性标准**:\n   - IC均值 > 0.05（显著）\n   - IC胜率 > 0.55（稳定）\n   - 多空收益 > 0（有效）\n   - 信息比率 > 0.5（优秀）\n\n5. **因子组合策略**:\n   - 等权组合（简单有效）\n   - 基于IC加权（动态调整）\n   - 基于收益加权（历史表现）\n   - 因子正交化（降低冗余）\n\n**注意事项**:\n- 避免过拟合（使用滚动窗口验证）\n- 注意因子衰减（定期重新评估）\n- 考虑交易成本（实际收益会降低）\n- 市场环境适应性（不同市场状态表现不同）\n            ",
+      "type": "practice",
+      "tags": [
+        "最佳实践",
+        "因子工程",
+        "因子分析",
+        "量化投资",
+        "jqfactor-analyzer"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    },
+    {
+      "title": "jqfactor-analyzer 在TRQuant项目中的集成",
+      "content": "\n**项目中的使用位置**:\n\n1. **策略文件**: `strategies/tenbagger_comprehensive_strategy.py`\n   - 使用 `jq.get_factor_values()` 获取CNE5/CNE6因子\n   - 因子标准化和组合\n   - 因子评分计算\n\n2. **因子计算模块**: `core/advisor_v4/multi_factor_calculator.py`\n   - 可以集成jqfactor-analyzer进行因子分析\n   - 因子有效性验证\n\n3. **回测验证**: 使用因子进行选股和回测\n\n**集成建议**:\n\n1. **创建因子分析模块**:\n```python\n# core/factors/jqfactor_analyzer_wrapper.py\nfrom jqfactor_analyzer import FactorAnalyzer\nimport jqdatasdk as jq\n\nclass JQFactorAnalyzerWrapper:\n    \"\"\"jqfactor-analyzer包装器\"\"\"\n    \n    def analyze_factor(self, factor_name, stocks, start_date, end_date):\n        # 获取因子数据\n        factor_data = jq.get_factor_values(...)\n        \n        # 使用jqfactor-analyzer分析\n        analyzer = FactorAnalyzer(factor_data)\n        results = analyzer.ic_analysis()\n        \n        return results\n```\n\n2. **在V4.0系统中使用**:\n   - 替换当前的手工因子计算\n   - 使用现成的CNE5/CNE6因子\n   - 利用jqfactor-analyzer进行因子评估\n\n3. **优势**:\n   - 减少开发时间\n   - 提高因子质量\n   - 标准化因子分析流程\n            ",
+      "type": "integration",
+      "tags": [
+        "TRQuant",
+        "项目集成",
+        "因子分析",
+        "jqfactor-analyzer",
+        "开发指南"
+      ],
+      "source": "https://pypi.org/project/jqfactor-analyzer/"
+    }
+  ],
+  "results": {
+    "success": 0,
+    "failed": 6,
+    "errors": [
+      "jqfactor-analyzer 聚宽因子分析器概述: Unknown error",
+      "jqfactor-analyzer 安装和使用方法: Unknown error",
+      "聚宽因子类型和CNE风格因子: Unknown error",
+      "jqfactor-analyzer 因子分析功能: Unknown error",
+      "jqfactor-analyzer 使用最佳实践: Unknown error",
+      "jqfactor-analyzer 在TRQuant项目中的集成: Unknown error"
+    ],
+    "knowledge_ids": []
+  }
+}

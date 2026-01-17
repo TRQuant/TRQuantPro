@@ -1,0 +1,117 @@
+---
+config:
+  theme: dark
+  flowchart:
+    curve: cardinal
+---
+
+flowchart TB
+
+%% ----- Subgraphs with color classes -----
+subgraph Presentation["表现层"]
+    CLI["命令行工具<br>(CLI)"]
+    GUI["桌面系统 GUI<br>(PyQt6)"]
+    Cursor["Cursor 扩展<br>(TypeScript)"]
+    AstroDoc["投研手册<br>(Astro)"]
+end
+subgraph API["API 接口层"]
+    APIBase["统一接口抽象<br>TRQuantAPIBase"]
+end
+subgraph Core["核心业务层"]
+    DataSource["数据源管理<br>DataSource"]
+    Trend["市场分析<br>TrendAnalyzer"]
+    Mainline["主线识别<br>Mainline"]
+    Candidate["候选池构建<br>CandidatePool"]
+    Factor["因子库<br>FactorLib"]
+    StrategyDev["策略开发<br>StrategyDev"]
+    Optimizer["策略优化<br>Optimizer"]
+    Backtest["回测验证<br>Backtest"]
+end
+subgraph Workflow["工作流编排层"]
+    Orchestrator["工作流编排器<br>WorkflowOrchestrator"]
+end
+subgraph Toolchain["工具链层"]
+    MCP["MCP Server<br>(工程编排)"]
+    StrategyKB["Strategy KB<br>(策略知识)"]
+    Evidence["Evidence<br>(验证记录)"]
+    RAGKB["RAG KB<br>(知识检索)"]
+end
+subgraph DataPlatform["数据与知识平台层"]
+    MarketDB["行情 & 基本面库<br>MarketDataDB"]
+    FactorStore["因子存储<br>FactorStore"]
+    BacktestDB["回测结果库<br>BacktestDB"]
+    StrategyStore["策略知识库表<br>StrategyKBStore"]
+    EvidenceStore["验证记录库表<br>EvidenceStore"]
+    KnowledgeIdx["知识索引<br>(金融+工程)<br>KnowledgeIndex"]
+    VectorDB["向量库<br>VectorDB"]
+end
+subgraph Execution["执行层"]
+    PTrade["PTrade<br>(交易平台)"]
+    QMT["QMT<br>(交易平台)"]
+end
+
+%% ----- Layer-to-Layer connections -----
+Presentation --> API
+API --> Core
+Core --> Workflow
+Workflow --> Toolchain
+Toolchain --> DataPlatform
+DataPlatform --> Execution
+
+%% ----- Intra-layer connections -----
+CLI --> APIBase
+GUI --> APIBase
+Cursor --> APIBase
+AstroDoc --> APIBase
+APIBase --> DataSource & StrategyDev & Backtest
+DataSource --> Trend & MarketDB
+Trend --> Mainline
+Mainline --> Candidate
+Candidate --> Factor
+Factor --> StrategyDev & FactorStore
+StrategyDev --> Optimizer & StrategyStore
+Optimizer --> Backtest & StrategyStore
+Orchestrator --> MCP & StrategyKB & Evidence & RAGKB
+StrategyKB --> StrategyStore
+Evidence --> EvidenceStore
+RAGKB --> KnowledgeIdx & VectorDB
+Backtest --> BacktestDB & EvidenceStore & PTrade & QMT
+
+%% ----- Color Styling -----
+%% Presentation: Vivid blue
+style Presentation fill:#263968,stroke:#2654ba,stroke-width:4px,color:#fff
+class CLI,GUI,Cursor,AstroDoc presNode;
+classDef presNode fill:#2553b8,stroke:#90caf9,stroke-width:2px,color:#fff
+
+%% API Layer: Green
+style API fill:#314b32,stroke:#61e885,stroke-width:4px,color:#fff
+class APIBase apiNode;
+classDef apiNode fill:#399753,stroke:#b2f7ae,stroke-width:2px,color:#fff
+
+%% Core Layer: Cyan/Teal
+style Core fill:#0b3e3e,stroke:#26c6da,stroke-width:4px,color:#fff
+class DataSource,Trend,Mainline,Candidate,Factor,StrategyDev,Optimizer,Backtest coreNode;
+classDef coreNode fill:#128b8a,stroke:#4dd0e1,stroke-width:2px,color:#fff
+
+%% Workflow Layer: Deep purple
+style Workflow fill:#452859,stroke:#b67af9,stroke-width:4px,color:#fff
+class Orchestrator wfNode;
+classDef wfNode fill:#7028a3,stroke:#b67af9,stroke-width:2px,color:#fff
+
+%% Toolchain: Orange
+style Toolchain fill:#57360f,stroke:#ffb300,stroke-width:4px,color:#fff
+class MCP,StrategyKB,Evidence,RAGKB toolNode;
+classDef toolNode fill:#ff9800,stroke:#ffd54f,stroke-width:2px,color:#fff
+
+%% Data Platform Layer: Plum
+style DataPlatform fill:#3f2c4a,stroke:#b47ab2,stroke-width:4px,color:#fff
+class MarketDB,FactorStore,BacktestDB,StrategyStore,EvidenceStore,KnowledgeIdx,VectorDB dataNode;
+classDef dataNode fill:#a671be,stroke:#e1bee7,stroke-width:2px,color:#fff
+
+%% Execution Layer: Gold
+style Execution fill:#7c6512,stroke:#ffd600,stroke-width:4px,color:#222
+class PTrade,QMT execNode;
+classDef execNode fill:#ffd600,stroke:#ffab00,stroke-width:2px,color:#222
+
+%% Highlight the main user GUI as blue accent
+style GUI fill:#2979ff,stroke:#90caf9,stroke-width:3px,color:#fff,font-weight:bold

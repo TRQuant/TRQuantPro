@@ -1,0 +1,8 @@
+{
+  "anchor_id": "before_trading_start",
+  "title": "before_trading_start（可选）",
+  "content": "before_trading_start（可选）\n\n该函数在每天开始交易前被调用一次，用于添加每天都要初始化的信息，如无盘前初始化需求，该函数可以在策略中不做定义。\n\n在回测中，该函数在每个回测交易日8:30分执行。\n在交易中，该函数在开启交易时立即执行，从隔日开始每天9:10分(默认)执行。\n当在9:10前开启交易时，受行情未更新原因在该函数内调用实时行情接口会导致数据有误。可通过在该函数内sleep至9:10分或调用实时行情接口改为run_daily执行等方式进行避免。\n\nset_universe(回测/交易)\tget_Ashares(研究/回测/交易)\tset_yesterday_position(回测)\nget_stock_info(研究/回测/交易)\tget_index_stocks(研究/回测/交易)\tget_fundamentals(研究/回测/交易)\nget_trading_day(回测/交易)\tget_all_trades_days(研究/回测/交易)\tget_trade_days(研究/回测/交易)\nget_history(回测/交易)\tget_price(研究/回测/交易)\tget_individual_entrust(交易)\nget_individual_transcation(交易)\tconvert_position_from_csv(回测)\tget_stock_name(研究/回测/交易)\nget_stock_status(研究/回测/交易)\tget_stock_exrights(研究/回测/交易)\tget_stock_blocks(研究/回测/交易)\nget_etf_list(交易)\tget_industry_stocks(研究/回测/交易)\tget_user_name(回测/交易)\nget_cb_list(交易)\tget_deliver(交易)\tget_fundjour(交易)\nget_research_path(回测/交易)\tget_market_list(研究/回测/交易)\tget_market_detail(研究/回测/交易)\npermission_test(交易)\tget_trade_name(交易)\tset_future_commission(回测(期货))\nset_margin_rate(回测(期货))\tget_margin_rate(回测(期货))\tget_instruments(回测/交易(期货))\nget_MACD(回测/交易)\tget_KDJ(回测/交易)\tget_RSI(回测/交易)\nget_CCI(回测/交易)\tcreate_dir(回测/交易)",
+  "code_blocks": [],
+  "content_length": 1120,
+  "url": "https://ptradeapi.com/#before_trading_start"
+}

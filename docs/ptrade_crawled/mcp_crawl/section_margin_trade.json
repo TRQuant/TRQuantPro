@@ -1,0 +1,8 @@
+{
+  "anchor_id": "margin_trade",
+  "title": "margin_trade - 担保品买卖",
+  "content": "margin_trade - 担保品买卖\n\nmargin_trade\n(\nsecurity\n,\namount\n,\nlimit_price\n=\nNone\n,\nmarket_type\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 98,
+  "url": "https://ptradeapi.com#margin_trade"
+}

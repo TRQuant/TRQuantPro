@@ -1,0 +1,116 @@
+[
+  {
+    "title": "VS Code Webview 中使用 React 的最佳实践",
+    "url": "internal://knowledge-base",
+    "category": "webview_react",
+    "description": "在 VS Code Webview 中集成 React 应用的完整指南",
+    "key_points": [
+      "使用 Vite 构建 React 应用，配置 base: './' 确保相对路径",
+      "使用 webview.asWebviewUri() 转换所有资源路径",
+      "设置正确的 CSP (Content Security Policy)，包含 unsafe-inline 和 unsafe-eval",
+      "使用 acquireVsCodeApi() 获取 VS Code API 进行消息通信",
+      "使用 postMessage/onDidReceiveMessage 实现双向通信",
+      "使用 Zustand 进行状态管理，避免 Redux 的复杂性"
+    ],
+    "code_examples": [
+      "// vite.config.ts\nexport default defineConfig({\n  plugins: [react()],\n  base: './',  // 关键：确保相对路径\n  build: {\n    outDir: 'dist',\n    rollupOptions: {\n      output: {\n        entryFileNames: 'assets/[name].js',\n        chunkFileNames: 'assets/[name].js',\n        assetFileNames: 'assets/[name].[ext]'\n      }\n    }\n  }\n});",
+      "// webviewMCPClient.ts\nconst vscode = acquireVsCodeApi();\n\nexport function callMCP(tool: string, args: object): Promise<any> {\n  return new Promise((resolve, reject) => {\n    const id = generateId();\n    \n    const handler = (event: MessageEvent) => {\n      if (event.data.type === 'mcpResult' && event.data.id === id) {\n        window.removeEventListener('message', handler);\n        if (event.data.error) {\n          reject(new Error(event.data.error));\n        } else {\n          resolve(event.data.result);\n        }\n      }\n    };\n    \n    window.addEventListener('message', handler);\n    vscode.postMessage({ type: 'mcpCall', id, tool, args });\n  });\n}"
+    ],
+    "tags": [
+      "react",
+      "webview",
+      "vscode",
+      "vite",
+      "csp"
+    ]
+  },
+  {
+    "title": "MCP 消息格式规范",
+    "url": "internal://knowledge-base",
+    "category": "mcp_protocol",
+    "description": "Webview 与 Extension Host 之间的 MCP 消息通信规范",
+    "key_points": [
+      "请求消息类型: mcpCall，包含 id, tool, args",
+      "响应消息类型: mcpResult，包含 id, success, result/error",
+      "使用唯一 id 匹配请求和响应",
+      "实现消息队列确保顺序处理",
+      "添加重试机制处理临时失败",
+      "设置超时避免无限等待"
+    ],
+    "code_examples": [
+      "// 请求消息格式\n{\n  type: 'mcpCall',\n  id: 'unique-request-id',\n  tool: 'tool_name',\n  args: { param1: 'value1' }\n}\n\n// 响应消息格式\n{\n  type: 'mcpResult',\n  id: 'unique-request-id',\n  success: true,\n  result: { data: '...' }\n}\n\n// 错误响应格式\n{\n  type: 'mcpResult',\n  id: 'unique-request-id',\n  success: false,\n  error: 'Error message'\n}"
+    ],
+    "tags": [
+      "mcp",
+      "protocol",
+      "message",
+      "webview"
+    ]
+  },
+  {
+    "title": "Zustand 状态管理最佳实践",
+    "url": "internal://knowledge-base",
+    "category": "state_management",
+    "description": "在 VS Code Webview React 应用中使用 Zustand 管理状态",
+    "key_points": [
+      "每个功能模块创建独立的 Store",
+      "使用 immer 中间件简化不可变更新",
+      "在 Store 中封装 MCP 调用逻辑",
+      "使用 selector 优化重渲染",
+      "创建统一的 Store 入口文件"
+    ],
+    "code_examples": [
+      "// store/workflowStore.ts\nimport { create } from 'zustand';\nimport { immer } from 'zustand/middleware/immer';\n\ninterface WorkflowState {\n  steps: Step[];\n  currentStep: number;\n  loading: boolean;\n  error: string | null;\n  fetchSteps: () => Promise<void>;\n  setCurrentStep: (step: number) => void;\n}\n\nexport const useWorkflowStore = create<WorkflowState>()(\n  immer((set, get) => ({\n    steps: [],\n    currentStep: 0,\n    loading: false,\n    error: null,\n    \n    fetchSteps: async () => {\n      set({ loading: true, error: null });\n      try {\n        const result = await callMCP('workflow.get_steps', {});\n        set({ steps: result.steps, loading: false });\n      } catch (err) {\n        set({ error: err.message, loading: false });\n      }\n    },\n    \n    setCurrentStep: (step) => set({ currentStep: step }),\n  }))\n);"
+    ],
+    "tags": [
+      "zustand",
+      "state",
+      "react",
+      "store"
+    ]
+  },
+  {
+    "title": "CSP (Content Security Policy) 配置",
+    "url": "internal://knowledge-base",
+    "category": "security",
+    "description": "VS Code Webview 的安全策略配置",
+    "key_points": [
+      "必须使用 nonce 或 hash 允许内联脚本",
+      "React 需要 unsafe-eval 才能正常运行",
+      "Ant Design 等 UI 库需要 unsafe-inline 样式",
+      "限制 connect-src 到必要的来源",
+      "使用 webview.cspSource 作为可信来源"
+    ],
+    "code_examples": [
+      "// ReactPanel.ts\nconst csp = [\n  \"default-src 'none'\",\n  \\`img-src \\${webview.cspSource} data: https:\\`,\n  \\`script-src \\${webview.cspSource} 'unsafe-inline' 'unsafe-eval'\\`,\n  \\`style-src \\${webview.cspSource} 'unsafe-inline'\\`,\n  \\`font-src \\${webview.cspSource}\\`,\n  \"connect-src https://api.example.com\"\n].join('; ');\n\nconst html = \\`\n<!DOCTYPE html>\n<html>\n<head>\n  <meta http-equiv=\"Content-Security-Policy\" content=\"\\${csp}\">\n  <link rel=\"stylesheet\" href=\"\\${styleUri}\">\n</head>\n<body>\n  <div id=\"root\"></div>\n  <script src=\"\\${scriptUri}\"></script>\n</body>\n</html>\n\\`;"
+    ],
+    "tags": [
+      "csp",
+      "security",
+      "webview",
+      "nonce"
+    ]
+  },
+  {
+    "title": "资源路径处理",
+    "url": "internal://knowledge-base",
+    "category": "resource_loading",
+    "description": "正确处理 Webview 中的资源路径",
+    "key_points": [
+      "使用 webview.asWebviewUri() 转换本地文件路径",
+      "配置 localResourceRoots 限制可访问目录",
+      "Vite 构建时使用相对路径 (base: './')",
+      "在 HTML 中替换 ./assets/ 为转换后的 URI",
+      "图片等资源也需要转换路径"
+    ],
+    "code_examples": [
+      "// ReactPanel.ts\nprivate _getHtmlContent(webview: vscode.Webview): string {\n    const distPath = vscode.Uri.joinPath(this._extensionUri, 'webview-ui', 'dist');\n    \n    // 读取构建的 HTML\n    const htmlPath = vscode.Uri.joinPath(distPath, 'index.html');\n    let html = fs.readFileSync(htmlPath.fsPath, 'utf-8');\n    \n    // 转换资源路径\n    const scriptUri = webview.asWebviewUri(\n        vscode.Uri.joinPath(distPath, 'assets', 'index.js')\n    );\n    const styleUri = webview.asWebviewUri(\n        vscode.Uri.joinPath(distPath, 'assets', 'index.css')\n    );\n    \n    // 替换路径\n    html = html.replace('./assets/index.js', scriptUri.toString());\n    html = html.replace('./assets/index.css', styleUri.toString());\n    \n    return html;\n}"
+    ],
+    "tags": [
+      "path",
+      "uri",
+      "webview",
+      "resource"
+    ]
+  }
+]

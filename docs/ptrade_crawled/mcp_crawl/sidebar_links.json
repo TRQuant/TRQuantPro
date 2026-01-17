@@ -1,0 +1,1142 @@
+[
+  {
+    "text": "首页",
+    "href": "/index.html",
+    "url": "https://ptradeapi.com/index.html"
+  },
+  {
+    "text": "QMT文档",
+    "href": "http://qmt.ptradeapi.com/",
+    "url": "http://qmt.ptradeapi.com/"
+  },
+  {
+    "text": "策略代码",
+    "href": "/stra.html",
+    "url": "https://ptradeapi.com/stra.html"
+  },
+  {
+    "text": "交易",
+    "href": "/trade.html",
+    "url": "https://ptradeapi.com/trade.html"
+  },
+  {
+    "text": "数据",
+    "href": "/data.html",
+    "url": "https://ptradeapi.com/data.html"
+  },
+  {
+    "text": "帮助",
+    "href": "/help.html",
+    "url": "https://ptradeapi.com/help.html"
+  },
+  {
+    "text": "Ptrade API文档",
+    "href": "#PtradeAPI文档",
+    "url": "https://ptradeapi.com/#PtradeAPI文档"
+  },
+  {
+    "text": "必看-快速了解Ptrade",
+    "href": "#必看-快速了解Ptrade",
+    "url": "https://ptradeapi.com/#必看-快速了解Ptrade"
+  },
+  {
+    "text": "视频教程",
+    "href": "#视频教程",
+    "url": "https://ptradeapi.com/#视频教程"
+  },
+  {
+    "text": "快速入门",
+    "href": "#快速入门",
+    "url": "https://ptradeapi.com/#快速入门"
+  },
+  {
+    "text": "新建策略",
+    "href": "#新建策略",
+    "url": "https://ptradeapi.com/#新建策略"
+  },
+  {
+    "text": "新建回测",
+    "href": "#新建回测",
+    "url": "https://ptradeapi.com/#新建回测"
+  },
+  {
+    "text": "新建交易",
+    "href": "#新建交易",
+    "url": "https://ptradeapi.com/#新建交易"
+  },
+  {
+    "text": "策略运行周期",
+    "href": "#策略运行周期",
+    "url": "https://ptradeapi.com/#策略运行周期"
+  },
+  {
+    "text": "策略运行时间",
+    "href": "#策略运行时间",
+    "url": "https://ptradeapi.com/#策略运行时间"
+  },
+  {
+    "text": "交易策略委托下单时间",
+    "href": "#交易策略委托下单时间",
+    "url": "https://ptradeapi.com/#交易策略委托下单时间"
+  },
+  {
+    "text": "回测支持业务类型",
+    "href": "#回测支持业务类型",
+    "url": "https://ptradeapi.com/#回测支持业务类型"
+  },
+  {
+    "text": "交易支持业务类型",
+    "href": "#交易支持业务类型",
+    "url": "https://ptradeapi.com/#交易支持业务类型"
+  },
+  {
+    "text": "开始写策略",
+    "href": "#开始写策略",
+    "url": "https://ptradeapi.com/#开始写策略"
+  },
+  {
+    "text": "简单但是完整的策略",
+    "href": "#简单但是完整的策略",
+    "url": "https://ptradeapi.com/#简单但是完整的策略"
+  },
+  {
+    "text": "添加一些交易",
+    "href": "#添加一些交易",
+    "url": "https://ptradeapi.com/#添加一些交易"
+  },
+  {
+    "text": "实用的策略",
+    "href": "#实用的策略",
+    "url": "https://ptradeapi.com/#实用的策略"
+  },
+  {
+    "text": "模拟盘和实盘注意事项",
+    "href": "#模拟盘和实盘注意事项",
+    "url": "https://ptradeapi.com/#模拟盘和实盘注意事项"
+  },
+  {
+    "text": "策略中支持的代码尾缀",
+    "href": "#策略中支持的代码尾缀",
+    "url": "https://ptradeapi.com/#策略中支持的代码尾缀"
+  },
+  {
+    "text": "关于异常处理",
+    "href": "#关于异常处理",
+    "url": "https://ptradeapi.com/#关于异常处理"
+  },
+  {
+    "text": "关于限价交易的价格",
+    "href": "#关于限价交易的价格",
+    "url": "https://ptradeapi.com/#关于限价交易的价格"
+  },
+  {
+    "text": "策略引擎简介",
+    "href": "#策略引擎简介",
+    "url": "https://ptradeapi.com/#策略引擎简介"
+  },
+  {
+    "text": "业务流程框架",
+    "href": "#业务流程框架",
+    "url": "https://ptradeapi.com/#业务流程框架"
+  },
+  {
+    "text": "initialize(必选)",
+    "href": "#initialize",
+    "url": "https://ptradeapi.com/#initialize"
+  },
+  {
+    "text": "before_trading_start(可选)",
+    "href": "#before_trading_start",
+    "url": "https://ptradeapi.com/#before_trading_start"
+  },
+  {
+    "text": "handle_data(必选)",
+    "href": "#handle_data",
+    "url": "https://ptradeapi.com/#handle_data"
+  },
+  {
+    "text": "after_trading_end(可选)",
+    "href": "#after_trading_end",
+    "url": "https://ptradeapi.com/#after_trading_end"
+  },
+  {
+    "text": "tick_data(可选)",
+    "href": "#tick_data",
+    "url": "https://ptradeapi.com/#tick_data"
+  },
+  {
+    "text": "on_order_response - 委托主推(可选)",
+    "href": "#on_order_response",
+    "url": "https://ptradeapi.com/#on_order_response"
+  },
+  {
+    "text": "on_trade_response - 交易主推(可选)",
+    "href": "#on_trade_response",
+    "url": "https://ptradeapi.com/#on_trade_response"
+  },
+  {
+    "text": "策略API介绍",
+    "href": "#策略API介绍",
+    "url": "https://ptradeapi.com/#策略API介绍"
+  },
+  {
+    "text": "设置函数",
+    "href": "#设置函数",
+    "url": "https://ptradeapi.com/#设置函数"
+  },
+  {
+    "text": "set_universe - 设置股票池",
+    "href": "#set_universe",
+    "url": "https://ptradeapi.com/#set_universe"
+  },
+  {
+    "text": "set_benchmark - 设置基准",
+    "href": "#set_benchmark",
+    "url": "https://ptradeapi.com/#set_benchmark"
+  },
+  {
+    "text": "set_commission -\n                            设置佣金费率",
+    "href": "#set_commission",
+    "url": "https://ptradeapi.com/#set_commission"
+  },
+  {
+    "text": "set_fixed_slippage - 设置固定滑点",
+    "href": "#set_fixed_slippage",
+    "url": "https://ptradeapi.com/#set_fixed_slippage"
+  },
+  {
+    "text": "set_slippage - 设置滑点",
+    "href": "#set_slippage",
+    "url": "https://ptradeapi.com/#set_slippage"
+  },
+  {
+    "text": "set_volume_ratio –\n                            设置成交比例",
+    "href": "#set_volume_ratio",
+    "url": "https://ptradeapi.com/#set_volume_ratio"
+  },
+  {
+    "text": "set_limit_mode –\n                            设置回测成交数量限制模式",
+    "href": "#set_limit_mode",
+    "url": "https://ptradeapi.com/#set_limit_mode"
+  },
+  {
+    "text": "set_yesterday_position – 设置底仓(股票)",
+    "href": "#set_yesterday_position",
+    "url": "https://ptradeapi.com/#set_yesterday_position"
+  },
+  {
+    "text": "set_parameters - 设置策略配置参数",
+    "href": "#set_parameters",
+    "url": "https://ptradeapi.com/#set_parameters"
+  },
+  {
+    "text": "set_email_info - 设置邮件信息",
+    "href": "#set_email_info",
+    "url": "https://ptradeapi.com/#set_email_info"
+  },
+  {
+    "text": "定时周期性函数",
+    "href": "#定时周期性函数",
+    "url": "https://ptradeapi.com/#定时周期性函数"
+  },
+  {
+    "text": "run_daily - 按日周期处理",
+    "href": "#run_daily",
+    "url": "https://ptradeapi.com/#run_daily"
+  },
+  {
+    "text": "run_interval - 按设定周期处理",
+    "href": "#run_interval",
+    "url": "https://ptradeapi.com/#run_interval"
+  },
+  {
+    "text": "获取信息函数",
+    "href": "#获取信息函数",
+    "url": "https://ptradeapi.com/#获取信息函数"
+  },
+  {
+    "text": "获取基础信息",
+    "href": "#获取基础信息",
+    "url": "https://ptradeapi.com/#获取基础信息"
+  },
+  {
+    "text": "get_trading_day –\n                            获取交易日期",
+    "href": "#get_trading_day",
+    "url": "https://ptradeapi.com/#get_trading_day"
+  },
+  {
+    "text": "get_all_trades_days – 获取全部交易日期",
+    "href": "#get_all_trades_days",
+    "url": "https://ptradeapi.com/#get_all_trades_days"
+  },
+  {
+    "text": "get_trade_days –\n                            获取指定范围交易日期",
+    "href": "#get_trade_days",
+    "url": "https://ptradeapi.com/#get_trade_days"
+  },
+  {
+    "text": "获取市场信息",
+    "href": "#获取市场信息",
+    "url": "https://ptradeapi.com/#获取市场信息"
+  },
+  {
+    "text": "get_market_list -\n                            获取市场列表",
+    "href": "#get_market_list",
+    "url": "https://ptradeapi.com/#get_market_list"
+  },
+  {
+    "text": "get_market_detail - 获取市场详细信息",
+    "href": "#get_market_detail",
+    "url": "https://ptradeapi.com/#get_market_detail"
+  },
+  {
+    "text": "get_cb_list -\n                            获取可转债市场代码表",
+    "href": "#get_cb_list",
+    "url": "https://ptradeapi.com/#get_cb_list"
+  },
+  {
+    "text": "get_cb_info - 获取可转债基础信息",
+    "href": "#get_cb_info",
+    "url": "https://ptradeapi.com/#get_cb_info"
+  },
+  {
+    "text": "get_reits_list - 获取基础设施公募REITs基金代码列表",
+    "href": "#get_reits_list",
+    "url": "https://ptradeapi.com/#get_reits_list"
+  },
+  {
+    "text": "获取行情信息",
+    "href": "#获取行情信息",
+    "url": "https://ptradeapi.com/#获取行情信息"
+  },
+  {
+    "text": "get_history - 获取历史行情",
+    "href": "#get_history",
+    "url": "https://ptradeapi.com/#get_history"
+  },
+  {
+    "text": "get_price - 获取历史数据",
+    "href": "#get_price",
+    "url": "https://ptradeapi.com/#get_price"
+  },
+  {
+    "text": "get_individual_entrust – 获取逐笔委托行情",
+    "href": "#get_individual_entrust",
+    "url": "https://ptradeapi.com/#get_individual_entrust"
+  },
+  {
+    "text": "get_individual_transaction – 获取逐笔成交行情",
+    "href": "#get_individual_transaction",
+    "url": "https://ptradeapi.com/#get_individual_transaction"
+  },
+  {
+    "text": "get_tick_direction– 获取分时成交行情",
+    "href": "#get_tick_direction",
+    "url": "https://ptradeapi.com/#get_tick_direction"
+  },
+  {
+    "text": "get_sort_msg–\n                            获取板块、行业的涨幅排名",
+    "href": "#get_sort_msg",
+    "url": "https://ptradeapi.com/#get_sort_msg"
+  },
+  {
+    "text": "get_etf_info - 获取ETF信息",
+    "href": "#get_etf_info",
+    "url": "https://ptradeapi.com/#get_etf_info"
+  },
+  {
+    "text": "get_etf_stock_info - 获取ETF成分券信息",
+    "href": "#get_etf_stock_info",
+    "url": "https://ptradeapi.com/#get_etf_stock_info"
+  },
+  {
+    "text": "get_gear_price –\n                            获取指定代码的档位行情价格",
+    "href": "#get_gear_price",
+    "url": "https://ptradeapi.com/#get_gear_price"
+  },
+  {
+    "text": "get_snapshot - 取行情快照",
+    "href": "#get_snapshot",
+    "url": "https://ptradeapi.com/#get_snapshot"
+  },
+  {
+    "text": "get_trend_data - 获取集中竞价期间代码数据",
+    "href": "#get_trend_data",
+    "url": "https://ptradeapi.com/#get_trend_data"
+  },
+  {
+    "text": "获取股票信息",
+    "href": "#获取股票信息",
+    "url": "https://ptradeapi.com/#获取股票信息"
+  },
+  {
+    "text": "get_stock_name -\n                            获取股票名称",
+    "href": "#get_stock_name",
+    "url": "https://ptradeapi.com/#get_stock_name"
+  },
+  {
+    "text": "get_stock_info -\n                            获取股票基础信息",
+    "href": "#get_stock_info",
+    "url": "https://ptradeapi.com/#get_stock_info"
+  },
+  {
+    "text": "get_stock_status\n                            – 获取股票状态信息",
+    "href": "#get_stock_status",
+    "url": "https://ptradeapi.com/#get_stock_status"
+  },
+  {
+    "text": "get_stock_exrights - 获取股票除权除息信息",
+    "href": "#get_stock_exrights",
+    "url": "https://ptradeapi.com/#get_stock_exrights"
+  },
+  {
+    "text": "get_stock_blocks - 获取股票所属板块信息",
+    "href": "#get_stock_blocks",
+    "url": "https://ptradeapi.com/#get_stock_blocks"
+  },
+  {
+    "text": "get_index_stocks -\n                            获取指数成份股",
+    "href": "#get_index_stocks",
+    "url": "https://ptradeapi.com/#get_index_stocks"
+  },
+  {
+    "text": "get_etf_stock_list - 获取ETF成分券列表",
+    "href": "#get_etf_stock_list",
+    "url": "https://ptradeapi.com/#get_etf_stock_list"
+  },
+  {
+    "text": "get_industry_stocks - 获取行业成份股",
+    "href": "#get_industry_stocks",
+    "url": "https://ptradeapi.com/#get_industry_stocks"
+  },
+  {
+    "text": "get_fundamentals\n                            - 获取财务数据信息",
+    "href": "#get_fundamentals",
+    "url": "https://ptradeapi.com/#get_fundamentals"
+  },
+  {
+    "text": "get_Ashares –\n                            获取指定日期A股代码列表",
+    "href": "#get_Ashares",
+    "url": "https://ptradeapi.com/#get_Ashares"
+  },
+  {
+    "text": "get_etf_list - 获取ETF代码",
+    "href": "#get_etf_list",
+    "url": "https://ptradeapi.com/#get_etf_list"
+  },
+  {
+    "text": "获取其他信息",
+    "href": "#获取其他信息",
+    "url": "https://ptradeapi.com/#获取其他信息"
+  },
+  {
+    "text": "get_trades_file –\n                            获取对账数据文件",
+    "href": "#get_trades_file",
+    "url": "https://ptradeapi.com/#get_trades_file"
+  },
+  {
+    "text": "convert_position_from_csv –\n                            获取设置底仓的参数列表(股票)",
+    "href": "#convert_position_from_csv",
+    "url": "https://ptradeapi.com/#convert_position_from_csv"
+  },
+  {
+    "text": "get_user_name –\n                            获取登录终端的资金账号",
+    "href": "#get_user_name",
+    "url": "https://ptradeapi.com/#get_user_name"
+  },
+  {
+    "text": "get_deliver –\n                            获取历史交割单信息",
+    "href": "#get_deliver",
+    "url": "https://ptradeapi.com/#get_deliver"
+  },
+  {
+    "text": "get_fundjour –\n                            获取历史资金流水信息",
+    "href": "#get_fundjour",
+    "url": "https://ptradeapi.com/#get_fundjour"
+  },
+  {
+    "text": "get_research_path\n                            – 获取研究路径",
+    "href": "#get_research_path",
+    "url": "https://ptradeapi.com/#get_research_path"
+  },
+  {
+    "text": "get_trade_name –\n                            获取交易名称",
+    "href": "#get_trade_name",
+    "url": "https://ptradeapi.com/#get_trade_name"
+  },
+  {
+    "text": "get_lucky_info - 获取历史中签信息",
+    "href": "#get_lucky_info",
+    "url": "https://ptradeapi.com/#get_lucky_info"
+  },
+  {
+    "text": "交易相关函数",
+    "href": "#交易相关函数",
+    "url": "https://ptradeapi.com/#交易相关函数"
+  },
+  {
+    "text": "股票交易函数",
+    "href": "#股票交易函数",
+    "url": "https://ptradeapi.com/#股票交易函数"
+  },
+  {
+    "text": "order - 按数量买卖",
+    "href": "#order",
+    "url": "https://ptradeapi.com/#order"
+  },
+  {
+    "text": "order_target -\n                            指定目标数量买卖",
+    "href": "#order_target",
+    "url": "https://ptradeapi.com/#order_target"
+  },
+  {
+    "text": "order_value -\n                            指定目标价值买卖",
+    "href": "#order_value",
+    "url": "https://ptradeapi.com/#order_value"
+  },
+  {
+    "text": "order_target_value - 指定持仓市值买卖",
+    "href": "#order_target_value",
+    "url": "https://ptradeapi.com/#order_target_value"
+  },
+  {
+    "text": "order_market -\n                            按市价进行委托",
+    "href": "#order_market",
+    "url": "https://ptradeapi.com/#order_market"
+  },
+  {
+    "text": "ipo_stocks_order - 新股一键申购(股票)",
+    "href": "#ipo_stocks_order",
+    "url": "https://ptradeapi.com/#ipo_stocks_order"
+  },
+  {
+    "text": "after_trading_order - 盘后固定价委托(股票)",
+    "href": "#after_trading_order",
+    "url": "https://ptradeapi.com/#after_trading_order"
+  },
+  {
+    "text": "after_trading_cancel_order -\n                            盘后固定价委托撤单(股票)",
+    "href": "#after_trading_cancel_order",
+    "url": "https://ptradeapi.com/#after_trading_cancel_order"
+  },
+  {
+    "text": "etf_basket_order - ETF成分券篮子下单",
+    "href": "#etf_basket_order",
+    "url": "https://ptradeapi.com/#etf_basket_order"
+  },
+  {
+    "text": "etf_purchase_redemption - ETF基金申赎接口",
+    "href": "#etf_purchase_redemption",
+    "url": "https://ptradeapi.com/#etf_purchase_redemption"
+  },
+  {
+    "text": "get_positions -\n                            获取多支股票持仓信息",
+    "href": "#get_positions",
+    "url": "https://ptradeapi.com/#get_positions"
+  },
+  {
+    "text": "公共交易函数",
+    "href": "#公共交易函数",
+    "url": "https://ptradeapi.com/#公共交易函数"
+  },
+  {
+    "text": "order_tick - tick行情触发买卖",
+    "href": "#order_tick",
+    "url": "https://ptradeapi.com/#order_tick"
+  },
+  {
+    "text": "cancel_order - 撤单",
+    "href": "#cancel_order",
+    "url": "https://ptradeapi.com/#cancel_order"
+  },
+  {
+    "text": "cancel_order_ex - 撤单",
+    "href": "#cancel_order_ex",
+    "url": "https://ptradeapi.com/#cancel_order_ex"
+  },
+  {
+    "text": "debt_to_stock_order - 债转股委托",
+    "href": "#debt_to_stock_order",
+    "url": "https://ptradeapi.com/#debt_to_stock_order"
+  },
+  {
+    "text": "get_open_orders -\n                            获取未完成订单",
+    "href": "#get_open_orders",
+    "url": "https://ptradeapi.com/#get_open_orders"
+  },
+  {
+    "text": "get_order - 获取指定订单",
+    "href": "#get_order",
+    "url": "https://ptradeapi.com/#get_order"
+  },
+  {
+    "text": "get_orders - 获取全部订单",
+    "href": "#get_orders",
+    "url": "https://ptradeapi.com/#get_orders"
+  },
+  {
+    "text": "get_all_orders -\n                            获取账户当日全部订单",
+    "href": "#get_all_orders",
+    "url": "https://ptradeapi.com/#get_all_orders"
+  },
+  {
+    "text": "get_trades - 获取当日成交订单",
+    "href": "#get_trades",
+    "url": "https://ptradeapi.com/#get_trades"
+  },
+  {
+    "text": "get_position - 获取持仓信息",
+    "href": "#get_position",
+    "url": "https://ptradeapi.com/#get_position"
+  },
+  {
+    "text": "融资融券专用函数",
+    "href": "#融资融券专用函数",
+    "url": "https://ptradeapi.com/#融资融券专用函数"
+  },
+  {
+    "text": "融资融券交易类函数",
+    "href": "#融资融券交易类函数",
+    "url": "https://ptradeapi.com/#融资融券交易类函数"
+  },
+  {
+    "text": "margin_trade - 担保品买卖",
+    "href": "#margin_trade",
+    "url": "https://ptradeapi.com/#margin_trade"
+  },
+  {
+    "text": "margincash_open -\n                            融资买入",
+    "href": "#margincash_open",
+    "url": "https://ptradeapi.com/#margincash_open"
+  },
+  {
+    "text": "margincash_close -\n                            卖券还款",
+    "href": "#margincash_close",
+    "url": "https://ptradeapi.com/#margincash_close"
+  },
+  {
+    "text": "margincash_direct_refund - 直接还款",
+    "href": "#margincash_direct_refund",
+    "url": "https://ptradeapi.com/#margincash_direct_refund"
+  },
+  {
+    "text": "marginsec_open - 融券卖出",
+    "href": "#marginsec_open",
+    "url": "https://ptradeapi.com/#marginsec_open"
+  },
+  {
+    "text": "marginsec_close -\n                            买券还券",
+    "href": "#marginsec_close",
+    "url": "https://ptradeapi.com/#marginsec_close"
+  },
+  {
+    "text": "marginsec_direct_refund - 直接还券",
+    "href": "#marginsec_direct_refund",
+    "url": "https://ptradeapi.com/#marginsec_direct_refund"
+  },
+  {
+    "text": "融资融券查询类函数",
+    "href": "#融资融券查询类函数",
+    "url": "https://ptradeapi.com/#融资融券查询类函数"
+  },
+  {
+    "text": "get_margincash_stocks - 获取融资标的",
+    "href": "#get_margincash_stocks",
+    "url": "https://ptradeapi.com/#get_margincash_stocks"
+  },
+  {
+    "text": "get_marginsec_stocks - 获取融券标的",
+    "href": "#get_marginsec_stocks",
+    "url": "https://ptradeapi.com/#get_marginsec_stocks"
+  },
+  {
+    "text": "get_margin_contract - 合约查询",
+    "href": "#get_margin_contract",
+    "url": "https://ptradeapi.com/#get_margin_contract"
+  },
+  {
+    "text": "get_margin_contractreal - 实时合约查询",
+    "href": "#get_margin_contractreal",
+    "url": "https://ptradeapi.com/#get_margin_contractreal"
+  },
+  {
+    "text": "get_margin_assert\n                            - 信用资产查询",
+    "href": "#get_margin_assert",
+    "url": "https://ptradeapi.com/#get_margin_assert"
+  },
+  {
+    "text": "get_assure_security_list - 担保券查询",
+    "href": "#get_assure_security_list",
+    "url": "https://ptradeapi.com/#get_assure_security_list"
+  },
+  {
+    "text": "get_margincash_open_amount -\n                            融资标的最大可买数量查询",
+    "href": "#get_margincash_open_amount",
+    "url": "https://ptradeapi.com/#get_margincash_open_amount"
+  },
+  {
+    "text": "get_margincash_close_amount -\n                            卖券还款标的最大可卖数量查询",
+    "href": "#get_margincash_close_amount",
+    "url": "https://ptradeapi.com/#get_margincash_close_amount"
+  },
+  {
+    "text": "get_marginsec_open_amount -\n                            融券标的最大可卖数量查询",
+    "href": "#get_marginsec_open_amount",
+    "url": "https://ptradeapi.com/#get_marginsec_open_amount"
+  },
+  {
+    "text": "get_marginsec_close_amount -\n                            买券还券标的最大可买数量查询",
+    "href": "#get_marginsec_close_amount",
+    "url": "https://ptradeapi.com/#get_marginsec_close_amount"
+  },
+  {
+    "text": "get_margin_entrans_amount - 现券还券数量查询",
+    "href": "#get_margin_entrans_amount",
+    "url": "https://ptradeapi.com/#get_margin_entrans_amount"
+  },
+  {
+    "text": "get_enslo_security_info - 融券信息查询",
+    "href": "#get_enslo_security_info",
+    "url": "https://ptradeapi.com/#get_enslo_security_info"
+  },
+  {
+    "text": "get_crdt_fund - 可融资金信息查询",
+    "href": "#get_crdt_fund",
+    "url": "https://ptradeapi.com/#get_crdt_fund"
+  },
+  {
+    "text": "期货专用函数",
+    "href": "#期货专用函数",
+    "url": "https://ptradeapi.com/#期货专用函数"
+  },
+  {
+    "text": "期货交易类函数",
+    "href": "#期货交易类函数",
+    "url": "https://ptradeapi.com/#期货交易类函数"
+  },
+  {
+    "text": "buy_open - 开多",
+    "href": "#buy_open",
+    "url": "https://ptradeapi.com/#buy_open"
+  },
+  {
+    "text": "sell_close - 多平",
+    "href": "#sell_close",
+    "url": "https://ptradeapi.com/#sell_close"
+  },
+  {
+    "text": "sell_open - 空开",
+    "href": "#sell_open",
+    "url": "https://ptradeapi.com/#sell_open"
+  },
+  {
+    "text": "buy_close - 空平",
+    "href": "#buy_close",
+    "url": "https://ptradeapi.com/#buy_close"
+  },
+  {
+    "text": "期货查询类函数",
+    "href": "#期货查询类函数",
+    "url": "https://ptradeapi.com/#期货查询类函数"
+  },
+  {
+    "text": "get_margin_rate\n                            – 获取用户设置的保证金比例",
+    "href": "#get_margin_rate",
+    "url": "https://ptradeapi.com/#get_margin_rate"
+  },
+  {
+    "text": "get_instruments –\n                            获取合约信息",
+    "href": "#get_instruments",
+    "url": "https://ptradeapi.com/#get_instruments"
+  },
+  {
+    "text": "期货设置类函数",
+    "href": "#期货设置类函数",
+    "url": "https://ptradeapi.com/#期货设置类函数"
+  },
+  {
+    "text": "set_future_commission – 设置期货手续费",
+    "href": "#set_future_commission",
+    "url": "https://ptradeapi.com/#set_future_commission"
+  },
+  {
+    "text": "set_margin_rate –\n                            设置期货保证金比例",
+    "href": "#set_margin_rate",
+    "url": "https://ptradeapi.com/#set_margin_rate"
+  },
+  {
+    "text": "计算函数",
+    "href": "#计算函数",
+    "url": "https://ptradeapi.com/#计算函数"
+  },
+  {
+    "text": "技术指标计算函数",
+    "href": "#技术指标计算函数",
+    "url": "https://ptradeapi.com/#技术指标计算函数"
+  },
+  {
+    "text": "get_MACD – 异同移动平均线",
+    "href": "#get_MACD",
+    "url": "https://ptradeapi.com/#get_MACD"
+  },
+  {
+    "text": "get_KDJ – 随机指标",
+    "href": "#get_KDJ",
+    "url": "https://ptradeapi.com/#get_KDJ"
+  },
+  {
+    "text": "get_RSI – 相对强弱指标",
+    "href": "#get_RSI",
+    "url": "https://ptradeapi.com/#get_RSI"
+  },
+  {
+    "text": "get_CCI – 顺势指标",
+    "href": "#get_CCI",
+    "url": "https://ptradeapi.com/#get_CCI"
+  },
+  {
+    "text": "其他函数",
+    "href": "#其他函数",
+    "url": "https://ptradeapi.com/#其他函数"
+  },
+  {
+    "text": "log - 日志记录",
+    "href": "#log",
+    "url": "https://ptradeapi.com/#log"
+  },
+  {
+    "text": "is_trade - 业务代码场景判断",
+    "href": "#is_trade",
+    "url": "https://ptradeapi.com/#is_trade"
+  },
+  {
+    "text": "check_limit -\n                            代码涨跌停状态判断",
+    "href": "#check_limit",
+    "url": "https://ptradeapi.com/#check_limit"
+  },
+  {
+    "text": "send_email - 发送邮箱信息",
+    "href": "#send_email",
+    "url": "https://ptradeapi.com/#send_email"
+  },
+  {
+    "text": "send_qywx - 发送企业微信信息",
+    "href": "#send_qywx",
+    "url": "https://ptradeapi.com/#send_qywx"
+  },
+  {
+    "text": "permission_test -\n                            权限校验",
+    "href": "#permission_test",
+    "url": "https://ptradeapi.com/#permission_test"
+  },
+  {
+    "text": "create_dir - 创建文件路径",
+    "href": "#create_dir",
+    "url": "https://ptradeapi.com/#create_dir"
+  },
+  {
+    "text": "get_frequency - 获取当前业务代码的周期",
+    "href": "#get_frequency",
+    "url": "https://ptradeapi.com/#get_frequency"
+  },
+  {
+    "text": "get_business_type - 获取当前策略的业务类型",
+    "href": "#get_business_type",
+    "url": "https://ptradeapi.com/#get_business_type"
+  },
+  {
+    "text": "get_current_kline_count - 获取股票业务当前时间的分钟bar数量",
+    "href": "#get_current_kline_count",
+    "url": "https://ptradeapi.com/#get_current_kline_count"
+  },
+  {
+    "text": "filter_stock_by_status - 过滤指定状态的股票代码",
+    "href": "#filter_stock_by_status",
+    "url": "https://ptradeapi.com/#filter_stock_by_status"
+  },
+  {
+    "text": "check_strategy - 检查策略内容",
+    "href": "#check_strategy",
+    "url": "https://ptradeapi.com/#check_strategy"
+  },
+  {
+    "text": "fund_transfer - 资金调拨",
+    "href": "#fund_transfer",
+    "url": "https://ptradeapi.com/#fund_transfer"
+  },
+  {
+    "text": "market_fund_transfer - 市场间资金调拨",
+    "href": "#market_fund_transfer",
+    "url": "https://ptradeapi.com/#market_fund_transfer"
+  },
+  {
+    "text": "对象",
+    "href": "#对象",
+    "url": "https://ptradeapi.com/#对象"
+  },
+  {
+    "text": "g - 全局对象",
+    "href": "#g",
+    "url": "https://ptradeapi.com/#g"
+  },
+  {
+    "text": "Context - 上下文对象",
+    "href": "#Context",
+    "url": "https://ptradeapi.com/#Context"
+  },
+  {
+    "text": "SecurityUnitData对象",
+    "href": "#SecurityUnitData",
+    "url": "https://ptradeapi.com/#SecurityUnitData"
+  },
+  {
+    "text": "Portfolio对象",
+    "href": "#Portfolio",
+    "url": "https://ptradeapi.com/#Portfolio"
+  },
+  {
+    "text": "Position对象",
+    "href": "#Position",
+    "url": "https://ptradeapi.com/#Position"
+  },
+  {
+    "text": "Order对象",
+    "href": "#Order",
+    "url": "https://ptradeapi.com/#Order"
+  },
+  {
+    "text": "数据字典",
+    "href": "#数据字典",
+    "url": "https://ptradeapi.com/#数据字典"
+  },
+  {
+    "text": "status - 订单状态",
+    "href": "#委托状态",
+    "url": "https://ptradeapi.com/#委托状态"
+  },
+  {
+    "text": "entrust_type -- 委托类别",
+    "href": "#委托类别",
+    "url": "https://ptradeapi.com/#委托类别"
+  },
+  {
+    "text": "entrust_prop -- 委托属性",
+    "href": "#委托属性",
+    "url": "https://ptradeapi.com/#委托属性"
+  },
+  {
+    "text": "business_direction -- 成交方向",
+    "href": "#成交方向",
+    "url": "https://ptradeapi.com/#成交方向"
+  },
+  {
+    "text": "trans_kind -- 委托类型",
+    "href": "#委托类型",
+    "url": "https://ptradeapi.com/#委托类型"
+  },
+  {
+    "text": "trade_status -- 交易状态",
+    "href": "#交易状态",
+    "url": "https://ptradeapi.com/#交易状态"
+  },
+  {
+    "text": "trans_flag -- 成交标记",
+    "href": "#成交标记",
+    "url": "https://ptradeapi.com/#成交标记"
+  },
+  {
+    "text": "trans_identify_am -- 盘后逐笔成交序号标识",
+    "href": "#盘后逐笔成交序号标识",
+    "url": "https://ptradeapi.com/#盘后逐笔成交序号标识"
+  },
+  {
+    "text": "entrust_bs -- 委托方向",
+    "href": "#委托方向",
+    "url": "https://ptradeapi.com/#委托方向"
+  },
+  {
+    "text": "cash_replace_flag -- 现金替代标志",
+    "href": "#现金替代标志",
+    "url": "https://ptradeapi.com/#现金替代标志"
+  },
+  {
+    "text": "exchange_type/futu_exch_type -- 交易类别",
+    "href": "#交易类别",
+    "url": "https://ptradeapi.com/#交易类别"
+  },
+  {
+    "text": "delist_flag -- 退市标志",
+    "href": "#退市标志",
+    "url": "https://ptradeapi.com/#退市标志"
+  },
+  {
+    "text": "hedge_type -- 投机/套保类型",
+    "href": "#投机/套保类型",
+    "url": "https://ptradeapi.com/#投机/套保类型"
+  },
+  {
+    "text": "opthold_type -- 期权持仓类别",
+    "href": "#期权持仓类别",
+    "url": "https://ptradeapi.com/#期权持仓类别"
+  },
+  {
+    "text": "option_type -- 期权属性",
+    "href": "#期权属性",
+    "url": "https://ptradeapi.com/#期权属性"
+  },
+  {
+    "text": "market_type -- 市价委托类型",
+    "href": "#市价委托类型",
+    "url": "https://ptradeapi.com/#市价委托类型"
+  },
+  {
+    "text": "submarket_type -- 申购代码所属市场",
+    "href": "#申购代码所属市场",
+    "url": "https://ptradeapi.com/#申购代码所属市场"
+  },
+  {
+    "text": "cash_group -- 两融头寸性质",
+    "href": "#两融头寸性质",
+    "url": "https://ptradeapi.com/#两融头寸性质"
+  },
+  {
+    "text": "compact_type -- 合约类别",
+    "href": "#合约类别",
+    "url": "https://ptradeapi.com/#合约类别"
+  },
+  {
+    "text": "compact_status -- 合约状态",
+    "href": "#合约状态",
+    "url": "https://ptradeapi.com/#合约状态"
+  },
+  {
+    "text": "underlying_type -- 关联类型",
+    "href": "#关联类型",
+    "url": "https://ptradeapi.com/#关联类型"
+  },
+  {
+    "text": "real_type -- 成交类型",
+    "href": "#成交类型",
+    "url": "https://ptradeapi.com/#成交类型"
+  },
+  {
+    "text": "real_status -- 成交状态",
+    "href": "#成交状态",
+    "url": "https://ptradeapi.com/#成交状态"
+  },
+  {
+    "text": "策略示例",
+    "href": "#策略示例",
+    "url": "https://ptradeapi.com/#策略示例"
+  },
+  {
+    "text": "集合竞价追涨停策略",
+    "href": "#集合竞价追涨停策略",
+    "url": "https://ptradeapi.com/#集合竞价追涨停策略"
+  },
+  {
+    "text": "tick级别均线策略",
+    "href": "#tick级别均线策略",
+    "url": "https://ptradeapi.com/#tick级别均线策略"
+  },
+  {
+    "text": "双均线策略",
+    "href": "#双均线策略",
+    "url": "https://ptradeapi.com/#双均线策略"
+  },
+  {
+    "text": "融资融券双均线策略",
+    "href": "#融资融券双均线策略",
+    "url": "https://ptradeapi.com/#融资融券双均线策略"
+  },
+  {
+    "text": "MACD策略",
+    "href": "#macd策略",
+    "url": "https://ptradeapi.com/#macd策略"
+  },
+  {
+    "text": "盘后逆回购",
+    "href": "#盘后逆回购",
+    "url": "https://ptradeapi.com/#盘后逆回购"
+  },
+  {
+    "text": "固定时间申购新股新债",
+    "href": "#固定时间申购新股新债",
+    "url": "https://ptradeapi.com/#固定时间申购新股新债"
+  },
+  {
+    "text": "可转债溢价率规模数据",
+    "href": "#可转债溢价率规模数据",
+    "url": "https://ptradeapi.com/#可转债溢价率规模数据"
+  },
+  {
+    "text": "可转债强赎与数日子",
+    "href": "#可转债强赎与数日子",
+    "url": "https://ptradeapi.com/#可转债强赎与数日子"
+  },
+  {
+    "text": "可转债不下修转股价名单",
+    "href": "#可转债不下修转股价名单",
+    "url": "https://ptradeapi.com/#可转债不下修转股价名单"
+  },
+  {
+    "text": "常见问题QA",
+    "href": "#常见问题QA",
+    "url": "https://ptradeapi.com/#常见问题QA"
+  },
+  {
+    "text": "支持的三方库",
+    "href": "#支持的三方库",
+    "url": "https://ptradeapi.com/#支持的三方库"
+  },
+  {
+    "text": "接口版本变动",
+    "href": "#接口版本变动",
+    "url": "https://ptradeapi.com/#接口版本变动"
+  },
+  {
+    "text": "知识星球",
+    "href": "#知识星球",
+    "url": "https://ptradeapi.com/#知识星球"
+  },
+  {
+    "text": "Ptrade API文档",
+    "href": "#",
+    "url": "https://ptradeapi.com/#"
+  },
+  {
+    "text": ">>> QMT API文档",
+    "href": "http://qmt.ptradeapi.com",
+    "url": "http://qmt.ptradeapi.com"
+  },
+  {
+    "text": "get_individual_transcation(交易)",
+    "href": "#get_individual_transcation",
+    "url": "https://ptradeapi.com/#get_individual_transcation"
+  },
+  {
+    "text": "指数列表",
+    "href": "/data/index",
+    "url": "https://ptradeapi.com/data/index"
+  },
+  {
+    "text": "行业列表",
+    "href": "/hub/data/industry_concept.html",
+    "url": "https://ptradeapi.com/hub/data/industry_concept.html"
+  },
+  {
+    "text": "财务数据的API接口说明",
+    "href": "/hub/data/finance.html",
+    "url": "https://ptradeapi.com/hub/data/finance.html"
+  },
+  {
+    "text": "企业微信功能使用手册",
+    "href": "/data/send_qywx",
+    "url": "https://ptradeapi.com/data/send_qywx"
+  },
+  {
+    "text": "常见问题说明",
+    "href": "/hub/data/qa_data.html",
+    "url": "https://ptradeapi.com/hub/data/qa_data.html"
+  }
+]

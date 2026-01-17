@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_user_name",
+  "title": "get_user_name – 获取登录终端的资金账号",
+  "content": "get_user_name – 获取登录终端的资金账号\n\n返回登录终端的资金账号(str)或者None。如果查询成功登录终端的资金账号(str)，失败则返回None。",
+  "code_blocks": [],
+  "content_length": 83,
+  "url": "https://ptradeapi.com/#get_user_name"
+}

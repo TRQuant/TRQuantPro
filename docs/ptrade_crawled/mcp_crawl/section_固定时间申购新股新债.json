@@ -1,0 +1,8 @@
+{
+  "anchor_id": "固定时间申购新股新债",
+  "title": "固定时间申购新股新债",
+  "content": "固定时间申购新股新债\n\ndef\nbefore_trading_start\n(\ncontext\n,\ndata\n):\nimport\ndatetime\ncurrent\n=\ndatetime\n.\ndatetime\n.\nnow\n().\nstrftime\n(\n'%Y-%m-%d'\n)\nlog\n.\ninfo\n(\ncurrent\n)\ndef\nipo\n(\ncontext\n):\nipo_stocks_order\n()\ndef\ninitialize\n(\ncontext\n):\nrun_daily\n(\ncontext\n,\nipo\n,\n'13:30'\n)\ndef\nhandle_data\n(\ncontext\n,\ndata\n):\npass\ndef\non_order_response\n(\ncontext\n,\norder_list\n):\n# 该函数会在委托回报返回时响应\nlog\n.\ninfo\n(\norder_list\n)\n\n由于ptrade内置数据没有可转债溢价率数据，所以需要调用外部数据，如果券商提供的ptrade不支持外网访问，这个是没有办法获取这个数据的\n\n目前支持外网访问的是国盛证券，笔者部署了一系列针对可转债的数据接口，支持的字段丰富，且是实时更新的数据。",
+  "code_blocks": [],
+  "content_length": 523,
+  "url": "https://ptradeapi.com#固定时间申购新股新债"
+}

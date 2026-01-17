@@ -1,0 +1,8 @@
+{
+  "anchor_id": "buy_open",
+  "title": "buy_open - 多开",
+  "content": "buy_open - 多开\n\n不同期货品种每一跳的价格变动都不一样，limit_price入参的时候要参考对应品种的价格变动规则，如limit_price不做入参则会以交易的行情快照最新价或者回测的分钟最新价进行报单；",
+  "code_blocks": [],
+  "content_length": 109,
+  "url": "https://ptradeapi.com/#buy_open"
+}

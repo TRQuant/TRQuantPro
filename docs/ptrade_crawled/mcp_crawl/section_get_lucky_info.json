@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_lucky_info",
+  "title": "get_lucky_info - 获取历史中签信息",
+  "content": "get_lucky_info - 获取历史中签信息\n\nstart_date：开始日期(str)，输入形式仅支持\"YYYYmmdd\"，如\"20220928\"。\n\n[{'stock_code': 证券代码(str), 'occur_amount': 发生数量(float), 'business_price': 成交价格(float), 'stock_name': 证券名称(str), 'init_date': 交易日期(int)}, ...]\n\n[{'stock_code': '371002.SZ', 'occur_amount': 10.0, 'business_price': 100.0, 'stock_name': '崧盛发债', 'init_date': 20220928}, ...]\n\ndef initialize(context):\n    # 初始化策略\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    pre_date = str(get_trading_day(-1)).replace(\"-\", \"\")\n    current_date = context.blotter.current_dt.strftime(\"%Y%m%d\")\n    # 获取上一交易日至今天中签信息\n    lucky_info = get_lucky_info(pre_date, current_date)\n    log.info(lucky_info)\n\ndef handle_data(context, data):\n    pass",
+  "code_blocks": [],
+  "content_length": 753,
+  "url": "https://ptradeapi.com/#get_lucky_info"
+}

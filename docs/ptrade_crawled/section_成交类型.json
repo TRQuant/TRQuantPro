@@ -1,0 +1,8 @@
+{
+  "anchor_id": "成交类型",
+  "title": "real_type -- 成交类型",
+  "content": "real_type -- 成交类型\n\n\"0\" -- 买卖\n\"1\" -- 查询\n\"2\" -- 撤单\n\"6\" -- 融资\n\"7\" -- 融券\n\"8\" -- 平仓\n\"9\" -- 信用\n\"G\" -- 期权强制平仓",
+  "code_blocks": [],
+  "content_length": 102,
+  "url": "https://ptradeapi.com/#成交类型"
+}

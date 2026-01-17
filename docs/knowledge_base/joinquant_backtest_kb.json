@@ -1,0 +1,171 @@
+{
+  "items": [
+    {
+      "id": "jq_backtest_001",
+      "title": "聚宽策略程序架构",
+      "content": "聚宽策略程序架构\n\n聚宽策略代码必须包含以下核心函数：\n\n1. initialize(context) - 策略初始化函数\n   - 在策略开始运行时调用一次\n   - 用于设置策略参数、股票池、调仓频率等\n   - 示例：\n     def initialize(context):\n         set_benchmark('000300.XSHG')\n         set_slippage(PriceRelatedSlippage(0.002))\n         set_order_cost(OrderCost(...))\n         g.stock_pool = '000300.XSHG'\n         g.hold_num = 30\n         run_daily(before_trading_start, time='09:00')\n         run_daily(handle_data, time='09:30')\n\n2. before_trading_start(context) - 盘前准备函数\n   - 每个交易日开盘前调用\n   - 用于更新股票池、获取最新数据等\n\n3. handle_data(context, data) - 盘中交易函数\n   - 每个交易时间点调用（按分钟或按天）\n   - 用于执行交易逻辑\n\n4. after_trading_end(context) - 盘后处理函数\n   - 每个交易日收盘后调用\n   - 用于记录日志、更新状态等\n\n全局变量对象：\n- g: 全局变量对象，用于存储策略状态\n- context: 策略上下文对象，包含账户信息、持仓信息等",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "策略架构",
+        "initialize",
+        "handle_data",
+        "回测引擎",
+        "API文档"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:策略程序架构♠",
+      "created_at": "2026-01-07T15:06:29.262604",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_002",
+      "title": "聚宽策略设置函数 - initialize",
+      "content": "聚宽策略设置函数 - initialize(context)\n\ninitialize(context) 是策略的初始化函数，在策略开始运行时调用一次。\n\n核心设置函数：\n\n1. set_benchmark(security) - 设置基准指数\n   示例：set_benchmark('000300.XSHG')  # 沪深300\n\n2. set_slippage(slippage) - 设置滑点\n   示例：\n   set_slippage(PriceRelatedSlippage(0.002))  # 价格相关滑点0.2%\n   set_slippage(FixedSlippage(0.001))  # 固定滑点0.1%\n\n3. set_order_cost(cost, type='stock') - 设置交易成本\n   示例：\n   set_order_cost(\n       OrderCost(\n           open_tax=0,              # 买入印花税\n           close_tax=0.001,          # 卖出印花税0.1%\n           open_commission=0.0003,   # 买入佣金0.03%\n           close_commission=0.0003,  # 卖出佣金0.03%\n           min_commission=5           # 最小佣金5元\n       ),\n       type='stock'\n   )\n\n4. set_option(name, value) - 设置策略选项\n   常用选项：\n   - set_option('use_real_price', True)  # 使用真实价格模式\n   - set_option('order_volume_ratio', 0.25)  # 订单成交量比例\n\n5. run_daily(func, time='09:30') - 设置定时运行函数\n   示例：\n   run_daily(before_trading_start, time='09:00')\n   run_daily(handle_data, time='09:30')\n   run_daily(after_trading_end, time='15:30')\n\n全局变量初始化：\n- g.params = {}  # 策略参数\n- g.stock_pool = '000300.XSHG'  # 股票池\n- g.hold_num = 30  # 持仓数量",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "initialize",
+        "set_benchmark",
+        "set_slippage",
+        "set_order_cost",
+        "run_daily",
+        "策略设置"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:策略设置函数",
+      "created_at": "2026-01-07T15:06:29.262624",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_003",
+      "title": "聚宽数据获取函数 - get_price, history, get_fundamentals",
+      "content": "聚宽数据获取函数\n\n1. get_price(security, start_date, end_date, frequency='daily', fields=[...])\n   获取价格数据（移动窗口）\n   示例：\n   # 获取单只股票日线数据\n   df = get_price('000001.XSHE', start_date='2024-01-01', end_date='2024-12-31', \n                  frequency='daily', fields=['open', 'high', 'low', 'close', 'volume'])\n   \n   # 获取多只股票数据\n   df = get_price(['000001.XSHE', '600519.XSHG'], count=60, \n                  frequency='daily', fields=['close'])\n   \n   参数说明：\n   - security: 股票代码或代码列表\n   - start_date/end_date: 开始/结束日期\n   - count: 获取end_date之前N个周期的数据\n   - frequency: 'daily'（日线）或'1m'（分钟线）\n   - fields: ['open', 'high', 'low', 'close', 'volume', 'money']\n   - fq: 'pre'（前复权，默认）/ 'post'（后复权）/ 'none'（不复权）\n\n2. history(count, unit, field, security_list, df=True)\n   获取历史数据（固定窗口）\n   示例：\n   # 获取过去20天的收盘价\n   prices = history(20, '1d', 'close', g.stocks, df=True)\n   \n   # 计算20日收益率\n   returns = (prices.iloc[-1] / prices.iloc[0] - 1)\n\n3. get_fundamentals(query, date=None)\n   获取财务数据\n   示例：\n   from jqlib.technical_analysis import *\n   \n   q = query(\n       valuation.code,\n       valuation.pe_ratio,\n       valuation.pb_ratio,\n       indicator.roe,\n       indicator.gross_profit_margin\n   ).filter(valuation.code.in_(g.stocks))\n   \n   df = get_fundamentals(q, date=context.current_dt.strftime('%Y-%m-%d'))\n\n4. get_index_stocks(index_symbol)\n   获取指数成分股\n   示例：\n   stocks = get_index_stocks('000300.XSHG')  # 沪深300成分股\n\n5. get_current_data()\n   获取当前时刻的实时数据\n   示例：\n   current_data = get_current_data()\n   price = current_data['000001.XSHE'].last_price",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "get_price",
+        "history",
+        "get_fundamentals",
+        "数据获取",
+        "API"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:数据获取函数",
+      "created_at": "2026-01-07T15:06:29.262626",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_004",
+      "title": "聚宽交易函数 - order_target, order_value, order_target_percent",
+      "content": "聚宽交易函数\n\n1. order_target(security, amount)\n   目标持仓数量（股数）\n   示例：\n   order_target('000001.XSHE', 1000)  # 目标持仓1000股\n   order_target('000001.XSHE', 0)  # 全部卖出\n\n2. order_target_value(security, value)\n   目标持仓金额（元）\n   示例：\n   order_target_value('000001.XSHE', 100000)  # 目标持仓10万元\n   order_target_value('000001.XSHE', 0)  # 全部卖出\n\n3. order_target_percent(security, percent)\n   目标持仓百分比\n   示例：\n   order_target_percent('000001.XSHE', 0.1)  # 目标持仓10%\n   order_target_percent('000001.XSHE', 0)  # 全部卖出\n\n4. order_value(security, value)\n   按金额买入\n   示例：\n   order_value('000001.XSHE', 50000)  # 买入5万元\n\n5. order(security, amount)\n   按股数买入/卖出\n   示例：\n   order('000001.XSHE', 100)  # 买入100股\n   order('000001.XSHE', -100)  # 卖出100股\n\n注意事项：\n- 所有下单函数可以在 handle_data 和 run_daily 中使用\n- 创建订单失败（返回None）的可能原因：\n  * 股票停牌\n  * 标的代码错误、已退市、未上市\n  * 账户错误\n  * 调整下单手数为0\n  * 股票下空单等",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "order_target",
+        "order_value",
+        "order_target_percent",
+        "交易函数",
+        "下单"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:交易函数",
+      "created_at": "2026-01-07T15:06:29.262629",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_005",
+      "title": "聚宽回测环境配置 - 滑点、手续费、真实价格",
+      "content": "聚宽回测环境配置\n\n1. 滑点设置\n   set_slippage(PriceRelatedSlippage(0.002))  # 价格相关滑点0.2%\n   set_slippage(FixedSlippage(0.001))  # 固定滑点0.1%\n\n2. 手续费设置\n   set_order_cost(\n       OrderCost(\n           open_tax=0,              # 买入印花税（A股买入不收）\n           close_tax=0.001,          # 卖出印花税0.1%\n           open_commission=0.0003,   # 买入佣金0.03%\n           close_commission=0.0003,  # 卖出佣金0.03%\n           min_commission=5          # 最小佣金5元\n       ),\n       type='stock'\n   )\n\n3. 真实价格模式\n   set_option('use_real_price', True)  # 使用真实价格成交\n   set_option('order_volume_ratio', 0.25)  # 订单成交量比例\n\n4. 基准设置\n   set_benchmark('000300.XSHG')  # 沪深300\n\n5. 运行频率\n   - 日级策略：使用 run_daily(func, time='09:30')\n   - 分钟级策略：使用 handle_data(context, data)\n\n注意事项：\n- 每个交易日结束时自动撤销所有未完成订单（A股在17:00之后）\n- 回测和模拟中，每日下单的最大数量为10000笔\n- 所有价格单位是元\n- 所有时间都是北京时间（UTC+8）",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "回测环境",
+        "滑点",
+        "手续费",
+        "真实价格",
+        "set_slippage",
+        "set_order_cost"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:回测环境",
+      "created_at": "2026-01-07T15:06:29.262631",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_006",
+      "title": "聚宽策略对象 - context, g, Portfolio, Position",
+      "content": "聚宽策略对象说明\n\n1. context对象（策略上下文）\n   - context.current_dt: 当前时间（datetime对象）\n   - context.portfolio: 账户组合对象\n   - context.portfolio.total_value: 总资产\n   - context.portfolio.available_cash: 可用现金\n   - context.portfolio.positions: 持仓字典\n   - context.portfolio.returns: 累计收益率\n\n2. g对象（全局变量）\n   - g.params: 策略参数字典\n   - g.stock_pool: 股票池\n   - g.hold_num: 持仓数量\n   - g.trade_days: 交易日计数\n   - g.cost_prices: 成本价字典\n   - g.hold_days: 持仓天数字典\n\n3. Portfolio对象（账户组合）\n   - portfolio.total_value: 总资产\n   - portfolio.available_cash: 可用现金\n   - portfolio.positions: 持仓字典 {security: Position对象}\n   - portfolio.returns: 累计收益率\n\n4. Position对象（持仓）\n   - position.total_amount: 总持仓数量\n   - position.closeable_amount: 可卖出数量\n   - position.value: 持仓市值\n   - position.avg_cost: 平均成本\n\n5. 获取持仓信息\n   for stock in context.portfolio.positions:\n       pos = context.portfolio.positions[stock]\n       print(f\"{stock}: {pos.total_amount}股, 市值: {pos.value}\")\n\n注意事项：\n- Context, Portfolio, Position对象都是只读的，尝试修改会报错\n- 使用g对象存储策略状态和自定义变量",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "context",
+        "g对象",
+        "Portfolio",
+        "Position",
+        "策略对象"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:对象♠",
+      "created_at": "2026-01-07T15:06:29.262633",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_007",
+      "title": "聚宽多因子策略完整模板",
+      "content": "聚宽多因子策略完整模板\n\n# -*- coding: utf-8 -*-\n\"\"\"\n多因子量化策略 - 聚宽平台\n\"\"\"\n\nimport pandas as pd\nimport numpy as np\n\ndef initialize(context):\n    \"\"\"策略初始化\"\"\"\n    # 设置基准\n    set_benchmark('000300.XSHG')\n    \n    # 设置滑点和手续费\n    set_slippage(PriceRelatedSlippage(0.002))\n    set_order_cost(\n        OrderCost(\n            open_tax=0,\n            close_tax=0.001,\n            open_commission=0.0003,\n            close_commission=0.0003,\n            min_commission=5\n        ),\n        type='stock'\n    )\n    \n    # 真实价格模式\n    set_option('use_real_price', True)\n    \n    # 策略参数\n    g.stock_pool = '000300.XSHG'  # 股票池\n    g.hold_num = 10  # 持仓数量\n    g.rebalance_days = 20  # 调仓周期\n    \n    # 定时任务\n    run_daily(before_trading_start, time='09:00')\n    run_daily(market_open, time='09:30')\n\ndef before_trading_start(context):\n    \"\"\"盘前准备\"\"\"\n    # 获取股票池\n    g.stocks = get_index_stocks(g.stock_pool)\n    \n    # 过滤ST和停牌股票\n    g.paused_stocks = get_paused_stocks()\n    g.st_stocks = get_st_stocks()\n\ndef market_open(context):\n    \"\"\"盘中交易\"\"\"\n    # 检查调仓日\n    if context.current_dt.weekday() != 0:  # 只在周一调仓\n        return\n    \n    # 多因子选股\n    target_stocks = select_stocks(context)\n    \n    # 执行调仓\n    rebalance(context, target_stocks)\n\ndef select_stocks(context):\n    \"\"\"多因子选股\"\"\"\n    current_date = context.current_dt.strftime('%Y-%m-%d')\n    \n    # 获取财务数据\n    q = query(\n        valuation.code,\n        valuation.pe_ratio,\n        indicator.roe\n    ).filter(valuation.code.in_(g.stocks))\n    \n    df = get_fundamentals(q, date=current_date)\n    \n    # 获取价格数据计算动量\n    prices = history(20, '1d', 'close', g.stocks, df=True)\n    returns = (prices.iloc[-1] / prices.iloc[0] - 1)\n    \n    # 计算综合得分\n    df['momentum'] = returns\n    df['score'] = df['roe'] * 0.5 - df['pe_ratio'] * 0.3 + df['momentum'] * 100 * 0.2\n    \n    # 选股\n    target = df.nlargest(g.hold_num, 'score')['code'].tolist()\n    return target\n\ndef rebalance(context, target_stocks):\n    \"\"\"调仓\"\"\"\n    # 卖出不在目标中的股票\n    for stock in context.portfolio.positions:\n        if stock not in target_stocks:\n            order_target(stock, 0)\n    \n    # 等权重买入目标股票\n    if target_stocks:\n        weight = 1.0 / len(target_stocks)\n        for stock in target_stocks:\n            if stock not in g.paused_stocks and stock not in g.st_stocks:\n                order_target_percent(stock, weight)",
+      "type": "code_example",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "策略模板",
+        "多因子策略",
+        "完整示例",
+        "代码模板"
+      ],
+      "source": "extension/templates/strategies/multi_factor_template.py",
+      "created_at": "2026-01-07T15:06:29.262635",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_008",
+      "title": "聚宽回测过程说明",
+      "content": "聚宽回测过程说明\n\n回测执行流程：\n\n1. 初始化阶段\n   - 执行 initialize(context) 函数\n   - 设置基准、滑点、手续费等\n   - 初始化全局变量\n\n2. 每个交易日\n   a) 盘前（09:00）\n      - 执行 before_trading_start(context) 函数\n      - 更新股票池、获取最新数据\n   \n   b) 盘中（09:30-15:00）\n      - 执行 handle_data(context, data) 或 run_daily 注册的函数\n      - 根据策略逻辑执行交易\n   \n   c) 盘后（15:30）\n      - 执行 after_trading_end(context) 函数\n      - 记录日志、更新状态\n\n3. 订单处理\n   - 系统自动处理订单成交\n   - 考虑滑点、手续费\n   - 检查停牌、涨跌停限制\n\n4. 回测结果\n   - 总收益率\n   - 年化收益率\n   - 最大回撤\n   - 夏普比率\n   - 胜率\n   - 交易记录\n\n注意事项：\n- 回测使用历史数据，确保没有未来函数\n- 注意数据更新时间（财务数据通常T+1更新）\n- 考虑停牌、退市等特殊情况",
+      "type": "reference",
+      "tags": [
+        "聚宽",
+        "JoinQuant",
+        "回测过程",
+        "回测流程",
+        "回测说明"
+      ],
+      "source": "https://www.joinquant.com/help/api/help#api:回测过程",
+      "created_at": "2026-01-07T15:06:29.262637",
+      "useful_count": 0
+    },
+    {
+      "id": "jq_backtest_009",
+      "title": "V4.0系统生成聚宽策略代码指南",
+      "content": "V4.0系统生成聚宽策略代码指南\n\nV4.0投资推荐系统需要将预测信号转换为聚宽策略代码。\n\n转换步骤：\n\n1. 预测信号格式\n   - 股票代码（聚宽格式：000001.XSHE）\n   - 预测概率（XGBoost模型输出）\n   - 目标买入价、止盈价、止损价\n\n2. 生成initialize函数\n   - 设置基准：set_benchmark('000300.XSHG')\n   - 设置滑点：set_slippage(PriceRelatedSlippage(0.002))\n   - 设置手续费：set_order_cost(...)\n   - 初始化全局变量：g.predictions = {}\n\n3. 生成before_trading_start函数\n   - 从V4.0系统获取当日预测信号\n   - 存储到g.predictions字典\n   - 格式：g.predictions[stock_code] = {\n       'proba': 0.85,\n       'buy_price': 10.5,\n       'target_profit': 11.55,\n       'stop_loss': 9.98\n   }\n\n4. 生成handle_data函数\n   - 检查调仓频率（如每周一次）\n   - 遍历g.predictions，执行买入\n   - 检查持仓，执行止盈止损\n\n5. 生成风控函数\n   - 移动止损逻辑\n   - 最大持仓限制\n   - 行业分散度控制\n\n示例代码结构：\ndef initialize(context):\n    # V4.0系统配置\n    g.v4_config = {\n        'prediction_threshold': 0.6,\n        'max_positions': 10,\n        'single_position_pct': 0.1\n    }\n    # ... 其他初始化\n\ndef before_trading_start(context):\n    # 从V4.0系统获取预测（需要实现API调用或数据文件读取）\n    g.predictions = load_v4_predictions(context.current_dt)\n\ndef market_open(context):\n    # 执行交易逻辑\n    execute_v4_signals(context)",
+      "type": "guide",
+      "tags": [
+        "V4.0",
+        "聚宽",
+        "策略生成",
+        "代码转换",
+        "系统集成",
+        "TRQuant"
+      ],
+      "source": "core/advisor_v4/joinquant_strategy_generator.py",
+      "created_at": "2026-01-07T15:06:29.262639",
+      "useful_count": 0
+    }
+  ],
+  "metadata": {
+    "name": "聚宽策略回测引擎知识库",
+    "description": "聚宽(JoinQuant)策略回测引擎API文档和最佳实践",
+    "created_at": "2026-01-07T15:06:29.262720",
+    "source": "聚宽官方API文档 + V4.0系统集成",
+    "total_items": 9
+  }
+}

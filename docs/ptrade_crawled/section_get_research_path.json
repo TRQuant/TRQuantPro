@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_research_path",
+  "title": "get_research_path – 获取研究路径",
+  "content": "get_research_path – 获取研究路径\n\n在部分券商里，会限制使用路径 /home/fly/，如果代码里面存在\"/home/fly/notebook/\"这个字符，会提示无法保存，需要替换成：get_research_path() ， 效果一样",
+  "code_blocks": [],
+  "content_length": 128,
+  "url": "https://ptradeapi.com/#get_research_path"
+}

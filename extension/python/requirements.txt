@@ -1,0 +1,25 @@
+# TRQuant Extension Python Dependencies
+# ======================================
+
+# 核心数据处理
+pandas>=1.5.0
+numpy>=1.21.0
+
+# A股数据源
+akshare>=1.10.0
+
+# 数据库
+pymongo>=4.0.0
+
+# 可选：JQData（需要账号）
+# jqdatasdk>=1.9.0
+
+# 可选：回测可视化
+# matplotlib>=3.5.0
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "on_trade_response",
+  "title": "on_trade_response - 交易主推(可选)",
+  "content": "on_trade_response - 交易主推(可选)\n\n该函数会在成交主推回调时响应，比引擎和get_trades()函数更新Order状态的速度更快，适合对速度要求比较高的策略。\n\n目前可接收股票、可转债、ETF、LOF、期货代码的主推数据。\n当接到策略外交易产生的主推时(需券商配置默认不推送)，由于没有对应的Order对象，主推信息中order_id字段赋值为\"\"。\n当在主推里调用委托接口时，需要进行判断处理避免无限迭代循环问题。\n\norder(回测/交易)\torder_target(回测/交易)\torder_value(回测/交易)\norder_target_value(回测/交易)\torder_market(交易)\tipo_stocks_order(交易)\nafter_trading_order(交易)\tafter_trading_cancel_order(交易)\tetf_basket_order(交易)\netf_purchase_redemption(交易)\tcancel_order(回测/交易)\tmargin_trade(交易)\nmargincash_open(交易)\tmargincash_close(交易)\tmargincash_direct_refund(交易)\nmargincash_open(交易)\tmarginsec_close(交易)\tmarginsec_direct_refund(交易)\nget_user_name(回测/交易)\tget_cb_list(交易)\tget_instruments(回测/交易(期货))",
+  "code_blocks": [],
+  "content_length": 681,
+  "url": "https://ptradeapi.com/#on_trade_response"
+}

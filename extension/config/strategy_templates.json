@@ -1,0 +1,315 @@
+[
+  {
+    "id": "momentum_rotation",
+    "strategyName": "momentum_rotation",
+    "displayName": "月度动量轮动",
+    "description": "基于60日动量评分的轮动策略，每月再平衡，高动量标的保持均衡仓位。",
+    "highlights": [
+      "严格的再平衡节奏与仓位控制",
+      "自动筛选动量排名前列的股票",
+      "适合行业/主题轮动场景"
+    ],
+    "defaultKeyword": "momentum_rotation_demo",
+    "suggestedStockPool": "high_growth_stocks",
+    "availableStockPools": [
+      "high_growth_stocks",
+      "balanced_growth_pool",
+      "hot_focus_stocks",
+      "core_etf_pool"
+    ],
+    "defaultTheme": "default",
+    "recommendedSections": [
+      "overview",
+      "performance",
+      "alpha_metrics",
+      "trade_analysis",
+      "risk_exposure",
+      "conclusion"
+    ],
+    "parameters": [
+      {
+        "key": "lookback_days",
+        "label": "动量观察窗口",
+        "description": "用于计算动量的历史天数",
+        "type": "number",
+        "min": 20,
+        "max": 240,
+        "step": 5,
+        "defaultValue": 60
+      },
+      {
+        "key": "top_n",
+        "label": "持仓股票数量",
+        "description": "每次轮动保留的高动量标的数量",
+        "type": "number",
+        "min": 2,
+        "max": 10,
+        "step": 1,
+        "defaultValue": 5
+      },
+      {
+        "key": "rebalance_interval_days",
+        "label": "再平衡周期（交易日）",
+        "description": "两次调仓之间的间隔天数，约等于一个自然月",
+        "type": "number",
+        "min": 5,
+        "max": 60,
+        "step": 1,
+        "defaultValue": 21
+      }
+    ],
+    "tags": ["轮动", "动量", "月度调仓"]
+  },
+  {
+    "id": "adaptive_momentum_v2",
+    "strategyName": "adaptive_momentum_a_v2",
+    "displayName": "自适应动量增强 V2",
+    "description": "综合动量、波动与风险收益比的多因子策略，支持股票池与参数自定义。",
+    "highlights": [
+      "多维动量评分与动态持仓",
+      "内置风控阈值，强调回撤控制",
+      "可扩展到多策略组合"
+    ],
+    "defaultKeyword": "adaptive_momentum_v2_demo",
+    "suggestedStockPool": "core_etf_pool",
+    "availableStockPools": [
+      "core_etf_pool",
+      "balanced_growth_pool",
+      "high_growth_stocks"
+    ],
+    "defaultTheme": "default",
+    "recommendedSections": [
+      "overview",
+      "performance",
+      "drawdown_analysis",
+      "factor_exposure",
+      "trade_analysis",
+      "conclusion"
+    ],
+    "parameters": [
+      {
+        "key": "lookback_window",
+        "label": "动量评分观察窗口",
+        "description": "用于综合评分的历史交易日数",
+        "type": "number",
+        "min": 30,
+        "max": 250,
+        "step": 5,
+        "defaultValue": 90
+      },
+      {
+        "key": "max_holdings",
+        "label": "最大持仓数量",
+        "description": "同一时刻持有的标的数量上限",
+        "type": "number",
+        "min": 3,
+        "max": 15,
+        "step": 1,
+        "defaultValue": 6
+      },
+      {
+        "key": "volatility_threshold",
+        "label": "波动率阈值",
+        "description": "当标的波动率高于该值时会降低权重",
+        "type": "number",
+        "min": 0,
+        "max": 0.1,
+        "step": 0.005,
+        "defaultValue": 0.035
+      },
+      {
+        "key": "position_floor",
+        "label": "单标的最低仓位比例",
+        "description": "防止过度稀释仓位",
+        "type": "number",
+        "min": 0,
+        "max": 0.5,
+        "step": 0.01,
+        "defaultValue": 0.05
+      }
+    ],
+    "tags": ["动量", "多因子", "风控"]
+  },
+  {
+    "id": "a_share_high_return",
+    "strategyName": "a_share_high_return",
+    "displayName": "A股高回报动量增强",
+    "description": "针对A股高成长股票池，综合短中周期动量、量能与风险控制，实现稳健的高回报目标。",
+    "highlights": [
+      "短中期动量+量能复合评分筛选强势股",
+      "120日趋势过滤与等权分散持仓",
+      "回撤与绝对止损双重风险控制"
+    ],
+    "defaultKeyword": "a_share_high_return",
+    "suggestedStockPool": "high_growth_stocks",
+    "availableStockPools": [
+      "high_growth_stocks",
+      "hot_focus_stocks",
+      "balanced_growth_pool"
+    ],
+    "defaultTheme": "default",
+    "recommendedSections": [
+      "overview",
+      "performance",
+      "alpha_metrics",
+      "drawdown_analysis",
+      "trade_analysis",
+      "risk_exposure",
+      "conclusion"
+    ],
+    "parameters": [
+      {
+        "key": "short_window",
+        "label": "短周期动量窗口",
+        "description": "计算短周期收益率的窗口长度",
+        "type": "number",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "defaultValue": 20
+      },
+      {
+        "key": "medium_window",
+        "label": "中周期动量窗口",
+        "description": "计算中周期收益率的窗口长度",
+        "type": "number",
+        "min": 40,
+        "max": 120,
+        "step": 5,
+        "defaultValue": 60
+      },
+      {
+        "key": "long_ma_window",
+        "label": "趋势过滤均线",
+        "description": "价格需站上该窗口均线才会被纳入组合",
+        "type": "number",
+        "min": 80,
+        "max": 200,
+        "step": 5,
+        "defaultValue": 120
+      },
+      {
+        "key": "rebalance_interval",
+        "label": "调仓间隔（日）",
+        "description": "每隔多少天执行一次调仓",
+        "type": "number",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "defaultValue": 5
+      },
+      {
+        "key": "top_n",
+        "label": "最大持仓数量",
+        "description": "组合中最多持有的标的数量",
+        "type": "number",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "defaultValue": 6
+      },
+      {
+        "key": "trailing_stop_pct",
+        "label": "回撤止损比例",
+        "description": "相对近期高点的最大允许回撤比例",
+        "type": "number",
+        "min": 0.05,
+        "max": 0.3,
+        "step": 0.01,
+        "defaultValue": 0.12
+      },
+      {
+        "key": "hard_stop_pct",
+        "label": "成本止损比例",
+        "description": "相对成本价的最大亏损比例",
+        "type": "number",
+        "min": 0.05,
+        "max": 0.3,
+        "step": 0.01,
+        "defaultValue": 0.15
+      }
+    ],
+    "tags": ["动量", "趋势", "风控", "A股"]
+  },
+  {
+    "id": "energy_storage_leaders",
+    "strategyName": "energy_storage_leaders",
+    "displayName": "储能龙头精选",
+    "description": "专注储能赛道龙头，通过动量、成交活跃度与波动控制的综合评分，捕捉产业链趋势机会。",
+    "highlights": [
+      "聚焦储能/新能源核心公司，契合行业研究主题",
+      "短中期动量 + 成交量动能 + 波动惩罚的综合信号",
+      "动态回撤止损与仓位管理，兼顾收益与风险"
+    ],
+    "defaultKeyword": "energy_storage_focus",
+    "suggestedStockPool": "energy_storage_leaders",
+    "availableStockPools": [
+      "energy_storage_leaders",
+      "hot_focus_stocks",
+      "balanced_growth_pool",
+      "high_growth_stocks"
+    ],
+    "defaultTheme": "default",
+    "recommendedSections": [
+      "overview",
+      "performance",
+      "drawdown_analysis",
+      "trade_analysis",
+      "risk_exposure",
+      "conclusion"
+    ],
+    "parameters": [
+      {
+        "key": "short_window",
+        "label": "短期动量窗口",
+        "description": "用于计算短期收益率的天数",
+        "type": "number",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "defaultValue": 20
+      },
+      {
+        "key": "medium_window",
+        "label": "中期动量窗口",
+        "description": "用于计算中期收益率的天数",
+        "type": "number",
+        "min": 40,
+        "max": 120,
+        "step": 5,
+        "defaultValue": 60
+      },
+      {
+        "key": "volatility_window",
+        "label": "波动率窗口",
+        "description": "滚动波动率的统计天数",
+        "type": "number",
+        "min": 15,
+        "max": 60,
+        "step": 1,
+        "defaultValue": 30
+      },
+      {
+        "key": "rebalance_interval",
+        "label": "调仓间隔（日）",
+        "description": "两次调仓之间的最小自然日间隔",
+        "type": "number",
+        "min": 5,
+        "max": 15,
+        "step": 1,
+        "defaultValue": 7
+      },
+      {
+        "key": "max_positions",
+        "label": "最大持仓数",
+        "description": "组合中同时持有的标的数量上限",
+        "type": "number",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "defaultValue": 5
+      }
+    ],
+    "tags": ["储能", "新能源", "动量", "行业策略"]
+  }
+]

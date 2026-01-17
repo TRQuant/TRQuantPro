@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_stock_blocks",
+  "title": "get_stock_blocks - 获取股票所属板块信息",
+  "content": "get_stock_blocks - 获取股票所属板块信息\n\ndict类型，包含所属行业、板块等详细信息(dict[str:list[list[str,str],...],...])，如：\n\n{\n'HGT': [['HGTHGT.XBHK', '沪股通']],\n'HY': [['710200.XBHS', '计算机应用']],\n'DY': [['DY1172.XBHS', '浙江板块']], \n'ZJHHY': [['I65000.XBHS', '软件和信息技术服务业']],\n'GN': [['003596.XBHS', '融资融券'], ['003631.XBHS', '转融券标的'], ['003637.XBHS', '互联网金融'], ['003665.XBHS', '电商概念'], ['003707.XBHS', '沪股通'], ['003718.XBHS', '证金持股'], ['003800.XBHS', '人工智能'], ['003830.XBHS', '区块链'], ['031027.XBHS', 'MSCI概念'], ['B10003.XBHS', '蚂蚁金服概念']]\n}\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    blocks = get_stock_blocks(g.security)\n    log.info('security %s in these blocks:\\n%s' % (g.security, blocks))",
+  "code_blocks": [],
+  "content_length": 734,
+  "url": "https://ptradeapi.com/#get_stock_blocks"
+}

@@ -1,0 +1,344 @@
+{
+  "name": "trquant-cursor-extension",
+  "displayName": "TRQuant 韬睿量化",
+  "description": "A股量化投资助手 - 市场分析、因子推荐、策略生成",
+  "version": "0.2.29-20251222010149",
+  "publisher": "trquant",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trquant/TRQuant"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Data Science"
+  ],
+  "keywords": [
+    "quantitative",
+    "trading",
+    "A-shares",
+    "PTrade",
+    "factor",
+    "strategy"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:trquant.openUnifiedDashboard"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "trquant.openUnifiedDashboard",
+        "title": "TRQuant: 打开统一仪表板",
+        "category": "TRQuant",
+        "icon": "$(home)"
+      },
+      {
+        "command": "trquant.openReactPanel",
+        "title": "TRQuant: Open React Panel",
+        "category": "TRQuant",
+        "icon": "$(browser)"
+      },
+      {
+        "command": "trquant.openWorkflowPanel",
+        "title": "TRQuant: 韬睿量化投资流程",
+        "category": "TRQuant",
+        "icon": "$(workflow)"
+      },
+      {
+        "command": "trquant.openWorkflowMVP",
+        "title": "TRQuant: 打开工作流面板 (MVP)",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.showWorkflow",
+        "title": "TRQuant: 9步工作流 (专业版)",
+        "category": "TRQuant",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "trquant.openDashboard",
+        "title": "TRQuant: 量化工作台",
+        "category": "TRQuant",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "trquant.openStrategyGenerator",
+        "title": "TRQuant: 策略生成器",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openBacktestPanel",
+        "title": "TRQuant: 回测面板",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openOptimizerPanel",
+        "title": "TRQuant: 策略优化器",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openReportPanel",
+        "title": "TRQuant: 报告生成",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.getMarketStatus",
+        "title": "TRQuant: 获取市场状态",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.getMainlines",
+        "title": "TRQuant: 获取投资主线",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.recommendFactors",
+        "title": "TRQuant: 推荐因子",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.generateStrategy",
+        "title": "TRQuant: 生成策略代码",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.analyzeBacktest",
+        "title": "TRQuant: 分析回测结果",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.enableMCP",
+        "title": "TRQuant: 启用MCP Server",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.createProject",
+        "title": "TRQuant: 新建量化项目",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.refreshProject",
+        "title": "TRQuant: 刷新项目",
+        "category": "TRQuant",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "trquant.runBacktest",
+        "title": "TRQuant: 运行回测",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.runStrategyBacktest",
+        "title": "TRQuant: 运行策略回测",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openInEditor",
+        "title": "TRQuant: 在编辑器中打开",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.deleteFile",
+        "title": "TRQuant: 删除文件",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.editProjectConfig",
+        "title": "TRQuant: 编辑项目配置",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.validateConfig",
+        "title": "TRQuant: 验证配置",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.exportConfig",
+        "title": "TRQuant: 导出配置",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.importConfig",
+        "title": "TRQuant: 导入配置",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.refreshBacktestHistory",
+        "title": "TRQuant: 刷新回测历史",
+        "category": "TRQuant",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "trquant.viewBacktestResult",
+        "title": "TRQuant: 查看回测结果",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.clearBacktestHistory",
+        "title": "TRQuant: 清除回测历史",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.compareBacktests",
+        "title": "TRQuant: 对比回测结果",
+        "category": "TRQuant"
+      },
+      {
+        "command": "trquant.openMonitoringPanel",
+        "title": "TRQuant: 系统监控",
+        "category": "TRQuant",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "trquant.openResultManager",
+        "title": "TRQuant: 回测结果管理",
+        "category": "TRQuant",
+        "icon": "$(list-flat)"
+      },
+      {
+        "command": "trquant.openTenbaggerDashboard",
+        "title": "TRQuant: 十倍股识别系统",
+        "category": "TRQuant",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "trquant.openIndustryChain",
+        "title": "TRQuant: 产业链图谱",
+        "category": "TRQuant",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "trquant.openStockDetail",
+        "title": "TRQuant: 股票详情",
+        "category": "TRQuant",
+        "icon": "$(info)"
+      },
+      {
+        "command": "trquant.runDataPipeline",
+        "title": "TRQuant: 运行数据管道",
+        "category": "TRQuant",
+        "icon": "$(sync)"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "python",
+        "path": "./snippets/python.json"
+      }
+    ],
+    "configuration": {
+      "title": "TRQuant",
+      "properties": {
+        "trquant.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Python解释器路径"
+        },
+        "trquant.serverHost": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "TRQuant后端服务地址"
+        },
+        "trquant.serverPort": {
+          "type": "number",
+          "default": 5000,
+          "description": "TRQuant后端服务端口"
+        },
+        "trquant.mcpEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用MCP Server"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "trquant-sidebar",
+          "title": "TRQuant",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "trquant-sidebar": [
+        {
+          "type": "webview",
+          "id": "trquant-unified-panel",
+          "name": "🐉 统一仪表板"
+        },
+        {
+          "id": "trquant-workflow",
+          "name": "📊 9步工作流"
+        },
+        {
+          "id": "trquant-tenbagger",
+          "name": "🎯 十倍股识别"
+        },
+        {
+          "id": "trquant-strategy",
+          "name": "📈 趋势策略"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [],
+      "view/title": [
+        {
+          "command": "trquant.openUnifiedDashboard",
+          "when": "view == trquant-unified-panel || view == trquant-workflow || view == trquant-tenbagger || view == trquant-strategy",
+          "group": "navigation@0",
+          "icon": "$(home)"
+        },
+        {
+          "command": "trquant.openWorkflowPanel",
+          "when": "view == trquant-workflow",
+          "group": "navigation@1",
+          "icon": "$(list-ordered)"
+        },
+        {
+          "command": "trquant.openTenbaggerDashboard",
+          "when": "view == trquant-tenbagger",
+          "group": "navigation@1",
+          "icon": "$(rocket)"
+        },
+        {
+          "command": "trquant.refreshProject",
+          "when": "view == trquant-workflow || view == trquant-tenbagger || view == trquant-strategy",
+          "group": "navigation@9",
+          "icon": "$(refresh)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "npm run build:webview && webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "build:webview": "cd webview-ui && npm run build",
+    "copy:webview": "rm -rf webview-dist && cp -r webview-ui/dist webview-dist",
+    "build:all": "npm run build:webview && npm run copy:webview && npm run compile",
+    "dev:all": "npm run build:webview && npm run copy:webview && npm run watch",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "ts-loader": "^9.x",
+    "typescript": "^5.x",
+    "webpack": "^5.x",
+    "webpack-cli": "^5.x"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

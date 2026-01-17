@@ -1,0 +1,1658 @@
+[
+  {
+    "factor": "administration_expense_ttm",
+    "category": "basics",
+    "factor_intro": "管理费用TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "asset_impairment_loss_ttm",
+    "category": "basics",
+    "factor_intro": "资产减值损失TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "cash_flow_to_price_ratio",
+    "category": "basics",
+    "factor_intro": "现金流市值比",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "circulating_market_cap",
+    "category": "basics",
+    "factor_intro": "流通市值",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "EBIT",
+    "category": "basics",
+    "factor_intro": "息税前利润",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "EBITDA",
+    "category": "basics",
+    "factor_intro": "息税折旧摊销前利润",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "financial_assets",
+    "category": "basics",
+    "factor_intro": "金融资产",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "financial_expense_ttm",
+    "category": "basics",
+    "factor_intro": "财务费用TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "financial_liability",
+    "category": "basics",
+    "factor_intro": "金融负债",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "goods_sale_and_service_render_cash_ttm",
+    "category": "basics",
+    "factor_intro": "销售商品提供劳务收到的现金",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "gross_profit_ttm",
+    "category": "basics",
+    "factor_intro": "毛利TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "interest_carry_current_liability",
+    "category": "basics",
+    "factor_intro": "带息流动负债",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "interest_free_current_liability",
+    "category": "basics",
+    "factor_intro": "无息流动负债",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "market_cap",
+    "category": "basics",
+    "factor_intro": "市值",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_debt",
+    "category": "basics",
+    "factor_intro": "净债务",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_finance_cash_flow_ttm",
+    "category": "basics",
+    "factor_intro": "筹资活动现金流量净额TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_interest_expense",
+    "category": "basics",
+    "factor_intro": "净利息费用",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_invest_cash_flow_ttm",
+    "category": "basics",
+    "factor_intro": "投资活动现金流量净额TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_ttm",
+    "category": "basics",
+    "factor_intro": "经营活动现金流量净额TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_profit_ttm",
+    "category": "basics",
+    "factor_intro": "净利润TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "net_working_capital",
+    "category": "basics",
+    "factor_intro": "净运营资本",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "non_operating_net_profit_ttm",
+    "category": "basics",
+    "factor_intro": "营业外收支净额TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "non_recurring_gain_loss",
+    "category": "basics",
+    "factor_intro": "非经常性损益",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "np_parent_company_owners_ttm",
+    "category": "basics",
+    "factor_intro": "归属于母公司股东的净利润TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "OperateNetIncome",
+    "category": "basics",
+    "factor_intro": "经营活动净收益",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "operating_assets",
+    "category": "basics",
+    "factor_intro": "经营性资产",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "operating_cost_ttm",
+    "category": "basics",
+    "factor_intro": "营业成本TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "operating_liability",
+    "category": "basics",
+    "factor_intro": "经营性负债",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "operating_profit_ttm",
+    "category": "basics",
+    "factor_intro": "营业利润TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "operating_revenue_ttm",
+    "category": "basics",
+    "factor_intro": "营业收入TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "retained_earnings",
+    "category": "basics",
+    "factor_intro": "留存收益",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "sales_to_price_ratio",
+    "category": "basics",
+    "factor_intro": "营收市值比",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "sale_expense_ttm",
+    "category": "basics",
+    "factor_intro": "销售费用TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "total_operating_cost_ttm",
+    "category": "basics",
+    "factor_intro": "营业总成本TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "total_operating_revenue_ttm",
+    "category": "basics",
+    "factor_intro": "营业总收入TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "total_profit_ttm",
+    "category": "basics",
+    "factor_intro": "利润总额TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "value_change_profit_ttm",
+    "category": "basics",
+    "factor_intro": "价值变动净收益TTM",
+    "category_intro": "基础科目及衍生类因子"
+  },
+  {
+    "factor": "AR",
+    "category": "emotion",
+    "factor_intro": "人气指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "ARBR",
+    "category": "emotion",
+    "factor_intro": "ARBR",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "ATR14",
+    "category": "emotion",
+    "factor_intro": "14日均幅指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "ATR6",
+    "category": "emotion",
+    "factor_intro": "6日均幅指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "BR",
+    "category": "emotion",
+    "factor_intro": "意愿指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "DAVOL10",
+    "category": "emotion",
+    "factor_intro": "10日平均换手率与120日平均换手率之比",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "DAVOL20",
+    "category": "emotion",
+    "factor_intro": "20日平均换手率与120日平均换手率之比",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "DAVOL5",
+    "category": "emotion",
+    "factor_intro": "5日平均换手率与120日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "MAWVAD",
+    "category": "emotion",
+    "factor_intro": "因子WVAD的6日均值",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "money_flow_20",
+    "category": "emotion",
+    "factor_intro": "20日资金流量",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "PSY",
+    "category": "emotion",
+    "factor_intro": "心理线指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "turnover_volatility",
+    "category": "emotion",
+    "factor_intro": "换手率相对波动率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "TVMA20",
+    "category": "emotion",
+    "factor_intro": "20日成交金额的移动平均值",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "TVMA6",
+    "category": "emotion",
+    "factor_intro": "6日成交金额的移动平均值",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "TVSTD20",
+    "category": "emotion",
+    "factor_intro": "20日成交金额的标准差",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "TVSTD6",
+    "category": "emotion",
+    "factor_intro": "6日成交金额的标准差",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VDEA",
+    "category": "emotion",
+    "factor_intro": "计算VMACD因子的中间变量",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VDIFF",
+    "category": "emotion",
+    "factor_intro": "计算VMACD因子的中间变量",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VEMA10",
+    "category": "emotion",
+    "factor_intro": "成交量的10日指数移动平均",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VEMA12",
+    "category": "emotion",
+    "factor_intro": "12日成交量的移动平均值",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VEMA26",
+    "category": "emotion",
+    "factor_intro": "成交量的26日指数移动平均",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VEMA5",
+    "category": "emotion",
+    "factor_intro": "成交量的5日指数移动平均",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VMACD",
+    "category": "emotion",
+    "factor_intro": "成交量指数平滑异同移动平均线",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL10",
+    "category": "emotion",
+    "factor_intro": "10日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL120",
+    "category": "emotion",
+    "factor_intro": "120日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL20",
+    "category": "emotion",
+    "factor_intro": "20日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL240",
+    "category": "emotion",
+    "factor_intro": "240日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL5",
+    "category": "emotion",
+    "factor_intro": "5日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOL60",
+    "category": "emotion",
+    "factor_intro": "60日平均换手率",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VOSC",
+    "category": "emotion",
+    "factor_intro": "成交量震荡",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VR",
+    "category": "emotion",
+    "factor_intro": "成交量比率（Volume Ratio）",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VROC12",
+    "category": "emotion",
+    "factor_intro": "12日量变动速率指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VROC6",
+    "category": "emotion",
+    "factor_intro": "6日量变动速率指标",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VSTD10",
+    "category": "emotion",
+    "factor_intro": "10日成交量标准差",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "VSTD20",
+    "category": "emotion",
+    "factor_intro": "20日成交量标准差",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "WVAD",
+    "category": "emotion",
+    "factor_intro": "威廉变异离散量",
+    "category_intro": "情绪类因子"
+  },
+  {
+    "factor": "financing_cash_growth_rate",
+    "category": "growth",
+    "factor_intro": "筹资活动产生的现金流量净额增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "net_asset_growth_rate",
+    "category": "growth",
+    "factor_intro": "净资产增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "net_operate_cashflow_growth_rate",
+    "category": "growth",
+    "factor_intro": "经营活动产生的现金流量净额增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "net_profit_growth_rate",
+    "category": "growth",
+    "factor_intro": "净利润增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "np_parent_company_owners_growth_rate",
+    "category": "growth",
+    "factor_intro": "归属母公司股东的净利润增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "operating_revenue_growth_rate",
+    "category": "growth",
+    "factor_intro": "营业收入增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "PEG",
+    "category": "growth",
+    "factor_intro": "PEG",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "total_asset_growth_rate",
+    "category": "growth",
+    "factor_intro": "总资产增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "total_profit_growth_rate",
+    "category": "growth",
+    "factor_intro": "利润总额增长率",
+    "category_intro": "成长类因子"
+  },
+  {
+    "factor": "arron_down_25",
+    "category": "momentum",
+    "factor_intro": "Aroon指标下轨",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "arron_up_25",
+    "category": "momentum",
+    "factor_intro": "Aroon指标上轨",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "BBIC",
+    "category": "momentum",
+    "factor_intro": "BBI 动量",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "bear_power",
+    "category": "momentum",
+    "factor_intro": "空头力道",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "BIAS10",
+    "category": "momentum",
+    "factor_intro": "10日乖离率",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "BIAS20",
+    "category": "momentum",
+    "factor_intro": "20日乖离率",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "BIAS5",
+    "category": "momentum",
+    "factor_intro": "5日乖离率",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "BIAS60",
+    "category": "momentum",
+    "factor_intro": "60日乖离率",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "bull_power",
+    "category": "momentum",
+    "factor_intro": "多头力道",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "CCI10",
+    "category": "momentum",
+    "factor_intro": "10日顺势指标",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "CCI15",
+    "category": "momentum",
+    "factor_intro": "15日顺势指标",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "CCI20",
+    "category": "momentum",
+    "factor_intro": "20日顺势指标",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "CCI88",
+    "category": "momentum",
+    "factor_intro": "88日顺势指标",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "CR20",
+    "category": "momentum",
+    "factor_intro": "CR指标",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "fifty_two_week_close_rank",
+    "category": "momentum",
+    "factor_intro": "当前价格处于过去1年股价的位置",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "MASS",
+    "category": "momentum",
+    "factor_intro": "梅斯线",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "PLRC12",
+    "category": "momentum",
+    "factor_intro": "12日收盘价格与日期线性回归系数",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "PLRC24",
+    "category": "momentum",
+    "factor_intro": "24日收盘价格与日期线性回归系数",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "PLRC6",
+    "category": "momentum",
+    "factor_intro": "6日收盘价格与日期线性回归系数",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "Price1M",
+    "category": "momentum",
+    "factor_intro": "当前股价除以过去一个月股价均值再减1",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "Price1Y",
+    "category": "momentum",
+    "factor_intro": "当前股价除以过去一年股价均值再减1",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "Price3M",
+    "category": "momentum",
+    "factor_intro": "当前股价除以过去三个月股价均值再减1",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "Rank1M",
+    "category": "momentum",
+    "factor_intro": "1减去 过去一个月收益率排名与股票总数的比值",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "ROC12",
+    "category": "momentum",
+    "factor_intro": "12日变动速率（Price Rate of Change）",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "ROC120",
+    "category": "momentum",
+    "factor_intro": "120日变动速率（Price Rate of Change）",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "ROC20",
+    "category": "momentum",
+    "factor_intro": "20日变动速率（Price Rate of Change）",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "ROC6",
+    "category": "momentum",
+    "factor_intro": "6日变动速率（Price Rate of Change）",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "ROC60",
+    "category": "momentum",
+    "factor_intro": "60日变动速率（Price Rate of Change）",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "single_day_VPT",
+    "category": "momentum",
+    "factor_intro": "单日价量趋势",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "single_day_VPT_12",
+    "category": "momentum",
+    "factor_intro": "单日价量趋势12均值",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "single_day_VPT_6",
+    "category": "momentum",
+    "factor_intro": "单日价量趋势6日均值",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "TRIX10",
+    "category": "momentum",
+    "factor_intro": "10日终极指标TRIX",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "TRIX5",
+    "category": "momentum",
+    "factor_intro": "5日终极指标TRIX",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "Volume1M",
+    "category": "momentum",
+    "factor_intro": "当前交易量相比过去1个月日均交易量 与过去过去20日日均收益率乘积",
+    "category_intro": "动量类因子"
+  },
+  {
+    "factor": "capital_reserve_fund_per_share",
+    "category": "pershare",
+    "factor_intro": "每股资本公积金",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "cashflow_per_share_ttm",
+    "category": "pershare",
+    "factor_intro": "每股现金流量净额，根据当时日期来获取最近变更日的总股本",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "cash_and_equivalents_per_share",
+    "category": "pershare",
+    "factor_intro": "每股现金及现金等价物余额",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "eps_ttm",
+    "category": "pershare",
+    "factor_intro": "每股收益TTM",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "net_asset_per_share",
+    "category": "pershare",
+    "factor_intro": "每股净资产",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_per_share",
+    "category": "pershare",
+    "factor_intro": "每股经营活动产生的现金流量净额",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "operating_profit_per_share",
+    "category": "pershare",
+    "factor_intro": "每股营业利润",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "operating_profit_per_share_ttm",
+    "category": "pershare",
+    "factor_intro": "每股营业利润TTM",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "operating_revenue_per_share",
+    "category": "pershare",
+    "factor_intro": "每股营业收入",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "operating_revenue_per_share_ttm",
+    "category": "pershare",
+    "factor_intro": "每股营业收入TTM",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "retained_earnings_per_share",
+    "category": "pershare",
+    "factor_intro": "每股留存收益",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "retained_profit_per_share",
+    "category": "pershare",
+    "factor_intro": "每股未分配利润",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "surplus_reserve_fund_per_share",
+    "category": "pershare",
+    "factor_intro": "每股盈余公积金",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "total_operating_revenue_per_share",
+    "category": "pershare",
+    "factor_intro": "每股营业总收入",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "total_operating_revenue_per_share_ttm",
+    "category": "pershare",
+    "factor_intro": "每股营业总收入TTM",
+    "category_intro": "每股指标因子"
+  },
+  {
+    "factor": "ACCA",
+    "category": "quality",
+    "factor_intro": "现金流资产比和资产回报率之差",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "accounts_payable_turnover_days",
+    "category": "quality",
+    "factor_intro": "应付账款周转天数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "accounts_payable_turnover_rate",
+    "category": "quality",
+    "factor_intro": "应付账款周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "account_receivable_turnover_days",
+    "category": "quality",
+    "factor_intro": "应收账款周转天数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "account_receivable_turnover_rate",
+    "category": "quality",
+    "factor_intro": "应收账款周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "adjusted_profit_to_total_profit",
+    "category": "quality",
+    "factor_intro": "扣除非经常损益后的净利润/净利润",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "admin_expense_rate",
+    "category": "quality",
+    "factor_intro": "管理费用与营业总收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "asset_turnover_ttm",
+    "category": "quality",
+    "factor_intro": "经营资产周转率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "cash_rate_of_sales",
+    "category": "quality",
+    "factor_intro": "经营活动产生的现金流量净额与营业收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "cash_to_current_liability",
+    "category": "quality",
+    "factor_intro": "现金比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "cfo_to_ev",
+    "category": "quality",
+    "factor_intro": "经营活动产生的现金流量净额与企业价值之比TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "current_asset_turnover_rate",
+    "category": "quality",
+    "factor_intro": "流动资产周转率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "current_ratio",
+    "category": "quality",
+    "factor_intro": "流动比率(单季度)",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "debt_to_asset_ratio",
+    "category": "quality",
+    "factor_intro": "债务总资产比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "debt_to_equity_ratio",
+    "category": "quality",
+    "factor_intro": "产权比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "debt_to_tangible_equity_ratio",
+    "category": "quality",
+    "factor_intro": "有形净值债务率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "DEGM",
+    "category": "quality",
+    "factor_intro": "毛利率增长",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "DEGM_8y",
+    "category": "quality",
+    "factor_intro": "长期毛利率增长",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "DSRI",
+    "category": "quality",
+    "factor_intro": "应收账款指数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "equity_to_asset_ratio",
+    "category": "quality",
+    "factor_intro": "股东权益比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "equity_to_fixed_asset_ratio",
+    "category": "quality",
+    "factor_intro": "股东权益与固定资产比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "equity_turnover_rate",
+    "category": "quality",
+    "factor_intro": "股东权益周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "financial_expense_rate",
+    "category": "quality",
+    "factor_intro": "财务费用与营业总收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "fixed_assets_turnover_rate",
+    "category": "quality",
+    "factor_intro": "固定资产周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "fixed_asset_ratio",
+    "category": "quality",
+    "factor_intro": "固定资产比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "GMI",
+    "category": "quality",
+    "factor_intro": "毛利率指数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "goods_service_cash_to_operating_revenue_ttm",
+    "category": "quality",
+    "factor_intro": "销售商品提供劳务收到的现金与营业收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "gross_income_ratio",
+    "category": "quality",
+    "factor_intro": "销售毛利率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "intangible_asset_ratio",
+    "category": "quality",
+    "factor_intro": "无形资产比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "inventory_turnover_days",
+    "category": "quality",
+    "factor_intro": "存货周转天数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "inventory_turnover_rate",
+    "category": "quality",
+    "factor_intro": "存货周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "invest_income_associates_to_total_profit",
+    "category": "quality",
+    "factor_intro": "对联营和合营公司投资收益/利润总额",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "long_debt_to_asset_ratio",
+    "category": "quality",
+    "factor_intro": "长期借款与资产总计之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "long_debt_to_working_capital_ratio",
+    "category": "quality",
+    "factor_intro": "长期负债与营运资金比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "long_term_debt_to_asset_ratio",
+    "category": "quality",
+    "factor_intro": "长期负债与资产总计之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "LVGI",
+    "category": "quality",
+    "factor_intro": "财务杠杆指数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "margin_stability",
+    "category": "quality",
+    "factor_intro": "盈利能力稳定性",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "maximum_margin",
+    "category": "quality",
+    "factor_intro": "最大盈利水平",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "MLEV",
+    "category": "quality",
+    "factor_intro": "市场杠杆",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_non_operating_income_to_total_profit",
+    "category": "quality",
+    "factor_intro": "营业外收支利润净额/利润总额",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_to_asset",
+    "category": "quality",
+    "factor_intro": "总资产现金回收率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_to_net_debt",
+    "category": "quality",
+    "factor_intro": "经营活动产生现金流量净额/净债务",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_to_operate_income",
+    "category": "quality",
+    "factor_intro": "经营活动产生的现金流量净额与经营活动净收益之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_to_total_current_liability",
+    "category": "quality",
+    "factor_intro": "现金流动负债比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operate_cash_flow_to_total_liability",
+    "category": "quality",
+    "factor_intro": "经营活动产生的现金流量净额/负债合计",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_operating_cash_flow_coverage",
+    "category": "quality",
+    "factor_intro": "净利润现金含量",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_profit_ratio",
+    "category": "quality",
+    "factor_intro": "销售净利率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "net_profit_to_total_operate_revenue_ttm",
+    "category": "quality",
+    "factor_intro": "净利润与营业总收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "non_current_asset_ratio",
+    "category": "quality",
+    "factor_intro": "非流动资产比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "OperatingCycle",
+    "category": "quality",
+    "factor_intro": "营业周期",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_cost_to_operating_revenue_ratio",
+    "category": "quality",
+    "factor_intro": "销售成本率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_profit_growth_rate",
+    "category": "quality",
+    "factor_intro": "营业利润增长率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_profit_ratio",
+    "category": "quality",
+    "factor_intro": "营业利润率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_profit_to_operating_revenue",
+    "category": "quality",
+    "factor_intro": "营业利润与营业总收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_profit_to_total_profit",
+    "category": "quality",
+    "factor_intro": "经营活动净收益/利润总额",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "operating_tax_to_operating_revenue_ratio_ttm",
+    "category": "quality",
+    "factor_intro": "销售税金率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "profit_margin_ttm",
+    "category": "quality",
+    "factor_intro": "销售利润率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "quick_ratio",
+    "category": "quality",
+    "factor_intro": "速动比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "rnoa_ttm",
+    "category": "quality",
+    "factor_intro": "经营资产回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "ROAEBITTTM",
+    "category": "quality",
+    "factor_intro": "总资产报酬率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "roa_ttm",
+    "category": "quality",
+    "factor_intro": "资产回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "roa_ttm_8y",
+    "category": "quality",
+    "factor_intro": "长期资产回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "roe_ttm",
+    "category": "quality",
+    "factor_intro": "权益回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "roe_ttm_8y",
+    "category": "quality",
+    "factor_intro": "长期权益回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "roic_ttm",
+    "category": "quality",
+    "factor_intro": "投资资本回报率TTM",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "sale_expense_to_operating_revenue",
+    "category": "quality",
+    "factor_intro": "营业费用与营业总收入之比",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "SGAI",
+    "category": "quality",
+    "factor_intro": "销售管理费用指数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "SGI",
+    "category": "quality",
+    "factor_intro": "营业收入指数",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "super_quick_ratio",
+    "category": "quality",
+    "factor_intro": "超速动比率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "total_asset_turnover_rate",
+    "category": "quality",
+    "factor_intro": "总资产周转率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "total_profit_to_cost_ratio",
+    "category": "quality",
+    "factor_intro": "成本费用利润率",
+    "category_intro": "质量类因子"
+  },
+  {
+    "factor": "Kurtosis120",
+    "category": "risk",
+    "factor_intro": "个股收益的120日峰度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Kurtosis20",
+    "category": "risk",
+    "factor_intro": "个股收益的20日峰度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Kurtosis60",
+    "category": "risk",
+    "factor_intro": "个股收益的60日峰度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "sharpe_ratio_120",
+    "category": "risk",
+    "factor_intro": "120日夏普比率",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "sharpe_ratio_20",
+    "category": "risk",
+    "factor_intro": "20日夏普比率",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "sharpe_ratio_60",
+    "category": "risk",
+    "factor_intro": "60日夏普比率",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Skewness120",
+    "category": "risk",
+    "factor_intro": "个股收益的120日偏度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Skewness20",
+    "category": "risk",
+    "factor_intro": "个股收益的20日偏度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Skewness60",
+    "category": "risk",
+    "factor_intro": "个股收益的60日偏度",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Variance120",
+    "category": "risk",
+    "factor_intro": "120日收益方差",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Variance20",
+    "category": "risk",
+    "factor_intro": "20日收益方差",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "Variance60",
+    "category": "risk",
+    "factor_intro": "60日收益方差",
+    "category_intro": "风险类因子"
+  },
+  {
+    "factor": "average_share_turnover_annual",
+    "category": "style",
+    "factor_intro": "年度平均月换手率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "average_share_turnover_quarterly",
+    "category": "style",
+    "factor_intro": "季度平均平均月换手率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "beta",
+    "category": "style",
+    "factor_intro": "BETA",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "book_leverage",
+    "category": "style",
+    "factor_intro": "账面杠杆",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "book_to_price_ratio",
+    "category": "style",
+    "factor_intro": "市净率因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "cash_earnings_to_price_ratio",
+    "category": "style",
+    "factor_intro": "现金流量市值比",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "cube_of_size",
+    "category": "style",
+    "factor_intro": "市值立方因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "cumulative_range",
+    "category": "style",
+    "factor_intro": "收益离差",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "daily_standard_deviation",
+    "category": "style",
+    "factor_intro": "日收益率标准差",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "debt_to_assets",
+    "category": "style",
+    "factor_intro": "资产负债率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "earnings_growth",
+    "category": "style",
+    "factor_intro": "5年盈利增长率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "earnings_to_price_ratio",
+    "category": "style",
+    "factor_intro": "利润市值比",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "earnings_yield",
+    "category": "style",
+    "factor_intro": "盈利预期因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "growth",
+    "category": "style",
+    "factor_intro": "成长因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "historical_sigma",
+    "category": "style",
+    "factor_intro": "残差历史波动率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "leverage",
+    "category": "style",
+    "factor_intro": "杠杆因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "liquidity",
+    "category": "style",
+    "factor_intro": "流动性因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "long_term_predicted_earnings_growth",
+    "category": "style",
+    "factor_intro": "预期长期盈利增长率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "market_leverage",
+    "category": "style",
+    "factor_intro": "市场杠杆",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "momentum",
+    "category": "style",
+    "factor_intro": "动量因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "natural_log_of_market_cap",
+    "category": "style",
+    "factor_intro": "对数总市值",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "non_linear_size",
+    "category": "style",
+    "factor_intro": "非线性市值因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "predicted_earnings_to_price_ratio",
+    "category": "style",
+    "factor_intro": "预期市盈率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "raw_beta",
+    "category": "style",
+    "factor_intro": "RAW BETA",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "relative_strength",
+    "category": "style",
+    "factor_intro": "相对强弱",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "residual_volatility",
+    "category": "style",
+    "factor_intro": "残差波动因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "sales_growth",
+    "category": "style",
+    "factor_intro": "5年营业收入增长率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "share_turnover_monthly",
+    "category": "style",
+    "factor_intro": "月换手率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "short_term_predicted_earnings_growth",
+    "category": "style",
+    "factor_intro": "预期短期盈利增长率",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "size",
+    "category": "style",
+    "factor_intro": "市值因子",
+    "category_intro": "风险因子 - 风格因子"
+  },
+  {
+    "factor": "btop",
+    "category": "style_pro",
+    "factor_intro": "市净率因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "divyild",
+    "category": "style_pro",
+    "factor_intro": "分红因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "earnqlty",
+    "category": "style_pro",
+    "factor_intro": "盈利质量因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "earnvar",
+    "category": "style_pro",
+    "factor_intro": "盈利变动率因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "earnyild",
+    "category": "style_pro",
+    "factor_intro": "收益因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "financial_leverage",
+    "category": "style_pro",
+    "factor_intro": "财务杠杆因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "invsqlty",
+    "category": "style_pro",
+    "factor_intro": "投资能力因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "liquidty",
+    "category": "style_pro",
+    "factor_intro": "流动性因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "long_growth",
+    "category": "style_pro",
+    "factor_intro": "长期成长因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "ltrevrsl",
+    "category": "style_pro",
+    "factor_intro": "长期反转因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "market_beta",
+    "category": "style_pro",
+    "factor_intro": "市场波动率因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "market_size",
+    "category": "style_pro",
+    "factor_intro": "市值规模因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "midcap",
+    "category": "style_pro",
+    "factor_intro": "中等市值因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "profit",
+    "category": "style_pro",
+    "factor_intro": "盈利能力因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "relative_momentum",
+    "category": "style_pro",
+    "factor_intro": "相对动量因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "resvol",
+    "category": "style_pro",
+    "factor_intro": "残余波动率因子",
+    "category_intro": "风险因子 - 新风格因子"
+  },
+  {
+    "factor": "boll_down",
+    "category": "technical",
+    "factor_intro": "下轨线（布林线）指标",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "boll_up",
+    "category": "technical",
+    "factor_intro": "上轨线（布林线）指标",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMA5",
+    "category": "technical",
+    "factor_intro": "5日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMAC10",
+    "category": "technical",
+    "factor_intro": "10日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMAC12",
+    "category": "technical",
+    "factor_intro": "12日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMAC120",
+    "category": "technical",
+    "factor_intro": "120日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMAC20",
+    "category": "technical",
+    "factor_intro": "20日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "EMAC26",
+    "category": "technical",
+    "factor_intro": "26日指数移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MAC10",
+    "category": "technical",
+    "factor_intro": "10日移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MAC120",
+    "category": "technical",
+    "factor_intro": "120日移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MAC20",
+    "category": "technical",
+    "factor_intro": "20日移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MAC5",
+    "category": "technical",
+    "factor_intro": "5日移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MAC60",
+    "category": "technical",
+    "factor_intro": "60日移动均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MACDC",
+    "category": "technical",
+    "factor_intro": "平滑异同移动平均线",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "MFI14",
+    "category": "technical",
+    "factor_intro": "资金流量指标",
+    "category_intro": "技术指标因子"
+  },
+  {
+    "factor": "price_no_fq",
+    "category": "technical",
+    "factor_intro": "不复权价格因子",
+    "category_intro": "技术指标因子"
+  }
+]

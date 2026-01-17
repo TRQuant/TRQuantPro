@@ -1,0 +1,8 @@
+{
+  "anchor_id": "debt_to_stock_order",
+  "title": "debt_to_stock_order - 债转股委托",
+  "content": "debt_to_stock_order - 债转股委托\n\nOrder对象中的id或者None。如果创建订单成功，则返回Order对象的id，失败则返回None(str)。\n\ndef initialize(context):\n    g.security = \"600570.SS\"\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    g.count = 0\n\ndef handle_data(context, data):\n    if g.count == 0:\n        # 对持仓内的国贸转债进行转股操作\n        debt_to_stock_order(\"110033.SS\", -1000)\n        g.count += 1\n    # 查看委托状态\n    log.info(get_orders())\n    g.count += 1",
+  "code_blocks": [],
+  "content_length": 433,
+  "url": "https://ptradeapi.com/#debt_to_stock_order"
+}

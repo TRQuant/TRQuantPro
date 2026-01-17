@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_gear_price",
+  "title": "get_gear_price – 获取指定代码的档位行情价格",
+  "content": "get_gear_price – 获取指定代码的档位行情价格\n\n获取实时行情快照失败时返回档位内容为空dict({\"bid_grp\": {}, \"offer_grp\": {}})",
+  "code_blocks": [],
+  "content_length": 89,
+  "url": "https://ptradeapi.com/#get_gear_price"
+}

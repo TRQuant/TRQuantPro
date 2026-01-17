@@ -1,0 +1,8 @@
+{
+  "anchor_id": "etf_purchase_redemption",
+  "title": "etf_purchase_redemption - ETF基金申赎接口",
+  "content": "etf_purchase_redemption - ETF基金申赎接口\n\netf_purchase_redemption(etf_code,amount,limit_price=None)",
+  "code_blocks": [],
+  "content_length": 94,
+  "url": "https://ptradeapi.com/#etf_purchase_redemption"
+}

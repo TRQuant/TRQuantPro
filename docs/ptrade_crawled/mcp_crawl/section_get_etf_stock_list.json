@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_etf_stock_list",
+  "title": "get_etf_stock_list - 获取ETF成分券列表",
+  "content": "get_etf_stock_list - 获取ETF成分券列表\n\n正常返回一个list类型字段，包含每只etf代码所对应的成分股。异常返回空list，如[](list[str,...])\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    #ETF成分券列表\n    stock_list = get_etf_stock_list('510020.SS')\n    log.info(stock_list)\n\ndef handle_data(context, data):\n    pass",
+  "code_blocks": [],
+  "content_length": 349,
+  "url": "https://ptradeapi.com/#get_etf_stock_list"
+}

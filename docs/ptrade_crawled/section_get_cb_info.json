@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_cb_info",
+  "title": "get_cb_info - 获取可转债基础信息",
+  "content": "get_cb_info - 获取可转债基础信息\n\n获取失败时返回空DataFrame。\n此API依靠可转债基础数据权限，使用前请与券商确认是否有此权限，无权限时调用返回空DataFrame。\n返回的数据包含历史退市转债数据，需要配合get_cb_list过滤出当前仍交易数据，并且溢价率数据为昨日收盘数据，并非实时数据，因此如获取实时的溢价率，需要获取价格计算。",
+  "code_blocks": [],
+  "content_length": 181,
+  "url": "https://ptradeapi.com/#get_cb_info"
+}

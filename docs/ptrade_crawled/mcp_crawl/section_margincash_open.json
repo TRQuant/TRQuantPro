@@ -1,0 +1,8 @@
+{
+  "anchor_id": "margincash_open",
+  "title": "margincash_open - 融资买入",
+  "content": "margincash_open - 融资买入\n\nmargincash_open\n(\nsecurity\n,\namount\n,\nlimit_price\n=\nNone\n,\nmarket_type\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 103,
+  "url": "https://ptradeapi.com#margincash_open"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "initialize",
+  "title": "initialize（必选）",
+  "content": "initialize（必选）\n\nset_universe(回测/交易)\tset_benchmark(回测/交易)\tset_commission(回测)\nset_fixed_slippage(回测)\tset_slippage(回测)\tset_volume_ratio(回测)\nset_limit_mode(回测)\tset_yesterday_position(回测)\tset_parameters(回测/交易)\trun_daily(回测/交易)\nrun_interval(交易)\tget_trading_day(研究/回测/交易)\tget_all_trades_days(研究/回测/交易)\nget_trade_days(交易)\tconvert_position_from_csv(回测)\tget_user_name(回测/交易)\nis_trade(回测/交易)\tget_research_path(回测/交易)\tpermission_test(交易)\nset_future_commission(回测(期货))\tset_margin_rate(回测(期货))\tget_margin_rate(回测(期货))\ncreate_dir(回测/交易)\n\ndef initialize(context):\n    #g为全局对象\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    order('600570.SS',100)",
+  "code_blocks": [],
+  "content_length": 677,
+  "url": "https://ptradeapi.com/#initialize"
+}

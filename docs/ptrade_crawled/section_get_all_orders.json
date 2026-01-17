@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_all_orders",
+  "title": "get_all_orders - 获取账户当日全部订单",
+  "content": "get_all_orders - 获取账户当日全部订单\n\n2、该函数返回的可撤委托仅可通过cancel_order_ex函数进行撤单，且非本交易的委托进行撤单仅可通过本函数查询委托状态更新。",
+  "code_blocks": [],
+  "content_length": 95,
+  "url": "https://ptradeapi.com/#get_all_orders"
+}

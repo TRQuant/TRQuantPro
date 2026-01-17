@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_all_orders",
+  "title": "get_all_orders - 获取账户当日全部订单",
+  "content": "get_all_orders - 获取账户当日全部订单\n\n2、该函数返回的可撤委托仅可通过cancel_order_ex函数进行撤单，且非本交易的委托进行撤单仅可通过本函数查询委托状态更新。\n\n[{'symbol': 股票代码(str), 'entrust_no': 委托编号(str), 'amount': 委托数量(int), 'entrust_bs': 委托方向(int), 'price': 委托价格(float), 'status': 委托状态(str), 'filled_amount': 成交数量(int)}, ...]\n\nentrust_bs -- 成交方向，1-买，2-卖；\nstatus -- 委托状态，详见Order对象中status字段；\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    # 获取账户当日委托600570代码的全部订单\n    log.info('当日委托600570代码的全部订单：%s' % get_all_orders(g.security))\n    # 获取账户当日全部订单\n    log.info('当日全部订单：%s' % get_all_orders())\n\n[{'price': 135.777, 'entrust_no': '65313', 'filled_amount': 0, 'entrust_bs': 2, 'status': '6', 'symbol': '113601.SS', 'amount': -50, 'entrust_time': '2025-06-10 09:48:40'},\n{'price': 135.224, 'entrust_no': '65838', 'filled_amount': 0, 'entrust_bs': 2, 'status': '6', 'symbol': '113601.SS', 'amount': -50, 'entrust_time': '2025-06-10 09:49:03'},\n{'price': 135.569, 'entrust_no': '66292', 'filled_amount': 50, 'entrust_bs': 2, 'status': '8', 'symbol': '113601.SS', 'amount': -50, 'entrust_time': '2025-06-10 09:49:23'}]",
+  "code_blocks": [],
+  "content_length": 1123,
+  "url": "https://ptradeapi.com/#get_all_orders"
+}

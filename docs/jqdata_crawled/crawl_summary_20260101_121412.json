@@ -1,0 +1,226 @@
+{
+  "start_time": "2026-01-01T12:09:47.621005",
+  "end_time": "2026-01-01T12:14:12.349973",
+  "duration_seconds": 264.728968,
+  "stats": {
+    "total_links": 42,
+    "crawled": 42,
+    "success": 42,
+    "failed": 0,
+    "skipped": 0,
+    "saved_to_kb": 42
+  },
+  "results_count": 42,
+  "results": [
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9842",
+      "title": "JQData使用说明",
+      "content_length": 2246
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=logon&id=9830",
+      "title": "试用和购买说明",
+      "content_length": 1117
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=logon&id=9831",
+      "title": "试用和购买说明",
+      "content_length": 322
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10268",
+      "title": "JQData使用说明",
+      "content_length": 1210
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10243",
+      "title": "JQData使用说明",
+      "content_length": 1919
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10244",
+      "title": "JQData使用说明",
+      "content_length": 1140
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10746",
+      "title": "JQData使用说明",
+      "content_length": 1171
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9851",
+      "title": "JQData使用说明",
+      "content_length": 1102
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10032",
+      "title": "JQData使用说明",
+      "content_length": 2586
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9852",
+      "title": "JQData使用说明",
+      "content_length": 3702
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9853",
+      "title": "JQData使用说明",
+      "content_length": 840
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9854",
+      "title": "JQData使用说明",
+      "content_length": 869
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9855",
+      "title": "JQData使用说明",
+      "content_length": 1857
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10674",
+      "title": "JQData使用说明",
+      "content_length": 4327
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9857",
+      "title": "JQData使用说明",
+      "content_length": 2378
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9858",
+      "title": "JQData使用说明",
+      "content_length": 2768
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9863",
+      "title": "JQData使用说明",
+      "content_length": 932
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9864",
+      "title": "JQData使用说明",
+      "content_length": 835
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9861",
+      "title": "JQData使用说明",
+      "content_length": 1610
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9865",
+      "title": "JQData使用说明",
+      "content_length": 717
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9866",
+      "title": "JQData使用说明",
+      "content_length": 858
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9862",
+      "title": "JQData使用说明",
+      "content_length": 1652
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9867",
+      "title": "JQData使用说明",
+      "content_length": 2138
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9868",
+      "title": "JQData使用说明",
+      "content_length": 2216
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9869",
+      "title": "JQData使用说明",
+      "content_length": 2268
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9870",
+      "title": "JQData使用说明",
+      "content_length": 2291
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9871",
+      "title": "JQData使用说明",
+      "content_length": 2958
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9872",
+      "title": "JQData使用说明",
+      "content_length": 2937
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9873",
+      "title": "JQData使用说明",
+      "content_length": 2304
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9874",
+      "title": "JQData使用说明",
+      "content_length": 5316
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9875",
+      "title": "JQData使用说明",
+      "content_length": 5324
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9876",
+      "title": "JQData使用说明",
+      "content_length": 1636
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9877",
+      "title": "JQData使用说明",
+      "content_length": 3351
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=logon&id=9825",
+      "title": "试用和购买说明",
+      "content_length": 2437
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=logon&id=9823",
+      "title": "试用和购买说明",
+      "content_length": 1738
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=logon&id=10492",
+      "title": "试用和购买说明",
+      "content_length": 684
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9841",
+      "title": "JQData使用说明",
+      "content_length": 1884
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=9884",
+      "title": "JQData使用说明",
+      "content_length": 4712
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10525",
+      "title": "JQData使用说明",
+      "content_length": 1508
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10745",
+      "title": "JQData使用说明",
+      "content_length": 1205
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10526",
+      "title": "JQData使用说明",
+      "content_length": 1514
+    },
+    {
+      "url": "https://www.joinquant.com/help/api/doc?name=JQDatadoc&id=10514",
+      "title": "JQData使用说明",
+      "content_length": 2082
+    }
+  ]
+}

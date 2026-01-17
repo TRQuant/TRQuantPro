@@ -1,0 +1,8 @@
+{
+  "anchor_id": "申购代码所属市场",
+  "title": "submarket_type -- 申购代码所属市场",
+  "content": "submarket_type -- 申购代码所属市场\n\n0 -- 上证普通代码\n1 -- 上证科创板代码\n2 -- 深证普通代码\n3 -- 深证创业板代码\n4 -- 可转债代码",
+  "code_blocks": [],
+  "content_length": 88,
+  "url": "https://ptradeapi.com#申购代码所属市场"
+}

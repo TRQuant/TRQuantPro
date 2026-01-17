@@ -1,0 +1,8 @@
+{
+  "anchor_id": "交易状态",
+  "title": "trade_status -- 交易状态",
+  "content": "trade_status -- 交易状态\n\n\"START\" -- 市场启动(初始化之后，集合竞价前)\n\"PRETR\" -- 盘前\n\"OCALL\" -- 开始集合竞价\n\"TRADE\" -- 交易(连续撮合)\n\"HALT\" -- 暂停交易\n\"SUSP\" -- 停盘\n\"BREAK\" -- 休市\n\"POSTR\" -- 盘后\n\"ENDTR\" -- 交易结束\n\"STOPT\" -- 长期停盘，停盘n天，n>=1\n\"DELISTED\" -- 退市\n\"POSMT\" -- 盘后交易\n\"PCALL\" -- 盘后集合竞价\n\"INIT\" -- 盘后固定价格启动前\n\"ENDPT\" -- 盘后固定价格闭市阶段\n\"POSSP \" -- 盘后固定价格停牌\n\n\"0\" -- 禁止替代\n\"1\" -- 允许替代\n\"2\" -- 必须替代\n\"3\" -- 非沪市退补现金替代\n\"4\" -- 非沪市必须现金替代\n\"5\" -- 非沪深退补现金替代\n\"6\" -- 非沪深必须现金替代",
+  "code_blocks": [],
+  "content_length": 419,
+  "url": "https://ptradeapi.com/#交易状态"
+}

@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_index_stocks",
+  "title": "get_index_stocks- 获取指数成分股",
+  "content": "get_index_stocks- 获取指数成分股\n\ndate：日期，输入形式必须为'YYYYMMDD'，如'20170620'，不输入默认为当前日期(str)；\n\n['000001.SZ', '000002.SZ', '000063.SZ', '000069.SZ', '000100.SZ', '000157.SZ', '000425.SZ', '000538.SZ', '000568.SZ', '000625.SZ', '000651.SZ', '000725.SZ', '000728.SZ', '000768.SZ', '000776.SZ',\n '000783.SZ', '000786.SZ', ..., '603338.SS', '603939.SS', '603233.SS', '600426.SS', '688126.SS', '600079.SS', '600521.SS', '600143.SS', '000800.SZ'] \n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n\ndef before_trading_start(context, data):\n    # 获取当前所有沪深300的股票\n    g.stocks = get_index_stocks('000300.XBHS')\n    log.info(g.stocks)\n    # 获取2016年6月20日所有沪深300的股票, 设为股票池\n    g.stocks = get_index_stocks('000300.XBHS','20160620')\n    set_universe(g.stocks)\n    log.info(g.stocks)\n\ndef handle_data(context, data):\n    pass",
+  "code_blocks": [],
+  "content_length": 831,
+  "url": "https://ptradeapi.com/#get_index_stocks"
+}

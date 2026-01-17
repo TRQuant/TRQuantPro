@@ -1,0 +1,32 @@
+"""
+文件名: code_10_12_fetch.py
+保存路径: code_library/010_Chapter10_Development_Guide/10.12/code_10_12_fetch.py
+来源文件: extension/AShare-manual/src/pages/ashare-book6/010_Chapter10_Development_Guide/10.12_Web_Crawler_Development_Guide_CN.md
+提取时间: 2025-12-13 21:16:52
+函数/类名: fetch
+
+说明：
+此文件由代码提取脚本自动生成，从Markdown文档中提取的代码块。
+如需修改代码，请直接编辑此文件，修改后网页会自动更新（通过Vite HMR机制）。
+"""
+
+# 1. 使用连接池
+adapter = HTTPAdapter(pool_connections=10, pool_maxsize=20)
+session.mount('http://', adapter)
+session.mount('https://', adapter)
+
+# 2. 并发爬取
+import asyncio
+import aiohttp
+
+async def fetch(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+# 3. 缓存已爬取内容
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def cached_fetch(url):
+    return requests.get(url).content

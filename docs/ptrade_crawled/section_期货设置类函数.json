@@ -1,0 +1,8 @@
+{
+  "anchor_id": "期货设置类函数",
+  "title": "期货设置类函数",
+  "content": "期货设置类函数\n\nset_future_commission(transaction_code, commission)\n\ntransaction_code：期货合约的交易代码，str类型，如沪铜2112（\"CU2112\"）的交易代码为\"CU\"；\n\n当交易时的手续费是按手数收取时，则这里应当设置为每手收取的金额，例如：将期货的手续费设置为2元/手，此处应填写2；\n当交易时的手续费是按总成交额收取时，则这里应当设置为总成交额的比例，例如：将期货的手续费费率设置为0.4/万，此处应填写0.00004；",
+  "code_blocks": [],
+  "content_length": 251,
+  "url": "https://ptradeapi.com/#期货设置类函数"
+}

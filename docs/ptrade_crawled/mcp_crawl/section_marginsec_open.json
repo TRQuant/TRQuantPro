@@ -1,0 +1,8 @@
+{
+  "anchor_id": "marginsec_open",
+  "title": "marginsec_open - 融券卖出",
+  "content": "marginsec_open - 融券卖出\n\nmarginsec_open\n(\nsecurity\n,\namount\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 80,
+  "url": "https://ptradeapi.com#marginsec_open"
+}

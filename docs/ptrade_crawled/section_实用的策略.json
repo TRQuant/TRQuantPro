@@ -1,0 +1,8 @@
+{
+  "anchor_id": "实用的策略",
+  "title": "实用的策略",
+  "content": "实用的策略\n\ndef initialize(context):\n    g.security = '600570.SS'\n    set_universe(g.security)\n    \ndef handle_data(context, data):\n    security = g.security\n    sid = g.security\n    \n    # 取得过去五天的历史价格\n    df = get_history(5, '1d', 'close', security, fq=None, include=False)\n    \n    # 取得过去五天的平均价格\n    average_price = round(df['close'][-5:].mean(), 3)\n\n    # 取得上一时间点价格\n    current_price = data[sid]['close']\n    \n    # 取得当前的现金\n    cash = context.portfolio.cash\n    \n    # 如果上一时间点价格高出五天平均价1%, 则全仓买入\n    if current_price > 1.01*average_price:\n        # 用所有 cash 买入股票\n        order_value(g.security, cash)\n        log.info('buy %s' % g.security)\n    # 如果上一时间点价格低于五天平均价, 则空仓卖出\n    elif current_price < average_price and get_position(security).amount > 0:\n        # 卖出所有股票,使这只股票的最终持有量为0\n        order_target(g.security, 0)\n        log.info('sell %s' % g.security)\n\n服务器异常、策略优化等诸多场景，都会使得正在进行的模拟盘和实盘策略存在中断后再重启的需求，但是一旦交易中止后，策略中存储在内存中的全局变量就清空了，因此通过持久化处理为量化交易保驾护航必不可少。",
+  "code_blocks": [],
+  "content_length": 952,
+  "url": "https://ptradeapi.com/#实用的策略"
+}

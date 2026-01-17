@@ -1,0 +1,8 @@
+{
+  "anchor_id": "get_positions",
+  "title": "get_positions - 获取多支股票持仓信息",
+  "content": "get_positions - 获取多支股票持仓信息\n\n返回一个数据字典，键为股票代码，值为Position对象(dict[str:Position])，如下：\n\n注意：四位尾缀或者两位尾缀代码皆可作为键取到返回的数据字典值，如'600570.XSHG'或者'600570.SS'。\n\n{'600570.XSHG': <Position {'business_type': 'stock', 'short_amount': 0, 'contract_multiplier': 1, 'short_pnl': 0, 'delivery_date': None, 'today_short_amount': 0, 'last_sale_price': 118.7, 'sid': '600570.SS',\n'enable_amount': 100, 'margin_rate': 1, 'amount': 200, 'long_amount': 0, 'short_cost_basis': 0, 'today_long_amount': 0, 'cost_basis': 117.9, 'long_pnl': 0, 'long_cost_basis': 0}>}\n\ndef initialize(context):\n    g.security = ['600570.SS','600000.SS']\n    set_universe(g.security)\n\ndef handle_data(context, data):\n    log.info(get_positions('600570.SS'))\n    log.info(get_positions(g.security))\n    log.info(get_positions())\n\norder_tick(sid, amount, priceGear='1', limit_price=None)",
+  "code_blocks": [],
+  "content_length": 830,
+  "url": "https://ptradeapi.com/#get_positions"
+}

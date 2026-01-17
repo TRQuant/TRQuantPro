@@ -1,0 +1,8 @@
+{
+  "anchor_id": "order_market",
+  "title": "order_market - 按市价进行委托",
+  "content": "order_market - 按市价进行委托\n\norder_market\n(\nsecurity\n,\namount\n,\nmarket_type\n,\nlimit_price\n=\nNone\n)",
+  "code_blocks": [],
+  "content_length": 93,
+  "url": "https://ptradeapi.com#order_market"
+}
