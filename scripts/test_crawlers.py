@@ -309,7 +309,11 @@ print(f"总测试数: {test_results['total']}")
 print(f"✅ 通过: {test_results['passed']}")
 print(f"❌ 失败: {test_results['failed']}")
 print(f"⏭️  跳过: {test_results['skipped']}")
-print(f"通过率: {test_results['passed'] / test_results['total'] * 100:.1f}%")
+# 计算核心功能通过率（排除跳过的可选依赖）
+core_total = test_results['total'] - test_results['skipped']
+core_pass_rate = (test_results['passed'] / core_total * 100) if core_total > 0 else 100.0
+print(f"通过率: {test_results['passed'] / test_results['total'] * 100:.1f}% (总体)")
+print(f"核心功能通过率: {core_pass_rate:.1f}% ({test_results['passed']}/{core_total})")
 print()
 
 # 保存测试结果
