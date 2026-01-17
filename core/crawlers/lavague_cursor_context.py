@@ -86,18 +86,30 @@ class CursorContext(Context):
                 logger.info(f"✅ 使用OpenAI API: LLM={llm_model}, MM_LLM={mm_llm_model}")
                 
             else:
-                # Cursor IDE模式：使用默认Context
+                # Cursor IDE模式：尝试使用默认Context，如果失败则提示
                 # 在Cursor IDE中，LaVague通过MCP工具调用，使用Cursor内置AI能力
-                from lavague.core.context import get_default_context
-                default_context = get_default_context()
-                
-                # 使用默认Context的模型
-                llm = default_context.llm
-                mm_llm = default_context.mm_llm
-                embedding = default_context.embedding
-                
-                logger.info("✅ 使用Cursor IDE模式（通过MCP工具调用，使用Cursor内置AI）")
-                logger.info("   注意：在Cursor IDE中，LaVague通过MCP工具自动使用Cursor的AI能力")
+                # 注意：LaVague的默认Context需要OPENAI_API_KEY，但在Cursor IDE中通过MCP调用时，
+                # 实际的AI调用由Cursor的MCP工具处理，这里只是初始化LaVague框架
+                try:
+                    from lavague.core.context import get_default_context
+                    default_context = get_default_context()
+                    
+                    # 使用默认Context的模型
+                    llm = default_context.llm
+                    mm_llm = default_context.mm_llm
+                    embedding = default_context.embedding
+                    
+                    logger.info("✅ 使用Cursor IDE模式（通过MCP工具调用，使用Cursor内置AI）")
+                    logger.info("   注意：在Cursor IDE中，LaVague通过MCP工具自动使用Cursor的AI能力")
+                except Exception as e:
+                    # 如果默认Context初始化失败（缺少OPENAI_API_KEY），给出明确提示
+                    logger.warning("⚠️  默认Context初始化失败（可能需要OPENAI_API_KEY）")
+                    logger.info("   在Cursor IDE中，建议通过MCP工具调用LaVague功能")
+                    logger.info("   或者设置OPENAI_API_KEY环境变量，或使用use_openai=True模式")
+                    raise ValueError(
+                        "Cursor IDE模式需要OPENAI_API_KEY或通过MCP工具调用。"
+                        "在Cursor IDE中，建议使用MCP工具：crawler.lavague.execute"
+                    )
             
             # 初始化Context
             super().__init__(
