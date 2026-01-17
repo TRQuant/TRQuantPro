@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Lavague AI浏览器自动化爬虫工具 - Cursor IDE专用版
-================================================
+LaVague AI浏览器自动化爬虫工具 - V2（基于官方源码重构）
+=======================================================
 
-本版本完全参照LaVague官方源码实现，专为Cursor IDE环境设计。
+本版本完全参照LaVague官方实现，使用正确的API和Context机制。
 
-在Cursor IDE中的使用方式：
-1. 通过MCP工具调用（推荐）- 使用Cursor内置AI能力
-2. 使用OpenAI API（备选）- 需要OPENAI_API_KEY
-
-参考：https://github.com/lavague-ai/LaVague
+参考：
+- https://github.com/lavague-ai/LaVague
+- 使用官方推荐的WebAgent + Context方式
 """
 
 import logging
@@ -25,63 +23,61 @@ sys.path.insert(0, str(TRQUANT_ROOT))
 logger = logging.getLogger(__name__)
 
 
-class LavagueCrawler:
+class LavagueCrawlerV2:
     """
-    基于Lavague的AI驱动浏览器自动化 - Cursor IDE专用版
+    基于LaVague的AI驱动浏览器自动化（V2版本）
     
-    完全参照官方实现，使用：
-    - WebAgent（官方推荐）
-    - Context配置模型
-    - from_context方法（官方推荐）
-    
-    在Cursor IDE中：
-    - 通过MCP工具调用，自动使用Cursor内置AI能力
-    - 无需配置API密钥（除非使用OpenAI模式）
+    完全参照官方实现，使用正确的API：
+    - 使用WebAgent（官方推荐）
+    - 使用Context配置模型
+    - 支持自定义模型（Cursor/Ollama/OpenAI）
     """
     
     def __init__(
         self,
         headless: bool = True,
-        use_openai: bool = False,  # 是否使用OpenAI API（默认False，使用Cursor内置AI）
+        model_type: str = "ollama",  # "ollama", "cursor", "openai"
+        llm_model: str = "llama3.2",
+        mm_llm_model: str = "llama3.2-vision",
     ):
         """
         初始化Lavague爬虫
         
         Args:
             headless: 是否无头模式
-            use_openai: 是否使用OpenAI API
-                - False（默认）: 在Cursor IDE中通过MCP调用，使用Cursor内置AI
-                - True: 使用OpenAI API（需要OPENAI_API_KEY）
+            model_type: 模型类型
+                - "ollama": 本地Ollama模型（推荐，无需API密钥）
+                - "cursor": Cursor内置模型（通过Cursor IDE）
+                - "openai": OpenAI API（需要OPENAI_API_KEY）
+            llm_model: LLM模型名称
+            mm_llm_model: 多模态LLM模型名称
         """
         self.headless = headless
-        self.use_openai = use_openai
+        self.model_type = model_type
+        self.llm_model = llm_model
+        self.mm_llm_model = mm_llm_model
         self.agent = None
         self.driver = None
-        self.engine = None  # 保持兼容性
         self._init_agent()
     
     def _init_agent(self):
-        """初始化LaVague Agent（参照官方源码实现）"""
+        """初始化LaVague Agent（参照官方实现）"""
         try:
             # 导入LaVague核心模块
             from lavague.core import ActionEngine, WorldModel
             from lavague.core.agents import WebAgent
             from lavague.drivers.selenium import SeleniumDriver
             
-            # 尝试使用自定义CursorContext
+            # 导入自定义Context
             try:
                 from core.crawlers.lavague_cursor_context import CursorContext
-                context = CursorContext(use_openai=self.use_openai)
-                logger.info(f"✅ 使用CursorContext (use_openai={self.use_openai})")
+                context = CursorContext(model_type=self.model_type)
+                logger.info(f"✅ 使用CursorContext (model_type={self.model_type})")
             except ImportError:
                 # 如果自定义Context不可用，使用默认Context
                 from lavague.core.context import get_default_context
                 context = get_default_context()
-                if not self.use_openai:
-                    logger.warning("⚠️  使用默认Context（需要OPENAI_API_KEY）")
-                    logger.info("   在Cursor IDE中，建议通过MCP工具调用，自动使用Cursor内置AI")
-                else:
-                    logger.info("✅ 使用默认Context（OpenAI模式）")
+                logger.warning("⚠️  使用默认Context（需要OPENAI_API_KEY）")
             
             # 创建Selenium driver
             self.driver = SeleniumDriver(headless=self.headless)
@@ -92,23 +88,20 @@ class LavagueCrawler:
             
             # 创建WebAgent（官方推荐使用WebAgent）
             self.agent = WebAgent(world_model, action_engine)
-            self.engine = action_engine  # 保持兼容性
             
-            logger.info(f"✅ LaVague Agent初始化成功 (Cursor IDE模式)")
+            logger.info(f"✅ LaVague Agent初始化成功 (model_type={self.model_type})")
             
         except ImportError as e:
             logger.warning(f"LaVague未安装或导入失败: {e}")
             logger.info("请运行: ./venv/bin/python -m pip install lavague")
-            if self.use_openai:
-                logger.info("还需要: pip install lavague-contexts-openai")
-            self.engine = None
+            if self.model_type == "ollama":
+                logger.info("还需要: pip install llama-index-llms-ollama llama-index-embeddings-ollama")
             self.agent = None
             self.driver = None
         except Exception as e:
             logger.error(f"LaVague Agent初始化失败: {e}")
             import traceback
             logger.debug(traceback.format_exc())
-            self.engine = None
             self.agent = None
             self.driver = None
     
@@ -126,7 +119,6 @@ class LavagueCrawler:
             }
         
         try:
-            # 使用WebAgent导航（官方推荐方式）
             self.agent.get(url)
             time.sleep(2)  # 等待页面加载
             
@@ -165,7 +157,7 @@ class LavagueCrawler:
             }
         
         try:
-            # 使用WebAgent的run方法（官方推荐方式）
+            # 使用WebAgent的run方法（官方推荐）
             result = self.agent.run(instruction, n_steps=max_actions)
             
             # 获取页面状态
@@ -259,7 +251,6 @@ class LavagueCrawler:
             except:
                 pass
             self.driver = None
-        self.engine = None
         self.agent = None
         logger.info("LaVague Agent已关闭")
     
@@ -271,23 +262,23 @@ class LavagueCrawler:
 
 
 # 全局实例
-_lavague_crawler: Optional[LavagueCrawler] = None
+_lavague_crawler_v2: Optional[LavagueCrawlerV2] = None
 
-def get_lavague_crawler(
+def get_lavague_crawler_v2(
     headless: bool = True,
-    use_openai: bool = False
-) -> LavagueCrawler:
+    model_type: str = "ollama"
+) -> LavagueCrawlerV2:
     """
-    获取Lavague爬虫实例
+    获取LaVague爬虫实例（V2版本）
     
     Args:
         headless: 是否无头模式
-        use_openai: 是否使用OpenAI API（默认False，在Cursor IDE中通过MCP调用）
+        model_type: 模型类型 ("ollama", "cursor", "openai")
     
     Returns:
-        LavagueCrawler实例
+        LavagueCrawlerV2实例
     """
-    global _lavague_crawler
-    if _lavague_crawler is None:
-        _lavague_crawler = LavagueCrawler(headless=headless, use_openai=use_openai)
-    return _lavague_crawler
+    global _lavague_crawler_v2
+    if _lavague_crawler_v2 is None:
+        _lavague_crawler_v2 = LavagueCrawlerV2(headless=headless, model_type=model_type)
+    return _lavague_crawler_v2
