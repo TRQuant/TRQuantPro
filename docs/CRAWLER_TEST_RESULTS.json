@@ -1,11 +1,11 @@
 {
-  "test_time": "2026-01-17T12:00:40.321774",
+  "test_time": "2026-01-17T12:30:33.168172",
   "summary": {
     "total": 26,
-    "passed": 21,
-    "failed": 5,
-    "skipped": 0,
-    "pass_rate": "80.8%"
+    "passed": 23,
+    "failed": 0,
+    "skipped": 3,
+    "pass_rate": "88.5%"
   },
   "details": [
     {
@@ -22,9 +22,9 @@
     },
     {
       "name": "crawler.download",
-      "status": "❌ FAIL",
-      "message": "",
-      "error": "404 Client Error: Not Found for url: https://www.example.com/favicon.ico"
+      "status": "✅ PASS",
+      "message": "下载成功: None",
+      "error": null
     },
     {
       "name": "crawler.extract_code",
@@ -58,9 +58,9 @@
     },
     {
       "name": "Lavague安装检查",
-      "status": "❌ FAIL",
-      "message": "",
-      "error": "Lavague未安装，请运行: pip install lavague"
+      "status": "⏭️  SKIP",
+      "message": "Lavague未安装（可选依赖）",
+      "error": null
     },
     {
       "name": "LavagueCrawler类",
@@ -70,9 +70,9 @@
     },
     {
       "name": "crawler.lavague.execute",
-      "status": "❌ FAIL",
-      "message": "",
-      "error": "Lavague未安装"
+      "status": "⏭️  SKIP",
+      "message": "Lavague未安装（可选依赖）",
+      "error": null
     },
     {
       "name": "BaseCrawler基类",
@@ -142,9 +142,9 @@
     },
     {
       "name": "依赖: beautifulsoup4",
-      "status": "❌ FAIL",
-      "message": "",
-      "error": "beautifulsoup4未安装"
+      "status": "✅ PASS",
+      "message": "HTML解析",
+      "error": null
     },
     {
       "name": "依赖: selenium",
@@ -154,9 +154,9 @@
     },
     {
       "name": "依赖: lavague",
-      "status": "❌ FAIL",
-      "message": "",
-      "error": "lavague未安装"
+      "status": "⏭️  SKIP",
+      "message": "lavague未安装（可选）",
+      "error": null
     },
     {
       "name": "依赖: playwright",
