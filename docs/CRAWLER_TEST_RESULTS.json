@@ -1,0 +1,168 @@
+{
+  "test_time": "2026-01-17T12:00:40.321774",
+  "summary": {
+    "total": 26,
+    "passed": 21,
+    "failed": 5,
+    "skipped": 0,
+    "pass_rate": "80.8%"
+  },
+  "details": [
+    {
+      "name": "crawler.fetch",
+      "status": "✅ PASS",
+      "message": "成功抓取，内容长度: 0 字符",
+      "error": null
+    },
+    {
+      "name": "crawler.search_docs",
+      "status": "✅ PASS",
+      "message": "搜索成功，找到 10 个结果",
+      "error": null
+    },
+    {
+      "name": "crawler.download",
+      "status": "❌ FAIL",
+      "message": "",
+      "error": "404 Client Error: Not Found for url: https://www.example.com/favicon.ico"
+    },
+    {
+      "name": "crawler.extract_code",
+      "status": "✅ PASS",
+      "message": "提取成功，找到 0 个代码块",
+      "error": null
+    },
+    {
+      "name": "crawler.api_docs",
+      "status": "✅ PASS",
+      "message": "获取API文档成功",
+      "error": null
+    },
+    {
+      "name": "Selenium安装检查",
+      "status": "✅ PASS",
+      "message": "Selenium已安装",
+      "error": null
+    },
+    {
+      "name": "crawler.selenium.fetch",
+      "status": "✅ PASS",
+      "message": "成功抓取动态页面，标题: Example Domain",
+      "error": null
+    },
+    {
+      "name": "SeleniumCrawler类",
+      "status": "✅ PASS",
+      "message": "类可导入",
+      "error": null
+    },
+    {
+      "name": "Lavague安装检查",
+      "status": "❌ FAIL",
+      "message": "",
+      "error": "Lavague未安装，请运行: pip install lavague"
+    },
+    {
+      "name": "LavagueCrawler类",
+      "status": "✅ PASS",
+      "message": "类可导入",
+      "error": null
+    },
+    {
+      "name": "crawler.lavague.execute",
+      "status": "❌ FAIL",
+      "message": "",
+      "error": "Lavague未安装"
+    },
+    {
+      "name": "BaseCrawler基类",
+      "status": "✅ PASS",
+      "message": "基类可导入",
+      "error": null
+    },
+    {
+      "name": "CninfoCrawler",
+      "status": "✅ PASS",
+      "message": "巨潮资讯网爬虫可初始化",
+      "error": null
+    },
+    {
+      "name": "EastmoneyCrawler",
+      "status": "✅ PASS",
+      "message": "东方财富网爬虫可初始化",
+      "error": null
+    },
+    {
+      "name": "BidCrawler",
+      "status": "✅ PASS",
+      "message": "招标中标数据爬虫可初始化",
+      "error": null
+    },
+    {
+      "name": "JobCrawler",
+      "status": "✅ PASS",
+      "message": "招聘数据爬虫可初始化",
+      "error": null
+    },
+    {
+      "name": "CrawlerIntegration",
+      "status": "✅ PASS",
+      "message": "爬虫集成工具可初始化",
+      "error": null
+    },
+    {
+      "name": "EventProcessor",
+      "status": "✅ PASS",
+      "message": "事件处理器可初始化",
+      "error": null
+    },
+    {
+      "name": "DataPipeline",
+      "status": "✅ PASS",
+      "message": "数据管道可初始化",
+      "error": null
+    },
+    {
+      "name": "crawler_tools",
+      "status": "✅ PASS",
+      "message": "定义了 8 个爬虫工具",
+      "error": null
+    },
+    {
+      "name": "爬虫注册系统",
+      "status": "✅ PASS",
+      "message": "已注册 4 个爬虫: cninfo, eastmoney, bid, job",
+      "error": null
+    },
+    {
+      "name": "依赖: requests",
+      "status": "✅ PASS",
+      "message": "基础HTTP请求",
+      "error": null
+    },
+    {
+      "name": "依赖: beautifulsoup4",
+      "status": "❌ FAIL",
+      "message": "",
+      "error": "beautifulsoup4未安装"
+    },
+    {
+      "name": "依赖: selenium",
+      "status": "✅ PASS",
+      "message": "浏览器自动化",
+      "error": null
+    },
+    {
+      "name": "依赖: lavague",
+      "status": "❌ FAIL",
+      "message": "",
+      "error": "lavague未安装"
+    },
+    {
+      "name": "依赖: playwright",
+      "status": "✅ PASS",
+      "message": "浏览器自动化（可选）",
+      "error": null
+    }
+  ]
+}
